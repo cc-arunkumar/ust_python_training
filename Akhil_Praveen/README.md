@@ -1,1 +1,0 @@
-# ust_python_training
