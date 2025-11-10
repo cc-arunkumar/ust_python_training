@@ -1,4 +1,0 @@
-IT Department -> Employees: 1 | Total Salary: 45900.0 | Average Salary: 45900.0
-Fianace Department -> Employees: 1 | Total Salary: 60000.0 | Average Salary: 60000.0
-Health Department -> Employees: 1 | Total Salary: 67000.0 | Average Salary: 67000.0
-HR Department -> Employees: 2 | Total Salary: 53000.0 | Average Salary: 26500.0
