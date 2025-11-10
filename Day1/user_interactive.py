@@ -1,0 +1,6 @@
+# a=input("enter the number ")
+# print(type(a))
+name=input("Enter the name: ")
+age =int(input("enter your age: "))
+sal=int(input("enter the salary: "))
+print(f"name : {name} , age : {age} , salary: {sal} ")
