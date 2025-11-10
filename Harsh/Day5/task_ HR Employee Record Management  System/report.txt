@@ -1,0 +1,18 @@
+Department Report
+=================
+Department: HR
+  Employees: 2
+  Total Salary: 122000.00
+  Average Salary: 61000.00
+Department: IT
+  Employees: 2
+  Total Salary: 145000.00
+  Average Salary: 72500.00
+Department: Finance
+  Employees: 1
+  Total Salary: 55000.00
+  Average Salary: 55000.00
+Department: Operations
+  Employees: 1
+  Total Salary: 58000.00
+  Average Salary: 58000.00
