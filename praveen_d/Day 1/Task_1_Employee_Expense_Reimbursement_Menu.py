@@ -1,5 +1,36 @@
 # Task_1_Employee_Expense_Reimbursement_Menu
 
+# Simulate a simple Employee Expense Management System used to calculate and track reimbursement claims.
+# Employees can record travel, meal, and miscellaneous expenses and get total reimbursement.
+
+# ====== Employee Expense System ======
+# 1. Add Travel Expense
+# 2. Add Meal Expense
+# 3. Add Miscellaneous Expense
+# 4. View Total Reimbursement
+# 5. Exit
+# Enter your choice:
+
+
+# Functional Rules
+# ================
+# Travel Expense:
+# 	User enters the travel amount (e.g., 1200.50).
+# 	Add it to the total.
+
+# Meal Expense:
+# 	User enters the meal amount.
+# 	Add it to the total.
+
+# Miscellaneous Expense:
+# 	User enters other small expenses (e.g., internet, local transport).
+# 	Add to total.
+
+# View Total Reimbursement:
+# 	Display total expenses recorded so far with a thank-you message.
+
+# Exit:
+# 	Stop the program.
 
 total_expence=0
 isOk=True

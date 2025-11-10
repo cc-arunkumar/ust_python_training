@@ -1,4 +1,38 @@
 # Task_2_IT_Helpdesk_Ticket_Menu
+# Objective: 
+# 	Create a command-line helpdesk ticket system for employees to raise and track IT issues such as hardware, software, or network problems.
+
+
+# ====== UST IT Helpdesk ======
+# 1. Raise Hardware Issue
+# 2. Raise Software Issue
+# 3. Raise Network Issue
+# 4. View Total Tickets Raised
+# 5. Exit
+# Enter your choice:
+
+
+# Functional Rules
+# ================
+
+# Raise Hardware Issue
+# 	Display: "Hardware issue recorded. IT team will respond soon."
+# 	Increment hardware_ticket count.
+
+# Raise Software Issue
+# 	Display: "Software issue recorded. IT team will respond soon."
+# 	Increment software_ticket count.
+
+# Raise Network Issue
+# 	Display: "Network issue recorded. IT team will respond soon."
+# 	Increment network_ticket count.
+
+# View Total Tickets Raised
+# 	Display each issue type count and total number of tickets raised.
+
+# Exit
+# 	Exit program gracefully.
+	
 
 
 toRiseCompliant=True

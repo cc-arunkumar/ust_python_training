@@ -13,3 +13,6 @@ for i in range(len(list)):
 
 for i in list:
     print(i)
+
+# EXPECTED OUTPUT:
+# 1 4 5 7 9 

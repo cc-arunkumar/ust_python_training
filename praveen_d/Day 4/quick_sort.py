@@ -24,3 +24,6 @@ list1=[5,6,7,2,4,1]
 sorted_list=quick_sort(list1)
 
 print(sorted_list)
+
+# EXPECTED OUTPUT
+# [1, 2, 4, 5, 6, 7]

@@ -46,3 +46,17 @@ print(f"Removing element:{daily_task.pop()}")
 print(daily_task.stack)
 print(daily_task.is_empty())
 daily_task.search(20)
+
+
+# EXPECTED OUTPUT:
+# Is stack empty:True
+# Size of the stack:0
+# Adding element:10
+# Adding element:20
+# Adding element:30
+# [10, 20, 30]
+# 3
+# Removing element:30
+# [10, 20]
+# False
+# Value found at:1

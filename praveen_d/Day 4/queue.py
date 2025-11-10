@@ -30,3 +30,11 @@ queue_tasks.enqueue(30)
 queue_tasks.dequeue()
 print(queue_tasks.queue)
 
+# EXPECTED OUTPUT:
+# True
+# Appended 10 successfully !
+# Appended 20 successfully !
+# Appended 30 successfully !
+# Removed 10 sucessfully
+# [20, 30]
+

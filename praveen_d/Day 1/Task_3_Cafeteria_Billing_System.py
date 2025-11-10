@@ -1,5 +1,30 @@
 # Task_3_Cafeteria_Billing_System
+# Objective
+# 	Simulate a Cafeteria Menu Ordering System for employees inside the office campus. Employees can order multiple items and get a running total of their bill.
+	
+# ====== UST Cafeteria ======
+# 1. Coffee (₹25)
+# 2. Sandwich (₹50)
+# 3. Salad (₹40)
+# 4. Juice (₹30)
+# 5. View Bill
+# 6. Exit
+# Enter your choice:
 
+
+
+# Functional Rules
+# =================
+# When a user selects an item,
+# 	Display: "Item added to bill!"
+# 	Add the item price to the running total.
+
+# View Bill
+# 	Show total bill amount so far and item count.
+
+# Exit
+# 	Display a thank-you message and stop the program.
+	
 
 print("WECOME TO UST CAFETERIA")
 to_bill=True
