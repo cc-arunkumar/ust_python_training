@@ -1,0 +1,54 @@
+# Task 1:IT Helpdesk Ticket Manager
+
+# Scenario:
+# You are developing a small internal IT Helpdesk system for your company.
+# You need to manage the list of open support tickets throughout the day.
+
+# Instructions:
+
+# 1. Create a list named tickets with the following ticket titles:
+# ["Email not working", "VPN issue", "System slow", "Password reset"]
+
+# 2. A new ticket "Printer not responding" arrives. Add it to the list.
+
+# 3. "System slow" issue has been resolved — remove it from the list.
+
+# 4. Add two more tickets at once:
+# ["Wi-Fi disconnected", "Laptop battery issue"]
+
+# 5. Display total number of open tickets.
+
+# 6. Sort the tickets alphabetically to organize them better.
+
+# 7. Display all ticket names line by line using a loop.
+
+tickets=["Email not working", "VPN issue", "System slow", "Password reset"]
+
+tickets.append("Printer is not working")
+
+tickets.remove("System slow")
+
+tickets.extend(["Wi-Fi disconnected", "Laptop battery issue"])
+
+print("Total open tickets:",len(tickets))
+
+tickets.sort()
+
+print("Organized Ticket List: ")
+
+for ticket in tickets:
+    print(ticket)
+    
+    
+# Sample output
+
+
+# Total open tickets:  6
+
+# Organized Ticket List: 
+# Email not working
+# Laptop battery issue
+# Password reset
+# Printer is not working
+# VPN issue
+# Wi-Fi disconnected
