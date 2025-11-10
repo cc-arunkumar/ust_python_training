@@ -5,7 +5,7 @@ def reimbursement():
           3.Add Miscellaneos Expense
           4.View Report
           5.Exit''')
-    Choice = int(input("Enter your choice: "))
+    Choice = int(input("Enter your choice:  "))
     total=0
     while(True):
         if Choice == 1:
