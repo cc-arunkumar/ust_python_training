@@ -30,8 +30,6 @@ employee =[("Pooja",34000),("Ravi",1500),("Amit",20000)]
 employee.sort(key = lambda x : x[0])
 print("Sorted by name : ",employee)
 
-overtime_status = lambda hours : "Overtime" if hours>8 else regular
-print("The person is working : ",overtime_status(9))
 
 # map function
 salaries =[40000,50000,60000,70000]
