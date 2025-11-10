@@ -1,8 +1,4 @@
-# file =open("file.txt","w")
-# file.write("File Handling Started\n")
-# file.write("Hello everyone sohan this side\n")
-# file.write("Ended\n")
-# file.close()
+#Task 1 : File Handling 
 
 file = open("employees.txt", "w")
 file.write("E101,NehaSharma,HR,60000,2020-05-10,")
@@ -135,6 +131,41 @@ while True:
         break
     else:
         print("Invalid")
+        
+#Output
+# 1.Add new Employeee
+# 2.Update Sal 
+# 3.Search Employee
+# 4.Delete Employee
+# 5. Generate Department Report : 
+# 6.Display Employee 
+# 7. Exit
+# Enter your choice : 1
+# Enter the user id : E106
+# Enter your name : sohan
+# Enter yout dept : IT
+# Enter your salary : 340000
+# Enter your date of Joining : 2025-01-20
+# Record added something
+# 1.Add new Employeee
+# 2.Update Sal
+# 3.Search Employee
+# 4.Delete Employee
+# 5. Generate Department Report :
+# 6.Display Employee
+# 7. Exit
+# Enter your choice : 6
+# ======Employee Records======
+# E101,NehaSharma,HR,60000,2020-05-10,E102,Ravi Kumar, IT,750000,2019-08-21,E103,Arjun Mehta, Finance,55000,2021-01-15,E104,Fatima Khan,HR,62000,2018-12-15,E105, Vikram Singh,Operation,58000,2022-01-11,E106,sohan,IT,340000,2025-01-20
+# 1.Add new Employeee
+# 2.Update Sal
+# 3.Search Employee
+# 4.Delete Employee
+# 5. Generate Department Report : 
+# 6.Display Employee
+# 7. Exit
+# Enter your choice : 7
+# Exit
         
     
             
