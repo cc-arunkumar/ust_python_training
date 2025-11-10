@@ -1,4 +1,8 @@
-eid_check = ["E101","E102","E103","E104","E105","E106"]
+eid_check = []
+with open("employees.txt","r") as file:
+    for line in file:
+        eid_check.append(line[:4])
+
 
 def add_new_employee():
     eid = input("Enter Employee ID: ")
@@ -59,6 +63,7 @@ def update():
 
 def report():
     d = {}
+    print("Employee record:")
     with open("employees.txt","r") as file:
         for line in file:
             if line.split(",")[2] not in d:
@@ -70,6 +75,8 @@ def report():
     with open("report.txt","w") as file:
         for i in d:
             file.write(f"{i} Department -> Employees: {d[i][1]} | Total Salary: {d[i][0]} | Average Salary: {d[i][0]/d[i][1]}\n")
+            print(f"{i} Department -> Employees: {d[i][1]} | Total Salary: {d[i][0]} | Average Salary: {d[i][0]/d[i][1]}")
+    print("\n")
             
     
 
@@ -91,7 +98,8 @@ def delete():
                 break
             i+=1
             
-                
+            
+print("==== Employee Record Management ====")  
 
 while(True):
     print("1. Add New Employee\n2. Display All Employees\n3. Search Employee by ID\n4. Update Employee Salary\n5. Generate Department Report\n6. Delete Employee\n7. Exit\n")
