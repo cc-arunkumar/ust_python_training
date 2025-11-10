@@ -1,0 +1,52 @@
+skills_data = [
+ ("E101", "Python", "Advanced"),
+ ("E101", "Python", "Advanced"),
+ ("E101", "SQL", "Intermediate"),
+ ("E102", "Excel", "Expert"),
+ ("E102", "PowerBI", "Advanced"),
+ ("E103", "Python", "Beginner"),
+ ("E103", "Excel", "Intermediate"),
+ ("E103", "SQL", "Advanced")
+]
+skill_unique=set()
+
+emp_data = {}
+for (emp_id, skill, level) in skills_data:
+    # if (emp_id,skill) in skill_unique:
+    #     print(f"Duplicate Skill found: {skill} for Employee: {emp_id}")
+    #     continue
+    # skill_unique.add([emp_id,skill])
+    if emp_id not in emp_data:
+        emp_data[emp_id] = {}
+    emp_data[emp_id][skill]=level
+print("Employee Skills Data:", emp_data)
+for emp_id, skills in emp_data.items():
+    print(f"Employee ID: {emp_id}")
+    for skill, level in skills.items():
+        print(f"  Skill: {skill}, Level: {level}")
+    def search_skill(skill_name):
+        for emp_id, skills in emp_data.items():
+            if skill_name in skills:
+                print(f"Employee ID: {emp_id} has skill: {skill_name} at level: {skills[skill_name]}")
+s_search=input("Enter skill to search: ")
+search_skill(s_search)
+for emp_id, skills in emp_data.items():
+    if len(skills)>2:
+        print(f"Employee ID: {emp_id} has ",len(skills)," skills.")
+
+
+# Employee Skills Data: {'E101': {'Python': 'Advanced', 'SQL': 'Intermediate'}, 'E102': {'Excel': 'Expert', 'PowerBI': 'Advanced'}, 'E103': {'Python': 'Beginner', 'Excel': 'Intermediate', 'SQL': 'Advanced'}}
+# Employee ID: E101
+#   Skill: Python, Level: Advanced
+#   Skill: SQL, Level: Intermediate
+# Employee ID: E102
+#   Skill: Excel, Level: Expert
+#   Skill: PowerBI, Level: Advanced
+# Employee ID: E103
+#   Skill: Python, Level: Beginner
+#   Skill: Excel, Level: Intermediate
+#   Skill: SQL, Level: Advanced
+# Enter skill to search: Python
+# Employee ID: E101 has skill: Python at level: Advanced
+# Employee ID: E103 has skill: Python at level: Beginner
+# Employee ID: E103 has  3  skills.

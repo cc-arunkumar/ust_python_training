@@ -1,0 +1,19 @@
+attendance=(("E101", "John", 5),
+ ("E102", "Priya", 3),
+ ("E103", "Amit", 4),
+ ("E104", "Neha", 2))
+c=0
+print("Employees with more than 3 days present are:",end=" ")
+for (employee_id, employee_name, days_present) in attendance:
+    if days_present>3:
+        # print("Employees with more than 3 days present are:",end=" ")
+        print(f"{employee_name} ")
+        c+=1
+print("No. of employees with more than 3 days present:",c)
+print("max days present:",max(attendance,key=lambda x:x[2]))
+
+# Employees with more than 3 days present are: John 
+# Amit 
+# No. of employees with more than 3 days present: 2
+# max days present: ('E101', 'John', 5)
+# PS C:\Users\303372\Documents\UST Tasks> 
