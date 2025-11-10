@@ -39,17 +39,17 @@ def team(*efficiency):
 
 greet()
 print(project())
-performance("Asha", "Developer", 25)
-performance("Anil", "Finance", 23)
-team(25,23,21,22,30,40,50)
+performance("Ash", "Developer", 30)
+performance("sohan", "Finance", 40)
+team(25,34,23,45,29,56,60)
 
 #output
 # Welcome to UST Employee Work Report System !
 # This Program helps HR to calculate the employee performance easily.
 # UST Cloud Migration
-# Name : Asha, Depatment : Developer, Eff : 25
+# Name : Ash, Depatment : Developer, Eff : 30
 # Good Performance
-# Name : Anil, Depatment : Finance, Eff : 23
+# Name : sohan, Depatment : Finance, Eff : 40
 # Good Performance
-# Average team score is :  30.1
+# Average team score is :  38.9
 # Team performed beyond expectations
