@@ -1,3 +1,4 @@
+# employee_training_progress_tracker
 completed = ["John", "Priya", "Amit"]
 completed.append("Neha")
 completed.append("Rahul")

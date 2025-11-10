@@ -1,3 +1,5 @@
+# Department_Budget_Tracker
+
 departments = {
  "HR": {"manager": "Neha", "budget": 25},
  "IT": {"manager": "Arjun", "budget": 50},

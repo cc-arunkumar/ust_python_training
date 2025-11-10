@@ -1,3 +1,4 @@
+# linear
 def linear(target):
     list1 = [5, 6, 8, 14, 16]
     f=0

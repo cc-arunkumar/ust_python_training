@@ -1,3 +1,4 @@
+# quick sort
 def quick(list1):
     if len(list1)<=1:
         return list1

@@ -1,3 +1,4 @@
+# average_effiiciency
 def average_effi(*efficiency_score):
     total=0
     for score in efficiency_score:

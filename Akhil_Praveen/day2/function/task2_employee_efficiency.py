@@ -1,3 +1,4 @@
+# employee_efficiency
 def employee_efficiency(hour,task_completed):
     efficiency=(task_completed/hour)*10
     return efficiency

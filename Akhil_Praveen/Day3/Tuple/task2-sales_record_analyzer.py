@@ -1,3 +1,5 @@
+# sales_record_analyzer
+
 sales_data = (
  ("Chennai", 85000),
  ("Bangalore", 92000),

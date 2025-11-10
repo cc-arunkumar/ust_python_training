@@ -1,4 +1,5 @@
-def linear(target):
+# binary
+def binary(target):
     list1 = [18,5, 6, 8, 14, 16] 
     list1.sort()
     l=0
@@ -18,6 +19,6 @@ def linear(target):
     if f==0:
         print("Not found",target)
 
-linear(5)
-linear(18)
-linear(19)
+binary(5)
+binary(18)
+binary(19)

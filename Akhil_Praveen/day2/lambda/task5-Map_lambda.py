@@ -1,3 +1,4 @@
+# Map_lambda
 from functools import reduce
 names = ['Arun', 'Neha', 'Vikram']
 depts = ['HR', 'IT', 'Finance']

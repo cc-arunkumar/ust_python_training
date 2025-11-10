@@ -1,3 +1,4 @@
+# daily_sales_dashboard
 sales = [1200, 1500, 800, 2200, 1700, 950]
 print("Total: ",sum(sales))
 print("length: ",len(sales))

@@ -1,3 +1,5 @@
+# Security_IP_Monitoring_System
+
 connected_ips = {"10.0.0.1", "10.0.0.2", "10.0.0.5", "10.0.0.8", "10.0.0.9"}
 blacklisted_ips = {"10.0.0.2", "10.0.0.8", "10.0.0.10"}
 print("IPs that are blacklisted and currently connected: ", connected_ips.intersection(blacklisted_ips))

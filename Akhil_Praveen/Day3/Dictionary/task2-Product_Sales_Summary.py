@@ -1,3 +1,5 @@
+# Product_Sales_Summary
+
 sales = [
  ("Laptop", 3),
  ("Mobile", 5),

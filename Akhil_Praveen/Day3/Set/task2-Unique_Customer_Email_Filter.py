@@ -1,3 +1,5 @@
+# Unique_Customer_Email_Filter
+
 campaign_A = {"john@ust.com", "priya@ust.com", "amit@ust.com", "rahul@ust.com"}
 campaign_B = {"neha@ust.com", "amit@ust.com", "priya@ust.com", "meena@ust.com"}
 print("unique emails collected: ",campaign_A.union(campaign_B))
