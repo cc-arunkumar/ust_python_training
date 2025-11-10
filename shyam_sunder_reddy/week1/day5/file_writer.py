@@ -1,0 +1,5 @@
+f=open("file01.txt","w")
+f.write("Hii\n")
+f.write("vanakam\n")
+f.write("this is shyams file\n")
+f.close()
