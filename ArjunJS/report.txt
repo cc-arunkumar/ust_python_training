@@ -1,2 +1,0 @@
-HR Department -> Employees 2 | Total 22000 | Average 11000.0
-IT Department -> Employees 2 | Total 50000 | Average 25000.0

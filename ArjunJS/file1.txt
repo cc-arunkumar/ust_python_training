@@ -1,4 +1,0 @@
-*********File Handling**********
-Welcome to file handling in Python using with.
-------> The END <------
-Appending Data
