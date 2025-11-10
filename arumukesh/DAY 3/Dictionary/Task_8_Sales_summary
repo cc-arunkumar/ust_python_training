@@ -1,0 +1,22 @@
+sales = [
+ ("Laptop", 3),
+ ("Mobile", 5),
+ ("Tablet", 2),
+ ("Mobile", 4),
+ ("Laptop", 1)
+]
+sales_summary = {}
+for (item, quantity) in sales:
+    if item in sales_summary:
+        sales_summary[item] += quantity
+    else:
+        sales_summary[item] = quantity
+for item in sales_summary:
+    print(f"Total {item} sold: {sales_summary[item]}")
+# print("Sales Summary:", sales_summary)
+print("Highest Selling Item:", max(sales_summary.items(), key=lambda x: x[1]))
+
+# Total Laptop sold: 4
+# Total Mobile sold: 9
+# Total Tablet sold: 2
+# Highest Selling Item: ('Mobile', 9)
