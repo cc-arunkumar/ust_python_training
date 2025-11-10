@@ -1,0 +1,23 @@
+sales = [
+    ("Laptop", 3),
+    ("Mobile", 5),
+    ("Tablet", 2),
+    ("Mobile", 4),
+    ("Laptop", 1)
+]
+
+sales_summary = {}
+
+for product,quantity in sales:
+    sales_summary[product]=sales_summary.get(product,0)+ quantity
+
+for product,quantity in sales_summary.items():
+    print(f"{product} -> {quantity}")
+
+highest=max(sales_summary,key=sales_summary.get)
+print(f"highest selling product is {highest} and quantity is {sales_summary[highest]} ")
+
+# Laptop -> 4
+# Mobile -> 9
+# Tablet -> 2
+# highest selling product is Mobile and quantity is 9
