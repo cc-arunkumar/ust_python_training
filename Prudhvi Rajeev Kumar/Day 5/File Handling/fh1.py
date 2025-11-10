@@ -1,0 +1,8 @@
+file = open("t1.txt", "w")
+
+file.write("Hi All\n")
+file.write("Hello\n")
+
+with open("t1.txt", "a") as file:
+    file.write("Appending new line 1\n")
+    file.write("Object-Oriented Programming in Python is a way of organizing code so that it models real-world concepts. A class acts like a blueprint that defines the properties and behaviors of something, while an object is a specific example created from that blueprint. For instance, if you have a Car class with attributes like brand and color and methods like drive, you can create different car objects such as a red Tesla or a blue BMW. Each object has its own unique details but follows the same structure defined by the class. This approach makes programs easier to understand, reuse, and maintain.")
