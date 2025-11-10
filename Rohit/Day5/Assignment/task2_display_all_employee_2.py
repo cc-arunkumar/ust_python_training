@@ -1,0 +1,16 @@
+import os
+
+if os.path.exists("employee.txt"):
+    with open("employee.txt", "r") as file:
+        for line in file:
+            print(line.strip())
+else:
+    print("File not found")
+    
+    
+# ==================Sample output==================
+# E101,Neha Sharma,HR,60000,2020-05-10
+# E102,Ravi Kumar,IT,75000,2019-08-21
+# E103,Arjun Mehta,Finance,55000,2021-03-15
+# E104,Fatima Khan,HR,62000,2018-12-05
+# E105,Vikram Singh,Operations,58000,2022-01-11

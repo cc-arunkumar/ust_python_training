@@ -1,0 +1,11 @@
+Hello from the file side
+Hello from the side
+welcome to handling in python using with
+Appending line 1
+
+Appending line 1
+Appending line 2
+Appending line 3
+Appending line 1
+Appending line 2
+Appending line 3
