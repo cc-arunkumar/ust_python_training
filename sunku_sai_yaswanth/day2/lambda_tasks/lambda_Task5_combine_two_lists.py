@@ -1,0 +1,15 @@
+# Task 5: Combine Two Lists (Employee and Department)
+
+# You have two lists — one with employee names and another with their departments.
+# Use a lambda to merge them into a single formatted string.
+names = ['Arun', 'Neha', 'Vikram']
+depts = ['HR', 'IT', 'Finance']
+
+merge=list(map(lambda names,depts: names+" works in "+depts,names,depts))
+print(merge)
+
+
+
+
+
+# ['Arun works in HR', 'Neha works in IT', 'Vikram works in Finance']
