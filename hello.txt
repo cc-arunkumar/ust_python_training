@@ -1,5 +1,0 @@
-=====welcome=====
-to the world of python
-===thnku===
-hello
-i am Felix
