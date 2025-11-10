@@ -1,0 +1,1 @@
+IT Department → Employees: 2 | Total Salary: 25024 | Average Salary: 12512.0
