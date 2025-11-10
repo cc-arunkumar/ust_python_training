@@ -1,9 +1,13 @@
-eid_check = ["E101","E102","E103","E104","E105"]
+eid_check = []
+with open("employees.txt","r") as file:
+    for line in file:
+        eid_check.append(line[:4])
+
 
 def add_new_employee():
     eid = input("Enter Employee ID: ")
     if eid in eid_check:
-        print("Employee id exist: ")
+        print("Employee id already exist!!!")
         return
     name = input("Enter Name: ")
     department = input("Enter Department: ")
@@ -12,12 +16,14 @@ def add_new_employee():
     eid_check.append(eid)
     with open("employees.txt","a") as file:
         file.write(f"{eid},{name},{department},{salary},{date}\n")
+        print("Employee added successfully\n")
         
 def display():
     with open("employees.txt","r") as file:
         for line in file:
             for i in line.split(','):
                 print(i,"|",end="")
+    print("\n")
         
 def search():
     eid = input("Enter the Employee ID: ")
@@ -30,6 +36,7 @@ def search():
                     print(i,"|",end="")
         if flag == 0:
             print("Employee not found")
+    print("\n")
             
 def update():
     eid = input("Enter the Employee ID: ")
@@ -53,13 +60,10 @@ def update():
             i+=1
                 
 
-# update()
-# file = open("employees.txt","r")
-# print(file.read())
 
-
-def summary():
+def report():
     d = {}
+    print("Employee record:")
     with open("employees.txt","r") as file:
         for line in file:
             if line.split(",")[2] not in d:
@@ -71,9 +75,10 @@ def summary():
     with open("report.txt","w") as file:
         for i in d:
             file.write(f"{i} Department -> Employees: {d[i][1]} | Total Salary: {d[i][0]} | Average Salary: {d[i][0]/d[i][1]}\n")
+            print(f"{i} Department -> Employees: {d[i][1]} | Total Salary: {d[i][0]} | Average Salary: {d[i][0]/d[i][1]}")
+    print("\n")
             
     
-# summary()
 
 def delete():
     eid = input("Enter Employee ID to delete: ")
@@ -93,10 +98,24 @@ def delete():
                 break
             i+=1
             
-# delete()
-                
+            
+print("==== Employee Record Management ====")  
 
 while(True):
-    print("1. Add New Employee\n2. Display All Employees\n3. Search Employee by ID\n4. Update Employee Salary\n5. Generate Department Report\n6. Delete Employee\n7. Exit")
-            
-                    
+    print("1. Add New Employee\n2. Display All Employees\n3. Search Employee by ID\n4. Update Employee Salary\n5. Generate Department Report\n6. Delete Employee\n7. Exit\n")
+    choice = int(input("Enter choice: "))
+    if choice == 1:
+        add_new_employee()
+    elif choice == 2:
+        display()
+    elif choice == 3:
+        search()
+    elif choice == 4:
+        update()
+    elif choice == 5:
+        report()
+    elif choice == 6:
+        delete()
+    elif choice == 7:
+        print("Exiting...")
+        break
