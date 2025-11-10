@@ -1,5 +1,0 @@
-print("\\\"Hello world\"\\")
-print("HI\rworld")
-print("world\rHi")
-print("Hi\tDev")
-print("Hi\nDeva")
