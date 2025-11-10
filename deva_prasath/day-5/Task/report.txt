@@ -1,0 +1,4 @@
+HRDepartment→Employees:2|Total Salary:122000.0|Average Salary:61000.0
+ITDepartment→Employees:2|Total Salary:2075000.0|Average Salary:1037500.0
+FinanceDepartment→Employees:1|Total Salary:55000.0|Average Salary:55000.0
+OperationsDepartment→Employees:1|Total Salary:58000.0|Average Salary:58000.0
