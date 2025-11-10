@@ -1,0 +1,11 @@
+HR Department -> Employees: 2 | Total Salary: 87000 | Average Salary: 43500.0
+IT Department -> Employees: 1 | Total Salary: 75000 | Average Salary: 75000.0
+Finance Department -> Employees: 1 | Total Salary: 55000 | Average Salary: 55000.0
+Operations Department -> Employees: 1 | Total Salary: 58000 | Average Salary: 58000.0
+
+
+E101,Neha Sharma,HR,25000,2020-05-10
+E102,Ravi Kumar,IT,75000,2019-08-21
+E103,Arjun Mehta,Finance,55000,2021-03-15
+E104,Fatima Khan,HR,62000,2018-12-05
+E105,Vikram Singh,Operations,58000,2022-01-11
