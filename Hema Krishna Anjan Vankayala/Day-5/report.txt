@@ -1,0 +1,6 @@
+
+HR Department -> Employees: 2 | Total Salary: 122000.0 | Average Salary: 61000.0
+IT Department -> Employees: 1 | Total Salary: 75000.0 | Average Salary: 75000.0
+Finance Department -> Employees: 1 | Total Salary: 55000.0 | Average Salary: 55000.0
+Operations Department -> Employees: 1 | Total Salary: 40000.0 | Average Salary: 40000.0
+HR Department -> Employees: 2 | Total Salary: 103200.0 | Average Salary: 51600.0
