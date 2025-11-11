@@ -1,5 +1,6 @@
 patient_id,name,visit_date,department,billed_amount,insurance_provider,payment_status,contact,follow_up_required
 P002,Riya Sharma,02-10-2025,Orthopedics,12000.00,HealthPlus,Pending,9810098765,No
+P003,,2025/10/02,Neurology,3500.00,,Unpaid,8800123456,No
 P007,Alex Johnson,10/04/2025,Neurology,6000.00,GlobalCare,Pending,7000005555,Y
 P009,Anita Singh,2025-10-05,General Medicine,900.00,,Unpaid,8800099999,N
 P011,Sophia Lee,2025-10-06,Cardiology,5200.00,MedSecure,Pending,7700011111,Yes

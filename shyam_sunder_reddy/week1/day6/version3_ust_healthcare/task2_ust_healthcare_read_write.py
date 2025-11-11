@@ -18,15 +18,20 @@ with open("ust_healthcare_visits.csv","r") as file:
     #step 2:Basic validation / normalization
     for i,row in enumerate(reader,start=1):
         
-        #Required fields: patient_id , name , visit_date , billed_amount , payment_status . If any missing → skip that row (and print a short message)
-        if row["patient_id"]=="" or row["name"].strip()=="" or row["visit_date"]=="" or row["billed_amount"]=="" or row["payment_status"]=="":
-            print("Field Missing",row["patient_id"])
-            skips+=1
-            continue
+        # Check for extra fields (i.e., more fields than expected). If any → skip that row (and print a short message)
         if len(row)!=header:
             print("Extra field in row",row["patient_id"])
             skips+=1
             continue
+
+        #Required fields: patient_id , name , visit_date , billed_amount , payment_status . If any missing → skip that row (and print a short message)
+        required_fields=["patient_id","name","visit_date","billed_amount","payment_status"]
+        for field in required_fields:
+            if row[field].strip()=="":
+                print("Field Missing",row["patient_id"])
+                skips+=1
+                continue
+        
         #strip whitespace from all fields
         for key,value in row.items():
             # print(value)
@@ -102,7 +107,7 @@ with open("patient_summary.csv",mode="w",newline="") as summaryfile:
             str="Yes"
         else :
             str="No"
-            
+        #format for writing into the file
         writer.writerow({
             "patient_id":pid,
             "name":info["name"],
@@ -110,6 +115,7 @@ with open("patient_summary.csv",mode="w",newline="") as summaryfile:
             "total_billed":info["total_billed"],
             "has_pending_payments": str
         })
+print(f"Total rows skipped during processing: {skips}")
 
 #Sample output
 # Field Missing P003
@@ -123,4 +129,4 @@ with open("patient_summary.csv",mode="w",newline="") as summaryfile:
 # Not a float P016
 # Total rows skipped during processing: 9
 
-print(f"Total rows skipped during processing: {skips}")
+
