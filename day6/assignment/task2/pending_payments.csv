@@ -1,0 +1,56 @@
+patient_id,name,visit_date,department,billed_amount,insurance_provider,payment_status,contact,follow_up_required
+P002,Riya Sharma,02-10-2025,Orthopedics,12000.00,HealthPlus,Pending,9810098765,No
+P007,Alex Johnson,10/04/2025,Neurology,6000.00,GlobalCare,Pending,7000005555,No
+P009,Anita Singh,2025-10-05,General Medicine,900.00,,Unpaid,8800099999,No
+P011,Sophia Lee,2025-10-06,Cardiology,5200.00,MedSecure,Pending,7700011111,Yes
+P013,Olga Petrova,07/10/2025,Endocrinology,4200.00,EndoCare,Unpaid,7700013333,No
+P017,Leila Ahmed,2025-10-09,Dermatology,600.00,DermiCare,Unpaid,98100-22233,Yes
+P018,Peter Clark,2025-10-10,Neurology,4300.00,GlobalCare,Pending,98 000 33344,No
+P021,Lina Gomez,2025-10-11,ENT,2500.00,MedSecure,Pending,7700097777,No
+P022,Tom Hanks,2025-10-12,Neurology,5000.00,,Unpaid,8800088888,No
+P024,Raj Patel,2025-13-12,Orthopedics,4100.00,HealthPlus,Pending,+91-77 000 33333,Yes
+P026,Victor Hugo,2025-10-13,Cardiology,9800.75,MedSecure,Pending,7700044444,Yes
+P030,Mira Kapoor,15/10/2025,Endocrinology,3000.00,EndoCare,Unpaid,7700066666,No
+P031,Sam Wilson,2025-10-16,Neurology,6100.00,GlobalCare,Pending,8800022222,Yes
+P034,Nora Bates,2025-10-17,Pediatrics,1300.00,ChildCare,Pending,7700077777,No
+P036,Farah Khan,2025-10-18,ENT,2900.00,MedSecure,Unpaid,7700088888,Yes
+P038,Karen Mills,2025-10-19,General Medicine,1700.00,HealthPlus,Pending,7000023334,No
+P043,Imran Khan,2025-10-21,General Medicine,900.00,HealthPlus,Pending,8800077777,No
+P044,Linda Park,2025-10-21,ENT,3100.00,MedSecure,Unpaid,7000066666,Yes
+P046,Nadia Petrova,2025-10-22,Endocrinology,4500.00,EndoCare,Pending,7700048888,No
+P048,Helena Costa,2025-10-22,Neurology,2600.00,GlobalCare,Pending,7700023333,No
+P049,Manish Malhotra,2025-10-23,Cardiology,12500.00,MedSecure,Unpaid,9900091111,Yes
+P053,Andrei Ivanov,2025-10-24,Neurology,4100.00,GlobalCare,Unpaid,7700062222,Yes
+P056,Helga Schmidt,2025-10-25,Oncology,39000.00,CancerCover,Pending,6000044444,Yes
+P057,Karan Johar,2025-10-25,Cardiology,4500.00,MedSecure,Pending,7700081111,No
+P059,Daniel Craig,2025-10-26,ENT,3300.00,MedSecure,Unpaid,7700093333,No
+P061,Boris Becker,2025-10-27,Neurology,1500.00,GlobalCare,Pending,8800045555,No
+P064,Sylvia Plath,2025-10-28,General Medicine,600.00,HealthPlus,Pending,7700018888,No
+P065,Marcus Aurelius,2025-10-28,Oncology,34000.00,CancerCover,Unpaid,9990022222,Yes
+P067,Victor Cruz,2025-10-29,Orthopedics,6400.00,HealthPlus,Pending,7000077777,Yes
+P068,Nina Simone,2025-10-29,Endocrinology,3800.00,EndoCare,Unpaid,7700034444,No
+P070,Leah Baker,2025-10-30,Pediatrics,1000.00,ChildCare,Pending,7700035556,No
+P072,Sonia Kapoor,2025-10-30,General Medicine,1700.00,HealthPlus,Pending,7700067777,No
+P074,Maya Angelou,2025-10-31,Neurology,3300.00,GlobalCare,Unpaid,7700091112,No
+P075,Rajeshwari Pillai,2025-10-31,ENT,2900.00,MedSecure,Pending,8800067777,Yes
+P077,Linda Nguyen,2025-11-01,Endocrinology,4300.00,EndoCare,Pending,6000093333,No
+P078,Mark Ruffalo,2025-11-02,Cardiology,9400.00,MedSecure,Unpaid,7700083333,Yes
+P081,Olivia Wilde,2025-11-03,Pediatrics,900.00,ChildCare,Pending,7700085555,No
+P083,Samanta Fox,2025-11-03,Oncology,36000.00,CancerCover,Pending,7700079999,Yes
+P085,Diego Rivera,2025-11-04,Cardiology,15500.00,MedSecure,Unpaid,8800007777,Yes
+P086,Aisha Siddiqui,2025-11-05,ENT,2400.00,MedSecure,Pending,9810077777,No
+P088,Helene Fischer,2025-11-05,Endocrinology,4100.00,EndoCare,Pending,7000095555,No
+P090,Molly Ringwald,2025-11-06,Pediatrics,1100.00,ChildCare,Unpaid,7700041111,No
+P091,Yusuf Pathan,2025-11-07,General Medicine,1900.00,HealthPlus,Pending,9810088888,Yes
+P093,Raj Malhotra,2025-11-07,ENT,2500.00,MedSecure,Pending,7700010001,No
+P094,Tara Strong,2025-11-08,Neurology,4900.00,GlobalCare,Unpaid,7000019999,Yes
+P096,Ritika Sen,2025-11-09,General Medicine,850.00,HealthPlus,Pending,7700003333,No
+P098,Sasha Banks,2025-11-10,Pediatrics,950.00,ChildCare,Pending,7700091113,No
+P099,Igor Kravitz,2025-11-10,Neurology,5900.00,GlobalCare,Unpaid,6000015555,Yes
+P026,Victor Hugo,2025-10-13,Cardiology,9800.75,MedSecure,Pending,7700044444,Yes
+P002,Riya Sharma,02-10-2025,Orthopedics,12000.00,HealthPlus,Pending,9810098765,No
+P049,Manish Malhotra,2025-10-23,Cardiology,12500.00,MedSecure,Unpaid,9900091111,Yes
+P093,Raj Malhotra,2025-11-07,ENT,2500.00,MedSecure,Pending,7700010001,No
+P065,Marcus Aurelius,2025-10-28,Oncology,34000.00,CancerCover,Unpaid,9990022222,Yes
+P090,Molly Ringwald,2025-11-06,Pediatrics,1100.00,ChildCare,Unpaid,7700041111,No
+P034,Nora Bates,2025-10-17,Pediatrics,1300.00,ChildCare,Pending,7700077777,No
