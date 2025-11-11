@@ -118,3 +118,11 @@ print("Processed rows:", processed_rows)
 print("Skipped rows:", skipped_rows)
 print("Rows in pending_payments.csv:", len(pending_rows))
 print("Rows in patient_summary.csv:", len(patient_summary))
+
+
+#Console Output:
+# <======================== Console Summary ================================>
+# Processed rows: 101
+# Skipped rows: 9
+# Rows in pending_payments.csv: 56
+# Rows in patient_summary.csv: 92
