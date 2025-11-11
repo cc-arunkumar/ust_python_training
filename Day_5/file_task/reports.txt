@@ -1,0 +1,5 @@
+HR Department -> Employees: 1 | Total Salary: 64000.0 | Average salary: 64000.0
+ HR Department -> Employees: 1 | Total Salary: 75000.0 | Average salary: 75000.0
+ HR Department -> Employees: 1 | Total Salary: 55000.0 | Average salary: 55000.0
+ HR Department -> Employees: 1 | Total Salary: 58000.0 | Average salary: 58000.0
+ 
