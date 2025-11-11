@@ -54,3 +54,16 @@ max_quantity = max(customer_totals.values())
 top_customers = [cust for cust, qty in customer_totals.items() if qty == max_quantity]
 print("\n Customer(s) with highest total order quantity:")
 print(top_customers)
+
+
+#sample output
+# Total quantity sold per product:
+# Laptop: 4
+# Mobile: 8
+# Tablet: 5
+
+#  Unique cities where products were sold:
+# {'Delhi', 'Mumbai', 'Bangalore', 'Chennai'}       
+
+#  Customer(s) with highest total order quantity:   
+# ['Neha']

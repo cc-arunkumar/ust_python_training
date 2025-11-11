@@ -1,0 +1,4 @@
+HR: Employees=2 | Total=122000.0 | Avg=61000.00
+IT: Employees=1 | Total=75000.0 | Avg=75000.00
+Finance: Employees=1 | Total=55000.0 | Avg=55000.00
+Operations: Employees=1 | Total=58000.0 | Avg=58000.00

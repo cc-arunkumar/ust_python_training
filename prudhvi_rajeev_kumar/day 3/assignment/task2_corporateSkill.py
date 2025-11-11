@@ -58,3 +58,19 @@ print(employees_with_3plus_skills)
 
 print("\nAll unique skills across the company:")
 print(unique_skills)
+
+
+#sample output
+# Employee Skill Matrix:
+# E101: {'Python': 'Expert', 'SQL': 'Intermediate'}
+# E102: {'Excel': 'Expert', 'PowerBI': 'Advanced'}
+# E103: {'Python': 'Beginner', 'Excel': 'Intermediate', 'PowerBI': 'Intermediate'}
+
+# Employees who know Python:
+# {'E101', 'E103'}
+
+# Employees with 3 or more skills:
+# ['E103']
+
+# All unique skills across the company:
+# {'PowerBI', 'Python', 'SQL', 'Excel'}

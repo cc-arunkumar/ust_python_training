@@ -43,3 +43,14 @@ print(high_claim_employees)
 
 print(unique_catagories)
 
+
+#Sample Output
+# total reimbursement per employee : 
+# E101 : ₹9200
+# E102 : ₹6700
+# E103 : ₹1200
+
+# Employees with total claims exceeding 10,000:     
+# []
+# {'Travel', 'Food', 'Hotel'}
+# PS C:\Users\Administrator\Desktop\Prudhvi_Rajeev> 
