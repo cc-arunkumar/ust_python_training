@@ -8,7 +8,7 @@ def quick_sort(arr):
 
     return quick_sort(left) + [pivot] + quick_sort(right)
 
-numbers = [5, 3, 8, 4, 2]
+numbers = [5,4,3,2,1]
 sorted_numbers = quick_sort(numbers)
 print(sorted_numbers) 
 
