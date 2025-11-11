@@ -56,10 +56,11 @@ with open("ust_healthcare_visits.csv","r") as file:
         row["payment_status"]=row["payment_status"].capitalize()
         
         # Standardize follow_up_required to Yes / No (case insensitive). If value is unrecognized or missing → set to No (and print a short message)
-        if row["follow_up_required"]=="":
+        
+        if row["follow_up_required"]=="" or row["follow_up_required"]==0 or row["follow_up_required"][0]=='n' or row["follow_up_required"]=='N' or row["follow_up_required"]=="False" :
             row["follow_up_required"]="No"
         else:
-            row["follow_up_required"]=row["follow_up_required"].capitalize()
+            row["follow_up_required"]="Yes"
         
         data.append(row)
         
