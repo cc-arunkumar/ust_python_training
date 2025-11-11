@@ -1,114 +1,93 @@
-import csv 
+import csv
+pending_payments = []
+patient_summary = {}
 
-#Validating Required Fields and Conversion of Bill Amounts to Float
-with open('ust_healthcare_visits.csv','r') as file:
-    li=[]
-    csv_reader = csv.DictReader(file)
-    value_types_for_payment = ["paid","pending","unpaid"]
-    required_fields = ['patient_id','name','visit_date','billed_amount','payment_status']
-    
-    for row in csv_reader:
-    
-        if(row['patient_id']=="" or row['name']=="" or row['visit_date']=="" or row['billed_amount']=="" or row['payment_status']==""):
-            print(f"Incomplete Details for the {row['patient_id']}")
+# Open the CSV file
+with open('ust_healthcare_visits.csv',"r",newline='') as csvfile:
+    reader = csv.DictReader(csvfile)        
+    # Iterate through each row
+    for row in reader:
+        # Basic field validation
+        if row['patient_id'].strip()=="" or row['name'].strip()=="" or row['visit_date'].strip()=="" or row['billed_amount'].strip()=="" or row['insurance_provider'].strip()=="":
+            print(f"Skipping row due to missing required field\n")
             continue
-            
-        ld = {}
-        for key,value in row.items():
-            ##Removing Whitespaces for String Type
-            if  isinstance(value,str):
-                ld[key]=value.strip()
-            else:
-                ld[key] = value
-                
-            #Check for the Tile Case in 'payment_status'
-            if key=="payment_status" and value in value_types_for_payment:
-                ld[key] = value[0].upper() + value[1:]
-            
-            #Check for the Null Values in follow_up_required
-            if key=='follow_up_required' and value=="":
-                ld[key] = "No"
-            
-            if key=="follow_up_required" and value in ['yes','no']:
-                if value=='yes':
-                    ld[key] = "Yes"
-                else:
-                    ld[key] = "No"
+        try:
+        # Convert billed_amount to float
+            row['billed_amount'] = float(row['billed_amount'])
+        except ValueError:
+            print(f"Skipping row due to invalid billed_amount\n")
+            continue
         
-        li.append(ld)
+        # Trim whitespace from string fields
+        row['patient_id'] = row['patient_id'].strip()
+        row['name'] = row['name'].strip()
+        row['visit_date'] = row['visit_date'].strip()
+        row['payment_status'] = row['payment_status'].strip().title()
+        row['follow_up_required'] = row['follow_up_required'].strip().capitalize()
+
+        # Normalize payment_status and follow_up_required
+        if row['follow_up_required'] == '':
+            row['follow_up_required'] = 'No'
+            row['payment_status'] = row['payment_status'].title()
+
+        # Aggregating data for patient_summary
+        patient_id = row['patient_id']
+        if patient_id not in patient_summary:
+            patient_summary[patient_id] = {
+                'name': row['name'],
+                'total_visits': 0,
+                'total_billed': 0.0,
+                'has_pending_payment': 'No'
+            }
+
+            patient_summary[patient_id]['total_visits'] += 1
+            patient_summary[patient_id]['total_billed'] += row['billed_amount']
+
+            if row['payment_status'] in ['Pending', 'Unpaid']:
+                patient_summary[patient_id]['has_pending_payment'] = 'Yes'
+
+        # If payment status is Pending or Unpaid, add to pending_payments list
+        if row['payment_status'] in ['Pending', 'Unpaid']:
+            pending_payments.append(row)
+    
+    with open('pending_payments.csv', mode='w', newline='') as pending_file:
+        fieldnames = ['patient_id', 'name', 'dob', 'gender', 'contact', 'provider_id', 'provider_name', 'department', 'visit_date', 'visit_type', 'diagnosis_codes', 'procedure_codes', 'billed_amount', 'insurance_provider', 'insurance_id', 'payment_status', 'discharge_date', 'follow_up_required', 'notes']
+        writer = csv.DictWriter(pending_file, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(pending_payments)
+
+    # Write patient_summary.csv
+    with open('patient_summary.csv', mode='w', newline='') as summary_file:
+        fieldnames = ['patient_id', 'name', 'total_visits', 'total_billed', 'has_pending_payment']
+        writer = csv.DictWriter(summary_file, fieldnames=fieldnames)
+        writer.writeheader()
         
-#Rewrite the Cleaned and Normalized Data into the csv file
-with open('ust_healthcare_visits.csv','w',newline='') as file:
-    
-    header = ['patient_id','name','dob','gender','contact','provider_id','provider_name','department','visit_date','visit_type','diagnosis_codes','procedure_codes','billed_amount','insurance_provider','insurance_id','payment_status','discharge_date','follow_up_required','notes']
-    csv_writer = csv.DictWriter(file, fieldnames=header)
-    
-    csv_writer.writeheader()
-    
-    csv_writer.writerows(li)  
-        
-        
-with open('ust_healthcare_visits.csv','r') as file:
-    csv_reader = csv.DictReader(file)
-    pending_list = []    
-
-    for row in csv_reader:
-    
-        if row['payment_status'] != "Paid":
-            pending_list.append(row)
-
-#Create A pending_payments.csv
-with open("bigdata_pending_payments.csv",'w',newline="") as file:
-    
-    #create fieldnames list
-    header = ['patient_id','name','dob','gender','contact','provider_id','provider_name','department','visit_date','visit_type','diagnosis_codes','procedure_codes','billed_amount','insurance_provider','insurance_id','payment_status','discharge_date','follow_up_required','notes']
-    
-    #Create Dictwriter Object
-    csv_writer = csv.DictWriter(file,fieldnames=header)
-    
-    #Write fieldnames in Header
-    csv_writer.writeheader()
-    
-    #Write all rows in csv file
-    csv_writer.writerows(pending_list)
-
-#To Generate Patient Summary CSV File
-
-with open('ust_healthcare_visits.csv','r') as file:
-    dict = {}
-    csv_reader = csv.DictReader(file)
-    
-    for row in csv_reader:
-        if row['patient_id'] not in dict.keys():
-            li={}
-            li['name'] = row['name']
-            li['visits_count'] = 1
-            li['billed_amount'] == float(row['billed_amount'])
-            if row['payment_status'] != 'Paid':
-                li['has_pending_status'] = True 
-            else:
-                li['has_pending_status']= False
-                
-            dict[row['patient_id']] = li 
-        else:
-            dict[row['patient_id']]['visits_count'] += 1 
-            dict[row['patient_id']]['total_bill'] = dict.get(row['patient_id'])['total_bill'] + float(dict[row['patient_id']]['total_bill'])
-            
-            if dict[row['patient_id']]['has_pending_status'] or dict.get(row['patient_id']):
-                dict[row['patient_id']]['has_pending_status'] = True 
-    
-
-li_dict = []
-for key,value in dict.items():
-    new_li = []
-    new_li.append(key)
-    for key1,value1 in value.items():
-        new_li.append(value1)
-    li_dict.append(new_li)
+        for patient_id, summary in patient_summary.items():
+            summary['total_billed'] = f"{summary['total_billed']:.2f}"
+            writer.writerow({
+                'patient_id': patient_id,
+                'name': summary['name'],
+                'total_visits': summary['total_visits'],
+                'total_billed': summary['total_billed'],
+                'has_pending_payment': summary['has_pending_payment']
+            })
 
 
-with open('bigdata_patient_summary.csv','w',newline="") as file:
-    summary_header = ['patient_id','name','total_visits','total_billed','has_pending_payment']
-    csv_write = csv.writer(file)
-    csv_write.writerow(summary_header)
-    csv_write.writerows(li_dict)
+#Sample Execution
+# Skipping row due to missing required field
+
+# Skipping row due to missing required field
+
+# Skipping row due to invalid billed_amount 
+
+# Skipping row due to missing required field
+
+# Skipping row due to invalid billed_amount 
+
+# Skipping row due to missing required field
+
+# Skipping row due to missing required field
+
+# Skipping row due to invalid billed_amount 
+
+# Skipping row due to invalid billed_amount 
