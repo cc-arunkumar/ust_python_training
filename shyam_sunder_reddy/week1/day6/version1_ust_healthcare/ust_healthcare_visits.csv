@@ -1,0 +1,8 @@
+patient_id,name,visit_date,department,billed_amount,insurance_provider,payment_status,contact,follow_up_required
+P001,Arun Kumar,2025-10-01,Cardiology,7500.00,MedSecure,Paid,9810012345,Yes
+P002,Riya Sharma,2025-10-02,Orthopedics,12000.00,HealthPlus,Pending,9810098765,No
+P003,John Doe,2025-10-02,Neurology,3500.00,,Unpaid,8800123456,No
+P004,Meena Patel,2025-10-03,Cardiology,2200.00,MedSecure,Paid,7700123456,No
+P005,Suresh K,2025-10-03,General Medicine,1800.00,HealthPlus,Pending,9900112233,Yes
+P006,Neha Verma,2025-10-04,ENT,4800.50,MedSecure,Paid,9600001111,No
+P007,Alex Johnson,2025-10-04,Neurology,6000.00,GlobalCare,pending,7000005555,Yes
