@@ -1,0 +1,101 @@
+patient_id,name,dob,gender,contact,provider_id,provider_name,department,visit_date,visit_type,diagnosis_codes,procedure_codes,billed_amount,insurance_provider,insurance_id,payment_status,discharge_date,follow_up_required,notes
+P001,Arun Kumar,4/12/1985,M,9810012345,DR100,Dr. Mehta,Cardiology,10/1/2025,OP, I20.9 ; E11.9 , PROC1001; PROC1002,7500,MedSecure,INS1001,Paid,10/1/2025,Yes,Patient stable. Advised follow-up in 2 weeks.
+P002,Riya Sharma,7/30/1990,F,9810098765,DR200,Dr. Iyer,Orthopedics,10/2/2025,IP,E66.9,PROC2001,12000,HealthPlus,INS2002,Pending,10/5/2025,No,Surgery performed. Observe for fever.
+P003,John Doe,1/5/1978,M,8800123456,DR300,Dr. Lee,Neurology,10/2/2025,OP,G40.9, ,3500,, ,Unpaid, ,No,First visit; intermittent headaches.
+P004,Meena Patel,12/11/2001,F,7700123456,DR100,Dr. Mehta,Cardiology,10/3/2025,OP,I10,PROC1003,2200,MedSecure,INS1004,Paid,10/3/2025,No,BP elevated; medication started.
+P005,Suresh K,3/23/1965,M,9900112233,DR400,Dr. Khan,General Medicine,10/3/2025,OP,E11.9, ,1800,HealthPlus,INS3001,Pending, ,Yes,Diabetes review; missing labs.
+P006,Neha Verma,9/17/1988,F,9600001111,DR500,Dr. Gupta,ENT,10/4/2025,OP,H90.3,PROC5001,4800.5,MedSecure,INS4002,Paid,10/4/2025,No,Ear cleaning; tinnitus complaint.
+P007,Alex Johnson,11/11/1995,M,7000005555,DR300,Dr. Lee,Neurology,10/4/2025,OP,G43.0,PROC3002; PROC3003,6000,GlobalCare,INS5001,Pending,10/4/2025,Yes,Migraine; MRI recommended.
+P008,Li Wei,6/6/1970,M,6000012345,DR600,Dr. Rao,Oncology,10/5/2025,IP,C34.9,PROC6001; PROC6002,45000,CancerCover,INS6001,Paid,10/20/2025,Yes,Chemo cycle; extended stay.
+P009,Anita Singh,2/2/1982,F,8800099999,DR400,Dr. Khan,General Medicine,10/5/2025,OP,J00, ,900,, ,Unpaid, ,No,Cold symptoms; OTC advised.
+P010,Michael Brown,8/21/2004,M,7700012345,DR700,Dr. Fernandez,Pediatrics,10/6/2025,OP,A09,PROC7001,1500,ChildCare,INS7001,Paid,10/6/2025,No,Pediatric exam; immunizations updated.
+P011,Sophia Lee,5/14/1999,F,7700011111,DR100,Dr. Mehta,Cardiology,10/6/2025,OP,I25.10,PROC1004,5200,MedSecure,INS1002,Pending,10/6/2025,Yes,Angina; stress test scheduled.
+P012,Rajesh Kumar,11/25/1955,M,7700012222,DR400,Dr. Khan,General Medicine,10/7/2025,IP,I50.9,PROC4001; PROC4002,16000,HealthPlus,INS3004,Paid,10/10/2025,Yes,Heart failure care; vitals monitoring.
+P013,Olga Petrova,3/3/1983,F,7700013333,DR800,Dr. Sinha,Endocrinology,10/7/2025,OP,E03.9, ,4200,EndoCare,INS8001,Unpaid, ,No,Thyroid abnormal; Rx started.
+P014,Diego Marquez,10/10/1992,M,8800066666,DR200,Dr. Iyer,Orthopedics,10/8/2025,OP,S72.0,PROC2002,7000,HealthPlus,INS2003,Paid,10/8/2025,No,Fracture follow-up; cast removal.
+P015,Ananya Rao,4/4/2007,F,8800044444,DR700,Dr. Fernandez,Pediatrics,10/8/2025,OP,R50.9, ,1100,ChildCare,INS7002,Pending, ,No,Fever; advised rest.
+P016,Sunil Sharma,9/10/1980,M,+91-98 100 12345,DR100,Dr. Mehta,Cardiology,10/9/2025,OP,I20.9,PROC1005,8200,MedSecure,INS1003,Paid,10/9/2025,Yes,Post-angina follow-up.
+P017,Leila Ahmed,2/14/1994,F,98100-22233,DR900,Dr. Narayan,Dermatology,10/9/2025,OP,L20.8, ,600,DermiCare,INS9001,unpaid, ,No,Eczema; topical treatment.
+P018,Peter Clark,12/31/1969,M,98000 33344,DR300,Dr. Lee,Neurology,10/10/2025,OP,G93.1,PROC3004,4300,GlobalCare,INS5002,Pending, ,Yes,Dizziness evaluation.
+P019,Maya Singh,8/8/1987,F,9990012345,DR400,Dr. Khan,General Medicine,10/10/2025,OP,E11.9, ,2100,HealthPlus,INS3002,Paid,10/10/2025,No,Diabetes counseling.
+P020,Oscar Wilde,5/16/1973,M,7700098888,DR600,Dr. Rao,Oncology,10/11/2025,IP,C50.9,PROC6003; PROC6004,36000,CancerCover,INS6002,Paid,10/18/2025,Yes,Surgery & chemo plan.
+P021,Lina Gomez,1/1/1991,F,7700097777,DR500,Dr. Gupta,ENT,10/11/2025,OP,H66.9,PROC5002,2500,MedSecure,INS4003,Pending, ,No,Otitis media; antibiotics.
+P022,Tom Hanks,7/9/1956,M,8800088888,DR300,Dr. Lee,Neurology,10/12/2025,OP,G40.9, ,5000,, ,Unpaid, ,Yes,Seizure history; follow-up.
+P023,Sana Khan,3/5/2002,F,7700022222,DR800,Dr. Sinha,Endocrinology,10/12/2025,OP,E11.65, ,3200,EndoCare,INS8002,Paid,10/12/2025,No,Diabetes follow-up.
+P024,Raj Patel,6/6/1984,M, +91-77 000 33333 ,DR200,Dr. Iyer,Orthopedics,10/12/2025,OP,M54.5,PROC2003,4100,HealthPlus,INS2004,PENDING, ,Yes,Back pain; physio advised.
+P025,Emily Stone,11/11/1998,F,7000011111,DR700,Dr. Fernandez,Pediatrics,10/13/2025,OP,J06.9, ,900,ChildCare,INS7003,Paid,10/13/2025,No,Cold symptoms.
+P026,Victor Hugo,2/2/1960,M,7700044444,DR100,Dr. Mehta,Cardiology,10/13/2025,OP,I48.1,PROC1006,9800.75,MedSecure,INS1005,Pending,10/14/2025,Yes,Atrial fibrillation consult.
+P027,Zara Ali,9/9/1993,F,8800055555,DR400,Dr. Khan,General Medicine,10/14/2025,OP,J45.9, ,1400,HealthPlus,INS3003,Paid,10/14/2025,No,Asthma review.
+P028,Ken Watanabe,3/21/1970,M,60000-22222,DR600,Dr. Rao,Oncology,10/14/2025,IP,C61.9,PROC6005,22000,CancerCover,INS6003,Paid,10/17/2025,Yes,Prostate surgery.
+P029,Liu Chen,8/8/1985,M,6000012222,DR500,Dr. Gupta,ENT,10/15/2025,OP,H90.3,PROC5003; PROC5004,5200,MedSecure,INS4004,Pending,10/15/2025,Yes,Hearing test and minor procedure.
+P030,Mira Kapoor,12/12/1996,F,7700066666,DR800,Dr. Sinha,Endocrinology,10/15/2025,OP,E66.9, ,3000,EndoCare,INS8003,Unpaid, ,No,Obesity counseling.
+P031,Sam Wilson,5/5/1989,M,8800022222,DR300,Dr. Lee,Neurology,10/16/2025,OP,G43.1,PROC3005,6100,GlobalCare,INS5003,pending, ,Yes,Chronic migraine management.
+P032,Isha Verma,4/20/2000,F,9900099999,DR400,Dr. Khan,General Medicine,10/16/2025,OP,R53.1, ,800,HealthPlus,INS3005,Paid,10/16/2025,No,Fatigue; labs ordered.
+P033,Arjun Singh,7/7/1977,M,98100 77788,DR100,Dr. Mehta,Cardiology,10/17/2025,OP,I21.3,PROC1007,14500,MedSecure,INS1006,Paid,10/17/2025,Yes,Acute MI care; discharge planned.
+P034,Nora Bates,2/28/1992,F,7700077777,DR700,Dr. Fernandez,Pediatrics,10/17/2025,OP,A02.1, ,1300,ChildCare,INS7004,Pending, ,No,Gastroenteritis; hydration advised.
+P035,Paul Green,10/10/1966,M,8800012345,DR200,Dr. Iyer,Orthopedics,10/18/2025,OP,S82.0,PROC2004,5400,HealthPlus,INS2005,Paid,10/18/2025,No,Ankle fracture clinic.
+P036,Farah Khan,11/11/1988,F,7700088888,DR500,Dr. Gupta,ENT,10/18/2025,OP,H92.0, ,2900,MedSecure,INS4005,Unpaid, ,Yes,Tinnitus workup.
+P037,Igor Petrov,9/9/1959,M,7700090000,DR600,Dr. Rao,Oncology,10/19/2025,IP,C34.9,PROC6006; PROC6007,52000,CancerCover,INS6004,Paid,10/26/2025,Yes,Lung cancer complex care.
+P038,Karen Mills,6/6/1975,F,7000023334,DR400,Dr. Khan,General Medicine,10/19/2025,OP,E78.5, ,1700,HealthPlus,INS3006,Pending, ,No,Hyperlipidemia follow-up.
+P039,Yuki Tanaka,8/8/1984,F,6000034444,DR300,Dr. Lee,Neurology,10/19/2025,OP,G93.3,PROC3006,4700,GlobalCare,INS5004,Paid,10/19/2025,No,Neuropathy evaluation.
+P040,Rachel Adams,1/15/1997,F,7700035555,DR800,Dr. Sinha,Endocrinology,10/20/2025,OP,E11.9, ,4100,EndoCare,INS8004,Pending, ,Yes,Diabetes meds adjusted.
+P041,Dev Patel,9/9/1999,M,98100-11122,DR200,Dr. Iyer,Orthopedics,10/20/2025,OP,M25.5, ,2300,HealthPlus,INS2006,Paid,10/20/2025,No,Knee pain; injections planned.
+P042,Sofia Loren,9/20/1934,F,7700001112,DR100,Dr. Mehta,Cardiology,10/20/2025,IP,I50.9,PROC1008,18500,MedSecure,INS1007,Paid,10/25/2025,Yes,Heart failure inpatient.
+P043,Imran Khan,12/12/1982,M,8800077777,DR400,Dr. Khan,General Medicine,10/21/2025,OP,J11.1, ,900,HealthPlus,INS3007,Pending, ,No,Flu symptoms.
+P044,Linda Park,6/6/1990,F,7000066666,DR500,Dr. Gupta,ENT,10/21/2025,OP,H74.3,PROC5005,3100,MedSecure,INS4006,Unpaid, ,Yes,Ear surgery follow-up.
+P045,Noah Brown,3/3/2003,M,7700047777,DR700,Dr. Fernandez,Pediatrics,10/21/2025,OP,A15.0, ,2000,ChildCare,INS7005,Paid,10/21/2025,No,TB test positive; refer.
+P046,Nadia Petrova,4/4/1986,F,7700048888,DR800,Dr. Sinha,Endocrinology,10/22/2025,OP,E03.9,PROC8001,4500,EndoCare,INS8005,Pending, ,No,Thyroid injection given.
+P047,Oscar Diaz,5/5/1978,M,8800031111,DR200,Dr. Iyer,Orthopedics,10/22/2025,OP,S52.5,PROC2005; PROC2006,8000,HealthPlus,INS2007,Paid,10/22/2025,Yes,Forearm fracture ORIF.
+P048,Helena Costa,7/7/1991,F,7700023333,DR300,Dr. Lee,Neurology,10/22/2025,OP,G40.4, ,2600,GlobalCare,INS5005,Pending, ,No,Epilepsy med review.
+P049,Manish Malhotra,11/11/1968,M,9900091111,DR100,Dr. Mehta,Cardiology,10/23/2025,OP,I25.9,PROC1009,12500,MedSecure,INS1008,Unpaid, ,Yes,Stable angina; cath planned.
+P050,Eva Green,1/22/1987,F,7700055555,DR600,Dr. Rao,Oncology,10/23/2025,IP,C61.9,PROC6008,28000,CancerCover,INS6005,Paid,11/2/2025,Yes,Surgical oncology.
+P051,Samir Das,2/2/1972,M,9810022222,DR400,Dr. Khan,General Medicine,10/23/2025,OP,E11.9, ,1900,HealthPlus,INS3008,Paid,10/23/2025,No,Routine diabetes check.
+P052,Priya Menon,5/5/1995,F,7700061111,DR500,Dr. Gupta,ENT,10/24/2025,OP,H65.1,PROC5006,2700,MedSecure,INS4007,Pending, ,No,Otitis externa therapy.
+P053,Andrei Ivanov,12/12/1980,M,7700062222,DR300,Dr. Lee,Neurology,10/24/2025,OP,G93.1, ,4100,GlobalCare,INS5006,Unpaid, ,Yes,Headache; MRI recommended.
+P054,Lucy Hale,8/8/1993,F,7000033333,DR700,Dr. Fernandez,Pediatrics,10/24/2025,OP,A08.0, ,1100,ChildCare,INS7006,Paid,10/24/2025,No,Viral gastroenteritis.
+P055,Deepak Yadav,9/9/1989,M,8800023333,DR200,Dr. Iyer,Orthopedics,10/25/2025,OP,M16.5,PROC2007,7200,HealthPlus,INS2008,Paid,10/25/2025,Yes,Hip pain; plan arthroscopy.
+P056,Helga Schmidt,10/10/1976,F,6000044444,DR600,Dr. Rao,Oncology,10/25/2025,IP,C18.9,PROC6009; PROC6010,39000,CancerCover,INS6006,PENDING,10/30/2025,Yes,Colon surgery.
+P057,Karan Johar,5/5/1970,M,7700081111,DR100,Dr. Mehta,Cardiology,10/25/2025,OP,I20.0, ,4500,MedSecure,INS1009,Pending, ,No,Stable angina; meds.
+P058,Mayra Lopez,6/6/1998,F,7700082222,DR400,Dr. Khan,General Medicine,10/26/2025,OP,R10.9, ,900,HealthPlus,INS3009,Paid,10/26/2025,No,Abdominal pain; USG ordered.
+P059,Daniel Craig,3/2/1969,M,7700093333,DR500,Dr. Gupta,ENT,10/26/2025,OP,H92.1,PROC5007,3300,MedSecure,INS4010,Unpaid, ,Yes,Post-op check.
+P060,Ayesha Khan,9/9/1992,F,7700094444,DR800,Dr. Sinha,Endocrinology,10/26/2025,OP,E11.9, ,4200,EndoCare,INS8006,paid,10/26/2025,No,Diabetes follow-up.
+P061,Boris Becker,6/6/1967,M,8800045555,DR300,Dr. Lee,Neurology,10/27/2025,OP,G45.9, ,1500,GlobalCare,INS5007,Pending, ,Yes,TIA evaluation.
+P062,Grace Park,4/4/2001,F,7000056666,DR700,Dr. Fernandez,Pediatrics,10/27/2025,OP,A09, ,800,ChildCare,INS7007,Paid,10/27/2025,No,Stomach upset; fluids advised.
+P063,Rajiv Menon,12/12/1958,M,9810033333,DR100,Dr. Mehta,Cardiology,10/27/2025,IP,I21.0,PROC1010,23000,MedSecure,INS1010,Paid,10/30/2025,Yes,PCI performed.
+P064,Sylvia Plath,10/27/1932,F,7700018888,DR400,Dr. Khan,General Medicine,10/28/2025,OP,R53.1, ,600,HealthPlus,INS3010,Pending, ,No,Elderly fatigue management.
+P065,Marcus Aurelius,4/4/1975,M,9990022222,DR600,Dr. Rao,Oncology,10/28/2025,IP,C50.9,PROC6011,34000,CancerCover,INS6007,Unpaid, ,Yes,Breast surgery.
+P066,Hannah Wells,11/11/1990,F,7700024444,DR500,Dr. Gupta,ENT,10/28/2025,OP,H66.9, ,2700,MedSecure,INS4011,Paid,10/28/2025,No,Chronic OM follow-up.
+P067,Victor Cruz,2/2/1988,M,7000077777,DR200,Dr. Iyer,Orthopedics,10/29/2025,OP,S72.1,PROC2008,6400,HealthPlus,INS2010,Pending, ,Yes,Hip fracture review.
+P068,Nina Simone,2/21/1958,F,7700034444,DR800,Dr. Sinha,Endocrinology,10/29/2025,OP,E03.9, ,3800,EndoCare,INS8007,Unpaid, ,No,Thyroid labs abnormal.
+P069,Omar Sy,1/1/1980,M,8800056666,DR300,Dr. Lee,Neurology,10/29/2025,OP,G43.0,PROC3007,5900,GlobalCare,INS5008,Paid,10/29/2025,Yes,Cluster headache treatment.
+P070,Leah Baker,7/7/2006,F,7700035556,DR700,Dr. Fernandez,Pediatrics,10/30/2025,OP,A15.0, ,1000,ChildCare,INS7008,Pending, ,No,TB follow-up.
+P071,Harish Rao,3/3/1963,M,9810055555,DR100,Dr. Mehta,Cardiology,10/30/2025,OP,I25.10,PROC1011,13200,MedSecure,INS1011,Paid,10/30/2025,Yes,Stable CAD follow-up.
+P072,Sonia Kapoor,12/12/1984,F,7700067777,DR400,Dr. Khan,General Medicine,10/30/2025,OP,E11.9, ,1700,HealthPlus,INS3011,Pending, ,No,Diabetes review.
+P073,Neil Armstrong,8/5/1930,M,7000088888,DR600,Dr. Rao,Oncology,10/31/2025,IP,C34.9,PROC6012,47000,CancerCover,INS6008,Paid,11/10/2025,Yes,Complex oncology admission.
+P074,Maya Angelou,4/4/1928,F,7700091112,DR300,Dr. Lee,Neurology,10/31/2025,OP,G93.4, ,3300,GlobalCare,INS5009,Unpaid, ,No,Dementia evaluation.
+P075,Rajeshwari Pillai,9/9/1979,F,8800067777,DR500,Dr. Gupta,ENT,10/31/2025,OP,H92.2,PROC5008,2900,MedSecure,INS4012,Pending, ,Yes,Post-op ENT check.
+P076,Daniel Ortega,11/11/1982,M,7700092222,DR200,Dr. Iyer,Orthopedics,11/1/2025,OP,M25.5, ,2300,HealthPlus,INS2011,Paid,11/1/2025,No,Knee pain conservative care.
+P077,Linda Nguyen,4/4/1994,F,6000093333,DR800,Dr. Sinha,Endocrinology,11/1/2025,OP,E11.9,PROC8002,4300,EndoCare,INS8008,Pending, ,No,Diabetes insulin start.
+P078,Mark Ruffalo,11/22/1967,M,7700083333,DR100,Dr. Mehta,Cardiology,11/2/2025,OP,I48.1,PROC1012,9400,MedSecure,INS1012,Unpaid, ,Yes,Arrhythmia consult.
+P079,Aditi Rao,1/1/1999,F,7700084444,DR400,Dr. Khan,General Medicine,11/2/2025,OP,R53.8, ,700,HealthPlus,INS3012,Paid,11/2/2025,No,General check-up.
+P080,Chen Li,6/6/1986,M,6000094444,DR500,Dr. Gupta,ENT,11/2/2025,OP,H65.1,PROC5009,3050,MedSecure,INS4013,Paid,11/2/2025,No,Ear procedure.
+P081,Olivia Wilde,3/10/1984,F,7700085555,DR700,Dr. Fernandez,Pediatrics,11/3/2025,OP,A09, ,900,ChildCare,INS7009,Pending, ,No,Viral illness.
+P082,Pranav Joshi,2/2/1992,M,9810066666,DR300,Dr. Lee,Neurology,11/3/2025,OP,G43.1,PROC3008,6100,GlobalCare,INS5010,Paid,11/3/2025,Yes,Migraine infusion.
+P083,Samanta Fox,5/5/1980,F,7700079999,DR600,Dr. Rao,Oncology,11/3/2025,IP,C18.9,PROC6013,36000,CancerCover,INS6009,Pending,11/8/2025,Yes,Oncology multi-day admission.
+P084,Imelda Marcos,7/2/1934,F,7700069999,DR400,Dr. Khan,General Medicine,11/4/2025,OP,I10, ,1500,HealthPlus,INS3013,Paid,11/4/2025,No,BP control.
+P085,Diego Rivera,12/8/1905,M,8800007777,DR100,Dr. Mehta,Cardiology,11/4/2025,OP,I21.9,PROC1013,15500,MedSecure,INS1013,Unpaid, ,Yes,Post-MI monitoring.
+P086,Aisha Siddiqui,9/9/1998,F,9810077777,DR500,Dr. Gupta,ENT,11/5/2025,OP,H91.2, ,2400,MedSecure,INS4014,Pending, ,No,Hearing loss eval.
+P087,Brian Cox,6/1/1968,M,7700059999,DR300,Dr. Lee,Neurology,11/5/2025,OP,G45.9,PROC3009,1700,GlobalCare,INS5011,Paid,11/5/2025,No,Stroke follow-up.
+P088,Helene Fischer,10/5/1984,F,7000095555,DR800,Dr. Sinha,Endocrinology,11/5/2025,OP,E03.9, ,4100,EndoCare,INS8010,Pending, ,No,Thyroid follow-up.
+P089,Anil Kapoor,12/24/1959,M,9900094444,DR200,Dr. Iyer,Orthopedics,11/6/2025,OP,S32.0,PROC2010,7200,HealthPlus,INS2012,Paid,11/6/2025,Yes,Spine surgery follow-up.
+P090,Molly Ringwald,2/18/1968,F,7700041111,DR700,Dr. Fernandez,Pediatrics,11/6/2025,OP,A08.5, ,1100,ChildCare,INS7010,Unpaid, ,No,Pediatric GI.
+P091,Yusuf Pathan,10/22/1982,M,9810088888,DR400,Dr. Khan,General Medicine,11/7/2025,OP,E11.9, ,1900,HealthPlus,INS3014,Pending, ,Yes,Diabetes counselling.
+P092,Nicole Kidman,6/20/1967,F,7700021111,DR100,Dr. Mehta,Cardiology,11/7/2025,OP,I50.9,PROC1014,21000,MedSecure,INS1014,Paid,11/7/2025,Yes,CHF management.
+P093,Raj Malhotra,1/15/1974,M,7700010001,DR500,Dr. Gupta,ENT,11/7/2025,OP,H65.9, ,2500,MedSecure,INS4015,Pending, ,No,Ear pain.
+P094,Tara Strong,2/12/1986,F,7000019999,DR300,Dr. Lee,Neurology,11/8/2025,OP,G93.3,PROC3010,4900,GlobalCare,INS5012,Unpaid, ,Yes,Neurology consult.
+P095,Victor Hugo Jr,8/8/2000,M,7700002222,DR600,Dr. Rao,Oncology,11/8/2025,IP,C34.1,PROC6014,29000,CancerCover,INS6010,Paid,11/15/2025,Yes,Chemotherapy session.
+P096,Ritika Sen,9/9/1995,F,7700003333,DR400,Dr. Khan,General Medicine,11/9/2025,OP,R10.9, ,850,HealthPlus,INS3015,Pending, ,No,Abdominal pain.
+P097,Dominic Toretto,3/3/1980,M,8800090000,DR200,Dr. Iyer,Orthopedics,11/9/2025,OP,M17.1,PROC2011,6800,HealthPlus,INS2013,Paid,11/9/2025,Yes,Knee arthroscopy.
+P098,Sasha Banks,12/1/1992,F,7700091113,DR700,Dr. Fernandez,Pediatrics,11/10/2025,OP,A09, ,950,ChildCare,INS7011,Pending, ,No,Viral gastro.
+P099,Igor Kravitz,1/1/1977,M,6000015555,DR300,Dr. Lee,Neurology,11/10/2025,OP,G43.0,PROC3011,5900,GlobalCare,INS5013,Unpaid, ,Yes,Severe migraine.
+P100,Ankita Sharma,4/4/1994,F,9810090000,DR800,Dr. Sinha,Endocrinology,11/10/2025,OP,E11.9, ,4200,EndoCare,INS8011,Paid,11/10/2025,No,Sugar levels controlled.
