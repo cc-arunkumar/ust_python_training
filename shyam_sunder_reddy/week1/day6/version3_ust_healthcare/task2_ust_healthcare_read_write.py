@@ -111,4 +111,16 @@ with open("patient_summary.csv",mode="w",newline="") as summaryfile:
             "has_pending_payments": str
         })
 
+#Sample output
+# Field Missing P003
+# Field Missing 
+# Not a float P005
+# Not a float P016
+# Field Missing P023
+# Not a float P029
+# Not a float P040
+# Extra field in row P052
+# Not a float P016
+# Total rows skipped during processing: 9
+
 print(f"Total rows skipped during processing: {skips}")
