@@ -1,0 +1,7 @@
+=== Department Salary Report ===
+Generated on: 2025-11-10
+
+HR Department → Employees: 3 | Total Salary: 189000.00 | Average Salary: 63000.00
+IT Department → Employees: 1 | Total Salary: 75000.00 | Average Salary: 75000.00
+Finance Department → Employees: 1 | Total Salary: 55000.00 | Average Salary: 55000.00
+Operations Department → Employees: 1 | Total Salary: 58000.00 | Average Salary: 58000.00
