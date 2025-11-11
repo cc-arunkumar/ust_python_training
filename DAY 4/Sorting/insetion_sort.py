@@ -11,3 +11,10 @@ for i in range(1,len(list1)):
     list1[j+1]=key
 
 print(list1)
+
+"""
+SAMPLE OUTPUT
+
+[1, 3, 4, 5, 7]
+
+"""

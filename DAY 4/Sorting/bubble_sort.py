@@ -10,3 +10,10 @@ for i in range(len(list1)-1):
     if(is_sorted==False): break
 
 print(list1)    
+
+
+"""
+SAMPLE OUTPUT
+[1, 3, 4, 5, 8]
+
+"""
