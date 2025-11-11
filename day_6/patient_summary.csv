@@ -1,0 +1,8 @@
+patient_id,name,visit_times,total_billed_amount,has_pending_payments
+P001,Arun Kumar,1,75000.00,No
+P002,Riya Sharma,1,12000.00,Yes
+P003,John Doe,1,3500.00,Yes
+P004,Meena Patel,1,2200.00,No
+P005,Suresh K,1,1800.00,Yes
+P006,Neha Verma,1,4800.50,No
+P007,Alex Johnson,1,6000.00,Yes
