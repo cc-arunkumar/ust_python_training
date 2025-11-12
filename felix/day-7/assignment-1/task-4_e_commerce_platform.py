@@ -18,25 +18,29 @@ class Product:
         self.name = name
         self.price = price
         
+# Electronics extends Product
 class Electronics(Product):
     def __init__(self, product_id, name, price,brand,warrenty_year):
         Product.__init__(self,product_id, name, price)
         self.brand = brand
         self.warrenty_year = warrenty_year
-        
+   
+
+# Clothing extends Product    
 class Clothing(Product):
     def __init__(self, product_id, name, price,size,material):
         Product.__init__(self,product_id, name, price)
         self.size = size
         self.material = material
         
-        
+# Groceries extends Product     
 class Groceries(Product):
     def __init__(self, product_id, name, price,expiry_date,is_organic):
         Product.__init__(self,product_id, name, price)
         self.expiry_date = expiry_date
         self.is_organic = is_organic
-        
+    
+# OnlineExclusiveProduct extends Product   
 class OnlineExclusiveProduct(Product):
     def __init__(self, product_id, name, price,discount_rate):
         Product.__init__(self,product_id, name, price)

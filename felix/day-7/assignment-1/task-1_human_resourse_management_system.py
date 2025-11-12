@@ -27,7 +27,8 @@ class Employee:
         print(f"Employee ID: {self.emp_id}")
         print(f"Employee Name: {self.name}")
         print(f"Employee Base Salary: {self.base_salary}")
-        
+  
+# Developer extends Employee
 class Developer(Employee):
     def __init__(self, emp_id, name, base_salary,programming_language):
         Employee.__init__(self,emp_id, name, base_salary)
@@ -38,7 +39,8 @@ class Developer(Employee):
         print(f"Skills of Employee {self.name} are:")
         for language in self.programming_language:
             print(language)
-            
+          
+# Manager extends Employee  
 class Manager(Employee):
     def __init__(self, emp_id, name, base_salary,team_size,department):
         Employee.__init__(self,emp_id, name, base_salary)
@@ -48,7 +50,8 @@ class Manager(Employee):
     def show_team_info(self):
         print(f"Team Size: {self.team_size}")
         print(f"Department: {self.department}")
-        
+
+# DeveloperManager extends Developer and Manager   
 class DeveloperManager(Developer,Manager):
     def __init__(self, emp_id, name, base_salary, programming_language,team_size,department):
         Developer.__init__(self,emp_id, name, base_salary, programming_language)

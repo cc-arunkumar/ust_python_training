@@ -22,7 +22,8 @@ class Transction:
         
     def process(self):
         print(f"Transaction Status: {self.status}")
-        
+
+# CardTransaction extends Transaction
 class CardTransaction(Transction):
     def __init__(self, txn_id, amount, status,card_number):
         Transction.__init__(self,txn_id, amount, status)
@@ -31,6 +32,7 @@ class CardTransaction(Transction):
     def verify_card(self):
         print(f"Card number {self.card_number} has Verified")
         
+# OnlinePaymentextends Transaction
 class OnlinePayment(Transction):
     def __init__(self, txn_id, amount, status,payment_gateway):
         Transction.__init__(self,txn_id, amount, status)
@@ -39,6 +41,7 @@ class OnlinePayment(Transction):
     def verify_gateway(self):
         print(f"{self.payment_gateway} gateway has verified")
         
+# InternationalCardPayment extends CardTransaction and OnlinePayment
 class InternationalCardPayment(CardTransaction,OnlinePayment):
     def __init__(self, txn_id, amount, status, card_number,payment_gateway):
         CardTransaction.__init__(self,txn_id, amount, status, card_number)

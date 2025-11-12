@@ -26,6 +26,7 @@ class Vehicle:
         print(f"Model: {self.model}")
         print(f"Year of Manufacturing: {self.year}")
         
+# ElectricVehicle extends Vehicle
 class ElectricVehicle(Vehicle):
     def __init__(self, make, model, year, battery_capacity, charge_status):
         Vehicle.__init__(self,make, model, year)
@@ -35,7 +36,8 @@ class ElectricVehicle(Vehicle):
     def charge_battery(self):
         print(f"Charge Capacity: {self.battery_capacity}")
         print(f"Charging Status: {self.charge_status}")
-        
+       
+# AutonomousVehicle extends ElectricVehicle 
 class AutonomousVehicle(ElectricVehicle):
     def __init__(self, make, model, year, battery_capacity,charge_status,ai_version):
         ElectricVehicle.__init__(self,make,model,year,battery_capacity,charge_status)
@@ -44,7 +46,8 @@ class AutonomousVehicle(ElectricVehicle):
         
     def run_autopilot(self):
         print(f"{self.model} has {self.ai_version}")
-        
+      
+# SmartEv extends AutonomousVehicle  
 class SmartEv(AutonomousVehicle):
     def __init__(self, make, model, year, battery_capacity, charge_status, ai_version):
         AutonomousVehicle.__init__(self,make, model, year, battery_capacity, charge_status, ai_version)

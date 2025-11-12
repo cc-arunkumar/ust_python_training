@@ -17,19 +17,22 @@ class Person:
         self.name= name
         self.age = age
         self.gender = gender
-        
+       
+# Doctor extends Person 
 class Doctor(Person):
     def __init__(self, name, age, gender,specialization,consultation_fee):
         Person.__init__(self,name, age, gender)
         self.specialization = specialization
         self.consultation_fee = consultation_fee
-        
+       
+# Patient extends Person 
 class Patient(Person):
     def __init__(self, name, age, gender,disease,room_number):
         Person.__init__(self,name, age, gender)
         self.disease = disease
         self.room_number = room_number
         
+# Surgeon extends Doctor
 class Surgeon(Doctor):
     def __init__(self, name, age, gender, specialization, consultation_fee,surgery_type):
         Doctor.__init__(self,name, age, gender, specialization, consultation_fee)
