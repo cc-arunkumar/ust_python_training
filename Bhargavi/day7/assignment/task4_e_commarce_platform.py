@@ -99,8 +99,22 @@ oe = OnlineElectronics(103, "Laptop", 850000, "hp", 3, 45)
 oe.electronics_info()
 oe.apply_discount()
 
-#output
-# ID: 101, Name: Smartphone, Price: ₹30000
-# Brand: Samsung, Warranty: 2 years
+# Testing Product:
+# ID: 1, Name: Generic Item, Price: ₹100
 
-# Discounted Price: ₹27000.00
+# Testing Electronics:
+# ID: 101, Name: iphone, Price: ₹30000  
+# Brand: oppo, Warranty: 2 years        
+
+# Testing Clothing:
+# ID: 102, Name: saree, Price: ₹499
+# Size: L, Material: tissue
+
+# Testing Groceries:
+# ID: 103, Name: papaya, Price: ₹250
+# Expiry Date: 2020-12-10, Organic: Yes
+
+# Testing OnlineExclusiveProduct (via OnlineElectronics):
+# ID: 103, Name: Laptop, Price: ₹850000
+# Brand: hp, Warranty: 3 years
+# Discounted Price: ₹467500.00
