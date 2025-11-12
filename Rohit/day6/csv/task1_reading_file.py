@@ -93,3 +93,12 @@ else:
 print(f"Skipped rows: {skipped_row}")
 print(f"Processed rows: {processed_row}")
 print(f"Pending payments: {pending_count}")
+
+
+
+# =======sample output================
+# skipped rows : 10
+#processed rows: 91
+#ending payments: 56
+
+
