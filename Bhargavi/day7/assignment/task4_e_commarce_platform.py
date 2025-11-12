@@ -28,7 +28,7 @@ class Product:
     def product_info(self):
         print(f"ID: {self.product_id}, Name: {self.name}, Price: ₹{self.price}")
 
-#  online-exclusive products
+#  online-exclusive products class
 class OnlineExclusiveProduct:
     def __init__(self, discount_rate):
         self.discount_rate = discount_rate
@@ -48,7 +48,7 @@ class Electronics(Product):
         self.product_info()
         print(f"Brand: {self.brand}, Warranty: {self.warranty_years} years")
 
-# Clothing category
+# Clothing class
 class Clothing(Product):
     def __init__(self, product_id, name, price, size, material):
         Product.__init__(self, product_id, name, price)
@@ -102,4 +102,5 @@ oe.apply_discount()
 #output
 # ID: 101, Name: Smartphone, Price: ₹30000
 # Brand: Samsung, Warranty: 2 years
+
 # Discounted Price: ₹27000.00
