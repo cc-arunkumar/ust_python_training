@@ -1,3 +1,6 @@
+# Task 3:
+
+# Write the filtered data (salary > 60000) into a new file high_salary.csv.
 import csv
 
 with open("employee_data.csv", mode="r") as infile, open("high_salary.csv", mode="w", newline="") as outfile:
@@ -12,3 +15,9 @@ with open("employee_data.csv", mode="r") as infile, open("high_salary.csv", mode
             csv_writer.writerow(row)
 
 print("Filtered data written to high_salary.csv")
+
+# Filtered data written to high_salary.csv
+#contents in high_slary.csv
+# id,name,department,salary
+# 101,Arun,IT,70000
+# 102,Riya,HR,65000

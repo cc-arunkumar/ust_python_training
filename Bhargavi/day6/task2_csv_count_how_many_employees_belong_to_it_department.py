@@ -1,3 +1,7 @@
+# Task 2:
+
+# Count how many employees belong to the IT department.
+
 import csv
 
 # Reading csv file
@@ -11,8 +15,11 @@ with open('employee_data.csv', mode='r') as file:
     it_count = 0
     
     for row in csv_reader:
-        department = row[2].strip().lower()  # Assuming department is in the 3rd column (index 2)
+        department = row[2].strip().lower()  
         if department == 'it':
             it_count += 1
     
     print(f"Number of employees in IT department: {it_count}")
+
+# Output
+# Number of employees in IT department: 1
