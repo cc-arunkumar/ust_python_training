@@ -1,0 +1,5 @@
+file=open("Example.txt",'w')
+file.write("Name: Sovan Mohanty\n")
+file.write("Age: 22\n")
+file.write("Designation: SDE 1\n")
+file.close()
