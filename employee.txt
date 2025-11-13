@@ -1,5 +1,0 @@
-E101,Neha Sharma,HR,60000,2020-05-10
-E102,Ravi Kumar,IT,75000,2019-08-21
-E103,Nisha,Finance,55000,2021-03-15
-E104,Fatima Khan,HR,62000,2018-12-05
-E105,Vikram Singh,Operations,58000,2022-01-11
