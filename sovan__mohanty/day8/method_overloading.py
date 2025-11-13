@@ -6,8 +6,8 @@ class M_O:
         print(f"Second method: {a+b+c}")
 mo1=M_O()
 mo1.add(10,20)
-mo1.add(10,20,30)
+mo1.add(10,20,40)
 
 #Sample Execution
 # Second method: 30
-# Second method: 60
+# Second method: 70
