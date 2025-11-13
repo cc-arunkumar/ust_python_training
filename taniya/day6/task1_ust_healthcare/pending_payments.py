@@ -1,0 +1,12 @@
+import csv
+
+with open("ust_health_care_visits_cleaned.csv","r") as file:
+    reader=csv.DictReader(file)
+    with open("pending_payments.csv","w",newline='') as file01:
+        fieldnames=reader.fieldnames
+        writer=csv.DictWriter(file01,fieldnames=fieldnames)
+        writer.writeheader()
+        for row in reader:
+
+            if row["payment_status"]!="Paid":
+                writer.writerow(row)
