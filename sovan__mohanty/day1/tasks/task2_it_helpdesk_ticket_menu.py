@@ -1,0 +1,54 @@
+#Task2 IT Helpdesk Ticket Menu
+print("====== UST IT Helpdesk ======")
+print("1. Raise Hardware Issue")
+print("2. Raise Software Issue")
+print("3. Raise Network Issue")
+print("4. View Total Tickets Raised")
+print("5. Exit")
+hardware_issue_ticket=0
+software_issue_ticket=0
+network_issue_ticket=0
+choice=int(input("Enter your choice: "))
+while(True):
+    if(choice==1):
+        hardware_issue_ticket+=1
+        print("Hardware issue recorded. IT team will respond soon")
+    elif(choice==2):
+        software_issue_ticket+=1
+        print("Software issue recorded. IT team will respond soon")
+    elif(choice==3):
+         network_issue_ticket+=1
+         print("Network issue recorded. IT team will respond soon")
+    elif(choice==4):
+        print("Hardware Tickets: ", hardware_issue_ticket)
+        print("Software Tickets: ", software_issue_ticket)
+        print("Network Tickets: ", network_issue_ticket)
+        total_tickets=hardware_issue_ticket+software_issue_ticket+network_issue_ticket
+        print("Total Tickets Raised: ", total_tickets)
+    else:
+        break
+    choice=int(input("Enter your choice: "))
+print("Exiting Helpdesk. Thank you!")
+
+#Sample Execution
+#====== UST IT Helpdesk ======
+#1. Raise Hardware Issue
+#2. Raise Software Issue
+#3. Raise Network Issue
+#4. View Total Tickets Raised
+#5. Exit
+#Enter your choice: 1
+#Hardware issue recorded. IT team will respond soon
+#Enter your choice: 2
+#Software issue recorded. IT team will respond soon
+#Enter your choice: 3
+#Network issue recorded. IT team will respond soon
+#Enter your choice: 4
+#Hardware Tickets:  1
+#Software Tickets:  1
+#Network Tickets:  1
+#Total Tickets Raised:  3
+#Enter your choice: 5
+#Exiting Helpdesk. Thank you!
+
+
