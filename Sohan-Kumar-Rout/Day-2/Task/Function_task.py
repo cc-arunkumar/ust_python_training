@@ -1,4 +1,5 @@
 #Task : Function task
+
 def greet():
     print("Welcome to UST Employee Work Report System !")
     print("This Program helps HR to calculate the employee performance easily.")

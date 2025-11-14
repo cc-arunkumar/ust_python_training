@@ -16,12 +16,6 @@ with open("employee_data.csv","r") as file:
 # ['103', 'John', 'Finance', '60000']
 # ['104', 'Neha', 'Marketing', '55000']
 
-
-                
-
-    
-
-    
     #Create a dict writer object
     reader = csv.DictReader(file)
     
