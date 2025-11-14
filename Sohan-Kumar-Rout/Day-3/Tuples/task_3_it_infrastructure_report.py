@@ -45,15 +45,3 @@ for name, (ip, cpu, status) in servers:
 
 # Down Servers Alert:
 # ALERT: CacheServer is down at 192.168.1.12
-
-
-
-
-
-
-
-
-
-
-
-
