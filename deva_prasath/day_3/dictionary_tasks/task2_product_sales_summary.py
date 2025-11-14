@@ -9,12 +9,14 @@ sales = [
  ("Mobile", 4),
  ("Laptop", 1)
 ]
+
 sales_summary = {} 
 for product, qty in sales:
  sales_summary[product] = sales_summary.get(product, 0) + qty
 print(sales_summary)
 for key,value in sales_summary.items():
     print(f"{key}-->{value}")
+
 
 max_key = None
 max_value = float('-inf')

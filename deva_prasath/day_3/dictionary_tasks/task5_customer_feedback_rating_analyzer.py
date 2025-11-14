@@ -20,6 +20,7 @@ for key,val in feedback.items():
 for key,val in feedback.items():
     if val==5:
         print("Customers with  rating of 5: ",key)
+        
 sumi=0
 for val in feedback.values():
     sumi+=val

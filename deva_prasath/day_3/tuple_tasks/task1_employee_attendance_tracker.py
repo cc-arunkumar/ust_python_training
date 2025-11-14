@@ -3,18 +3,23 @@
 
 attendance=(("E101","Deva",3),("E102","Raj",5),("E103","Gokul",7))
 count=0
+
+
 for i,j,k in attendance:
     if k>4:
         print("Attended more than 4 days: ",j)
+        
 for i,j,k in attendance:
     if k<4:
         count+=1
+        
 print("Present less than 4 days: ",count)
 for i,j,k in attendance:
     maxi=0
     if k>maxi:
-        maxi=k
-print("Employee with highest attendance: ",j)
+        maxi=j
+        
+print("Employee with highest attendance: ",maxi)
 
 #Sample output
 

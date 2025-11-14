@@ -16,6 +16,7 @@ skill_to_employees = {}
 unique_skills = set()
 
 for emp_id,skill,level in skills_data:
+    
     if emp_id not in employee_skills:
         employee_skills[emp_id] = {}
     employee_skills[emp_id][skill] = level

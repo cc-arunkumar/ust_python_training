@@ -7,12 +7,16 @@
 # Participants will build this system from scratch, practicing all file operations ( read ,
 # write , append , seek , etc.) while maintaining data consistency
 
+
+
 with open("employees.txt",'w') as file:
         file.write("E101,Neha Sharma,HR,60000,2020-05-10\n")
         file.write("E102,Ravi Kumar,IT,75000,2019-08-21\n")
         file.write("E103,Arjun Mehta,Finance,55000,2021-03-15\n")
         file.write("E104,Fatima Khan,HR,62000,2018-12-05\n")
         file.write("E105,Vikram Singh,Operations,58000,2022-01-11\n")
+    
+    
 while(True):
     print("==== Employee Record Management ====")
     print("1. Add New Employee\n")
@@ -24,7 +28,7 @@ while(True):
     print("7. Exit\n")
     chc=input("Enter your choice: ")
 
-    
+
     if chc=='1':
         id=input("Enter Employee ID: ")
         name=input("Enter Name: ")
@@ -39,6 +43,7 @@ while(True):
             file.write(f"{sal},")
             file.write(f"{date}")
         print("Employee added successfully\n")
+        
     elif chc=='2':
         def read_records():
             with open("employees.txt", "r") as file:
@@ -49,7 +54,7 @@ while(True):
                         a= line.split(",")  
                         records.append(a)
                 return records
-
+        
         print("Employee Records\n")
         rec=read_records()
         for r in rec:
@@ -69,11 +74,12 @@ while(True):
             with open("employees.txt", "r") as file:
                 records = []
                 for line in file:
-                    line = line.strip()         
-                    if line:                     
+                    line = line.strip()                              
+                    if line:
                         a= line.split(",")  
                         records.append(a)
                 return records
+        
         emp_id = input("Enter Employee ID: ")
         new_salary = input("Enter New Salary: ")
         updated_line=[]

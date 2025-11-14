@@ -10,6 +10,8 @@ sales_data = (
  ("Pune", 102000),
  ("Delhi", 98000)
 )
+
+
 sum,count=0,0
 for i,j in sales_data:
     if j>90000:
