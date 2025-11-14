@@ -50,3 +50,23 @@ f1.show_details()
 
 b1=Backend(3,"Dk","Devops","Android","Angular")
 b1.show_details()
+
+
+"""
+SAMPLE OUTPUT
+
+ID : 1
+Name : Gowtham
+Department : R/D
+Platform : IOs
+ID : 2
+Name : Mani
+Department : IT
+Platform : IOS
+Skill set : React
+ID : 3
+Name : Dk
+Department : Devops
+Platform : Android
+Skill set : Angular
+"""

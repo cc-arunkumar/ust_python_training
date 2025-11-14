@@ -27,3 +27,11 @@ for i in Employee:
     i.perform_task()
 
 
+"""
+SAMPLE OUTPUT
+
+Employee is working in the Project
+Manager is Managing the team
+Developer is working on the project
+Tester is looking for bugs in application
+"""

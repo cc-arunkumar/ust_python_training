@@ -58,3 +58,40 @@ for i in requested_service:
     i.show_basic_details()
     i.process_request()
     print("------------")
+
+
+"""
+SAMPLE OUTPUT
+
+Request ID :1
+Requested by :Gowthm
+Priority: High
+Processing IT Support Request :
+Assigning IT engineer
+Checking laptop
+Issue resolved
+------------
+Request ID :2
+Requested by :Mani
+Priority: High
+Processing HR Document Request :
+Preparing HR document
+Sending via email
+------------
+Request ID :3
+Requested by :Dinesh
+Priority: Medium
+Processing Facility Request :
+Assigning facility staff
+Checking issue
+Job completed
+------------
+Request ID :4
+Requested by :Gowthm
+Priority: Low
+Software Access Request :
+Verifying approval
+Granting software access
+------------
+
+"""
