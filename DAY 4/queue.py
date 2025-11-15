@@ -48,7 +48,7 @@ print("Adding element 20")
 q.push(20)
 print("The length of the queue:", q.size())
 
-# Check the front element
+# Checking the front element
 print("Front element is:", q.peek())
 
 # Remove the front element
