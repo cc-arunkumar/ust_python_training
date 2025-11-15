@@ -1,4 +1,4 @@
-#abstarction
+#abstarction demo problem to show how the methods are work in the presences of abstract class
 
 from abc import ABC , abstractmethod
 
@@ -12,12 +12,13 @@ class Payment(ABC):
 class Debitcardpayment(Payment):
     def payment(self , amount):
         print(f"  The payment is done using debitcard of amonut {amount}.")
-        
-        
+
+#childclass of payment
 class UPIpayment(Payment):
     def payment(self , amount):
         print(f" The payment is done using UPI of amonut {amount}.")
-        
+
+#wallet class
 class Wallet(Payment):
     def payment(self , amount):
         print(f" The payment is done using wallet of amonut {amount}.")
@@ -25,7 +26,8 @@ class Wallet(Payment):
 class Bheemapay(Payment):
     def payment(self , amount):
         print(f" The payment is done using Bheemapay of amonut {amount}.")
-        
+
+#creating objects and calling the methods
 pay2 = Debitcardpayment()
 pay2.payment(10000)
 
@@ -41,4 +43,5 @@ pay5.payment(40000)
 #  The payment is done using debitcard of amonut 10000.
 #  The payment is done using UPI of amonut 60000.
 #  The payment is done using wallet of amonut 70000.
+
 #  The payment is done using Bheemapay of amonut 40000.
