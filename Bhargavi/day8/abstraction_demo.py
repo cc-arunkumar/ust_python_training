@@ -23,6 +23,7 @@ class Wallet(Payment):
     def payment(self , amount):
         print(f" The payment is done using wallet of amonut {amount}.")
 
+#another child class
 class Bheemapay(Payment):
     def payment(self , amount):
         print(f" The payment is done using Bheemapay of amonut {amount}.")
@@ -45,3 +46,4 @@ pay5.payment(40000)
 #  The payment is done using wallet of amonut 70000.
 
 #  The payment is done using Bheemapay of amonut 40000.
+
