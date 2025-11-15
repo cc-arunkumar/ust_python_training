@@ -1,14 +1,16 @@
 #Calculate total marks and percentage
-
+#user input for marks
 math_marks = int(input("Enter marks sequered in maths: "))
 science_marks = int(input("Enter marks sequered in science: "))
 english_marks = int(input("Enter marks sequered in English: "))
 sst_marks = int(input("Enter marks sequered in social studies: "))
 pedu_marks = int(input("Enter marks sequered in physical education: "))
 
+#total marks and percentage calculation
 total_marks_secured = (math_marks+science_marks+english_marks+sst_marks+pedu_marks)
 percentage = (total_marks_secured/500)*100
 
+#condition to print grade
 if(percentage>=90):
     print("Total marks secured: ",total_marks_secured)
     print("Grade is A")

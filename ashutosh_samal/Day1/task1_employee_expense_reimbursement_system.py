@@ -1,6 +1,6 @@
 #Task1: Employee Expense Reimbursement System
 
-#Code
+#Code Menu
 print("====== Employee Expense System ======")
 print("1. Add Travael Expense")
 print("2. Add Meal Expense")
@@ -9,6 +9,7 @@ print("4. View Total Reimbursement")
 print("5. Exit")
 total_reimbursement = 0
 
+#switch case condition to perform task
 while True:
     choice = int(input("Enter your choice: "))
 

@@ -1,6 +1,6 @@
 #Task3: UST Cafeteria
 
-#Code
+# Display the UST Cafeteria menu with available items and their prices
 print("====== UST Cafeteria ======")
 print("1. Coffee (RS25)")
 print("2. Sandwich (RS50)")
@@ -9,33 +9,54 @@ print("4. Juice (RS30)")
 print("5. View Bill")
 print("6. Exit")
 
-total_item_count=0
-total_cost=0
+# Initialize variables to track the total items ordered and the total cost
+total_item_count = 0
+total_cost = 0
+
+# Start an infinite loop to process the user's choices
 while True:
+    # Prompt the user to enter a choice from the menu
     choice = int(input("Enter your choice: "))
 
-    if(choice == 1):
-        total_item_count += 1
-        total_cost += 25
+    # Check if the user selected coffee (RS25)
+    if choice == 1:
+        total_item_count += 1  # Increment the total item count
+        total_cost += 25       # Add the price of coffee to the total cost
         print("Item added to bill!")
-    elif(choice == 2):
-        total_item_count += 1
-        total_cost += 50
+    
+    # Check if the user selected sandwich (RS50)
+    elif choice == 2:
+        total_item_count += 1  # Increment the total item count
+        total_cost += 50       # Add the price of sandwich to the total cost
         print("Item added to bill!")
-    elif(choice == 3):
-        total_item_count += 1
-        total_cost += 40
+    
+    # Check if the user selected salad (RS40)
+    elif choice == 3:
+        total_item_count += 1  # Increment the total item count
+        total_cost += 40       # Add the price of salad to the total cost
         print("Item added to bill!")
-    elif(choice == 4):
-        total_item_count += 1
-        total_cost += 30
+    
+    # Check if the user selected juice (RS30)
+    elif choice == 4:
+        total_item_count += 1  # Increment the total item count
+        total_cost += 30       # Add the price of juice to the total cost
         print("Item added to bill!")
-    elif(choice == 5):
-        print("You ordered ", total_item_count," items")
-        print("Total Bill: ",total_cost)
-    elif(choice == 6):
-        print("Thankyou for visiting UST Cafeteria")
-        break
+    
+    # If the user wants to view their bill
+    elif choice == 5:
+        print("You ordered ", total_item_count, " items")  # Display total items ordered
+        print("Total Bill: ", total_cost)  # Display the total cost of the bill
+    
+    # If the user selects the exit option
+    elif choice == 6:
+        print("Thank you for visiting UST Cafeteria")  # Farewell message
+        break  # Exit the loop and terminate the program
+    
+    # If the user enters an invalid choice (anything other than 1-6)
+    else:
+        print("Invalid Choice, please select a valid option.")
+
+
 
 
 #Sample Execution

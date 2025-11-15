@@ -1,48 +1,73 @@
 #Assignment 3 — Online Order Fulfilment Report
 
+# List of orders, each containing order ID, customer name, city, product, and quantity
 orders = [
- ("O1001", "Neha", "Bangalore", "Laptop", 2),
- ("O1002", "Arjun", "Chennai", "Mobile", 3),
- ("O1003", "Ravi", "Delhi", "Laptop", 1),
- ("O1004", "Fatima", "Bangalore", "Tablet", 2),
- ("O1005", "Vikram", "Mumbai", "Mobile", 5),
- ("O1006", "Neha", "Bangalore", "Laptop", 1)
+    ("O1001", "Neha", "Bangalore", "Laptop", 2),
+    ("O1002", "Arjun", "Chennai", "Mobile", 3),
+    ("O1003", "Ravi", "Delhi", "Laptop", 1),
+    ("O1004", "Fatima", "Bangalore", "Tablet", 2),
+    ("O1005", "Vikram", "Mumbai", "Mobile", 5),
+    ("O1006", "Neha", "Bangalore", "Laptop", 1)
 ]
-order={}
-set_unique_cities=set()
-name_list=[]
-for order_id,name,cities,prod,quantity in orders:
+
+# Dictionary to store the order summary by order ID
+order = {}
+
+# Set to store unique cities
+set_unique_cities = set()
+
+# List to store all customer names
+name_list = []
+
+# Processing each order
+for order_id, name, cities, prod, quantity in orders:
+    # Adding the customer's name to the name list
     name_list.append(name)
 
-    if(set in set_unique_cities):
-        continue
-    set_unique_cities.add(cities)
-    if(order_id not in order):
-        order[order_id]={name,cities,prod,quantity}
-print("The order summary: ",order)
+    # If the city is not in the set of unique cities, add it
+    if cities not in set_unique_cities:
+        set_unique_cities.add(cities)
+    
+    # If the order ID is not in the dictionary, add it
+    if order_id not in order:
+        order[order_id] = {name, cities, prod, quantity}
 
-q_laptop=0
-q_mobile=0
-q_tablet=0
+# Printing the order summary
+print("The order summary: ", order)
+
+# Initializing quantities for each product type
+q_laptop = 0
+q_mobile = 0
+q_tablet = 0
+
+# Calculating the total quantity sold per product
 print("Total Quantity sold per product")
-for order_id,name,cities,prod,quantity in orders:
-    if(prod=="Laptop"):
-        q_laptop+=quantity
-    if(prod=="Mobile"):
-        q_mobile+=quantity
-    if(prod=="Tablet"):
-        q_tablet+=quantity
-print("Laptop----->",q_laptop)
-print("Mobile----->",q_mobile)
-print("Tablet----->",q_tablet)
-print("Set of unique cities: ",set_unique_cities)
-cout=0
+for order_id, name, cities, prod, quantity in orders:
+    if prod == "Laptop":
+        q_laptop += quantity
+    elif prod == "Mobile":
+        q_mobile += quantity
+    elif prod == "Tablet":
+        q_tablet += quantity
+
+# Printing the total quantities sold per product
+print("Laptop----->", q_laptop)
+print("Mobile----->", q_mobile)
+print("Tablet----->", q_tablet)
+
+# Printing the set of unique cities
+print("Set of unique cities: ", set_unique_cities)
+
+# Finding the customer with the maximum orders
+customer_order_count = {}
 for name in name_list:
-    if(name_list.count(name)>cout):
-        cout=name_list.count(name)
-for name in name_list:
-    if(name_list.count(name)==cout):
-        print("Customer with maximum orders ",name)
+    customer_order_count[name] = customer_order_count.get(name, 0) + 1
+
+# Finding the name of the customer with the maximum orders
+max_orders = max(customer_order_count.values())
+for name, count in customer_order_count.items():
+    if count == max_orders:
+        print("Customer with maximum orders: ", name)
         break
 
 #Sample Executions

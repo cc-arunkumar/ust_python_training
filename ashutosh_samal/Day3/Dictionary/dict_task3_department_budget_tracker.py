@@ -1,24 +1,31 @@
 #Task 3: Department Budget Tracker
 
+# Dictionary representing departments with their respective manager names and budget
 departments = {
- "HR": {"manager": "Neha", "budget": 25},
- "IT": {"manager": "Arjun", "budget": 50},
- "Finance": {"manager": "Fatima", "budget": 40}
+    "HR": {"manager": "Neha", "budget": 25},
+    "IT": {"manager": "Arjun", "budget": 50},
+    "Finance": {"manager": "Fatima", "budget": 40}
 }
 
-departments["Operations"] = {"manager": "Vikram","budget":35}
+# Adding a new department "Operations" with manager and budget information
+departments["Operations"] = {"manager": "Vikram", "budget": 35}
 
+# Updating the budget of the "Finance" department
 departments["Finance"]["budget"] = 45
 
-print("IT's manager name:",departments["IT"]["manager"])
+# Accessing and printing the name of the manager of the "IT" department
+print("IT's manager name:", departments["IT"]["manager"])
 
-sum=0
-for dept,info in departments.items():
+# Variable to store the sum of all department budgets
+total_budget = 0
+
+# Looping through each department to print the details and calculate the total budget
+for dept, info in departments.items():
     print(f"Department: {dept} | Manager: {info['manager']} | Budget: {info['budget']}")
+    total_budget += info['budget']  # Adding each department's budget to the total
 
-    sum=sum+info['budget']
-
-print("Total company budget: ",sum)
+# Printing the total company budget
+print("Total company budget: ", total_budget)
 
 
 #Sample Execution
