@@ -1,5 +1,5 @@
+#creating the base car
 class Car:    
-    #creating the base car
     def __init__(self,engine,fuel_injectors):
         self.engine=engine
         self.fuel_injectors=fuel_injectors
