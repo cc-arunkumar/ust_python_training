@@ -9,11 +9,13 @@ class Developer:
 class Manager:
     def work(self):
         print("Manager is managing the flow of the project")
-    
+
+#creating the objects    
 e1=Employee()
 d1=Developer()
 m1=Manager()
 
+#calling
 e1.work()
 d1.work()
 m1.work()
