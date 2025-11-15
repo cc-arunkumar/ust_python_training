@@ -4,27 +4,33 @@
 
 # Use a try/except block to handle division by zero gracefully.
 
-#taking input of two numbers
-a = int(input("Enter the number : "))
-b = int(input("Enter the number : "))
+# Taking input of two numbers
+a = int(input("Enter the number: "))  
+b = int(input("Enter the number: ")) 
 
-print("Welcome to UST Calculator App")
+# Display welcome message
+print("Welcome to UST Calculator App")  
 
-add = a + b
-print("Addition:", add)
+# Addition
+add = a + b 
+print("Addition:", add)  # Display the result
 
-sub = a - b
-print("Subtraction:", sub)
+ # Subtract the second number from the first
+sub = a - b  
+print("Subtraction:", sub)  
 
-mul = a * b
-print("Multiplication:", mul)
+# Multiply the two numbers
+mul = a * b 
+print("Multiplication:", mul)  
 
-# Division with error handling
+# Division with error handling (to avoid division by zero)
+ # Handle division by zero error
 try:
-    div = a / b
-    print("Division:", div)
+    div = a / b  
+    print("Division:", div) 
 except ZeroDivisionError:
-    print("Error: Division by zero is not allowed")
+    print("Error: Division by zero is not allowed") 
+
 
 #output
 # Enter the number : 10

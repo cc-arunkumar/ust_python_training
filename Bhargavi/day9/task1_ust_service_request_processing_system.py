@@ -65,6 +65,7 @@ class ServiceRequest(ABC):
     def process_request(self):
         pass
 
+    # Method to display common request details
     def show_basic_details(self):
         print(f"Request ID: {self.request_id}")
         print(f"Requested By: {self.requested_by}")
@@ -80,14 +81,15 @@ class ITSupportRequest(ServiceRequest):
         print("Checking laptop...")
         print("Issue resolved!\n")
 
-#child class of servicerequest
+#child class implementation for hrdocumentrequest
 class HRDocumentRequest(ServiceRequest):
     def process_request(self):
         print("Processing HR Document Request:")
         print("Preparing HR document...")
         print("Sending via email...\n")
- 
-#Facilityrequest class
+
+
+# Specific implementation for facility request
 class FacilityRequest(ServiceRequest):
     def process_request(self):
         print("Processing Facility Request:")
@@ -95,7 +97,7 @@ class FacilityRequest(ServiceRequest):
         print("Checking issue...")
         print("Job completed!\n")
 
-#softwareaccessrequest class
+# Specific implementation for softwareacees 
 class SoftwareAccessRequest(ServiceRequest):
     def process_request(self):
         print("Processing Software Access Request:")
@@ -112,6 +114,7 @@ req4 = SoftwareAccessRequest(104, "Shero", "High")
 #requests into the list
 requests = [req1, req2, req3, req4]
 
+#Loop through each request and process it
 for req in requests:
     req.show_basic_details()
     req.process_request()
@@ -146,5 +149,4 @@ for req in requests:
 # Priority: High
 # Processing Software Access Request:
 # Verifying approval...
-
 # Granting software access...
