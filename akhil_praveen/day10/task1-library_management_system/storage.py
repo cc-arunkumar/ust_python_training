@@ -5,13 +5,11 @@ from models import Book, User, Transaction
 
 
 class CSVStorage:
-    def __init__(self, folder="data"):
-        self.folder = folder
-        os.makedirs(folder, exist_ok=True)
+    def __init__(self,):
 
-        self.books_file = f"{folder}/books.csv"
-        self.users_file = f"{folder}/users.csv"
-        self.tx_file = f"{folder}/transactions.csv"
+        self.books_file = "C:/Users/303394/Desktop/ust_python_training/akhil_praveen/day10/task1-library_management_system/data/books.csv"
+        self.users_file = "C:/Users/303394/Desktop/ust_python_training/akhil_praveen/day10/task1-library_management_system/data/users.csv"
+        self.tx_file = "C:/Users/303394/Desktop/ust_python_training/akhil_praveen/day10/task1-library_management_system/data/transactions.csv"
 
         self._init_files()
 

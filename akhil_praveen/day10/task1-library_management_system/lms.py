@@ -5,61 +5,102 @@ from models import *
 
 def main():
     lib = Library()
-    print("Library Management System (Type 'help' for commands)")
+    print("---------------UST Library Management System----------------")
 
     while True:
-        cmd = input("lms> ").strip().split()
+        # print("Available commands:\n"
+        #                   "book add\nbook update <id>\nbook get <id>\nbook list\n"
+        #                   "user add\nuser get <id>\nuser deactivate <id>\n"
+        #                   "borrow <user_id> <book_id>\nreturn <tx_id>\n"
+        #                   "report summary\nsave\nexit")
+        print("Available commands:\n"
+                          "1. Books Services\n"
+                          "2. Users Services\n"
+                          "3. Borrow Book\n"
+                          "4. Return Book\n"
+                          "5. Report summary \n"
+                          "6. save\n"
+                          "7. exit\n")
+        cmd = int(input("lms> "))
 
         if not cmd:
             continue
 
         try:
-            match cmd[0]:
+            match cmd:
 
                 # ---------------- BOOK COMMANDS ----------------
-                case "book":
-                    sub = cmd[1]
+                case 1:
+                    print("Books Services:\n"
+                        "   1. Add new book\n"
+                        "   2. Update book details\n"
+                        "   3. Get book details\n"
+                        "   4. Remove a book\n"
+                        "   5. List of book\n"
+                        "   6. Back")
+                    sub = int(input("   lms> "))
 
-                    if sub == "add":
+                    if sub == 1:
+                        book_id = input("Book ID: ")
+                        isbn=input("ISBN: ")
+                        lib.validate(book_id,isbn)
+                        title = input("Title: ")
+                        authors = input("Authors (comma): ").split(",")
+                        tags = input("Tags (comma): ").split(",")
+                        total = int(input("Total copies: "))
                         data = {
-                            "book_id": input("Book ID: "),
-                            "title": input("Title: "),
-                            "authors": input("Authors (comma): ").split(","),
-                            "isbn": input("ISBN: "),
-                            "tags": input("Tags (comma): ").split(","),
-                            "total_copies": int(input("Total copies: ")),
-                            "available_copies": int(input("Available copies: "))
+                            "book_id": book_id,
+                            "title": title,
+                            "authors": authors,
+                            "isbn": isbn,
+                            "tags": tags,
+                            "total_copies": total,
+                            "available_copies": total
                         }
                         lib.add_book(data)
                         print("Book added.")
 
-                    elif sub == "update":
-                        book_id = cmd[2]
+                    elif sub == 2:
+                        book_id = input("       Enter book id: ")
+                        print("Enter only the data which needs to be changed else leave blank!")
                         updates = {
                             "title": input("Title: ") or None,
-                            "isbn": input("ISBN: ") or None
+                            "authors": input("Authors (comma): ").split(",") or None,
+                            "isbn": input("ISBN: ") or None,
+                            "tags": input("Tags (comma): ").split(",") or None
                         }
                         lib.update_book(book_id, updates)
                         print("Book updated.")
 
-                    elif sub == "get":
-                        b = lib.get_book(cmd[2])
+                    elif sub == 3:
+                        book_id = input("       Enter book id: ")
+                        b = lib.get_book(book_id)
                         print(b.to_dict())
 
-                    elif sub == "remove":
-                        lib.remove_book(cmd[2])
+                    elif sub == 4:
+                        book_id = input("       Enter book id: ")
+                        lib.remove_book(book_id)
                         print("Book removed.")
 
-                    elif sub == "list":
+                    elif sub == 5:
                         for b in lib.books:
-                            print(b.to_dict())
+                            print(f"{b.book_id} -> {b.title}")
 
                 # ---------------- USER COMMANDS ----------------
 
-                case "user":
-                    sub = cmd[1]
+                case 2:
+                    print("Books Services:\n"
+                        "   1. Add new user\n"
+                        "   2. Get user details\n"
+                        "   3. Update user name"
+                        "   4. List of book\n"
+                        "   5. Deactivate a user\n"
+                        "   6. Reactivate user"
+                        "   7. Ban a user\n" 
+                        "   8. Back\n")
+                    sub = int(input("   lms> "))
 
-                    if sub == "add":
+                    if sub == 1:
                         data = {
                             "user_id": input("User ID: "),
                             "name": input("Name: "),
@@ -70,57 +111,61 @@ def main():
                         lib.add_user(data)
                         print("User added.")
 
-                    elif sub == "get":
-                        u = lib.get_user(cmd[2])
+                    elif sub == 2:
+                        user_id = input("       Enter user id: ")
+                        u = lib.get_user(user_id)
                         print(u.to_dict())
 
-                    elif sub == "update":
-                        u = lib.get_user(cmd[2])
+                    elif sub == 3:
+                        user_id = input("       Enter user id: ")
+                        u = lib.get_user(user_id)
                         u.name = input("Name: ")
                         print("User updated.")
 
-                    elif sub == "deactivate":
-                        lib.get_user(cmd[2]).deactivate()
+                    elif sub == 4:
+                        for u in lib.users:
+                            print(f"{u.user_id} -> {u.name}")
+
+                    elif sub == 5:
+                        user_id = input("       Enter user id: ")
+                        lib.get_user(user_id).deactivate()
                         print("Deactivated.")
 
-                    elif sub == "activate":
-                        lib.get_user(cmd[2]).activate()
+                    elif sub == 6:
+                        user_id = input("       Enter user id: ")
+                        lib.get_user(user_id).activate()
                         print("Activated.")
 
-                    elif sub == "ban":
-                        lib.get_user(cmd[2]).ban()
+                    elif sub == 7:
+                        user_id = input("       Enter user id: ")
+                        lib.get_user(user_id).ban()
                         print("Banned.")
 
                 # ---------------- BORROW / RETURN --------------
-                case "borrow":
-                    tx = lib.borrow_book(cmd[1], cmd[2])
+                case 3:
+                    user_id = input("       Enter user id: ")
+                    book_id = input("       Enter book id: ")
+                    tx = lib.borrow_book(user_id, book_id)
                     print("Borrowed. TX:", tx.tx_id)
 
-                case "return":
-                    tx = lib.return_book(cmd[1])
+                case 4:
+                    tx_id = input("       Enter transaction id: ")
+                    tx = lib.return_book(tx_id)
                     print("Returned.")
 
                 # ---------------- REPORTS ----------------
-                case "report":
-                    if cmd[1] == "summary":
-                        print(lib.report_summary())
+                case 5:
+                    print(lib.report_summary())
 
                 # ---------------- SAVE / EXIT ----------------
-                case "save":
+                case 6:
                     lib.save_all()
                     print("Saved.")
 
-                case "exit":
+                case 7:
                     lib.save_all()
                     print("Goodbye!")
                     break
-
-                case "help":
-                    print("Available commands:\n"
-                          "book add\nbook update <id>\nbook get <id>\nbook list\n"
-                          "user add\nuser get <id>\nuser deactivate <id>\n"
-                          "borrow <user_id> <book_id>\nreturn <tx_id>\n"
-                          "report summary\nsave\nexit")
 
         except Exception as e:
             print("Error:", e)

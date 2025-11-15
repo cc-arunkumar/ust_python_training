@@ -1,64 +1,3 @@
-# import library
-# class Book:
-#     def __init__(self,book_id,title,authors,tags,total_copies):
-#         self.book_id = book_id
-#         self.title = title
-#         self.authors = authors
-#         self.tags = tags
-#         self.total_copies = total_copies
-#         self.available_copies = total_copies
-
-#     def to_dict(self):
-#         pass
-
-#     def update(self):
-#         pass
-
-#     def is_available(self):
-#         pass
-
-#     def increase_copies(self,n):
-#         pass
-
-#     def decrease_copies(self,n):
-#         pass
-
-# class User:
-#     def __init__(self,user_id,name,email):
-#         self.user_id = user_id
-#         self.name = name
-#         self.email = email
-#         self.status = "active"
-#         self.max_loans = 5
-
-#     def to_dict(self):
-#         pass
-#     def activate(self):
-#         pass
-#     def deactivate(self):
-#         pass
-#     def ban(self):
-#         pass
-#     def can_borrow(self,active_loans):
-#         pass
-
-# class Transaction:
-#     def __init__(self,tx_id,book_id,user_id,borrow_date,due_date,return_date,status):
-#         self.tx_id = ""
-#         self.book_id = book_id
-#         self.user_id = user_id
-#         self.borrow_date = ""
-#         self.due_date = ""
-#         self.return_date = None
-#         self.status = "borrowed"
-
-#     def to_dict(self):
-#         pass
-#     def mark_returned(self,return_date):
-#         pass
-#     def is_overdue(self,today_date):
-#         pass
-
 
 # models.py
 from datetime import datetime, timedelta
@@ -168,5 +107,5 @@ class Transaction:
     def is_overdue(self, today):
         if self.status == "returned":
             return False
-        return datetime.strptime(today, "%d-%m-%Y") > \
-               datetime.strptime(self.due_date, "%d-%m-%Y")
+        return datetime.strptime(today, "%Y-%m-%d") > \
+               datetime.strptime(self.due_date, "%Y-%m-%d")

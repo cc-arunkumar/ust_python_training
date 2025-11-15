@@ -23,13 +23,7 @@ class Library:
     # ============================================================
 
     def add_book(self, data):
-        # unique ID validation
-        if any(b.book_id == data["book_id"] for b in self.books):
-            raise InvalidBookError("Book ID already exists")
-
-        # unique ISBN validation
-        if any(b.isbn == data["isbn"] for b in self.books):
-            raise ValidationError("ISBN already exists")
+        
 
         # create book object
         new_book = Book(**data)
@@ -69,9 +63,18 @@ class Library:
 
         # rewrite CSV
         self.storage.save_books(self.books)
+    
+    def validate(self,book_id,isbn):
+        # unique ID validation
+        if any(b.book_id == book_id for b in self.books):
+            raise InvalidBookError("Book ID already exists")
 
-    def list_books(self):
-        return self.books
+        # unique ISBN validation
+        if any(b.isbn == isbn for b in self.books):
+            raise ValidationError("ISBN already exists")
+
+    # def list_books(self):
+    #     return self.books
 
     # ============================================================
     #                         USERS
@@ -107,8 +110,8 @@ class Library:
 
         return user
 
-    def list_users(self):
-        return self.users
+    # def list_users(self):
+    #     return self.users
 
     # ============================================================
     #                    BORROW & RETURN
