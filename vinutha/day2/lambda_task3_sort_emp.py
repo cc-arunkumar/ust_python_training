@@ -14,9 +14,17 @@
 
 #code
 
-employee=[("Rahul",3),("Priya",7),("karan",2),("Divya",5)]
-employee.sort(key=lambda X:X[1])
+# Create a list of employees where each element is a tuple
+# The tuple contains (employee_name, employee_id)
+employee = [("Rahul", 3), ("Priya", 7), ("karan", 2), ("Divya", 5)]
+
+# Sort the list of employees based on the second element of each tuple (employee_id)
+# key=lambda X: X[1] → tells sort() to use the value at index 1 (the ID) as the sorting key
+employee.sort(key=lambda X: X[1])
+
+# Print the sorted list of employees
 print(employee)
+
 
 #output
 # PS C:\Users\303379\day2_training> & C:/Users/303379/AppData/Local/Microsoft/WindowsApps/python3.13.exe c:/Users/303379/day2_training/task3_dict.py

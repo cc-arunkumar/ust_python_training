@@ -13,10 +13,16 @@
 
 #code
 
+# Function to get the name of the current active project
 def get_active_project():
-    return "UST Cloud Migration"
+    return "UST Cloud Migration"   
+
+# Call the function and store the result in a variable
 project = get_active_project()
+
+# Print the active project name
 print("Current Active Project:", project)
+
 
 #output
 # PS C:\Users\303379\day2_training> & C:/Users/303379/AppData/Local/Microsoft/WindowsApps/python3.13.exe c:/Users/303379/day2_training/task4_functions.py

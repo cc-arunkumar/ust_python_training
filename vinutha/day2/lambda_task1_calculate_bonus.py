@@ -11,9 +11,16 @@
 
 #code
 
-salary=int(input())
-bonus=lambda salary:salary+(salary*0.10)
-print(bonus(salary))
+# Take input from the user and convert it into an integer
+salary = int(input("Enter your salary: "))
+
+# Define a lambda function that calculates a 10% bonus
+# The function takes 'salary' as input and returns salary + (10% of salary)
+bonus = lambda salary: salary + (salary * 0.10)
+
+# Call the lambda function with the given salary and print the result
+print("Total salary after bonus:", bonus(salary))
+
 
 #outPut
 # PS C:\Users\303379\day2_training> & C:/Users/303379/AppData/Local/Microsoft/WindowsApps/python3.13.exe c:/Users/303379/day2_training/task_lambda.py

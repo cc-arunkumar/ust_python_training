@@ -35,9 +35,14 @@
 
 # code
 
+# Define a function named Welcome_ust
 def Welcome_ust():
+    # Print a welcome message for the system
     print("Welcome to UST Employee Work Report System")
+    # Print a description of what the program does
     print("This Program helps HR calculate employee Performance easily")
+
+# Call the function to display the messages
 Welcome_ust()
 
 #output

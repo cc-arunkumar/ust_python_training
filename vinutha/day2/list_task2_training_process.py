@@ -22,16 +22,33 @@
 
 #Code
 
-completed=["John", "Priya", "Amit"]
+# Create a list of employees who have completed their tasks
+completed = ["John", "Priya", "Amit"]
+
+# Add new employees to the completed list using append()
 completed.append("Neha")
 completed.append("Rahul")
+
+# Remove an employee from the completed list
 completed.remove("Amit")
-pending=["Meena", "Vivek", "Sita"]
-all_employees=completed+pending
+
+# Create a list of employees who still have pending tasks
+pending = ["Meena", "Vivek", "Sita"]
+
+# Combine both lists (completed + pending) into one list
+all_employees = completed + pending
+
+# Sort the combined list alphabetically
 all_employees.sort()
-count=len(all_employees)
-print("All Employees (Completed + Pending):",all_employees)
-print("Total Employees:",count)
+
+# Count the total number of employees in the combined list
+count = len(all_employees)
+
+# Print the full list of employees
+print("All Employees (Completed + Pending):", all_employees)
+
+# Print the total number of employees
+print("Total Employees:", count)
 
 #output
 # PS C:\Users\303379\day3_training> & C:/Users/303379/AppData/Local/Microsoft/WindowsApps/python3.13.exe c:/Users/303379/day3_training/task2_training_Process.py

@@ -28,15 +28,35 @@
 # d', 'Testing', 'Client Review']
 
 
+# Create a list of project tasks
 tasks = ["Requirement gathering", "Design UI", "Develop Backend", "Testing", "Deployment"]
+
+# Print the first task in the list (index 0)
 print("First task:", tasks[0])
+
+# Print the last task in the list (index -1 refers to the last element)
 print("Last task:", tasks[-1])
+
+# Insert a new task "Client Review" right after "Testing"
+# tasks.index("Testing") → finds the position of "Testing"
+# +1 → ensures "Client Review" is added immediately after "Testing"
 tasks.insert(tasks.index("Testing") + 1, "Client Review")
+
+# Print the first 3 tasks using slicing [:3]
 print("First 3 tasks:", tasks[:3])
+
+# Create a backup copy of the tasks list
 backup_tasks = tasks.copy()
+
+# Remove the "Deployment" task from the main list
 tasks.remove("Deployment")
+
+# Print the backup list (still contains "Deployment")
 print("Backup list:", backup_tasks)
+
+# Print the main list after removal (without "Deployment")
 print("Main list after removal:", tasks)
+
 
 #output
 # PS C:\Users\303379\day3_training> & C:/Users/303379/AppData/Local/Microsoft/WindowsApps/python3.13.exe c:/Users/303379/day3_training/task3_project_task_tracker.py

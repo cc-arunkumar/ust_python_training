@@ -20,18 +20,35 @@
 
 #Code
 
+# Create a list of sales amounts
 sales = [1200, 1500, 800, 2200, 1700, 950]
 
+# Calculate and print the total sales using sum()
 print("Total Sales:", sum(sales))
+
+# Calculate and print the average sale
+# sum(sales)/len(sales) → total sales divided by number of entries
+# round(..., 2) → rounds the result to 2 decimal places
 print("Average Sale:", round(sum(sales)/len(sales), 2))
 
+# Add a new sale amount (1100) to the list
 sales.append(1100)
+
+# Sort the sales list in ascending order
 sales.sort()
 print("Sorted Sales:", sales)
+
+# Print the top 3 sales (last 3 elements of the sorted list)
 print("Top 3 Sales:", sales[-3:])
+
+# Print the lowest 2 sales (first 2 elements of the sorted list)
 print("Lowest 2 Sales:", sales[:2])
 
+# Remove the first element from the list using pop(0)
+# This deletes the lowest sale after sorting
 sales.pop(0)
+
+# Print the updated sales list after removal
 print("Updated Sales:", sales)
 
 # output

@@ -16,10 +16,13 @@
 
 # code
 
-def efficency_Score(hours,task):
-    Efficiency=(task/hours)*10
-    return Efficiency
-print(efficency_Score(10,20))
+# Function to calculate employee efficiency score
+def efficency_Score(hours, task):
+    Efficiency = (task / hours) * 10   
+    return Efficiency   
+
+# Example call to the function and print the result
+print(efficency_Score(10, 20))
 
 # output
 # PS C:\Users\303379\day2_training> & C:/Users/303379/AppData/Local/Microsoft/WindowsApps/python3.13.exe c:/Users/303379/day2_training/task2.py

@@ -10,9 +10,18 @@
 
 #Code
 
-ids=[101,102,103,104,105,106]
-even_ids=list(filter(lambda X:X%2==0,ids))
+# Create a list of IDs
+ids = [101, 102, 103, 104, 105, 106]
+
+# Use the filter() function with a lambda expression to select only even IDs
+# lambda X: X % 2 == 0 → returns True if X is divisible by 2 (i.e., even), otherwise False
+# filter() applies this condition to each element in 'ids'
+# list() converts the filtered result into a list
+even_ids = list(filter(lambda X: X % 2 == 0, ids))
+
+# Print the list of even IDs
 print(even_ids)
+
 
 #output
 # PS C:\Users\Administrator\Desktop\Training\vinutha\ust_python_training> & "C:/Program Files/Python314/python3.14t.exe" c:/Users/Administrator/Desktop/Training/vinutha/ust_python_training/Vinutha/day2/lambda_task2_even_num_list.py

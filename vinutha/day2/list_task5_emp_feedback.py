@@ -32,21 +32,36 @@
 
 #Code
 
+# Ratings collected for two weeks
 week1 = [4, 3, 5, 4, 2]
 week2 = [5, 4, 3, 5, 4]
 
+# Combine both weeks' ratings into a single list
 all_ratings = week1 + week2
+
+# Print the total number of ratings
 print("Total Ratings:", len(all_ratings))
+
+# Calculate and print the average rating (rounded to 2 decimal places)
 print("Average Rating:", round(sum(all_ratings)/len(all_ratings), 2))
 
+# Sort the ratings in ascending order
 all_ratings.sort()
 print("Sorted Ratings:", all_ratings)
 
+# Filter ratings to include only values greater than or equal to 3
 filtered = [r for r in all_ratings if r >= 3]
 print("Filtered Ratings:", filtered)
+
+# Print the highest rating from the filtered list
 print("Highest:", max(filtered))
+
+# Print the lowest rating from the filtered list
 print("Lowest:", min(filtered))
+
+# Calculate and print the average of the filtered ratings
 print("Final Average:", round(sum(filtered)/len(filtered), 2))
+
 
 
 # output

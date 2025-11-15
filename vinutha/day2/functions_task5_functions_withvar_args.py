@@ -29,11 +29,16 @@
 
 #code
 
+# Function to calculate efficiency score based on tasks completed and duration (hours worked)
 def compute_efficiency(tasks, duration):
-    return (tasks / duration) * 10
+    return (tasks / duration) * 10   # Formula for efficiency
 
+# Function to display an employee's performance report
 def show_report(emp, dept, score):
+    # Print employee details and efficiency score (rounded to 1 decimal place)
     print(f"Employee: {emp} | Department: {dept} | Efficiency: {round(score, 1)}")
+    
+    # Categorize performance based on efficiency score
     if score > 25:
         print("Excellent performance.")
     elif 15 <= score <= 25:
@@ -41,21 +46,26 @@ def show_report(emp, dept, score):
     else:
         print("Needs improvement.")
 
+# Function to summarize team performance based on multiple efficiency scores
 def team_summary(*values):
-    if len(values) == 0:
+    if len(values) == 0:   # Handle case when no scores are provided
         print("No data available.")
         return
-    avg_score = sum(values) / len(values)
+    avg_score = sum(values) / len(values)   # Calculate average efficiency score
     print(f"Average Team Efficiency: {round(avg_score, 1)}")
+    
+    # Categorize team performance based on average score
     if avg_score > 25:
         print("Team performed above expectations.")
     else:
         print("Team needs improvement.")
 
+# Program introduction
 print("Welcome to UST Employee Work Report System")
 print("This program helps HR calculate employee performance easily.")
 print("Current Active Project: UST Cloud Migration")
 
+# Calculate efficiency scores for employees
 score_asha = compute_efficiency(13, 5)
 show_report("Asha", "Finance", score_asha)
 
@@ -65,6 +75,7 @@ show_report("Rahul", "IT", score_rahul)
 score_sneha = compute_efficiency(10, 7)
 show_report("Sneha", "HR", score_sneha)
 
+# Display team performance summary
 team_summary(score_asha, score_rahul, score_sneha)
 
 #output

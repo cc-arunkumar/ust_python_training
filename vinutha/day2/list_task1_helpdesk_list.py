@@ -29,14 +29,31 @@
 
 # Code
 
-tickets=["Email not working", "VPN issue", "System slow", "Password reset"]
-tickets.append("Printer not responding" )
+# Create a list of support tickets
+tickets = ["Email not working", "VPN issue", "System slow", "Password reset"]
+
+# Add a new ticket to the list using append()
+tickets.append("Printer not responding")
+
+# Remove a specific ticket from the list using remove()
 tickets.remove("System slow")
+
+# Add multiple new tickets at once using extend()
 tickets.extend(["Wi-Fi disconnected", "Laptop battery issue"])
-open_ticket=len(tickets)
-print("Total open tickets:",open_ticket)
+
+# Count the total number of open tickets using len()
+open_ticket = len(tickets)
+
+# Print the total number of open tickets
+print("Total open tickets:", open_ticket)
+
+# Print a header before showing the organised list of tickets
 print("Organised Tickets:")
+
+# Sort the tickets alphabetically using sort()
 tickets.sort()
+
+# Loop through the sorted list and print each ticket one by one
 for i in tickets:
     print(i)
 
