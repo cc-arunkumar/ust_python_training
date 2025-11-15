@@ -6,7 +6,6 @@ Each tuple contains:
 (employee_id, employee_name, days_present)
 """
 
-
 attendance = (
  ("E101", "John", 5),
  ("E102", "Priya", 3),
@@ -14,17 +13,20 @@ attendance = (
  ("E104", "Neha", 2)
 )
 
+# Employees with more than 4 days present
 for emp_id, name, days in attendance:
     if days>4:
         print(name)
 
+# Count employees with less than 4 days present
 emp_lessthan_4=0
 for emp_id, name, days in attendance:
     if days<4:
         emp_lessthan_4+=1
 
-print(f"{emp_lessthan_4} employees have Less than  4 day")
+print(f"{emp_lessthan_4} employees have Less than 4 day")
 
+# Employee with highest attendance
 high_emp_name=""
 high_emp_days=0
 
@@ -33,14 +35,12 @@ for emp_id, name, days in attendance:
         high_emp_days=days
         high_emp_name=name
 
-
 print(f"Employee with highest attendance: {high_emp_name} ({high_emp_days}) days")
-
 
 # sample output
 
 """
 John
-2 employees have Less than  4 day
+2 employees have Less than 4 day
 Employee with highest attendance: John (5) days
 """

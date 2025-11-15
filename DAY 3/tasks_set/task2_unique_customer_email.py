@@ -7,17 +7,19 @@ customers.
 
 """
 
+# Sets storing email addresses from two campaigns
 campaign_A = {"john@ust.com", "priya@ust.com", "amit@ust.com", "rahul@ust.com"}
 campaign_B = {"neha@ust.com", "amit@ust.com", "priya@ust.com", "meena@ust.com"}
 
-#unique email
+# All unique emails from both campaigns
 unique_emails=campaign_A.union(campaign_B)
 print(f"All Unique Emails: {unique_emails}")
 
+# Emails present in both campaigns
 both_campaign=campaign_A.intersection(campaign_B)
 print(both_campaign)
 
-#difference
+# Emails only in Campaign A
 only_campaignA=campaign_A.difference(campaign_B)
 print(only_campaignA)
 

@@ -17,6 +17,7 @@ Finance needs to:
 5. Find all unique categories claimed by employees company-wide
 """
 
+# List of tuples containing claim data (Employee ID, Claim ID, Amount, Category, Date)
 claims_data=[
 ("E101","C001",3200,"Travel","2025-11-02"),
 ("E101","C002",1800,"Food","2025-11-03"),
@@ -26,29 +27,42 @@ claims_data=[
 ("E101","C006",4200,"Hotel","2025-11-05")
 ]
 
+# Dictionary to store claims organized by employee
 claims_by_emp={}
+
+# Set to track unique claim IDs to avoid duplicates
 unique_ids=set()
 
+# Process each claim in the data
 for emp,claim,amt,cat,date in claims_data:
+    # Only process if claim ID is not already seen
     if claim not in unique_ids:
         unique_ids.add(claim)
+        # Initialize employee entry if not present
         if emp not in claims_by_emp:
             claims_by_emp[emp]={"claims":[],"total":0}
+        # Add claim details to employee's list of claims
         claims_by_emp[emp]["claims"].append((claim,amt,cat,date))
+        # Update total claimed amount for the employee
         claims_by_emp[emp]["total"]+=amt
 
-
+# Set to store all unique categories company-wide
 categories=set()
 
+# Collect all unique categories from all employee claims
 for emp,data in claims_by_emp.items():
     for c in data["claims"]:
         categories.add(c[2])
 
+# Print total claimed amount per employee
 for emp,data in claims_by_emp.items():
     print(f"{emp} → Total ₹{data['total']}")
 
+# Identify employees with total claims exceeding ₹10,000
 high_claims=[emp for emp,data in claims_by_emp.items() if data["total"]>10000]
 print("Employees with total > ₹10000:",high_claims)
+
+# Print all unique categories claimed
 print("Unique Categories:",categories)
 
 

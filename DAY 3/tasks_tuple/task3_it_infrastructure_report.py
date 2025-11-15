@@ -1,65 +1,31 @@
 """
-Task 3:IT Infrastructure Report
+Task 3: IT Infrastructure Report
 Scenario:
-You have nested tuples representing company servers and their configuration
-details.
-
-Each tuple in the list looks like:
+Nested tuples represent company servers and their configuration details.
+Each tuple:
 (server_name, (ip_address, cpu_usage%, status))
-Example:
-servers = (
- ("AppServer1", ("192.168.1.10", 65, "Running")),
- ("DBServer1", ("192.168.1.11", 85, "Running")),
- ("CacheServer", ("192.168.1.12", 90, "Down")),
- ("BackupServer", ("192.168.1.13", 40, "Running"))
-)
-
 """
 
+servers=(("AppServer1",("192.168.1.10",65,"Running")),
+         ("DBServer1",("192.168.1.11",85,"Running")),
+         ("CacheServer",("192.168.1.12",90,"Down")),
+         ("BackupServer",("192.168.1.13",40,"Running")))
 
-servers = (
- ("AppServer1", ("192.168.1.10", 65, "Running")),
- ("DBServer1", ("192.168.1.11", 85, "Running")),
- ("CacheServer", ("192.168.1.12", 90, "Down")),
- ("BackupServer", ("192.168.1.13", 40, "Running"))
-)
+high_cpu_usage=0  # Track highest CPU usage
+high_cpu_server=""  # Server with highest CPU
+high_cpu_list=[]  # List of servers with CPU > 80%
 
-
-high_cpu_usage=0
-high_cpu_server=""
-high_cpu_list=[]
-
-for server_name, (ip,cpu,status) in servers:
-    if cpu>high_cpu_usage:
-        high_cpu_usage=cpu 
+for server_name,(ip,cpu,status) in servers:
+    if cpu>high_cpu_usage:  # Update highest CPU server
+        high_cpu_usage=cpu
         high_cpu_server=server_name
-
-    # Servers running
-    if status=="Running":
+    if status=="Running":  # Print running servers
         print(server_name)
-
-    # CPU ABOVE 80%
-    if cpu>80:
+    if cpu>80:  # Track high CPU servers
         high_cpu_list.append(f"{server_name} ({cpu}%)")
+    if status=="Down":  # Alert for down server
+        print(f"ALERT: {server_name} is down at {ip}")
 
-    # SERVER DOWN 
-    if status=="Down":
-        print(f"ALERT: CacheServer is down at {ip}")
-
-if high_cpu_list:
-    print("High CPU Alert: " + " | ".join(high_cpu_list))
-# HIGH CUP USAGE
-print(f"Server with the highest CPU usage {high_cpu_server}")        
-
-
-# sample output
-
-"""
-AppServer1
-DBServer1
-ALERT: CacheServer is down at 192.168.1.12
-BackupServer
-High CPU Alert: DBServer1 (85%) | CacheServer (90%)
-Server with the highest CPU usage CacheServer
-
-"""
+if high_cpu_list:  # Print all high CPU servers
+    print("High CPU Alert: "+" | ".join(high_cpu_list))
+print(f"Server with the highest CPU usage {high_cpu_server}")  # Highest CPU server
