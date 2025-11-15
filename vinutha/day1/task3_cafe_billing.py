@@ -51,40 +51,49 @@
 
 # Code
 
-total_amount=0
-item_count=0
+# Initialize total bill amount and item counter
+total_amount = 0
+item_count = 0
+
+# Run the program until user chooses to exit
 while True:
-    print("1.coffee=$25")
-    print("2.sandwich=$50")
-    print("3.salad=$40")
-    print("4.juice=$30")
-    print("5.view bill")
-    print("exit")
-    choice=input("enter your choice:")
-    if choice=='1':
-        total_amount+=25
-        item_count+=1
+    # Display menu options
+    print("1. Coffee = $25")
+    print("2. Sandwich = $50")
+    print("3. Salad = $40")
+    print("4. Juice = $30")
+    print("5. View bill")
+    print("6. Exit")   # <-- corrected to show '6' for exit
+
+    # Take user input
+    choice = input("Enter your choice: ")
+
+    # Check which option user selected
+    if choice == '1':  # Coffee
+        total_amount += 25
+        item_count += 1
         print("Item added to bill")
-    elif choice=='2':
-        total_amount+=50
-        item_count+=1
+    elif choice == '2':  # Sandwich
+        total_amount += 50
+        item_count += 1
         print("Item added to bill")
-    elif choice=='3':
-        total_amount+=40
-        item_count+=1
+    elif choice == '3':  # Salad
+        total_amount += 40
+        item_count += 1
         print("Item added to bill")
-    elif choice=='4':
-        total_amount+=30
-        item_count+=1
+    elif choice == '4':  # Juice
+        total_amount += 30
+        item_count += 1
         print("Item added to bill")
-    elif choice=='5':
-        print(f"you odered {item_count} items")
-        print("total bill amount:{total_amount:.2f}")
-    elif choice=='6':
-        print("thank you for visiting\nUST cafeteria")
+    elif choice == '5':  # Show bill summary
+        print(f"You ordered {item_count} items")
+        # Use f-string correctly to display total amount
+        print(f"Total bill amount: {total_amount:.2f}")
+    elif choice == '6':  # Exit program
+        print("Thank you for visiting\nUST cafeteria")
         break
-    else:
-        print("invalid")
+    else:  # Invalid input
+        print("Invalid choice. Please try again.")
 
 #output
 # PS C:\Users\303379\day1_training> & C:/Users/303379/AppData/Local/Microsoft/WindowsApps/python3.13.exe c:/Users/303379/day1_training/task3.py

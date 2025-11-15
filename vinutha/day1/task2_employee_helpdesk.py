@@ -59,36 +59,45 @@
 
 # Code
 
-hardware=0
-software=0
-network=0
+# Initialize counters for each type of issue
+hardware = 0
+software = 0
+network = 0
+
+# Run the program until user chooses to exit
 while True:
-    print("1.raise hardware issue")
-    print("2.raise software issue")
-    print("3.raise network issue")
-    print("4.view total tickets raised")
-    print("5.exit")
-    choice=input("enter your choice:")
-    if choice=='1':
-        hardware+=1
-        print("hardware issue recorded IT team will respond soon")
-    elif choice=='2':
-        software+=1
-        print("software issue recorded IT team will respond soon")
-    elif choice=='3':
-        network+=1
-        print("network issue recorded IT team will respond soon")
-    elif choice=='4':
-        total=hardware+software+network
-        print("hardware tickets:",hardware)
-        print("software tickets:",software)
-        print("network tickets:",network)
-        print("total tickets raised:",total)
-    elif choice=='5':
-        print("existing helpdesk.\nthank you")
+    # Display menu options
+    print("1. Raise hardware issue")
+    print("2. Raise software issue")
+    print("3. Raise network issue")
+    print("4. View total tickets raised")
+    print("5. Exit")
+
+    # Take user input for choice
+    choice = input("Enter your choice: ")
+
+    # Check which option user selected
+    if choice == '1':  # Hardware issue
+        hardware += 1
+        print("Hardware issue recorded. IT team will respond soon.")
+    elif choice == '2':  # Software issue
+        software += 1
+        print("Software issue recorded. IT team will respond soon.")
+    elif choice == '3':  # Network issue
+        network += 1
+        print("Network issue recorded. IT team will respond soon.")
+    elif choice == '4':  # Show ticket summary
+        total = hardware + software + network
+        print("Hardware tickets:", hardware)
+        print("Software tickets:", software)
+        print("Network tickets:", network)
+        print("Total tickets raised:", total)
+    elif choice == '5':  # Exit program
+        print("Exiting helpdesk.\nThank you.")
         break
-    else:
-        print("invalid")
+    else:  # Invalid input
+        print("Invalid choice. Please try again.")
+
 
 
 #Output

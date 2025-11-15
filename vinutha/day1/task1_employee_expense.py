@@ -57,38 +57,47 @@
 
 # Code Logic
 
-travel=0
-meals=0
-other=0
+# Initialize expense categories
+travel = 0
+meals = 0
+other = 0
+
+# Run the program until user chooses to exit
 while True:
+    # Display menu options
     print("Employee Expense System")
-    print("1.Enter Travel cost:")
-    print("2.Enter meals cost:")
-    print("3.Enter other cost:")
-    print("4.Total cost as of now:")
-    print("5.Exit")
-    choice= int(input("Enter your choice(1-5)"))
+    print("1. Enter Travel cost")
+    print("2. Enter Meals cost")
+    print("3. Enter Other cost")
+    print("4. Total cost as of now")
+    print("5. Exit")
+
+    # Take user choice
+    choice = int(input("Enter your choice (1-5): "))
+
+    # Match-case handles different options
     match choice:
-        case 1:
-            amount=float(input("Enter the travel cost:"))
-            travel=travel+amount
+        case 1:  # Travel expense
+            amount = float(input("Enter the travel cost: "))
+            travel = travel + amount
             print("Expenses added successfully")
-        case 2:
-            amount=float(input("Enter the meals cost:"))
-            meals=meals+amount
-            print("meals Cost added sucessful")
-        case 3:
-            amount=float(input("Enter other costs:"))
-            other=other+amount
-            print("miscell is added sucessfull")
-        case 4:
-            amount=travel+meals+other
-            print(f"Total amount so far:{amount:.2f}")
-        case 5:
-            print("ThankYou have a Great day")
+        case 2:  # Meals expense
+            amount = float(input("Enter the meals cost: "))
+            meals = meals + amount
+            print("Meals cost added successfully")
+        case 3:  # Other expense
+            amount = float(input("Enter other costs: "))
+            other = other + amount
+            print("Miscellaneous cost added successfully")
+        case 4:  # Show total so far
+            amount = travel + meals + other
+            print(f"Total amount so far: {amount:.2f}")
+        case 5:  # Exit program
+            print("Thank you! Have a great day")
             break
-        case default:
-            print("Invalid choice try in between 1-5")
+        case default:  # Default case for invalid input
+            print("Invalid choice, try between 1-5")
+
 
 
 #output
