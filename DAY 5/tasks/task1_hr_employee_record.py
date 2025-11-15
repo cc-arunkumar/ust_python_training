@@ -13,7 +13,7 @@ write , append , seek , etc.) while maintaining data consistency
 import os
 from datetime import datetime
 
-# File path for storing employee data
+# File path for storing the employee data
 EMP_FILE = "DAY 5/files/employe.txt"
 
 # Function to add a new employee
