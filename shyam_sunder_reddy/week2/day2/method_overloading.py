@@ -5,7 +5,6 @@ class Test:
     def add(self,a=0,b=0):
         print("two parameters: ",a+b)
     
-    
 
 t=Test()
 #t.add(10) # produces error
