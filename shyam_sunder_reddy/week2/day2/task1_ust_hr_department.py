@@ -32,6 +32,7 @@ class Employee:
         self._department=department
         #private
         self.__salary=salary
+        
     #The Class MUST include 3 methods:
     # �� get_salary()
     # Returns the private salary (because outside cannot access it directly)
@@ -44,10 +45,10 @@ class Employee:
     def set_salary(self,amount):
         if amount>0:
             self.__salary=amount
+            
     # �� show_info()
     # Prints name + department
     # But MUST NOT print salary directly (salary is private
-    
     def show_info(self):
         print("Name: ",self.name)
         print("Demaprtment: ",self._department)
