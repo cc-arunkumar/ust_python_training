@@ -39,7 +39,7 @@ surgeon=Surgeon("Raj",45,"Male","Cancer",320000,"Heart")
 surgeon.perform_surgery("Yes")
 surgeon.details()
 
-#Sample Execution
+#====================Sample output=================
 # Availability:  Yes
 # Surgeon name:  Raj
 # Age:  45

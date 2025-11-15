@@ -61,3 +61,21 @@ newQueue.peek()
 newQueue.printtheFunction()
 # print(newQueue)'
 print(newQueue.find_element(50))
+
+
+# ================sample-output====================
+# number pushed is 20
+# number pushed is 30
+# number pushed is 40
+# number pushed is 50
+# number pushed is 60
+# number pushed is 70
+# deleted element is 20
+# peek element is 30
+# 30
+# 40
+# 50
+# 60
+# 70
+# Element found at index 2
+# 2

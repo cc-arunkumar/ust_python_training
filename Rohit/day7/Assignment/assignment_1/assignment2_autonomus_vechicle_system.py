@@ -1,3 +1,9 @@
+# Task 2 — Autonomous Vehicle System
+# Domain: Automotive / AI
+# Business Requirement:
+# UST Mobility is building an AI vehicle platform.
+
+
 class Vehicle:
     def __init__(self,make,model,year):
         self.make=make
@@ -23,7 +29,7 @@ class AutonomousVehicle(Electric_vehichle):
         self.ai_version = ai_version
     
     def runPilot(self):
-        if self.ai_version=='yes':
+        if self.ai_version.lower()=="yes":
             print("yes")
         else:
             print("NOt i autopilot mode")
@@ -37,8 +43,15 @@ class SmartEV(AutonomousVehicle):
 
      
     
-vechicle = SmartEV("SUV","Seltos","2025","good","fine","NO")
+vechicle = SmartEV("SUV","Seltos","2025","good","fine","Yes")
+
 vechicle.runPilot()
 
 vechicle.show_info()   
 vechicle.charge_battery() 
+
+
+# ===========sample output===============
+# yes
+# SUV   Seltos   2025
+# Yes

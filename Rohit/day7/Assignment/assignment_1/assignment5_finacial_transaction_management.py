@@ -1,3 +1,9 @@
+# Financial Transaction Engine
+# Domain: Banking & Fintech
+# Business Requirement:
+# UST Finance Solutions team needs a transaction system
+
+
 class Transaction:
     def __init__(self, txn_id, amount, status="Pending"):
         self.txn_id = txn_id

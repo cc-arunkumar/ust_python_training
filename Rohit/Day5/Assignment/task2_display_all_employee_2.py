@@ -1,3 +1,6 @@
+# Display All Employees
+# Read and print all records neatly formatted.
+# Handle case when the file is empty.
 import os
 
 if os.path.exists("employee.txt"):

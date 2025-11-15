@@ -1,3 +1,10 @@
+# Search Employee by ID
+# Ask the user for an Employee ID.
+# Search the file line by line.
+# If found, display the employee details.
+# If not found, print a message “Employee not found.”
+
+
 import os
 
 e_id = "E101"

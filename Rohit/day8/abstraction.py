@@ -19,3 +19,9 @@ class Upipayment(Payment):
 
 cash_payment = CashPayment()
 print(cash_payment.pay_bill(5000))
+
+
+
+# =======sample output=============
+# Paying bill of amount 5000 using Cash 
+

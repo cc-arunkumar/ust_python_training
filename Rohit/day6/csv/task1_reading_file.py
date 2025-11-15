@@ -1,3 +1,28 @@
+# UST Healthcare (CSV Read / Write)
+
+# Task Requirements
+# 1. Read ust_healthcare_visits.csv with csv.DictReader .
+# 2. Basic validation / normalization:
+# Required fields: patient_id , name , visit_date , billed_amount , payment_status . If any
+# missing → skip that row (and print a short message).
+
+# Convert billed_amount to float (if conversion fails, skip row).
+# Trim whitespace from string fields.
+# Normalize payment_status to Title case (e.g., "pending" → "Pending" ).
+# Normalize follow_up_required to "Yes" or "No" (treat empty as "No" ).
+
+
+# 3. Create outputs:
+# pending_payments.csv : all cleaned columns for rows where payment_status != "Paid" .
+# patient_summary.csv : aggregated per patient_id with columns:
+# patient_id, name, total_visits, total_billed, has_pending_payment
+# total_billed formatted with 2 decimals (e.g., 7500.00 ).
+# has_pending_payment = "Yes" if any visit for that patient is not Paid;
+# otherwise "No" .
+# 4. Console summary: print counts: processed rows, skipped rows, rows in each
+# output.
+
+
 import csv
 
 input_file = 'ust_healthcare_visits.csv'

@@ -1,3 +1,8 @@
+# Generate Department-wise Summary Report
+# Read all employee records.
+# Count how many employees work in each department.
+# Calculate total and average salary per department.
+# Write the summary to a new file called report.txt .
 import os
 
 employees = {}

@@ -33,7 +33,7 @@ discount_rate=float(input("Enter the discount rate: "))
 oep=OnlineExclusiveProduct(product_id,name,price,discount_rate)
 print("Discount price: Rs",oep.apply_discount())
 
-#Sample Execution
+#================Sample output=================
 # Enter product ID: 101
 # Enter the product name: water bottle
 # Enter price: Rs78

@@ -1,3 +1,16 @@
+# Design Python classes that model real-world enterprise systems using 
+# inheritance appropriately.
+# Each problem describes a business scenario — you must identify the right
+# inheritance type and implement it cleanly.
+
+
+
+# Task 1 — Human Resource Management System
+# (HRMS)
+# Domain: Corporate HR / Payroll
+# Business Requirement:
+# UST’s HR system needs to manage different types of employees.
+
 from typing import List
 
 class Employee:
@@ -35,5 +48,14 @@ class DevManagers (Developers,Managers):
 
 # emp1 = Managers("3305", "Rohit", "123000", ["Java", "Python"])
 emp1 = DevManagers(5,"IT",{"Java", "Python"})
+print("Showing information")
 emp1.show_team_info()
+print("skills")
 emp1.show_skills()
+
+
+# ==============sample- output===================
+# Showing information
+# 5   IT
+# skills
+# Skills: Java, Python

@@ -1,3 +1,7 @@
+# Update Employee Salary
+# Text File Task 3
+# Ask for Employee ID and new salary.
+# Read all lines, modify the correct line, and rewrite the file with the updated data
 import os
 
 e_id = "E101"

@@ -1,3 +1,14 @@
+# Scenario: UST HR Department – Employee Salary
+# Management
+# UST wants a very small internal Python module that handles employee salary
+# safely.
+# Why?
+# Because salary is sensitive, and HR must protect it so:
+# nobody can set salary to a negative number
+# nobody can view salary without permission
+# the internal raw salary value must not be exposed directly outside the class
+
+
 class Employee:
     def __init__(self):
        self.name = "Rohit"
@@ -26,3 +37,9 @@ try:
 except AttributeError:
     print("Trying to access private salary directly -> ERROR",AttributeError)
     
+    
+# ================sample output==============
+# employee name  Rohit
+# employee designation  SDE-1
+# 75000
+# Trying to access private salary directly -> ERROR <class 'AttributeError'>

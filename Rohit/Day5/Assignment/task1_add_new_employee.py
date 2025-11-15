@@ -1,3 +1,9 @@
+# Add New Employee
+# Ask the user to enter new employee details.
+# Append this record to the existing employees.txt file.
+# Validate that the EmployeeID is unique (no duplicates).
+# Example input:
+
 import os
 
 print("Enter employee details: ID, NAME, DESIGNATION, SALARY, STARTING DATE")
