@@ -21,10 +21,13 @@ class CashPayment(Payment):
 
 cc=CardPayment()
 cc.pay_bill(3000)
+
 oc=OnlinePayment()
 oc.pay_bill(5000)
+
 upi=UpiPayment()
 upi.pay_bill(8000)
+
 cash=CashPayment()
 cash.pay_bill(90)
 
