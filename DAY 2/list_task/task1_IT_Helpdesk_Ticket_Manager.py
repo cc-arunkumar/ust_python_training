@@ -22,3 +22,21 @@ print(tickets)
 for i in range(len(tickets)):
     print(tickets[i])
 
+
+
+"""
+SAMPLE OUTPUT
+
+['Email not working', 'VPN issue', 'System slow', 'Password reset', 'Printer not responding']
+['Email not working', 'VPN issue', 'Password reset', 'Printer not responding']
+['Email not working', 'VPN issue', 'Password reset', 'Printer not responding', 'Wi-Fi disconnected', 'Laptop battery issue']
+6
+['Email not working', 'Laptop battery issue', 'Password reset', 'Printer not responding', 'VPN issue', 'Wi-Fi disconnected']
+Email not working
+Laptop battery issue
+Password reset
+Printer not responding
+VPN issue
+Wi-Fi disconnected
+
+"""

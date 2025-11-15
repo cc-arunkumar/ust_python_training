@@ -11,13 +11,13 @@ It should just return the value to the main program.
 """
 
 
-def current_project_name():
-    return "UST Cloud Migration"
+def current_project_name():   # Function to return current active project name
+    return "UST Cloud Migration"   # Return fixed project name
 
-print(current_project_name())
+print(current_project_name())   # Print the returned project name
+
 
 # SAMPLE OUTPUT
  
  
 """UST Cloud Migration"""
-

@@ -14,11 +14,11 @@ It should only display the message and not return anything
 
 """
 
-def welcome():
-    print("Welcome to UST EMployee Work Report System")
-    print("This Program helps HR Calculate employee performance salary")
+def welcome():   # Function to display welcome message
+    print("Welcome to UST EMployee Work Report System")   # Print main welcome line
+    print("This Program helps HR Calculate employee performance salary")   # Print description message
 
-welcome()
+welcome()   # Call the function to display the welcome message
 
 
 # SAMPLE OUTPUT

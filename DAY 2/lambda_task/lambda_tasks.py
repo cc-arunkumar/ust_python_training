@@ -8,8 +8,8 @@ Write a lambda function that takes a salary as input and returns the salary + 10
 """
 
 print("Calculate Bonus for Employees")
-bonus_for_employees= lambda salary: salary+salary*0.1
-print(bonus_for_employees(5000))
+bonus_for_employees= lambda salary: salary+salary*0.1   # Lambda to calculate salary + 10% bonus
+print(bonus_for_employees(5000))   # Test the lambda with a salary of 5000
 
 
 """
@@ -23,8 +23,9 @@ Use a lambda function with the filter() method to select even IDs.
 """
 
 employee_ids=[101,102,103,104,105,106]
-even_ids=list(filter(lambda id : id%2==0,employee_ids))
-print(even_ids)
+even_ids=list(filter(lambda id : id%2==0,employee_ids))   # Filter employee IDs that are even
+print(even_ids)   # Print the filtered list
+
 
 """
 You have a list of employees with their years of experience, and you need to sort them by experience in ascending order.
@@ -42,8 +43,9 @@ employees=[
     ("Divya",5)
 ]
 
-employees.sort(key=lambda x:x[1])
-print(employees)
+employees.sort(key=lambda x:x[1])   # Sort employees by years of experience (second element)
+print(employees)   # Print sorted list
+
 
 """
 Task 4: Categorize Age Groups
@@ -60,9 +62,9 @@ Use a lambda with conditional expressions.
 
 """
 
-age=int(input("Enter Your Age: "))
-designation=lambda a: "Junior" if a < 30 else "Mid-Level" if a <= 45 else "Senior"
-print(designation(age))
+age=int(input("Enter Your Age: "))   # Input age
+designation=lambda a: "Junior" if a < 30 else "Mid-Level" if a <= 45 else "Senior"   # Lambda to classify age
+print(designation(age))   # Print the classification
 
 
 
@@ -76,7 +78,7 @@ Use a lambda to merge them into a single formatted string.
 names=["Ajth","Gowtham","Virat"]
 departments=["Racing","Work","Sports"]
 
-print(list(map(lambda name,dep : f"{name} works in {dep} department",names,departments)))
+print(list(map(lambda name,dep : f"{name} works in {dep} department",names,departments)))   # Merge lists using map + lambda
 
 
 """

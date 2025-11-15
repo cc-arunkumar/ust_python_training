@@ -15,13 +15,13 @@ It should not print inside the function.
 """
 
 
-def calculate_efficiney_score(tasks_completed,hrs_worked):
-    Efficiency=(tasks_completed/hrs_worked)*10
-    return Efficiency
+def calculate_efficiney_score(tasks_completed,hrs_worked):   # Function to calculate efficiency
+    Efficiency=(tasks_completed/hrs_worked)*10   # Calculate efficiency using formula
+    return Efficiency   # Return calculated efficiency to caller
 
-tasks_completed=int(input("Enter Taks COmpleted: "))
-hrs_worked=int(input("Total Hours Worked: "))
-print(calculate_efficiney_score(tasks_completed,hrs_worked))
+tasks_completed=int(input("Enter Taks COmpleted: "))   # Input tasks completed
+hrs_worked=int(input("Total Hours Worked: "))   # Input hours worked
+print(calculate_efficiney_score(tasks_completed,hrs_worked))   # Call function and print result
 
 
 # SAMPLE OUTPUT

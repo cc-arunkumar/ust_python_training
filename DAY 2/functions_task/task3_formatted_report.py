@@ -21,26 +21,26 @@ This function should not return any value — it only displays output.
 """
 
 
-def calculate_efficiney_score(tasks_completed,hrs_worked):
-    Efficiency=(tasks_completed/hrs_worked)*10
-    return Efficiency
+def calculate_efficiney_score(tasks_completed,hrs_worked):   # Function to calculate efficiency score
+    Efficiency=(tasks_completed/hrs_worked)*10   # Compute efficiency using formula
+    return Efficiency   # Return the score to caller
 
 
-def calculate_efficiency(emp_name,dep_name,eff_score):
-    if eff_score>25:
-        print("Excellent Performance")
-    elif eff_score>15:
-        print("Good Peformance")
-    else : print("Needs Improvement")
+def calculate_efficiency(emp_name,dep_name,eff_score):   # Function to display employee report
+    if eff_score>25:   # Check if efficiency >25
+        print("Excellent Performance")   # Print excellent performance
+    elif eff_score>15:   # Check if efficiency between 15 and 25
+        print("Good Peformance")   # Print good performance
+    else : print("Needs Improvement")   # Print needs improvement for lower efficiency
 
-emp_name=input("Enter name: ")
-dep_name=input("Enter Department: ")
-tasks_completed=int(input("Enter Taks COmpleted: "))
-hrs_worked=int(input("Total Hours Worked: "))
+emp_name=input("Enter name: ")   # Input employee name
+dep_name=input("Enter Department: ")   # Input department name
+tasks_completed=int(input("Enter Taks COmpleted: "))   # Input tasks completed
+hrs_worked=int(input("Total Hours Worked: "))   # Input hours worked
 
-eff_score=calculate_efficiney_score(tasks_completed,hrs_worked)
+eff_score=calculate_efficiney_score(tasks_completed,hrs_worked)   # Calculate efficiency
 
-calculate_efficiency(emp_name,dep_name,eff_score)
+calculate_efficiency(emp_name,dep_name,eff_score)   # Display employee report
 
 
 # SAMPLE OUTPUT
