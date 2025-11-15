@@ -1,5 +1,6 @@
 from abc import ABC,abstractmethod
 
+#class with abstract method
 class ServiceRequest(ABC):
     def __init__(self,request_id,requested_by,priority):
         self.request_id = request_id
@@ -14,6 +15,7 @@ class ServiceRequest(ABC):
         print(f"Requested by : ",self.requested_by)
         print(f"Priority : ",self.priority)
         
+# inherting abstract class
 class ITSupportRequest(ServiceRequest):
     def __init__(self, request_id, requested_by, priority):
         super().__init__(request_id, requested_by, priority)
@@ -25,6 +27,8 @@ class ITSupportRequest(ServiceRequest):
         print("Issue resolved")
         print("")
         
+
+# inherting abstract class
 class HRDocumentRequest(ServiceRequest):
     def __init__(self, request_id, requested_by, priority):
         super().__init__(request_id, requested_by, priority)
@@ -35,6 +39,8 @@ class HRDocumentRequest(ServiceRequest):
         print("Sending via email")
         print("")
 
+
+# inherting abstract class
 class FacilityRequest(ServiceRequest):
     def __init__(self, request_id, requested_by, priority):
         super().__init__(request_id, requested_by, priority)
@@ -46,6 +52,8 @@ class FacilityRequest(ServiceRequest):
         print("Job completed")
         print("")
 
+
+# inherting abstract class
 class SoftwareAccessRequest(ServiceRequest):
     def __init__(self, request_id, requested_by, priority):
         super().__init__(request_id, requested_by, priority)

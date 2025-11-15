@@ -31,6 +31,7 @@
 # Errors (if any)
 # Print sample processed claims
 
+# Actual dataset
 claims = [
  {"claim_id": "C1001", "employee": "Arun", "type": "Travel", "amount": "1500", "days": "3"},
  {"claim_id": "C1002", "employee": "Riya", "type": "Meals", "amount": "abc", "days": "1"},
@@ -43,11 +44,11 @@ claims = [
  {"claim_id": "C1006", "employee": "Sona", "type": "Accommodation", "amount": "3000", "days": "two"}, # days invalid
  {"claim_id": "C1007", "employee": "Anil", "type": "Travel", "amount": "0", "days": "1"},
 ]
-
+# Initializing global variables
 processed = {}
 skipped = []
 errors = []
-
+# Creating custom exceptions
 class MissingFieldError(Exception):
     pass
 class InvalidExpenseTypeError(Exception):
@@ -55,23 +56,29 @@ class InvalidExpenseTypeError(Exception):
 class DuplicateClaimError(Exception):
     pass
 
+# defining validation function as per the requirements
 def Validation(row):
     required_fields = [ "claim_id" , "employee" , "type" , "amount" , "days" ]
     allowed_types = {"Travel", "Meals", "Accommodation"}
     per_day=0
     try:
         for fields in required_fields:
+            # checking field exists or not
             if fields in row and len(str(row[fields]).strip())>0 and row[fields]!=None:
+                # checking for duplication
                 if fields == "claim_id" and row[fields] in processed:
                     raise DuplicateClaimError(f"Claim id: {row[fields]} already exists!")
+                # checking for valid type
                 if fields == "type":
                     if row["type"].lower().capitalize() not in allowed_types:
                         raise InvalidExpenseTypeError("Invalid type for expense is provided!")
+                # Converting amount to float
                 if fields == "amount":
                     if int(row[fields])<=0:
                         print("Warning: amount is less than or equal to Zero")
                     elif(str(row[fields]).isdigit()):
                         row[fields]=float(int(row[fields]))
+                # Calculating perday after Converting it into int
                 if fields == "days":
                     if int(row[fields])>=1:
                         row[fields]=int(row[fields])
@@ -80,10 +87,13 @@ def Validation(row):
                         raise ZeroDivisionError("Days value is Zero!")
             else:
                 raise MissingFieldError
+    # If missing field exists
     except MissingFieldError:
         return False,f"{fields} was missing for this row"
+    # if invalid type exists
     except InvalidExpenseTypeError as e:
         return False,str(e)
+    # if duplication exists
     except DuplicateClaimError as e:
         return False,str(e)
     except TypeError as e:
@@ -93,9 +103,11 @@ def Validation(row):
     except ZeroDivisionError as e:
         return False,str(e)
     except Exception as e:
+        # if unexpected error forms appending in error list
         errors.append(str(e))
         return False,"Unexpected error occured!"
     else:
+        # Validation complete and pushed into precessed dictionary
         processed[row["claim_id"]] = {
             "employee":row["employee"],
             "type":row["type"],
@@ -114,6 +126,7 @@ for row in claims:
     if cond:
         print(statement)
     else:
+        # If any exception or validation is not complete then pushed into skipped list
         skipped.append((row.get("claim_id"),statement))
 
 print(f"Total claims : {len(claims)}")
