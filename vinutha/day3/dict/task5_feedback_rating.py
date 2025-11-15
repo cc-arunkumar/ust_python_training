@@ -24,6 +24,7 @@
 
 #Code:
 
+# Dictionary storing customer feedback ratings (1–5 scale)
 feedback = {
     "Arjun": 5,
     "Neha": 4,
@@ -31,17 +32,34 @@ feedback = {
     "Ravi": 4,
     "Fatima": 5
 }
-feedback["Priya"]=4
+
+# Add a new customer "Priya" with rating 4
+feedback["Priya"] = 4
+
+# Increase Ravi's rating by 1 only if it is less than 5
+# (ensures ratings never exceed the maximum value of 5)
 feedback["Ravi"] += 1 if feedback["Ravi"] < 5 else 0
+
+# Print customers who gave a rating of 5
 print("Customers with rating 5:")
 for customer, rating in feedback.items():
     if rating == 5:
         print(customer)
+
+# Calculate the average rating across all customers
 average_rating = sum(feedback.values()) / len(feedback)
 print("Average Rating:", round(average_rating, 2))
-feedback_status = {customer: ("Excellent" if rating >= 4 else "Needs Improvement") 
-                   for customer, rating in feedback.items()}
+
+# Create a new dictionary classifying feedback status:
+# "Excellent" for ratings >= 4, otherwise "Needs Improvement"
+feedback_status = {
+    customer: ("Excellent" if rating >= 4 else "Needs Improvement")
+    for customer, rating in feedback.items()
+}
+
+# Print the feedback status for each customer
 print("Feedback Status:", feedback_status)
+
 
 #output
 # PS C:\Users\303379\day3_training> & C:/Users/303379/AppData/Local/Microsoft/WindowsApps/python3.13.exe c:/Users/303379/day3_training/task5_Feedback_Rating.py

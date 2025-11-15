@@ -22,14 +22,28 @@
 
 #Code
 
+# Set of currently connected IP addresses
 connected_ips = {"10.0.0.1", "10.0.0.2", "10.0.0.5", "10.0.0.8", "10.0.0.9"}
+
+# Set of blacklisted IP addresses
 blacklisted_ips = {"10.0.0.2", "10.0.0.8", "10.0.0.10"}
-print("Blacklisted & Connected:",connected_ips.intersection(blacklisted_ips))
-print("Safe IPs:",connected_ips-blacklisted_ips)
+
+# Find IPs that are both connected and blacklisted (intersection of sets)
+print("Blacklisted & Connected:", connected_ips.intersection(blacklisted_ips))
+
+# Find safe IPs (connected but not blacklisted → difference of sets)
+print("Safe IPs:", connected_ips - blacklisted_ips)
+
+# Add a new IP ("10.0.0.9") to the blacklist
 blacklisted_ips.add("10.0.0.9")
+
+# Check again for any connected IPs that are now blacklisted
 for ip in connected_ips.intersection(blacklisted_ips):
     print(f"ALERT: Blocked IP detected - {ip}")
+
+# Print the total number of blacklisted IPs
 print("Total Blacklisted IPs:", len(blacklisted_ips))
+
 
 #output
 # PS C:\Users\303379\day3_training> & C:/Users/303379/AppData/Local/Microsoft/WindowsApps/python3.13.exe "c:/Users/303379/day3_training/task3_Security Team_IP Monitoring System.py"

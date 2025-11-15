@@ -19,16 +19,34 @@
 # 6. Print a final list of all employees with any type of access (sorted
 # alphabetically
 
+# Create sets of employees with access to production and test servers
 prod_access = {"John", "Priya", "Amit", "Neha"}
 test_access = {"Amit", "Neha", "Rahul", "Sita"}
-print("access to both servers:",prod_access.intersection(test_access))
-print("access to at least one server:",prod_access.union(test_access))
-print("only production access:",prod_access-test_access)
+
+# Find employees who have access to both servers (intersection of sets)
+print("access to both servers:", prod_access.intersection(test_access))
+
+# Find employees who have access to at least one server (union of sets)
+print("access to at least one server:", prod_access.union(test_access))
+
+# Find employees who have only production access (difference of sets)
+print("only production access:", prod_access - test_access)
+
+# Add a new employee "Ravi" to production access
 prod_access.add("Ravi")
+
+# Remove "Rahul" from test access (discard avoids error if element not present)
 test_access.discard("Rahul")
-list=list(prod_access.union(test_access))
+
+# Combine both sets into a list of all employees with access
+list = list(prod_access.union(test_access))
+
+# Sort the list alphabetically
 list.sort()
-print("Final Access List:",list)
+
+# Print the final organized access list
+print("Final Access List:", list)
+
 
 #output
 # ol.py

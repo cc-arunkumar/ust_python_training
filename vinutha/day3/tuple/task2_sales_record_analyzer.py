@@ -20,6 +20,7 @@
 
 #Code
 
+# Tuple of sales data: (Branch Name, Total Sales Amount)
 sales_data = (
     ("Chennai", 85000),
     ("Bangalore", 92000),
@@ -27,18 +28,22 @@ sales_data = (
     ("Pune", 102000),
     ("Delhi", 98000)
 )
+
+# Print branches with sales above ₹90,000
 print("Branches with sales above ₹90,000:")
 for branch_name, total_sales_amount in sales_data:
     if total_sales_amount > 90000:
         print(branch_name)
 
+# Calculate average sales across all branches
 No_sales = 0
 for branch_name, total_sales_amount in sales_data:
     No_sales += total_sales_amount
 avg = No_sales / len(sales_data)
 print("Average sales across all branches:", avg)
 
-min_sales = float('inf')
+# Find branch with lowest sales
+min_sales = float('inf')   # Start with infinity so any real sales value will be smaller
 min_branch = ""
 for branch_name, total_sales_amount in sales_data:
     if total_sales_amount < min_sales:
@@ -46,7 +51,10 @@ for branch_name, total_sales_amount in sales_data:
         min_branch = branch_name
 print(f"Branch with lowest sales: {min_branch} ({min_sales})")
 
+# Convert tuple to list to allow modification
 sales_list = list(sales_data)
+
+# Update Pune's sales to ₹105,000 using a while loop
 i = 0
 while i < len(sales_list):
     if sales_list[i][0] == "Pune":
@@ -54,9 +62,13 @@ while i < len(sales_list):
         break
     i += 1
 
+# Convert back to tuple for immutability
 updated_sales_data = tuple(sales_list)
+
+# Print updated sales data
 print("Updated Sales Data:")
 print(updated_sales_data)
+
 
 #output
 # PS C:\Users\303379\day3_training> & C:/Users/303379/AppData/Local/Microsoft/WindowsApps/python3.13.exe c:/Users/303379/day3_training/task2_Sales_Record_Analyzer.py

@@ -21,13 +21,24 @@
 
 #Code
 
+# Create two sets of customer emails for Campaign A and Campaign B
 campaign_A = {"john@ust.com", "priya@ust.com", "amit@ust.com", "rahul@ust.com"}
 campaign_B = {"neha@ust.com", "amit@ust.com", "priya@ust.com", "meena@ust.com"}
-print("All Unique Emails:",campaign_A.union(campaign_B))
-print("Common Customers:",campaign_A.intersection(campaign_B))
-print("Only Campaign A:",campaign_A-campaign_B)
-print("Only One Campaign:",campaign_A^campaign_B)
-print("Total Unique",len(campaign_A.union(campaign_B)))
+
+# Union → All unique emails from both campaigns (no duplicates)
+print("All Unique Emails:", campaign_A.union(campaign_B))
+
+# Intersection → Customers common to both campaigns
+print("Common Customers:", campaign_A.intersection(campaign_B))
+
+# Difference → Customers only in Campaign A (not in Campaign B)
+print("Only Campaign A:", campaign_A - campaign_B)
+
+# Symmetric Difference (^) → Customers in only one campaign (exclusive to A or B)
+print("Only One Campaign:", campaign_A ^ campaign_B)
+
+# Count total unique customers across both campaigns
+print("Total Unique", len(campaign_A.union(campaign_B)))
 
 #output
 # PS C:\Users\303379\day3_training> & C:/Users/303379/AppData/Local/Microsoft/WindowsApps/python3.13.exe c:/Users/303379/day3_training/task2_Unique_Customer_Email_Filter.py

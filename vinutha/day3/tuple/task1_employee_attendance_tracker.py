@@ -19,29 +19,35 @@
 
 #Code
 
+# Tuple of attendance records: (Employee ID, Name, Days Present)
 attendance = (
     ("E101", "John", 5),
     ("E102", "Priya", 3),
     ("E103", "Amit", 4),
     ("E104", "Neha", 2)
 )
+
+# Print employees who attended more than 4 days
 print("Employee attended more than 4:")
 for emp_id, name, days in attendance:
-    if days>=4:
+    if days >= 4:
         print(name)
 
-count=0
+# Count employees who attended less than 4 days
+count = 0
 for emp_id, name, days in attendance:
-    if days<4:
-        count+=1
-print("Employee present less than 4 days:",count)
+    if days < 4:
+        count += 1
+print("Employee present less than 4 days:", count)
 
+# Find the employee with the highest attendance
 max_days = 0
 max_employee = ""
 for emp_id, name, days in attendance:
     if days > max_days:
         max_days = days
         max_employee = name
+
 print(f"\nEmployee with highest attendance: {max_employee} ({max_days} days)")
 
 #output

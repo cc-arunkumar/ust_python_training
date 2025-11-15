@@ -21,20 +21,36 @@
 
 #Code
 
+# Create a dictionary of courses
+# Each course has a list of participants (employees enrolled)
 courses = {
- "Python": ["Arjun", "Neha", "Ravi"],
- "Java": ["Vikram", "Fatima"],
- "Cloud": ["Neha", "Ravi", "Priya"]
+    "Python": ["Arjun", "Neha", "Ravi"],
+    "Java": ["Vikram", "Fatima"],
+    "Cloud": ["Neha", "Ravi", "Priya"]
 }
+
+# Add a new course "Data Science" with participants
 courses.update({"Data Science": ["Arjun", "Vikram"]})
+
+# Add a new participant "Fatima" to the Python course
 courses["Python"].append("Fatima")
+
+# Remove participant "Neha" from the Cloud course
 courses["Cloud"].remove("Neha")
+
+# Print all courses with their participants
 for course, participants in courses.items():
     print(f"{course} → {participants}")
+
+# Create a set to store unique employees across all courses
 unique = set()
 for participants in courses.values():
+    # Update the set with participants from each course
     unique.update(participants)
+
+# Print the unique employees (no duplicates)
 print("Unique Employees:", unique)
+
 
 #output
 # PS C:\Users\303379\day3_training> & C:/Users/303379/AppData/Local/Microsoft/WindowsApps/python3.13.exe c:/Users/303379/day3_training/task4_online_Course.py

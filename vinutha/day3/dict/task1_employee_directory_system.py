@@ -19,17 +19,33 @@
 
 #code
 
+# Create a dictionary of employees with Employee ID as key and Name as value
 employees = {"E101": "Arjun", "E102": "Neha", "E103": "Ravi"}
+
+# Add new employees to the dictionary using update()
 employees.update({"E104": "Priya", "E105": "Vikram"})
+
+# Update the name of an existing employee (E103 → Ravi Kumar)
 employees["E103"] = "Ravi Kumar"
+
+# Remove an employee (E102) safely using pop()
+# The second argument 'None' ensures no error if the key doesn't exist
 employees.pop("E102", None)
+
+# Print the total number of employees in the dictionary
 print("Total number of employees:", len(employees))
+
+# Loop through the dictionary and print each employee's ID and name
 for emp_id, name in employees.items():
     print(f"Employee ID: {emp_id} → Name: {name}")
+
+# Search for a specific employee ID
 search_id = "E110"
 if search_id in employees:
+    # If found, print the employee details
     print(f"Employee ID: {search_id} → Name: {employees[search_id]}")
 else:
+    # If not found, display a message
     print("Employee not found")
 
 #output

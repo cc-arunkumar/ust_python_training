@@ -21,7 +21,7 @@
 # 5. Print the highest selling product name and its quantity.
 
 #Code
-
+# List of sales records: each tuple contains (Product, Quantity)
 sales = [
     ("Laptop", 3),
     ("Mobile", 5),
@@ -29,12 +29,25 @@ sales = [
     ("Mobile", 4),
     ("Laptop", 1)
 ]
+
+# Dictionary to store total quantity sold per product
 sales_summary = {}
+
+# Loop through each sale record
 for product, qty in sales:
+    # Add quantity to the product's total
+    # .get(product, 0) → returns current total if product exists, else 0
     sales_summary[product] = sales_summary.get(product, 0) + qty
+
+# Print the total quantity sold for each product
 for product, total_qty in sales_summary.items():
     print(f"{product} → {total_qty}")
+
+# Find the product with the highest total quantity sold
+# max(..., key=sales_summary.get) → returns the product with the largest value
 highest_selling = max(sales_summary, key=sales_summary.get)
+
+# Print the highest selling product and its quantity
 print(f"Highest selling product name: {highest_selling}, Quantity: {sales_summary[highest_selling]}")
 
 #Output

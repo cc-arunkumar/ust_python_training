@@ -19,17 +19,31 @@
 
 #code
 
+# Create a dictionary of departments
+# Each department has a nested dictionary with 'manager' and 'budget'
 departments = {
- "HR": {"manager": "Neha", "budget": 25},
- "IT": {"manager": "Arjun", "budget": 50},
- "Finance": {"manager": "Fatima", "budget": 40}
+    "HR": {"manager": "Neha", "budget": 25},
+    "IT": {"manager": "Arjun", "budget": 50},
+    "Finance": {"manager": "Fatima", "budget": 40}
 }
+
+# Add a new department "Operations" with its manager and budget
 departments.update({"Operations": {"manager": "Vikram", "budget": 35}})
+
+# Update the budget of the Finance department
 departments["Finance"]["budget"] = 45
+
+# Print the manager of the IT department
 print("IT Manager:", departments["IT"]["manager"])
+
+# Loop through all departments and print their details
 for dept, info in departments.items():
     print(f"{dept} | Manager: {info['manager']} | Budget: {info['budget']} Lakhs")
-total=sum(info["budget"] for info in departments.values())
+
+# Calculate the total company budget by summing all department budgets
+total = sum(info["budget"] for info in departments.values())
+
+# Print the total company budget
 print("Total Company Budget:", total, "Lakhs")
 
 #output
