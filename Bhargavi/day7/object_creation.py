@@ -1,3 +1,5 @@
+#The object creation demo
+#employee class
 class Employee:
     def __init__(self,name,age,salary):
         self.name=name
@@ -8,6 +10,7 @@ class Employee:
         self.salary +=increment
         print(f"Salary incremented Rs.{increment} for {self.name}")
 
+#taking input
 name=input("Enter Employee Name: ")
 age=int(input("ENter Employee age: "))
 salary=int(input("Enter Employee Salary: "))
@@ -25,4 +28,5 @@ print(f"Employee Salary:{emp1.salary}")
 # Enter Employee Salary: 3000
 # Employee Name:Bhargavi S
 # Employee age:12
+
 # Employee Salary:3000
