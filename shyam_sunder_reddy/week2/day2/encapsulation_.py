@@ -1,5 +1,4 @@
 class Employee:
-    
     def __init__(self):
         #public 
         self.name="shyam"
