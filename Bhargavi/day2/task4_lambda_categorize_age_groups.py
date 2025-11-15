@@ -1,7 +1,28 @@
 #Categorize Age Groups
 
+# Task 4: Categorize Age Groups
+# HR wants to classify employees as:
+# “Junior” → if age < 30
+# “Mid-level” → if 30 ≤ age < 45
+# “Senior” → if age ≥ 45
+# Use a lambda with conditional expressions.
+# Example Input:
+# age = 35
+
+# Expected Output:
+# "Mid-level"
+
+# Define age
 age = 60
+
+# Use a lambda function with conditional expressions to categorize age
+# If age < 30 → "Junior"
+# Else if age < 45 → "Mid-level"
+# Else → "Senior"
 category = (lambda x: "Junior" if x < 30 else "Mid-level" if x < 45 else "Senior")(age)
+
+# Print the category
 print(category)
 
+#output
 # Senior
