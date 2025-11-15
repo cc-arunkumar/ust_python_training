@@ -10,9 +10,11 @@ class Manager(Employee):
     def perform_task(self):
         print(" Manger : The manager manages the team")
 
+#child class of employee
 class Developer(Employee):
     pass
-     
+    
+#child class of employee    
 class Tester(Employee):
     def perform_task(self):
         print( " Tester : The tester corrects the code")
@@ -27,4 +29,5 @@ for e in emp:
 # Emploee : The manager, developer, and tester together complete the project
 #  Manger : The manager manages the team
 # Emploee : The manager, developer, and tester together complete the project    
+
 #  Tester : The tester corrects the code
