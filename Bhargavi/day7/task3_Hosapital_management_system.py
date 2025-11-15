@@ -16,75 +16,60 @@
 # Task: Design this in such a way that code duplication is minimized and every
 # class inherits logically. print complete details for a Surgeon (name, specialization, surgery_type,
 # etc.)
-# Task 4 — E-Commerce Platform (Inventory System)
 
-# Base class Person
+
+# person class
 class Person:
     def __init__(self, name, age, gender):
-        # Common attributes for all persons
         self.name = name
         self.age = age
         self.gender = gender
-    
-    # Display basic person information
+
     def show_info(self):
         print(f"Name: {self.name}, Age: {self.age}, Gender: {self.gender}")
 
-
-# Doctor class inherits from Person
+# Doctor class
 class Doctor(Person):
     def __init__(self, name, age, gender, specialization, consultation_fee):
-        # Initialize base class attributes
         Person.__init__(self, name, age, gender)
-        # Doctor-specific attributes
         self.specialization = specialization
         self.consultation_fee = consultation_fee
 
     def doctor_info(self):
-        # Display doctor details including specialization and fee
         self.show_info()
         print(f"Specialization: {self.specialization}, Consultation Fee: ₹{self.consultation_fee}")
 
-
-# Patient class inherits from Person
+# Patient class
 class Patient(Person):
     def __init__(self, name, age, gender, disease, room_number):
-        # Initialize base class attributes
         Person.__init__(self, name, age, gender)
-        # Patient-specific attributes
         self.disease = disease
         self.room_number = room_number
 
     def patient_info(self):
-        # Display patient details including disease and room number
         self.show_info()
         print(f"Disease: {self.disease}, Room Number: {self.room_number}")
 
-
-# Surgeon class inherits from Doctor
+# Surgeon class
 class Surgeon(Doctor):
     def __init__(self, name, age, gender, specialization, consultation_fee, surgery_type):
         Doctor.__init__(self, name, age, gender, specialization, consultation_fee)
-        # Surgeon-specific attribute
         self.surgery_type = surgery_type
-    
-    #display surgeon type
+
     def perform_surgery(self):
         print(f"{self.name} is performing a {self.surgery_type} surgery.")
-    
-    # Display complete surgeon details including doctor info and surgery type
+
     def surgeon_info(self):
         self.doctor_info()
         print(f"Surgery Type: {self.surgery_type}")
-
 
 # Create a Surgeon object
 s = Surgeon("Dr.Bhargavi", 100, "Female", "Cardiology", 1500, "stimulating")
 
 # Print complete details
 print("Surgeon Details:")
-s.surgeon_info()     
-s.perform_surgery()  # Shows surgery action
+s.surgeon_info()
+s.perform_surgery()
 
 
 

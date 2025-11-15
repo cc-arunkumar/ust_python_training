@@ -23,64 +23,77 @@
 # inheritance).
 
 
-# Base class
+# Base class Transaction
 class Transaction:
     def __init__(self, txn_id, amount, status):
+        # Common attributes for all transactions
         self.txn_id = txn_id
         self.amount = amount
         self.status = status
 
     def process(self):
+        # Display transaction details
         print(f"Processing transaction {self.txn_id} of ₹{self.amount} — Status: {self.status}")
 
-# CardTransaction class
+
+# CardTransaction class inherits from Transaction
 class CardTransaction(Transaction):
     def __init__(self, txn_id, amount, status, card_number):
+        # Initialize base class attributes
         Transaction.__init__(self, txn_id, amount, status)
+        # Card-specific attribute
         self.card_number = card_number
 
     def verify_card(self):
+        # Verify card details
         print(f"Verifying card number: {self.card_number}")
 
-# OnlinePayment class
+
+# OnlinePayment class inherits from Transaction
 class OnlinePayment(Transaction):
     def __init__(self, txn_id, amount, status, payment_gateway):
         Transaction.__init__(self, txn_id, amount, status)
+        # Online payment-specific attribute
         self.payment_gateway = payment_gateway
 
     def verify_gateway(self):
+        # Verify payment gateway
         print(f"Verifying payment gateway: {self.payment_gateway}")
 
-# InternationalCardPayment class (inherits from both)
+
+# InternationalCardPayment class inherits from both CardTransaction and OnlinePayment
 class InternationalCardPayment(CardTransaction, OnlinePayment):
     def __init__(self, txn_id, amount, status, card_number, payment_gateway):
         CardTransaction.__init__(self, txn_id, amount, status, card_number)
         OnlinePayment.__init__(self, txn_id, amount, status, payment_gateway)
 
     def show_details(self):
+        # Display complete international transaction details
         print(f"International Transaction ID: {self.txn_id}")
         print(f"Amount: ₹{self.amount}, Status: {self.status}")
         print(f"Card: {self.card_number}, Gateway: {self.payment_gateway}")
 
-# Test Transaction
+
+# ------------------- Testing -------------------
+
+# Base Transaction
 t = Transaction("E25", 5000, "Approved")
 t.process()
 print("\n---")
 
+# CardTransaction
 ct = CardTransaction("E31", 750677, "Approved", "1234-67777")
 ct.process()
 ct.verify_card()
-
 print("\n---")
 
-# Test olinePaymentOn
+# OnlinePayment
 op = OnlinePayment("E45", 1200, "Failed", "PayFast")
 op.process()
 op.verify_gateway()
-
 print("\n---")
 
-# Test InternationalCardPayment
+# InternationalCardPayment (multiple inheritance)
 icp = InternationalCardPayment("E45", 10000, "Processing", "888888-666666", "phonepay")
 icp.process()
 icp.verify_card()

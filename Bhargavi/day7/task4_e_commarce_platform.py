@@ -19,84 +19,64 @@
 # Enterprise Tech Systems – Inheritance Design Challenge 3
 # Ensure common attributes are reused and not redefined.
 
-# Base Product class
 class Product:
     def __init__(self, product_id, name, price):
-        # Common attributes for all products
         self.product_id = product_id
         self.name = name
         self.price = price
 
     def product_info(self):
-        # Display product details
         print(f"ID: {self.product_id}, Name: {self.name}, Price: ₹{self.price}")
 
-
-# Online-exclusive product mixin (adds discount feature)
+#  online-exclusive products
 class OnlineExclusiveProduct:
     def __init__(self, discount_rate):
-        # Discount percentage for online products
         self.discount_rate = discount_rate
 
     def apply_discount(self):
-        # Apply discount to price (requires self.price from Product)
         discounted_price = self.price * (1 - self.discount_rate / 100)
         print(f"Discounted Price: ₹{discounted_price:.2f}")
 
-
-# Electronics category inherits from Product
+# Electronics class
 class Electronics(Product):
     def __init__(self, product_id, name, price, brand, warranty_years):
         Product.__init__(self, product_id, name, price)
-        # Electronics-specific attributes
         self.brand = brand
         self.warranty_years = warranty_years
-    
-    # Display electronics details
+
     def electronics_info(self):
         self.product_info()
         print(f"Brand: {self.brand}, Warranty: {self.warranty_years} years")
 
-
-# Clothing category inherits from Product
+# Clothing class
 class Clothing(Product):
     def __init__(self, product_id, name, price, size, material):
         Product.__init__(self, product_id, name, price)
-        # Clothing-specific attributes
         self.size = size
         self.material = material
-    
-    # Display clothing details
+
     def clothing_info(self):
         self.product_info()
         print(f"Size: {self.size}, Material: {self.material}")
 
-
-# Groceries category inherits from Product
+# Groceries class
 class Groceries(Product):
     def __init__(self, product_id, name, price, expiry_date, is_organic):
         Product.__init__(self, product_id, name, price)
-        # Grocery-specific attributes
         self.expiry_date = expiry_date
         self.is_organic = is_organic
-    
-    # Display grocery details
+
     def grocery_info(self):
         self.product_info()
         print(f"Expiry Date: {self.expiry_date}, Organic: {'Yes' if self.is_organic else 'No'}")
 
-
-# Online-exclusive electronics using multiple inheritance
+# Online-exclusive electronics
 class OnlineElectronics(Electronics, OnlineExclusiveProduct):
     def __init__(self, product_id, name, price, brand, warranty_years, discount_rate):
-        # Initialize Electronics part
         Electronics.__init__(self, product_id, name, price, brand, warranty_years)
-        # Initialize OnlineExclusiveProduct part
         OnlineExclusiveProduct.__init__(self, discount_rate)
 
-
-# ------------------- Testing -------------------
-
+# Test Product
 print("Testing Product:")
 p = Product(1, "Generic Item", 100)
 p.product_info()
@@ -117,7 +97,6 @@ print("\nTesting OnlineExclusiveProduct (via OnlineElectronics):")
 oe = OnlineElectronics(103, "Laptop", 850000, "hp", 3, 45)
 oe.electronics_info()
 oe.apply_discount()
-
 
 #output
 # Testing Product:

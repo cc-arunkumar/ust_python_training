@@ -13,77 +13,64 @@
 # 4. The company wants to create a class SmartEV — a self-driving electric
 # vehicle.
 
-# Base class Vehicle
+#Base class
 class Vehicle:
     def __init__(self, made, model, year):
-        # Common attributes for all vehicles
         self.made = made
         self.model = model
         self.year = year
-    
-    # Display basic vehicle information    
+        
     def show_info(self):
         print(f"{self.year} {self.made} {self.model}")
         
         
-# ElectricalVehicle inherits from Vehicle
+#ElectricalVehicle
 class ElectricalVehicle(Vehicle):
     def __init__(self, made, model, year, battery_capacity, charge_status):
-        # Initialize base class attributes
         Vehicle.__init__(self, made, model, year)
         self.battery_capacity = battery_capacity
         self.charge_status = charge_status
-     
-    # Display charging status   
+        
     def charge_battery(self):
         print(f"Charging... Battery at {self.charge_status}% of {self.battery_capacity} kWh")
 
-
-# AutonomusVehicle inherits from Vehicle
+#AutonomusVehicle     
 class AutonomusVehicle(Vehicle):
-    def __init__(self, made, model, year, ai_version):
-        Vehicle.__init__(self, made, model, year)
-        self.ai_version = ai_version    
-    
-    # Display autopilot running info 
+    def __init__(self,made ,model,year,ai_version ):
+         Vehicle.__init__(self, made, model, year)
+         self.ai_version = ai_version    
+         
     def run_autopilot(self):
-        print(f"Autopilot running using AI version : {self.ai_version}")
+        print(f"autopilot running using AI version : {self.ai_version}")
         
         
-# SmartEV uses multiple inheritance (inherits both ElectricalVehicle and AutonomusVehicle)
-class SmartEV(ElectricalVehicle, AutonomusVehicle):
-    def __init__(self, made, model, year, battery_capacity, charge_status, ai_version):
-        # Initialize ElectricalVehicle part
-        ElectricalVehicle.__init__(self, made, model, year, battery_capacity, charge_status)
-        # Initialize AutonomusVehicle part
-        AutonomusVehicle.__init__(self, made, model, year, ai_version)
+#multiple inheritance      
+class SmartEV(ElectricalVehicle , AutonomusVehicle):
+    def __init__(self,made,model, year,battery_capacity,charge_status,ai_version):
+        ElectricalVehicle.__init__(self, made, model, year,battery_capacity,charge_status)
+        AutonomusVehicle.__init__(self, made, model, year,ai_version)
         
-
-# Create Vehicle object
-v1 = Vehicle("china", "Tar", 2003)   
+v1 = Vehicle("china" , "Tar", 2003)   
 v1.show_info()
-print("\n************")
+print("/n************")
 
-# Create ElectricalVehicle object
-e1 = ElectricalVehicle("India", "tata", 2005, 89, 67)   
+e1 = ElectricalVehicle("India" , "tata", 2005,89,67)   
 e1.show_info()
 e1.charge_battery()
-print("\n************")
+print("/n************")
 
-# Create AutonomusVehicle object
-a1 = AutonomusVehicle("paksithan", "van", 2008, 1)   
+a1 =AutonomusVehicle("paksithan", "van",2008,1)   
 a1.show_info()
 a1.run_autopilot()
-print("\n************")
+print("/n************")
 
-# Create SmartEV object (combination of EV + Autonomous)
-s1 = SmartEV("paksithan", "van", 2008, 56, 78, 1)   
+s1 = SmartEV("paksithan" , "van", 2008,56,78, 1)   
 s1.show_info()
 s1.run_autopilot()
 e1.charge_battery()
-print("\n************")
+print("/n************")
 
-#ouput
+#output
 # 2003 china Tar
 # /n************
 # 2005 India tata
