@@ -1,0 +1,53 @@
+Type 'help' for commands.
+lms> help
+Commands:
+  book add
+  book update <book_id>
+  book remove <book_id>
+  book get <book_id>
+  book list
+  book search title=<substr> author=<name> tag=<tag>
+  user add
+  user update <user_id>
+  user get <user_id>
+  user list
+  user deactivate <user_id>
+  user activate <user_id>
+  user ban <user_id>
+  borrow <user_id> <book_id>
+  return <transaction_id>
+  loans active
+  loans overdue
+  loans user <user_id>
+  report summary
+  report user <user_id>
+  save
+  help
+  exit
+lms> user get U2001
+Error: User not found.
+lms> user add 
+User ID: 123
+Name: sohaaan
+Email: soh@gmail.com
+Max Loans (default=5): 3
+User added.
+lms> user get 123
+123 | sohaaan | Email: soh@gmail.com | Status: active | Max Loans: 3
+lms> save 
+All data saved to CSV successfully.
+lms> user list
+123 | sohaaan | Email: soh@gmail.com | Status: active | Max Loans: 3
+lms> user add 
+User ID: 2003
+Name: asutosh 
+Email: asu@gmail.com
+Max Loans (default=5): 5
+User added.
+lms> save 
+All data saved to CSV successfully.
+lms> user list
+123 | sohaaan | Email: soh@gmail.com | Status: active | Max Loans: 3
+2003 | asutosh | Email: asu@gmail.com | Status: active | Max Loans: 5
+lms> exit
+Goodbye
