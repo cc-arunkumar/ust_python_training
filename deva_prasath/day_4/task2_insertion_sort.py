@@ -9,15 +9,24 @@ n=len(arr)
 #         j-=1
 # print(a)
 
-for i in range(1,len(arr)):
-    key=arr[i]
-    j=i-1
-    while j>=0 and key<arr[j]:
-        arr[j+1]=arr[j]
-        j-=1
-    arr[j+1]=key
+# List to be sorted
+arr = [50, 60, 100, 1, 4]
 
-print("Sorted array:",arr)
+# Insertion sort algorithm
+for i in range(1, len(arr)):
+    key = arr[i]  # Element to be inserted into the sorted part of the array
+    j = i - 1  # Index of the last element in the sorted part
+
+    # Shift elements to the right to make space for the key
+    while j >= 0 and key < arr[j]:
+        arr[j + 1] = arr[j]  # Move element to the right
+        j -= 1  # Move to the previous element
+
+    # Insert the key in its correct position
+    arr[j + 1] = key
+
+# Print the sorted array
+print("Sorted array:", arr)
 
 
 # Sample output

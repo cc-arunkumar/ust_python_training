@@ -2,18 +2,30 @@
 # UST’s HR team keeps employee details in a Python dictionary.
 # Each employee has a unique ID and name.
 
+# Dictionary storing employee IDs and names
+employees = {"E101": "Arjun", "E102": "Neha", "E103": "Ravi"}
 
-employees={"E101": "Arjun","E102": "Neha","E103": "Ravi"}
-employees["E104"]="Priya"
-employees["E105"]="Vikram"
-print(employees)
-employees["E103"]="Ravi Kumar"
+# Add new employees to the dictionary
+employees["E104"] = "Priya"
+employees["E105"] = "Vikram"
+print(employees)  # Print the updated employee dictionary
+
+# Update an employee's name
+employees["E103"] = "Ravi Kumar"
+
+# Remove an employee from the dictionary
 del employees["E102"]
+
+# Print the number of employees left in the dictionary
 print(len(employees))
-for key,value in employees.items():
-    print(f"Employee ID: {key}-->Name:{value}")
-if employees.get("E100")==None:
-    print("Employee not found") 
+
+# Iterate through the dictionary and print employee details
+for key, value in employees.items():
+    print(f"Employee ID: {key}-->Name: {value}")
+
+# Check if an employee with ID "E100" exists in the dictionary
+if employees.get("E100") == None:
+    print("Employee not found")  # Print message if employee is not found
 
 
 

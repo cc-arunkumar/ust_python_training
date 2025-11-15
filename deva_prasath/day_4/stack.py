@@ -1,57 +1,64 @@
+# Class representing a simple Stack
 class stack:
     def __init__(self):
-        self.a=[]
+        self.a = []  # Initialize the stack as an empty list
 
+    # Method to return the size of the stack
     def size(self):
         return len(self.a)
     
+    # Method to check if the stack is empty
     def is_empty(self):
-        if len(self.a)==0:
+        if len(self.a) == 0:
             return True
         else:
             return False
         
-    def push(self,item):
+    # Method to push an item onto the stack
+    def push(self, item):
         self.a.append(item)
 
+    # Method to get the top item of the stack without removing it
     def peek(self):
         if not self.is_empty():
-            return self.a[-1]
+            return self.a[-1]  # Return the last item (top of the stack)
         else:
             return "Stack is empty"
         
+    # Method to pop an item from the stack (remove the top item)
     def pop(self):
         if not self.is_empty():
-            self.a.remove(self.a[-1])
-    def search(self,ele):
+            self.a.remove(self.a[-1])  # Remove the top item (last item)
+
+    # Method to search for an element in the stack
+    def search(self, ele):
         if not self.is_empty():
             for i in self.a:
-                if i==ele:
-                    return i
+                if i == ele:
+                    return i  # Return the element if found
                 else:
-                    return "Not present" 
+                    return "Not present"  # Return "Not present" for other elements
 
+# Create a stack object
+obj = stack()
 
-            
-obj=stack()
-
-print("Is stack empty:",obj.is_empty())
-print("Length of the stack:",obj.size())
+# Test the stack functionality
+print("Is stack empty:", obj.is_empty())
+print("Length of the stack:", obj.size())
 obj.push(10)
-print("Adding element:",obj.peek())
-print("Length of the stack:",obj.size())
+print("Adding element:", obj.peek())
+print("Length of the stack:", obj.size())
 obj.push(20)
-print("Adding element:",obj.peek())
-print("Length of the stack:",obj.size())
+print("Adding element:", obj.peek())
+print("Length of the stack:", obj.size())
 obj.push(30)
-print("Adding element:",obj.peek())
-print("Length of the stack:",obj.size())
-print("Removing element:",obj.peek())
-popped=obj.pop()
-print("Length of the stack:",obj.size())
-print("Is stack empty:",obj.is_empty())
-print("Is 20 present:",obj.search(30))
-
+print("Adding element:", obj.peek())
+print("Length of the stack:", obj.size())
+print("Removing element:", obj.peek())
+popped = obj.pop()  # Pop the top element from the stack
+print("Length of the stack:", obj.size())
+print("Is stack empty:", obj.is_empty())
+print("Is 30 present:", obj.search(30))  # Check if 30 is present in the stack
 
 #Sample output
 # Is stack empty: True

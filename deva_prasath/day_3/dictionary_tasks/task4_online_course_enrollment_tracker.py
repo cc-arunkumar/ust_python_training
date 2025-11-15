@@ -1,26 +1,43 @@
 #online_course_enrollment_tracker
 # You are managing course enrollments for UST’s employee learning portal.
 # Each course has a name and a set of enrolled employees.
-
+# Dictionary storing courses and their enrolled students
 courses = {
- "Python": ["Arjun", "Neha", "Ravi"],
- "Java": ["Vikram", "Fatima"],
- "Cloud": ["Neha", "Ravi", "Priya"]
+    "Python": ["Arjun", "Neha", "Ravi"],
+    "Java": ["Vikram", "Fatima"],
+    "Cloud": ["Neha", "Ravi", "Priya"]
 }
-courses["Data Science"]=["Arjun", "Vikram"]
-print("Added Data science:",courses)
-for key,val in courses.items():
-    if key=="Python":
+
+# Add a new course with enrolled students
+courses["Data Science"] = ["Arjun", "Vikram"]
+print("Added Data Science:", courses)
+
+# Modify the courses:
+# Add "Fatima" to the Python course
+# Remove "Neha" from the Cloud course
+for key, val in courses.items():
+    if key == "Python":
         courses[key].append("Fatima")
-    if key=="Cloud":
+    if key == "Cloud":
         courses[key].remove("Neha")
-print("Added Fatima and removed Neha",courses)
-for key,val in courses.items():
-    print(f"{key}-->{val}")
-un=set()
+
+# Print the updated courses after modifications
+print("Added Fatima and removed Neha", courses)
+
+# Print the courses and their enrolled students
+for key, val in courses.items():
+    print(f"{key} --> {val}")
+
+# Create a set to store unique student names across all courses
+un = set()
+
+# Update the set with all unique student names from the courses
 for i in courses.values():
     un.update(i)
-print("Unique Employee names:",un)
+
+# Print the unique student names
+print("Unique Employee names:", un)
+
 
 
 #Sample output

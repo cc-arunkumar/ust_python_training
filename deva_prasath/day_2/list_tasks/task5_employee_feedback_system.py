@@ -2,22 +2,38 @@
 # You are building a small Employee Feedback Portal where employees rate the
 # cafeteria food quality each week.
 
-week1=[4, 3, 5, 4, 2]
-week2=[5, 4, 3, 5, 4]
-all_ratings=week1+week2
-print("Total ratings:",len(all_ratings))
-print("Average ratings: ",sum(all_ratings)/len(all_ratings))
+# Ratings for week 1 and week 2
+week1 = [4, 3, 5, 4, 2]
+week2 = [5, 4, 3, 5, 4]
+
+# Combine ratings from both weeks
+all_ratings = week1 + week2
+
+# Print the total number of ratings
+print("Total ratings:", len(all_ratings))
+
+# Calculate and print the average rating
+print("Average ratings: ", sum(all_ratings) / len(all_ratings))
+
+# Sort the ratings in ascending order
 all_ratings.sort()
-print("Sorted ratings: ",all_ratings)
-filterd_list=[]
+print("Sorted ratings: ", all_ratings)
+
+# Filter ratings above 3
+filterd_list = []
 for i in all_ratings:
-    if i>3:
+    if i > 3:
         filterd_list.append(i)
-print("Filtered rating(above 3): ",filterd_list)
-print("Highest:",max(all_ratings))
-print("Lowest:",min(all_ratings))
-fin_avg=sum(filterd_list)/len(filterd_list)
-print("Final Average:",round(fin_avg,2))
+print("Filtered rating (above 3): ", filterd_list)
+
+# Print the highest and lowest ratings
+print("Highest:", max(all_ratings))
+print("Lowest:", min(all_ratings))
+
+# Calculate and print the final average of filtered ratings
+fin_avg = sum(filterd_list) / len(filterd_list)
+print("Final Average:", round(fin_avg, 2))
+
 
 #Sample output
 

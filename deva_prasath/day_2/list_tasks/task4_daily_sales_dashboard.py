@@ -2,18 +2,36 @@
 # You work on a Sales Dashboard that tracks the daily sales revenue of your
 # company’s products
 
-sales= [1200, 1500, 800, 2200, 1700, 950]
-print("Total sales:",sum(sales))
-average=float(sum(sales)/len(sales))
-print("Average sales:",round(average,2))
-sales.append(1100)
-sales.sort()
-print("Sorted sales:",sales)
-print("Top 3 sales:",sales[-3:])
-print("Lowest 2 sales: ",sales[:2])
-sales.remove(sales[0])
-print(" Updated Sales after removing smallest:",sales)
+# List of sales figures
+sales = [1200, 1500, 800, 2200, 1700, 950]
 
+# Print the total sales (sum of the list)
+print("Total sales:", sum(sales))
+
+# Calculate and print the average sales
+average = float(sum(sales) / len(sales))
+print("Average sales:", round(average, 2))
+
+# Add a new sale to the list
+sales.append(1100)
+
+# Sort the sales list in ascending order
+sales.sort()
+
+# Print the sorted sales list
+print("Sorted sales:", sales)
+
+# Print the top 3 highest sales
+print("Top 3 sales:", sales[-3:])
+
+# Print the lowest 2 sales
+print("Lowest 2 sales: ", sales[:2])
+
+# Remove the smallest sale (first element in the sorted list)
+sales.remove(sales[0])
+
+# Print the updated sales list after removal
+print("Updated Sales after removing smallest:", sales)
 
 
 #Sample output
