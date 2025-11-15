@@ -1,4 +1,34 @@
-
+# Requirements
+# 1. Create custom exceptions:
+# MissingFieldError — when required field missing or None
+# InvalidExpenseTypeError — when type not in allowed list
+# DuplicateClaimError — when claim_id already processed
+# 2. Validation rules (per claim):
+# Required fields: claim_id , employee , type , amount , days . Missing or None → 
+# MissingFieldError .
+# Allowed types: {"Travel", "Meals", "Accommodation"} ; else → InvalidExpenseTypeError .
+# amount must convert to float; if not → ValueError .
+# days must convert to int; if not → TypeError or ValueError .
+# Error Handling Task 2
+# days must be >= 1; if 0 → this will cause ZeroDivisionError when you compute
+# per-day; handle it explicitly.
+# amount 0 is allowed but should warn.
+# 3. Processing:
+# Compute per_day = amount / days .
+# Store valid processed claims in processed list (as dicts including per_day).
+# Keep skipped list (claim_id or index + reason) for claims you skip due to
+# invalid input.
+# Keep errors list for unexpected failures.
+# 4. Flow:
+# Use try / except for validation and calculation.
+# Use else for the happy-path (after validation) to append to processed .
+# Use finally to always print a short per-claim completion line.
+# 5. Summary at the end:
+# Total claims attempted
+# Number processed
+# Skipped claims (with reasons)
+# Errors (if any)
+# Print sample processed claims
 # 1. Custom Exception Classes
 class MissingFieldError(Exception):
     pass
@@ -151,5 +181,6 @@ for err in error:
 # {'claim_id': 'C1001', 'reason': "Duplicate claim_id 'C1001' found in claim "}
 # {'claim_id': 7, 'reason': "Missing key 'claim_id' in claim"}
 # {'claim_id': 'C1006', 'reason': "invalid literal for int() with base 10: 'two'"}
+
 
 # Errors:
