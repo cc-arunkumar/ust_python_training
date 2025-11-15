@@ -1,0 +1,43 @@
+book_id,title,authors,isbn,tags,total_copies,available_copies
+B1001,Python Crash Course,Eric Matthes,9781593279288,python|beginner|programming,5,3
+B1002,Learning SQL,Alan Beaulieu,9780596520830,sql|database|beginner,4,3
+B1003,Clean Code,Robert C. Martin,9780132350884,software|clean-code|programming,4,2
+B1004,Fluent Python,Luciano Ramalho,9781491946008,python|advanced|programming,3,1
+B1005,Head First Design Patterns,Eric Freeman,9780596007126,design-patterns|oop|architecture,3,2
+B1006,The Pragmatic Programmer,Andrew Hunt,9780201616224,software|best-practices,5,5
+B1007,Automate the Boring Stuff,Al Sweigart,9781593275990,automation|python|beginner,6,5
+B1008,Database System Concepts,Henry Korth,9780078022159,database|dbms|theory,3,3
+B1009,Operating System Concepts,Silberschatz,9781118063330,os|theory|system,3,2
+B1010,Introduction to Algorithms,CLRS,9780262032933,algorithms|dsa|competitive,5,5
+B1011,Java Complete Reference,Herbert Schildt,9781260440232,java|programming|reference,4,4
+B1012,Effective Java,Joshua Bloch,9780134685991,java|clean-code|software,3,3
+B1013,Java Concurrency in Practice,Brian Goetz,9780321349606,java|concurrency|advanced,2,2
+B1014,You Don't Know JS,Kyle Simpson,9781491904244,javascript|web|programming,5,4
+B1015,Eloquent JavaScript,Marijn Haverbeke,9781593279509,javascript|web|beginner,4,4
+B1016,HTML & CSS,Jon Duckett,9781118008188,web|design|frontend,3,3
+B1017,Designing Data-Intensive Applications,Martin Kleppmann,9781449373320,systems|distributed|architecture,4,3
+B1018,Deep Learning,Ian Goodfellow,9780262035613,ai|ml|deep-learning,3,2
+B1019,Hands-On Machine Learning,Aurelien Geron,9781492032649,ml|python|ai,4,3
+B1020,Introduction to Machine Learning,Alpaydin,9780262028189,ml|theory|data,3,3
+B1021,Reinforcement Learning,Sutton & Barto,9780262039246,rl|ai|advanced,2,2
+B1022,Compilers: Principles Techniques and Tools,Aho & Ullman,9780321486813,compiler|theory,2,2
+B1023,Computer Networks,Tanenbaum,9780132126953,networks|theory|system,4,4
+B1024,Distributed Systems,Maarten van Steen,9781543057386,distributed|systems|theory,3,2
+B1025,Big Data Fundamentals,Thomas Erl,9780134291079,big-data|data-engineering,3,3
+B1026,Data Engineering with Python,Paul Crickard,9781789535365,data-engineering|python,3,3
+B1027,Kafka: The Definitive Guide,Gwen Shapira,9781491936160,data-streaming|kafka,4,4
+B1028,Spark: The Definitive Guide,Bill Chambers,9781491912218,big-data|spark,3,2
+B1029,NoSQL Distilled,Pramod Sadalage,9780132983716,database|nosql|theory,3,3
+B1030,Learning Docker,Pethuru Raj,9781784397937,devops|docker|containers,4,4
+B1031,Kubernetes in Action,Marko Luksa,9781617293726,devops|kubernetes|orchestration,3,3
+B1032,Terraform Up & Running,Yevgeniy Brikman,9781492046903,devops|infrastructure,2,2
+B1033,CI/CD with Jenkins,Christopher Grant,9781787287600,devops|cicd|automation,3,3
+B1034,Cloud Architecture Patterns,Bill Wilder,9781449319779,cloud|architecture|patterns,3,3
+B1035,Azure for Architects,John Savill,9781119559535,cloud|azure|architecture,3,3
+B1036,AWS Certified Solutions Architect,Ben Piper,9781119504214,cloud|aws|certification,4,4
+B1037,GCP Architecture Framework,Google Press,9781098112934,cloud|gcp|architecture,3,3
+B1038,Data Visualization with Python,Kirill Eremenko,9781788295758,data|visualization|python,4,3
+B1039,SQL for Data Analysis,Boris Paskhaver,9781492072261,data|sql|analytics,4,4
+B1040,Introduction to Statistics,Ron Larson,9780321912749,math|statistics|probability,5,5
+B1041,fdsv,vds,123214,vds,4,5
+B1045,sfsef,dfcs,1,dsfsd,5,4
