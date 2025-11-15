@@ -3,57 +3,69 @@ UST wants to build a very simple internal HR module in Python to store employee 
 
 """
 
+# Employee class represents a single employee with details and salary operations
 class Employee:
     
-    def __init__(self,emp_id,name,dep,salary):
-        self.emp_id=emp_id
-        self.name=name
-        self.dep=dep
-        self.salary=salary
+    # Constructor initializes employee details
+    def __init__(self, emp_id, name, dep, salary):
+        self.emp_id = emp_id            # Employee ID
+        self.name = name                # Employee Name
+        self.dep = dep                  # Department
+        self.salary = salary            # Monthly Salary
     
+    # Display basic employee information
     def self_info(self):
-        print(f"Employee ID :{self.emp_id}")
-        print(f"Name :{self.name}")
-        print(f"Department :{self.dep}")
+        print(f"Employee ID : {self.emp_id}")
+        print(f"Name : {self.name}")
+        print(f"Department : {self.dep}")
         print(f"Monthly Salary : ₹{self.salary}")
 
+    # Calculate and print yearly salary
     def calculate_yearly(self):
-        yearly_salary=self.salary*12
+        yearly_salary = self.salary * 12
         print(f"Yearly salary of {self.name} is ₹ {yearly_salary}")
 
+    # Apply bonus based on department
     def apply_bonus(self):
-        if self.dep=="IT":
-            self.salary+=(self.salary*0.10)
-            print(f"Bonus applied (10%):₹ {self.salary}")
-        elif self.dep=="HR":
-            self.salary+=(self.salary*0.08)
-            print(f"Bonus applied (8%):₹ {self.salary}")
-        elif self.dep=="Finance":
-            self.salary+=(self.salary*0.12)
-            print(f"Bonus applied (12%):₹ {self.salary}")
-        elif self.dep=="Others":
-            self.salary+=(self.salary*0.05)
-            print(f"Bonus applied (5%):₹ {self.salary}")
-        else: print("Enter a valid Department")
+        if self.dep == "IT":
+            self.salary += (self.salary * 0.10)  # 10% bonus
+            print(f"Bonus applied (10%): ₹ {self.salary}")
         
-# Creating Object for 3 Employees
+        elif self.dep == "HR":
+            self.salary += (self.salary * 0.08)  # 8% bonus
+            print(f"Bonus applied (8%): ₹ {self.salary}")
+        
+        elif self.dep == "Finance":
+            self.salary += (self.salary * 0.12)  # 12% bonus
+            print(f"Bonus applied (12%): ₹ {self.salary}")
+        
+        elif self.dep == "Others":
+            self.salary += (self.salary * 0.05)  # 5% bonus
+            print(f"Bonus applied (5%): ₹ {self.salary}")
+        
+        else:
+            print("Enter a valid Department")
+
+
+# Creating Objects for 3 Employees
 emp1 = Employee(101, "Arun Kumar", "IT", 75000)
 emp2 = Employee(102, "Riya Sharma", "HR", 68000)
 emp3 = Employee(103, "John Doe", "Finance", 80000)
 
-# employee complete data
+
+# Employee 1 details
 print("---Employee 1---")
 emp1.self_info()
 emp1.calculate_yearly()
 emp1.apply_bonus()
 
-# employee 2
+# Employee 2 details
 print("---Employee 2---")
 emp2.self_info()
 emp2.calculate_yearly()
 emp2.apply_bonus()
 
-#employee 3
+# Employee 3 details
 print("---Employee 3---")
 emp3.self_info()
 emp3.calculate_yearly()

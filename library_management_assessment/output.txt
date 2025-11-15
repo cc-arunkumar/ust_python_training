@@ -1,0 +1,175 @@
+Welcome to Library Management System (LMS)
+Type 'help' for commands.
+lms> help
+Commands:
+  book add
+  book update <book_id>
+  book remove <book_id>
+  book get <book_id>
+  book list
+  book search title=<substr> author=<name> tag=<tag>
+  user add
+  user update <user_id>
+  user get <user_id>
+  user list
+  user deactivate <user_id>
+  user activate <user_id>
+  user ban <user_id>
+  borrow <user_id> <book_id>
+  return <transaction_id>
+  loans active
+  loans overdue
+  loans user <user_id>
+  report summary
+  report user <user_id>
+  save
+  help
+  exit
+lms> report summary
+Error: Invalid date format for overdue check.
+lms> help
+Commands:
+  book add
+  book update <book_id>
+  book remove <book_id>
+  book get <book_id>
+  book list
+  book search title=<substr> author=<name> tag=<tag>
+  user add
+  user update <user_id>
+  user get <user_id>
+  user list
+  user deactivate <user_id>
+  user activate <user_id>
+  user ban <user_id>
+  borrow <user_id> <book_id>
+  return <transaction_id>
+  loans active
+  loans overdue
+  loans user <user_id>
+  report summary
+  report user <user_id>
+  save
+  help
+  exit
+lms> book add
+Book ID: b0034
+Title: Js
+Authors (comma separated): Andrew,James
+ISBN: 2344  
+Tags (comma separated): code,web
+Total Copies: 7
+Book added successfully.
+lms> report summary
+Error: Invalid date format for overdue check.
+lms> help
+Commands:
+  book add
+  book update <book_id>
+  book remove <book_id>
+  book get <book_id>
+  book list
+  book search title=<substr> author=<name> tag=<tag>
+  user add
+  user update <user_id>
+  user get <user_id>
+  user list
+  user deactivate <user_id>
+  user activate <user_id>
+  user ban <user_id>
+  borrow <user_id> <book_id>
+  return <transaction_id>
+  loans active
+  loans overdue
+  loans user <user_id>
+  report summary
+  report user <user_id>
+  save
+  help
+  exit
+lms> report user <user_id>
+Error: User not found.
+lms> report user U2006
+No transactions for user.
+lms> report user U2007
+T3005 | Book: B1014 | User: U2007 | Borrow: 11/2/2025 | Due: 11/16/2025 | Return: 11/14/2025 | Status: returned
+lms> help
+Commands:
+  book add
+  book update <book_id>
+  book remove <book_id>
+  book get <book_id>
+  book list
+  book search title=<substr> author=<name> tag=<tag>
+  user add
+  user update <user_id>
+  user get <user_id>
+  user list
+  user deactivate <user_id>
+  user activate <user_id>
+  user ban <user_id>
+  borrow <user_id> <book_id>
+  return <transaction_id>
+  loans active
+  loans overdue
+  loans user <user_id>
+  report summary
+  report user <user_id>
+  save
+  help
+  exit
+lms> user list
+T1001 | Arjun Selvan | Email: arjun.selvan@gmail.com | Status: active | Max Loans: 5
+
+T1002 | Priya Natarajan | Email: priya.natarajan@yahoo.com | Status: active | Max Loans: 4
+
+T1003 | Karthik Ramesh | Email: karthik.ramesh@outlook.com | Status: active | Max Loans: 5
+
+T1004 | Divya Lakshmi | Email: divya.lakshmi@gmail.com | Status: active | Max Loans: 3
+
+T1005 | Sathish Kumar | Email: sathish.kumar@hotmail.com | Status: active | Max Loans: 4
+lms> help
+Commands:
+  book add
+  book update <book_id>
+  book remove <book_id>
+  book get <book_id>
+  book list
+  book search title=<substr> author=<name> tag=<tag>
+  user add
+  user update <user_id>
+  user get <user_id>
+  user list
+  user deactivate <user_id>
+  user activate <user_id>
+  user ban <user_id>
+  borrow <user_id> <book_id>
+  return <transaction_id>
+  loans active
+  loans overdue
+  loans user <user_id>
+  report summary
+  report user <user_id>
+  save
+  help
+  exit
+  user ban <user_id>
+  borrow <user_id> <book_id>
+  return <transaction_id>
+  loans active
+  loans overdue
+  loans user <user_id>
+  report summary
+  report user <user_id>
+  save
+  help
+  exit
+  loans user <user_id>
+  report summary
+  report user <user_id>
+  save
+  help
+  exit
+  exit
+lms> user get U2009
+U2009 | Ravi Shankar | Email: ravi.shankar@ust.com | Status: active | Max Loans: 2

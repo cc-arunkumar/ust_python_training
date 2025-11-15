@@ -3,6 +3,7 @@ class Employee:
         pass
     def work(self):
         print("Employee is working")
+        
 #Inheritance
 class Developer(Employee):
     def work(self):

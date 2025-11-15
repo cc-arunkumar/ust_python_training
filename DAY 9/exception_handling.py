@@ -1,25 +1,32 @@
 import sys
 
+# Welcome message for the calculator
 print("Welcome to UST Calculator")
 
-a=int(input("Enter Numberator :"))
-b=int(input("Enter Denominator :"))
+# Taking user input for numbers
+a = int(input("Enter Numerator : "))
+b = int(input("Enter Denominator : "))
 
+# Basic Arithmetic Operations
+print("Add :", a + b)
+print("Subtract :", a - b)
+print("Multiply :", a * b)
 
-print("Add :",a+b)
-print("Subtract :",a-b)
-print("Multiply :",a*b)
-
+# Handling division with exception block
 try:
-    print("Division :",a/b)
+    print("Division :", a / b)
 
 except ZeroDivisionError:
-    print("Division Error :Enter Denominator > 0")
+    # Executes when denominator is zero
+    print("Division Error : Enter Denominator > 0")
 
+# Generic exception (commented by user)
 # except Exception as e:
-#     print("Pleassee do see :",e)
-    
-print("Thanks For using UST Calculator")
+#     print("Please check :", e)
+
+# End message
+print("Thanks For Using UST Calculator")
+
 
 
 

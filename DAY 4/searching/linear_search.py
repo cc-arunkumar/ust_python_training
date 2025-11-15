@@ -1,10 +1,10 @@
-list1=[12,90,456,22]
+list1=[12,90,456,22]  # List of elements
+element=int(input())  # Element to search
 
-element=int(input())
-
-for i in list1:
-    if i==element:
+for i in list1:  # Iterate through each element
+    if i==element:  # Check if element matches
         print(f"Element Found {i}")
+
  
 # sample output
 """

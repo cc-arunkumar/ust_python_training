@@ -10,107 +10,124 @@ Participants will build this system from scratch, practicing all file operations
 write , append , seek , etc.) while maintaining data consistency
 """
 
-
 import os
 from datetime import datetime
 
-EMP_FILE="DAY 5/files/employe.txt"
+# File path for storing employee data
+EMP_FILE = "DAY 5/files/employe.txt"
 
+# Function to add a new employee
 def add_employee():
-    id=input("Enter Employee ID : ")
+    # Collect employee details from user
+    id = input("Enter Employee ID : ")
+    name = input("Enter Employee Name : ")
+    department = input("Enter Deparment Name : ")
+    salary = input("Enter Salary : ")
+    doj = input("Enter Date (YYYY-MM-DD):")
 
-    name=input("Enter Employee Name : ")
-    department=input("Enter Deparment Name : ")
-    salary=input("Enter Salary : ")
-    doj=input("Enter Date (YYYY-MM-DD):")
-
-    with open(EMP_FILE,"a") as f:
+    # Open the file in append mode and add new record
+    with open(EMP_FILE, "a") as f:
         f.write(f"{id},{name},{department},{salary},{doj}\n")
         
     print("File Added Sucessfully")
 
+# Function to display all employee records
 def display():
-    with open(EMP_FILE,"r") as f:
-        content=f.read()
+    with open(EMP_FILE, "r") as f:
+        content = f.read()
         print(content)
 
+# Function to search an employee by ID
 def search():
-    id_to_find=input("Enter Employee ID to search :")
-    with open(EMP_FILE,"r") as f:
+    id_to_find = input("Enter Employee ID to search :")
+    with open(EMP_FILE, "r") as f:
         for line in f:
-            if line.startswith(id_to_find+","):
-                id,name,dep, salary,doj= line.strip().split(",")
+            # Check if line starts with the searched ID
+            if line.startswith(id_to_find + ","):
+                id, name, dep, salary, doj = line.strip().split(",")
                 print("The EMployee Details")
                 print(f"{id} | {name} | {salary} | {doj}")
                 break
 
-
+# Function to delete an employee record
 def delete_emp():
-    emp_id=input("Enter Employee ID to delete :")
-    found=False
+    emp_id = input("Enter Employee ID to delete :")
+    found = False
 
-    with open(EMP_FILE,"r") as f:
-        lines=f.readlines()
+    # Read all lines first
+    with open(EMP_FILE, "r") as f:
+        lines = f.readlines()
 
-    with open(EMP_FILE,"w") as f:
+    # Write back only the lines that don't match the ID
+    with open(EMP_FILE, "w") as f:
         for line in lines:
-            if not line.startswith(emp_id+","):
+            if not line.startswith(emp_id + ","):
                 f.write(line)
-            else: found=True
+            else:
+                found = True
     
-    if found: print("Deleted sucessfully")
-    else: print("Employee not Found")
+    # Notify user if deletion was successful
+    if found:
+        print("Deleted sucessfully")
+    else:
+        print("Employee not Found")
 
+# Function to update employee salary
 def updated_salary():
-    up_id=input("Enter Employee ID :")
-    up_sal=int(input("Enter Updated Salary :"))
-    found=False
+    up_id = input("Enter Employee ID :")
+    up_sal = int(input("Enter Updated Salary :"))
+    found = False
 
-    with open(EMP_FILE,"r") as f:
-        lines=f.readlines()
+    # Read all employee records
+    with open(EMP_FILE, "r") as f:
+        lines = f.readlines()
     
-    with open(EMP_FILE,"w") as f:
+    # Update the salary for the given employee ID
+    with open(EMP_FILE, "w") as f:
         for line in lines:
-            if line.startswith(up_id+","):
-                parts=line.strip().split(",")
-                parts[3]=str(up_sal)
-                line=",".join(parts)+"\n"
-                found=True
+            if line.startswith(up_id + ","):
+                parts = line.strip().split(",")
+                parts[3] = str(up_sal)  # Update salary
+                line = ",".join(parts) + "\n"
+                found = True
             f.write(line)
 
     if found:
         print("Salary Updated Sucessfully")
-    else: print("No employees FOund")
+    else:
+        print("No employees FOund")
 
+# Function to generate department-wise report
 def generate_rep():
-    if not os.path.exists(EMP_FILE) or os.path.getsize(EMP_FILE)==0:
+    # Check if employee file exists and is not empty
+    if not os.path.exists(EMP_FILE) or os.path.getsize(EMP_FILE) == 0:
         print("No employee data available to generate report.")
         return
 
-    dept_data={}
+    dept_data = {}
 
-    with open(EMP_FILE,"r") as f:
+    # Read employee data and aggregate by department
+    with open(EMP_FILE, "r") as f:
         for line in f:
-            id,name,dep,salary,doj=line.strip().split(",")
-            salary=int(salary)
+            id, name, dep, salary, doj = line.strip().split(",")
+            salary = int(salary)
             if dep not in dept_data:
-                dept_data[dep]={"count":0,"total":0}
-            dept_data[dep]["count"]+=1
-            dept_data[dep]["total"]+=salary
+                dept_data[dep] = {"count": 0, "total": 0}
+            dept_data[dep]["count"] += 1
+            dept_data[dep]["total"] += salary
 
-    rep_path="DAY 5/files/report.txt"
-    with open(rep_path,"w",encoding="utf-8") as r:
-        for dep,info in dept_data.items():
-            count=info["count"]
-            total=info["total"]
-            avg=total/count
+    # Write report to report.txt
+    rep_path = "DAY 5/files/report.txt"
+    with open(rep_path, "w", encoding="utf-8") as r:
+        for dep, info in dept_data.items():
+            count = info["count"]
+            total = info["total"]
+            avg = total / count
             r.write(f"{dep} Department → Employees: {count} | Total Salary: {total} | Average Salary: {avg:.1f}\n")
 
     print("report generated successfully in report.txt")
 
-
-
-
+# Main loop for menu-driven program
 while True:
     print("Enter Your Choicees")
     print("1. Add Employee")
@@ -120,23 +137,25 @@ while True:
     print("5, Report")
     print("6, Delete Employee")
     print("7, Exit")
-    choice=int(input("Enter the Choice :"))
+    choice = int(input("Enter the Choice :"))
 
-    if choice==1:
+    # Call functions based on user choice
+    if choice == 1:
         add_employee()
-    elif choice==2:
+    elif choice == 2:
         display()
-    elif choice==3:
+    elif choice == 3:
         search()
-    elif choice==4:
+    elif choice == 4:
         updated_salary()
-    elif choice==5:
+    elif choice == 5:
         generate_rep()
-    elif choice==6:
+    elif choice == 6:
         delete_emp()
     else:
         print("Thanks for Using !!!")
         break
+
 
 """
 SAMPLE OUTPUT

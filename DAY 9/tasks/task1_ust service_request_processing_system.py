@@ -1,62 +1,77 @@
 from abc import ABC, abstractmethod
 
+# Abstract Base Class for all service requests
 class ServiceRequest(ABC):
 
-    def __init__(self,request_id,requested_by,priority):
-        self.rrequest_id=request_id
-        self.requested_by=requested_by
-        self.priority=priority
+    def __init__(self, request_id, requested_by, priority):
+        self.rrequest_id = request_id          # Unique request ID
+        self.requested_by = requested_by       # Employee who requested the service
+        self.priority = priority               # Priority level (High/Medium/Low)
 
     @abstractmethod
     def process_request(self):
+        """Abstract method — must be implemented by all subclasses"""
         pass
     
+    # Common method to display request details
     def show_basic_details(self):
-        print(f"Request ID :{self.rrequest_id}")
-        print(f"Requested by :{self.requested_by}")
-        print(f"Priority: {self.priority}")
-    
+        print(f"Request ID : {self.rrequest_id}")
+        print(f"Requested By : {self.requested_by}")
+        print(f"Priority : {self.priority}")
 
+
+
+# Handles IT-related support issues
 class ITSupportRequest(ServiceRequest):
     def process_request(self):
-        print("Processing IT Support Request :")
+        print("Processing IT Support Request:")
         print("Assigning IT engineer")
         print("Checking laptop")
         print("Issue resolved")
 
+
+
+# Handles HR-related document requests
 class HRDocumentRequest(ServiceRequest):
     def process_request(self):
-        print("Processing HR Document Request :")
+        print("Processing HR Document Request:")
         print("Preparing HR document")
         print("Sending via email")
-    
+
+
+
+# Handles physical facility-related issues
 class FacilityRequest(ServiceRequest):
     def process_request(self):
-        print("Processing Facility Request :")
+        print("Processing Facility Request:")
         print("Assigning facility staff")
         print("Checking issue")
         print("Job completed")
 
+
+
+# Handles software access and permission requests
 class SoftwareAccessRequest(ServiceRequest):
     def process_request(self):
-        print("Software Access Request :")
+        print("Processing Software Access Request:")
         print("Verifying approval")
         print("Granting software access")
 
-# Creating objects
 
-r1=ITSupportRequest(1,"Gowthm","High")
-r2=HRDocumentRequest(2,"Mani","High")
-r3=FacilityRequest(3,"Dinesh","Medium")
-r4=SoftwareAccessRequest(4,"Gowthm","Low")
 
-# storing all the objects in list
-requested_service=[r1,r2,r3,r4]
+# Creating objects for different service requests
+r1 = ITSupportRequest(1, "Gowtham", "High")
+r2 = HRDocumentRequest(2, "Mani", "High")
+r3 = FacilityRequest(3, "Dinesh", "Medium")
+r4 = SoftwareAccessRequest(4, "Gowtham", "Low")
 
-#iterAtion in list for objects
-for i in requested_service:
-    i.show_basic_details()
-    i.process_request()
+# Storing objects in a list
+requested_service = [r1, r2, r3, r4]
+
+# Iterating and processing each request
+for req in requested_service:
+    req.show_basic_details()
+    req.process_request()
     print("------------")
 
 
