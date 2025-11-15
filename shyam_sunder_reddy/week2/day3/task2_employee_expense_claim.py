@@ -183,6 +183,5 @@ for key,value in procesed.items():
 # ------------------------------
 # rows processed are:
 # c1001 {'claim_id': 'c1001', 'employee': 'arun', 'type': 'travel', 'amount': 1500.0, 'days': 3, 'per_day': 500.0}
-# c1001 {'claim_id': 'c1001', 'employee': 'arun', 'type': 'travel', 'amount': 1500.0, 'days': 3, 'per_day': 500.0}
 # c1005 {'claim_id': 'c1005', 'employee': 'nisha', 'type': 'meals', 'amount': 1200.0, 'days': 2, 'per_day': 600.0}
 # c1007 {'claim_id': 'c1007', 'employee': 'anil', 'type': 'travel', 'amouc1007 {'claim_id': 'c1007', 'employee': 'anil', 'type': 'travel', 'amount': 0.0, 'days': 1, 'per_day': 0.0}
