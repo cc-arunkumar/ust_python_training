@@ -8,9 +8,9 @@ Objective
 """
 
 
-print("UST Cafeteria")
-total_bill,count=0,0
-while True:
+print("UST Cafeteria")   # Display cafeteria title
+total_bill,count=0,0   # Initialize total bill and item counter
+while True:   # Loop to repeatedly show menu
     print("1. Coffee ($25)")
     print("2. Sandwich ($50)")
     print("3. Salad ($40)")
@@ -18,32 +18,32 @@ while True:
     print("5. View Bill")
     print("6. Exit")
 
-    choice=int(input("Enter Your Choice: "))
-    match choice:
+    choice=int(input("Enter Your Choice: "))   # Take user's menu choice
+    match choice:   # Match-case for menu operations
         case 1:
-            print("Item Added To Bill")
-            total_bill+=25
-            count+=1
+            print("Item Added To Bill")   # Add coffee
+            total_bill+=25   # Update total bill
+            count+=1   # Increase item count
         case 2:
-            print("Item Added To Bill")
-            total_bill+=50
-            count+=1
+            print("Item Added To Bill")   # Add sandwich
+            total_bill+=50   # Update bill
+            count+=1   # Increase item count
         case 3:
-            print("Item Added To Bill")
-            total_bill+=40
-            count+=1
+            print("Item Added To Bill")   # Add salad
+            total_bill+=40   # Update bill
+            count+=1   # Increase item count
         case 4:
-            print("Item Added To Bill")
-            total_bill+=30
-            count+=1
+            print("Item Added To Bill")   # Add juice
+            total_bill+=30   # Update bill
+            count+=1   # Increase item count
         case 5:
-            print(f"You Ordered {count} items")
-            print(f"Total Bill Amount: ${total_bill}")
+            print(f"You Ordered {count} items")   # Display total items ordered
+            print(f"Total Bill Amount: ${total_bill}")   # Display bill amount
         case 6:
-            print("Thanks For Visiting UST Cafeteria")
-            break
+            print("Thanks For Visiting UST Cafeteria")   # Exit message
+            break   # Stop the loop
         case _:
-            print("Enter Number from 1-6")
+            print("Enter Number from 1-6")   # Handle invalid choice
 
 
 # SAMPLE OUTPUT
