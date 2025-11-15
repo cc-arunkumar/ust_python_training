@@ -1,0 +1,4 @@
+user_id,name,email,status,max_loans
+U110,Madhan,madhan@gmail.com,banned,5
+U201,Deva,dev@gmail.com,active,5
+U301,Asutosh,asutosh@gmail.com,active,5
