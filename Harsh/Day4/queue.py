@@ -1,18 +1,23 @@
 class Queue:
+    #constructor
     def __init__(self):
         self.queue=[]
-        
+    
+    #method to get size of queue
     def size(self):
         print("length of queue: ", len(self.queue))
         
+    #method to check if queue is empty
     def is_empty(self):
         return len(self.queue)==0
     
+    #method to add item to queue
     def push(self,item):
         self.queue.append(item)
         print ("Adding item:",item)
         q1.size()
     
+    #method to remove item from queue
     def pop(self):
         if not self.is_empty():
             remove=self.queue.pop(0)
@@ -20,13 +25,15 @@ class Queue:
             q1.size()
         else:
             print("isempty")
-            
+    
+    #method to view front item of queue
     def peek(self):
         if not self.is_empty():
             print(self.queue[0])
         else:
             print("queue empty") 
-            
+    
+    #method to search item in queue
     def search(self,item):
         if not self.is_empty():
             if item in self.queue:
@@ -35,7 +42,8 @@ class Queue:
                 print(item, " not found in queue")
         else:
             print("queue is empty")
-        
+    
+    #method to traverse the queue
     def traverse(self):
         for items in self.queue:
             print(items)

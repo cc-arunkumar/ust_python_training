@@ -1,27 +1,42 @@
+# Task 5: Employee Feedback System
+# Scenario:
+# You are building a small Employee Feedback Portal where employees rate the
+# cafeteria food quality each week.
+
+# Ratings collected for two weeks
 week1 = [4, 3, 5, 4, 2]
 week2 = [5, 4, 3, 5, 4]
 
+# Merge week2 ratings into week1
 week1.extend(week2) 
-all_ratings =week1
 
+# Assign the combined list to all_ratings
+all_ratings = week1   
+
+# Calculate total number of ratings and average rating
 total_ratings = len(all_ratings)
 average_rating = sum(all_ratings) / total_ratings
 print("Total Ratings:", total_ratings)
 print("Average Rating:", average_rating)
 
+# Sort ratings in ascending order
 all_ratings.sort()
 print("Sorted Ratings:", all_ratings)
 
+# Filter ratings greater than 3
 filtered_ratings = [r for r in all_ratings if r > 3]
 print("Filtered Ratings (Above 3):", filtered_ratings)
 
+# Find highest and lowest rating from the filtered list
 highest_rating = max(filtered_ratings)
 lowest_rating = min(filtered_ratings)
 print("Highest Rating:", highest_rating)
 print("Lowest Rating:", lowest_rating)
 
+# Calculate average of filtered ratings
 final_average = sum(filtered_ratings) / len(filtered_ratings)
 print("Final Average Rating:", final_average)
+
 
 
 # Total Ratings: 10

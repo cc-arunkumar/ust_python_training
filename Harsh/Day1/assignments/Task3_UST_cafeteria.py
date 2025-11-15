@@ -1,3 +1,8 @@
+# Task 3: Cafeteria Billing System
+# Objective
+# 	Simulate a Cafeteria Menu Ordering System for employees inside the office campus.
+# Employees can order multiple items and get a running total of their bill.
+
 print("============ UST Cafeteria ==============")
 print("1. Coffee Rs25")
 print("2. Sandwich Rs50")

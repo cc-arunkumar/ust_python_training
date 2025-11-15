@@ -1,3 +1,8 @@
+# Task 2: IT Helpdesk Ticket Menu
+# Objective: 
+# Create a command-line helpdesk ticket system for employees to 
+# raise and track IT issues such as hardware, software, or network problems.
+
 print("============ UST IT Helpdesk ==============")
 print("1. Raise Hardware Issue")
 print("2. Raise Software Issue")
@@ -9,25 +14,32 @@ hard=0
 soft=0
 network=0
 total=0
+
 while(True):
     choice=int(input("enter the choice: "))
+    
     if(choice<1 or choice >5):
         print("Enter the number between 1 to 5")
+        
     if (choice==1):
         hard+=1
         print("Hardware issue reported. IT team will respond soon")
+        
     if(choice==2):
         soft+=1
         print("Software issue reported. IT team will respond soon")
+        
     if(choice==3):
         network+=1
         print("Network issue reported. IT team will respond soon")
+        
     if(choice==4):
         total=hard+soft+network
         print(f"Hardware Tickets: {hard}")
         print(f"Software Tickets: {soft}")
         print(f"Network Tickets: {network}")
         print(f"Total Tickets Raised: {total}")
+        
     if(choice==5):
         print("Exiting Helpdesk. Thank you!")
         print("***********************************************************")

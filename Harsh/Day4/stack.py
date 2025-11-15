@@ -1,18 +1,23 @@
 class Stack:
+    #constructor
     def __init__(self):
         self.stack=[]
         
+    #method to get size of stack
     def size(self):
         print("length of stack: ", len(self.stack))
-        
+    
+    #method to check if stack is empty
     def is_empty(self):
         return len(self.stack)==0
     
+    #method to add item to stack
     def push(self,item):
         self.stack.append(item)
         print ("Adding item:",item)
         s1.size()
     
+    #method to remove item from stack
     def pop(self):
         if not self.is_empty():
             remove=self.stack.pop()
@@ -21,12 +26,14 @@ class Stack:
         else:
             print("isempty")
             
+    #method to view top item of stack
     def peek(self):
         if not self.is_empty():
             print(self.stack[-1])
         else:
             print("stack empty") 
     
+    #method to search item in stack
     def search(self,item):
         if not self.is_empty():
             if item in self.stack:
@@ -35,7 +42,8 @@ class Stack:
                 print(item," not found in stack")
         else:
             print("stack is empty")
-            
+         
+    #method to traverse the stack   
     def traverse(self):
         for items in reversed(self.stack):
             print(items)
