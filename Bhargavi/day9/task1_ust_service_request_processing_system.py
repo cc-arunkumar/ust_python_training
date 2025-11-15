@@ -80,14 +80,14 @@ class ITSupportRequest(ServiceRequest):
         print("Checking laptop...")
         print("Issue resolved!\n")
 
-
+#child class of servicerequest
 class HRDocumentRequest(ServiceRequest):
     def process_request(self):
         print("Processing HR Document Request:")
         print("Preparing HR document...")
         print("Sending via email...\n")
-
-
+ 
+#Facilityrequest class
 class FacilityRequest(ServiceRequest):
     def process_request(self):
         print("Processing Facility Request:")
@@ -95,7 +95,7 @@ class FacilityRequest(ServiceRequest):
         print("Checking issue...")
         print("Job completed!\n")
 
-
+#softwareaccessrequest class
 class SoftwareAccessRequest(ServiceRequest):
     def process_request(self):
         print("Processing Software Access Request:")
@@ -146,4 +146,5 @@ for req in requests:
 # Priority: High
 # Processing Software Access Request:
 # Verifying approval...
+
 # Granting software access...
