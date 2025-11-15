@@ -64,7 +64,7 @@ processed = {}
 ind = 0     # For counting index and number of data checked
 skip = 0    # For counting skipped datas
 pro = 0     # For counting processed data
-
+err = 0     # For counting Error data
 # looping through all claims
 for data in claims:
     try:
@@ -123,27 +123,21 @@ for data in claims:
             
     # Catching ValueError           
     except ValueError as v:
-        skip += 1
-        if "claim_id" in data:
-            skipped.append([data["claim_id"],v])
-        else:
-            skipped.append([ind,v])
+        err += 1
+        data['reason'] = v
+        error.append(data)
             
     # Catching TypeError          
     except TypeError as t:
-        skip += 1
-        if "claim_id" in data:
-            skipped.append([data["claim_id"],t])
-        else:
-            skipped.append([ind,t])
+        err += 1
+        data['reason'] = t
+        error.append(data)
             
     # Catching ZeroDivisionError         
     except ZeroDivisionError as z:
-        skip += 1
-        if "claim_id" in data:
-            skipped.append([data["claim_id"],z])
-        else:
-            skipped.append([ind,z])
+        err += 1
+        data['reason'] = z
+        error.append(data)
             
     # Catching Exception        
     except Exception:
@@ -166,12 +160,16 @@ for data in claims:
 print("Total Claims attempted: ",ind)
 print("Number Processed :",pro)
 print("Number Skipped: ",skip)
+print("Number of error data: ",err)
 print("=======================")
 print("Skipped claims:")
 for i in skipped:
     print(i)
+print("=======================")
 print("Error:")
-print(error)
+for i in error:
+    print(i)
+print("=======================")
 print("Processed claims:")
 for i in processed:
     print(i,":",processed[i])
@@ -203,17 +201,20 @@ for i in processed:
 # Total Claims attempted:  10
 # Number Processed : 3
 # Number Skipped:  7
+# Number of error data:  3
 # =======================
 # Skipped claims:
-# ['C1002', ValueError("could not convert string to float: 'abc'")]
 # [2, MissingFieldError('Required Field is missing')]
-# ['C1003', ZeroDivisionError()]
 # ['C1004', InvalidExpenseTypeError('Invalid Expense type')]
 # ['C1001', DuplicateClaimError()]
 # [7, MissingFieldError('Required Field is missing')]
-# ['C1006', ValueError("invalid literal for int() with base 10: 'two'")]
+# =======================
 # Error:
-# []
+# {'claim_id': 'C1002', 'employee': 'Riya', 'type': 'Meals', 'amount': 'abc', 'days': '1', 'reason': ValueError("could not convert string to float: 'abc'")}
+# {'claim_id': 'C1003', 'employee': 'Mona', 'type': 'Travel', 'amount': 900.0, 'days': 0, 'reason': 
+# ZeroDivisionError()}
+# {'claim_id': 'C1006', 'employee': 'Sona', 'type': 'Accommodation', 'amount': 3000.0, 'days': 'two', 'reason': ValueError("invalid literal for int() with base 10: 'two'")}
+# =======================
 # Processed claims:
 # C1001 : {'employee': 'Arun', 'type': 'Travel', 'amount': 1500.0, 'days': 3}
 # C1005 : {'employee': 'Nisha', 'type': 'Meals', 'amount': 1200.0, 'days': 2}
