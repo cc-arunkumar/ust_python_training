@@ -36,6 +36,7 @@
 # Prints name + department
 # But MUST NOT print salary directly (salary is private)
 
+#class employee
 class Employeee:
     def __init__(self, name, department, salary):
         self.name = name
@@ -43,6 +44,7 @@ class Employeee:
         self.__salary = None
         self.set_salary(salary)  # Use setter to validate
 
+    #methods as of the requirments
     def get_salary(self):
         return self.__salary
 
@@ -73,4 +75,5 @@ print(f"Accessing salary using getter: {e.get_salary()}")
 # Name: Bhargavi
 # Department: CSE
 # Trying to access private salary directly showa an error
+
 # Accessing salary using getter: 30000
