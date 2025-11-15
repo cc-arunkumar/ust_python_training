@@ -33,14 +33,14 @@
 # 4. Prints correct results,
 # 5. Demonstrates encapsulation clearly.
 
-
+#Define the parent class
 class Employee:
 
     def __init__(self,name,dep,salary):
         self.name = name
-        self._dep = dep
-        self.__salary = salary
-    
+        self._dep = dep #Set dep as protected
+        self.__salary = salary #set salary as private
+
     def get_salary(self):
         print(f"Accessing salary using getter: {self.__salary}")
     
@@ -55,7 +55,7 @@ class Employee:
         print(f"Name is : {self.name}")
         print(f"Department is : {self._dep}")
     
-    
+#Create an object    
 emp = Employee("Arjun","IT",50000)
 emp.show_info()
 emp.get_salary()

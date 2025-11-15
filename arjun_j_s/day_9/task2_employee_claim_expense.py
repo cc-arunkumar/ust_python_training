@@ -52,12 +52,14 @@ claims = [
  {"claim_id": "C1007", "employee": "Anil", "type": "Travel", "amount": "0", "days": "1"},
 ]
 
+#Define the global variables
 processed={}
 skipped = []
 errors = []
 required = ["claim_id" , "employee" , "type" , "amount" , "days"]
 allowed_types = ["Travel", "Meals", "Accommodation"]
 
+#Define the custom Error Class
 class MissingFieldError(Exception):
     pass
 
@@ -67,6 +69,7 @@ class InvalidExpenseTypeError(Exception):
 class DuplicateClaimError(Exception):
     pass
 
+#Define the function for validating each row
 def validate(item):
     try:
         for val in required:
@@ -113,6 +116,7 @@ def validate(item):
         return False,str(e)
     
     else:
+        #Add each claims that pass all the validation conditions
         processed[item["claim_id"]] = {
             "employee":item["employee"],
             "type":item["type"],
@@ -133,6 +137,7 @@ for data in claims:
     if(not con):
         skipped.append((data.get("claim_id",count),stmt))
 
+#Summary
 print(f"Total claims : {len(claims)}")
 print("========================")
 print(f"Skipped Claims {len(skipped)} with reason :")

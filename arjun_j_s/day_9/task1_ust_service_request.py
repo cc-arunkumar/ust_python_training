@@ -13,8 +13,10 @@
 # But the way each request is processed is different, so UST wants a general rule
 # (abstract class) and each department must follow it.
 
+#Import the required modules
 from abc import ABC,abstractmethod
 
+#Define the abstract class
 class ServiceRequest(ABC):
 
     def __init__(self,request_id,requested_by,priority):
@@ -32,6 +34,7 @@ class ServiceRequest(ABC):
         print(f"Priority : {self.priority}")
 
 
+#Define all the child classes
 class ITSupportRequest(ServiceRequest):
 
     def __init__(self, request_id, requested_by, priority):
@@ -70,6 +73,7 @@ class SoftwareAccessRequest(ServiceRequest):
         print("Verifying approval")
         print("Granting software access")
 
+#Create objects of each child classes
 t1 = ITSupportRequest(101,"Arjun",1)
 t2 = HRDocumentRequest(102,"Rahul",2)
 t3 = FacilityRequest(103,"Ravi",1)

@@ -10,11 +10,14 @@
 # Display personal details
 # Calculate yearly salary
 # Apply a bonus based on department
+
+#Define a global bonus calculator
 bonus={
     "IT":10,
     "HR":8,
     "Finance":12
 }
+#For collecting unique emp_ids
 L=[]
 class Employee:
     def __init__(self,emp_id,name,dep,salary):
@@ -49,7 +52,8 @@ class Employee:
             self.salary+=self.salary*0.05
         
         return int(self.salary)
-    
+
+#Create the objects    
 emp1 = Employee(101,"Arun Kumar","IT",75000)
 emp2 = Employee(102,"Riya Sharma", "HR", 68000)
 emp3 = Employee(103,"John Doe", "Finance", 80000)
