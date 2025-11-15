@@ -1,18 +1,172 @@
-# Attributes:
-# book_id (string, unique)
-# title (string)
-# authors (list of string)
-# isbn (string, unique)
-# tags (list of string)
-# total_copies (int)
-# available_copies (int)
-# Methods:
-# to_dict()
-# update(**kwargs)
-# is_available()
-# increase_copies(n)
-# decrease_copies(n)
+# import library
+# class Book:
+#     def __init__(self,book_id,title,authors,tags,total_copies):
+#         self.book_id = book_id
+#         self.title = title
+#         self.authors = authors
+#         self.tags = tags
+#         self.total_copies = total_copies
+#         self.available_copies = total_copies
 
-class book:
-    def __init__(self):
-        pass
+#     def to_dict(self):
+#         pass
+
+#     def update(self):
+#         pass
+
+#     def is_available(self):
+#         pass
+
+#     def increase_copies(self,n):
+#         pass
+
+#     def decrease_copies(self,n):
+#         pass
+
+# class User:
+#     def __init__(self,user_id,name,email):
+#         self.user_id = user_id
+#         self.name = name
+#         self.email = email
+#         self.status = "active"
+#         self.max_loans = 5
+
+#     def to_dict(self):
+#         pass
+#     def activate(self):
+#         pass
+#     def deactivate(self):
+#         pass
+#     def ban(self):
+#         pass
+#     def can_borrow(self,active_loans):
+#         pass
+
+# class Transaction:
+#     def __init__(self,tx_id,book_id,user_id,borrow_date,due_date,return_date,status):
+#         self.tx_id = ""
+#         self.book_id = book_id
+#         self.user_id = user_id
+#         self.borrow_date = ""
+#         self.due_date = ""
+#         self.return_date = None
+#         self.status = "borrowed"
+
+#     def to_dict(self):
+#         pass
+#     def mark_returned(self,return_date):
+#         pass
+#     def is_overdue(self,today_date):
+#         pass
+
+
+# models.py
+from datetime import datetime, timedelta
+
+class InvalidBookError(Exception): pass
+class InvalidUserError(Exception): pass
+class BookNotAvailableError(Exception): pass
+class UserNotAllowedError(Exception): pass
+class TransactionError(Exception): pass
+class ValidationError(Exception): pass
+
+
+class Book:
+    def __init__(self, book_id, title, authors, isbn, tags,
+                 total_copies, available_copies):
+        self.book_id = book_id
+        self.title = title
+        self.authors = authors
+        self.isbn = isbn
+        self.tags = tags
+        self.total_copies = int(total_copies)
+        self.available_copies = int(available_copies)
+
+    def to_dict(self):
+        return {
+            "book_id": self.book_id,
+            "title": self.title,
+            "authors": "|".join(self.authors),
+            "isbn": self.isbn,
+            "tags": "|".join(self.tags),
+            "total_copies": self.total_copies,
+            "available_copies": self.available_copies,
+        }
+
+    def update(self, **kwargs):
+        for key, value in kwargs.items():
+            if hasattr(self, key) and value is not None:
+                setattr(self, key, value)
+
+    def is_available(self):
+        return self.available_copies > 0
+
+    def increase_copies(self, n):
+        self.total_copies += n
+        self.available_copies += n
+
+    def decrease_copies(self, n):
+        if self.available_copies - n < 0:
+            raise BookNotAvailableError("Not enough available copies")
+        self.total_copies -= n
+        self.available_copies -= n
+
+
+class User:
+    def __init__(self, user_id, name, email, status="active", max_loans=5):
+        self.user_id = user_id
+        self.name = name
+        self.email = email
+        self.status = status
+        self.max_loans = int(max_loans)
+
+    def to_dict(self):
+        return {
+            "user_id": self.user_id,
+            "name": self.name,
+            "email": self.email,
+            "status": self.status,
+            "max_loans": self.max_loans
+        }
+
+    def activate(self): self.status = "active"
+    def deactivate(self): self.status = "inactive"
+    def ban(self): self.status = "banned"
+
+    def can_borrow(self, active_loans):
+        return self.status == "active" and active_loans < self.max_loans
+
+
+class Transaction:
+    def __init__(self, tx_id, book_id, user_id, borrow_date,
+                 due_date, return_date, status):
+        self.tx_id = tx_id
+        self.book_id = book_id
+        self.user_id = user_id
+        self.borrow_date = borrow_date
+        self.due_date = due_date
+        self.return_date = return_date
+        self.status = status
+
+    def to_dict(self):
+        return {
+            "tx_id": self.tx_id,
+            "book_id": self.book_id,
+            "user_id": self.user_id,
+            "borrow_date": self.borrow_date,
+            "due_date": self.due_date,
+            "return_date": self.return_date,
+            "status": self.status
+        }
+
+    def mark_returned(self, return_date):
+        if self.status != "borrowed":
+            raise TransactionError("Book already returned")
+        self.return_date = return_date
+        self.status = "returned"
+
+    def is_overdue(self, today):
+        if self.status == "returned":
+            return False
+        return datetime.strptime(today, "%d-%m-%Y") > \
+               datetime.strptime(self.due_date, "%d-%m-%Y")
