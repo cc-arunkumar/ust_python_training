@@ -1,3 +1,17 @@
+# Task 5 — Financial Transaction Engine
+# Domain: Banking & Fintech
+# Business Requirement:
+# UST Finance Solutions team needs a transaction system.
+# 1. Transaction (base class):
+# txn_id , amount , status
+# Method: process()
+# 2. CardTransaction inherits from Transaction
+# Has card number, method: verify_card()
+# 3. OnlinePayment inherits from Transaction
+# Has payment gateway, method: verify_gateway()
+# 4. The system introduces InternationalCardPayment, which is:
+# A combination of both card and online payment
+# Needs to reuse both verification methods
 #Creating a class Transaction with required attributes and methods.
 class Transaction:
     def __init__(self, txn_id, amount, status):

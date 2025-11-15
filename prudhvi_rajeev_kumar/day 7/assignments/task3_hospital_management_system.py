@@ -1,3 +1,14 @@
+# Task 3 — Hospital Management System
+# Domain: Healthcare IT
+# Business Requirement:
+# UST Healthcare division needs a mini module to handle hospital roles.
+# 1. Every Person has:
+# Enterprise Tech Systems – Inheritance Design Challenge 2
+# name , age , gender
+# 2. Doctor and Patient both inherit from Person, but have different fields:
+# Doctor → specialization , consultation_fee
+# Patient → disease , room_number
+# 3. The hospital wants to extend Doctor to include Surgeon (with surgery_type and perform_surgery() ).
 #Creating a class Person with the required attributes.
 class Person:
     def __init__(self, name, age, gender):

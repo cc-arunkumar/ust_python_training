@@ -1,4 +1,18 @@
+# Task 4 — E-Commerce Platform (Inventory System)
+# Domain: Retail Tech
+# Business Requirement:
+# UST Digital Retail is developing an e-commerce backend system.
+# 1. Base entity → Product (with attributes: product_id , name , price )
+# 2. Subcategories:
+# Electronics → extra: brand , warranty_years
+# Clothing → extra: size , material
+# Groceries → extra: expiry_date , is_organic
+# 3. A new department wants to build an OnlineExclusiveProduct that applies to 
+# only some product categories and adds:
+# discount_rate
+# Method: apply_discount()
 #Creating a class Product and adding the required attributes to it.
+
 class Product:
     def __init__(self, product_id , name , price):
         self.product_id = product_id

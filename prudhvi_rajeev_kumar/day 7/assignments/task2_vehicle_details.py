@@ -1,3 +1,18 @@
+# Task 2 — Autonomous Vehicle System
+# Domain: Automotive / AI
+# Business Requirement:
+# UST Mobility is building an AI vehicle platform.
+# 1. Every Vehicle must have:
+# make , model , year
+# Method: show_info()
+# 2. Every ElectricVehicle should have:
+# battery_capacity , charge_status
+# Method: charge_battery()
+# 3. Every AutonomousVehicle should have:
+# ai_version , run_autopilot()
+# 4. The company wants to create a class SmartEV — a self-driving electric
+# vehicle.
+
 #Creating a Vehicle class adding the attributes to it.
 class Vehicle:
     def __init__(self, make, model, year):

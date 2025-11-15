@@ -1,3 +1,32 @@
+# Enterprise Tech Systems –
+# Inheritance Design Challenge
+# Objective:
+# Design Python classes that model real-world enterprise systems using 
+# inheritance appropriately.
+# Each problem describes a business scenario — you must identify the right
+# inheritance type and implement it cleanly.
+# Task 1 — Human Resource Management System
+# (HRMS)
+# Domain: Corporate HR / Payroll
+# Business Requirement:
+# UST’s HR system needs to manage different types of employees.
+# 1. All employees have:
+# emp_id , name , base_salary
+# Method: get_details() to display employee info
+# 2. Developers have:
+# programming_languages (list)
+# Method: show_skills()
+# 3. Managers have:
+# team_size , department
+# Method: show_team_info()
+# 4. Some managers are also developers (they code in emergencies).
+# ⚙️ Task: Model this system so that “Manager who codes” can reuse both
+# developer and manager features without rewriting logic.
+# Enterprise Tech Systems – Inheritance Design Challenge 1
+# �� Hint for participants: think about multiple inheritance vs multilevel, and which
+# combination fits best
+
+
 class Employee:
     #Adding the Required attributes of the Employee class.
     def __init__(self, emp_id, name, base_salary):

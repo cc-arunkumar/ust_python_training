@@ -1,3 +1,20 @@
+# Employee Management Mini System
+# Objective:
+# Learn how to define a class, create multiple objects, and interact with them — just
+# like how HR systems track employees in a company.
+# Scenario:
+# UST wants to build a very simple internal HR module in Python to store employee
+# data temporarily and calculate key details.
+# Each Employee should have:
+# emp_id
+# name
+# department
+# salary
+# and should be able to:
+# Display personal details
+# Calculate yearly salary
+# Apply a bonus based on department
+
 class Employee:
     def __init__(self, empid, name, dept, salary):
         self.empid = empid
