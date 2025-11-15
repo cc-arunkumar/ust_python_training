@@ -1,0 +1,28 @@
+user_id,name,email,status,max_loans
+U2001,Arun Kumar,arun.kumar@ust.com,active,5
+U2002,Riya Sharma,riya.sharma@ust.com,active,5
+U2003,John Mathew,john.mathew@ust.com,inactive,5
+U2004,Nisha Thomas,nisha.thomas@ust.com,active,3
+U2005,Anil Kumar,anil.kumar@ust.com,active,5
+U2006,Meera Dsouza,meera.dsouza@ust.com,banned,5
+U2007,Kiran Mohan,kiran.mohan@ust.com,active,4
+U2008,Sona Prakash,sona.prakash@ust.com,active,5
+U2009,Ravi Shankar,ravi.shankar@ust.com,active,2
+U2010,Mona Raj,mona.raj@ust.com,active,5
+U2011,Arvind Iyer,arvind.iyer@ust.com,active,3
+U2012,Divya Menon,divya.menon@ust.com,inactive,5
+U2013,Hari Nath,hari.nath@ust.com,active,4
+U2014,Joel Thomas,joel.thomas@ust.com,active,5
+U2015,Philip Mathew,philip.mathew@ust.com,active,5
+U2016,Balu Nair,balu.nair@ust.com,active,5
+U2017,Aswin Kumar,aswin.kumar@ust.com,active,5
+U2018,Leena George,leena.george@ust.com,active,4
+U2019,Sandra Joy,sandra.joy@ust.com,active,3
+U2020,Vishnu S,vishnu.s@ust.com,active,3
+U2021,Ajay Dev,ajay.dev@ust.com,banned,5
+U2022,Kavya Sunny,kavya.sunny@ust.com,active,5
+U2023,Neeraj Pillai,neeraj.pillai@ust.com,active,4
+U2024,Sachin Patel,sachin.patel@ust.com,active,5
+U2025,Veena Shetty,veena.shetty@ust.com,active,2
+U2026,sanjay,sanjay@ust.com,active,7
+U2025,vinay sharma,vinay@ust.com,inactive,3
