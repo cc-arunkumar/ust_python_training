@@ -5,18 +5,6 @@
 # 1. pending_payments.csv — visits not marked Paid.
 # 2. patient_summary.csv — one row per patient with total_visits and total_billed
 
-import csv
-
-# 1. Read ust_healthcare_visits.csv with csv.DictReader .
-
-with open("ust_healthcare_visits.csv","r") as file:
-    print("Data Present in ust healthcare:")
-    
-    # Create A DictWriter object
-    csv_reader=csv.DictReader(file)
-    for row in csv_reader:
-        print(row)
-            
 # 2. Basic validation / normalization:
 # Required fields: patient_id , name , visit_date , billed_amount , payment_status . If any
 # missing → skip that row (and print a short message).
@@ -24,58 +12,6 @@ with open("ust_healthcare_visits.csv","r") as file:
 # Trim whitespace from string fields.
 # Normalize payment_status to Title case (e.g., "pending" → "Pending" ).
 # Normalize follow_up_required to "Yes" or "No" (treat empty as "No" ).
-
-# Creating count 
-count = {
-    "skipped": 0,  
-    "total": 0,   
-    "processed": 0 
-}
-
-# Creating new_data list for successfully processed rows
-new_data = []
-
-# Define expected headers for the CSV files
-expected_headers = ["patient_id","name","visit_date","billed_amount","payment_status"]
-
-# Open a csv file in read mode
-with open("ust_healthcare_visits.csv", "r") as file:
-    csv_reader = csv.DictReader(file)
-    field_header=csv_reader.fieldnames
-    
-    for row in csv_reader:
-        count["total"] += 1
-
-        row = {key: val.strip() if isinstance(val, str) else val for key, val in row.items()}
-        
-        flag = False
-        
-        for field in expected_headers:
-            if not row.get(field) or len(row)!=len(field_header):  
-                print(f"Skipping row {count['total']} due to missing field: {field}")
-                
-                flag = True 
-                break
-        
-        if flag:
-            count["skipped"] += 1  
-            continue  
-        
-        try:
-                      
-            row['payment_status'] = row['payment_status'].title()  
-            row['follow_up_required'] = 'Yes' if row.get('follow_up_required') else 'No'
-            row['billed_amount'] = float(row['billed_amount'].replace('₹', '').replace(',', ''))
-            new_data.append(row)
-            count["processed"] += 1 
-        except ValueError:
-            print(f"Skipping row {count['total']} due to invalid 'billed_amount' value: {row['billed_amount']}")
-            count["skipped"] += 1  
-            continue  
-                       
-print(f"Total rows: {count['total']}")
-print(f"processed rows: {count['processed']}")
-print(f"skipped rows: {count['skipped']}")
 
 # 3. Create outputs:
 # pending_payments.csv : all cleaned columns for rows where payment_status != "Paid" .
@@ -85,25 +21,96 @@ print(f"skipped rows: {count['skipped']}")
 # has_pending_payment = "Yes" if any visit for that patient is not Paid;
 # otherwise "No" .
 
+import csv
+
+# Step 1: Read ust_healthcare_visits.csv with DictReader
+with open("ust_healthcare_visits.csv","r") as file:
+    print("Data Present in ust healthcare:")
+    csv_reader = csv.DictReader(file)   # read rows as dictionaries
+    for row in csv_reader:
+        print(row)   # print each row for inspection
+
+
+# Step 2: Initialize counters for tracking rows
+count = {
+    "skipped": 0,    # rows skipped due to errors/missing fields
+    "total": 0,      # total rows read
+    "processed": 0   # successfully processed rows
+}
+
+# Step 3: Create a list to store cleaned/processed data
+new_data = []
+
+# Step 4: Define expected headers for validation
+expected_headers = ["patient_id","name","visit_date","billed_amount","payment_status"]
+
+# Step 5: Read file again for processing
+with open("ust_healthcare_visits.csv", "r") as file:
+    csv_reader = csv.DictReader(file)
+    field_header = csv_reader.fieldnames   # actual headers in file
+    
+    for row in csv_reader:
+        count["total"] += 1   # increment total rows
+        
+        # Strip whitespace from values
+        row = {key: val.strip() if isinstance(val, str) else val for key, val in row.items()}
+        
+        flag = False
+        
+        # Validate required fields
+        for field in expected_headers:
+            if not row.get(field) or len(row) != len(field_header):
+                print(f"Skipping row {count['total']} due to missing field: {field}")
+                flag = True
+                break
+        
+        if flag:
+            count["skipped"] += 1
+            continue
+        
+        try:
+            # Clean and transform data
+            row['payment_status'] = row['payment_status'].title()   # normalize case
+            row['follow_up_required'] = 'Yes' if row.get('follow_up_required') else 'No'
+            row['billed_amount'] = float(row['billed_amount'].replace('₹', '').replace(',', ''))  # convert to float
+            
+            new_data.append(row)   # add to processed list
+            count["processed"] += 1
+        except ValueError:
+            print(f"Skipping row {count['total']} due to invalid 'billed_amount' value: {row['billed_amount']}")
+            count["skipped"] += 1
+            continue
+
+# Step 6: Print summary of processing
+print(f"Total rows: {count['total']}")
+print(f"Processed rows: {count['processed']}")
+print(f"Skipped rows: {count['skipped']}")
+
+
+# Step 7: Filter rows with pending payments
 clean_data = [row for row in new_data if row['payment_status'] != "Paid"]
 
+# Define headers for pending payments file
 header = [
     'patient_id', 'name', 'visit_date', 'billed_amount', 
     'payment_status', 'contact', 'follow_up_required', 
     'department', 'insurance_provider'
 ]
-           
+
+# Step 8: Write pending payments to new CSV
 with open("pending_payments.csv","w",newline='') as file:
     writer = csv.DictWriter(file, fieldnames=header)
-    writer.writeheader()  
+    writer.writeheader()
     writer.writerows(clean_data)
-    
-# Creating empty data dictionary
-data={}
+
+
+# Step 9: Create patient summary dictionary
+data = {}
 
 for val in new_data:
-    patient_id=val["patient_id"]
-    billed_amount=float(val["billed_amount"])
+    patient_id = val["patient_id"]
+    billed_amount = float(val["billed_amount"])
+    
     if patient_id not in data:
         data[patient_id] = {
             "name": val["name"],
@@ -111,23 +118,25 @@ for val in new_data:
             "total_billed": 0.0,
             "has_pending_payment": "No"
         }
-        
-    data[patient_id]["total_visits"]+=1
-    data[patient_id]["total_billed"]+=billed_amount
-    if val["payment_status"] !="Paid":
-        data[patient_id]["has_pending_payment"]="Yes"
-   
-        
-# Create or open a csv file in write mode
-with open("patient_summary.csv","w",newline='') as file:
-    header=["patient_id", "name", "total_visits", "total_billed", "has_pending_payment"]
-    writer=csv.DictWriter(file,fieldnames=header)
-    writer.writeheader()
-    for patient_id,val in data.items():
-        val["total_billed"]=f"{val["total_billed"]:.2f}"
     
-        row={"patient_id":patient_id,**val}
+    # Update patient summary
+    data[patient_id]["total_visits"] += 1
+    data[patient_id]["total_billed"] += billed_amount
+    if val["payment_status"] != "Paid":
+        data[patient_id]["has_pending_payment"] = "Yes"
+
+
+# Step 10: Write patient summary to CSV
+with open("patient_summary.csv","w",newline='') as file:
+    header = ["patient_id", "name", "total_visits", "total_billed", "has_pending_payment"]
+    writer = csv.DictWriter(file, fieldnames=header)
+    writer.writeheader()
+    
+    for patient_id, val in data.items():
+        val["total_billed"] = f"{val['total_billed']:.2f}"   # format billed amount
+        row = {"patient_id": patient_id, **val}
         writer.writerow(row)
+
 
 # 4. Console summary: print counts: processed rows, skipped rows, rows in each
 # output.

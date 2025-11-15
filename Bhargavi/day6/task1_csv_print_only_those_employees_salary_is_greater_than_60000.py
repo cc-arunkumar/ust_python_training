@@ -4,21 +4,21 @@
 
 import csv
 
-# Open the file in read mode
+# Open the CSV file in read mode
 with open('employee_data.csv', mode='r') as file:
     
-    # Create a CSV reader object
+    # Create a CSV reader object that reads rows as dictionaries
     csv_reader = csv.DictReader(file)
     
-    # Loop through each row in the CSV
+    # Loop through each row in the CSV file
     for row in csv_reader:
         
-        # Check if the salary is greater than 60000
+        # Convert salary to float and check if it's greater than 60000
         if float(row['salary']) > 60000:
             
-            
-            # Print the employee's information
+            # Print the employee's name and salary if condition is met
             print(f"Employee Name: {row['name']}, salary: {row['salary']}")
+
             
 # Output            
 # Employee Name: Arun, salary: 70000

@@ -1,13 +1,25 @@
-#csv DICT reader
+
+# Program: CSV DictReader Example
+
+# Description:
+# This program reads employee data from a CSV file using Python's csv.DictReader.
+# DictReader allows accessing each row as a dictionary with column names as keys.
+
 import csv
 
-#reading the file
-with open('employee_dict_data.csv',mode='r') as file:
-    csv_dict_reader=csv.DictReader(file)
+# Reading the file
+with open('employee_dict_data.csv', mode='r') as file:
+    # Create a DictReader object to read rows as dictionaries
+    csv_dict_reader = csv.DictReader(file)
+    
+    # Loop through each row in the CSV file
     for row in csv_dict_reader:
+        # Print the row dictionary (keys are column headers)
         print(row)
-        
+
+# Print confirmation after reading is complete
 print("CSV Reading complete")
+
 
 # output
 # {'id': '201', 'name': 'Suresh', 'department': 'Sales', 'salary': '58000'}
