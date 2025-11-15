@@ -1,15 +1,18 @@
 #CSV File ==>Comma Separated Values file
 
-import csv
+import csv   # Import the CSV module to handle CSV file operations
 
-#Reading CSV File
+# Reading CSV File
+with open('employee_data01.csv', mode='r') as file:   # Open the CSV file in read mode
+    csv_reader = csv.reader(file)   # Create a CSV reader object
 
-with open('employee_data01.csv',mode='r') as file:
-    csv_reader=csv.reader(file)
-    next(csv_reader)
-    
+    next(csv_reader)   # Skip the header row (first line of the CSV file)
+
+    # Loop through each remaining row in the CSV file
     for row in csv_reader:
-        print(row)
+        # Each row is returned as a list of values
+        print(row)     # Print the row (list of column values)
+
 
 #sample Output
 # PS C:\Users\Administrator\Desktop\Training\ust_python_training\vinutha> & 
