@@ -1,0 +1,191 @@
+Welcome to Library Management System (LMS)
+Type 'help' for commands.
+lms> help
+Commands:
+  book add
+  book update <book_id>
+  book remove <book_id>
+  book get <book_id>
+  book list
+  book search title=<substr> author=<name> tag=<tag>
+  user add
+  user update <user_id>
+  user get <user_id>
+  user list
+  user deactivate <user_id>
+  user activate <user_id>
+  user ban <user_id>
+  borrow <user_id> <book_id>
+  return <transaction_id>
+  loans active
+  loans overdue
+  loans user <user_id>
+  report summary
+  report user <user_id>
+  save
+  help
+  exit
+lms> report summary
+Error: Invalid date format for overdue check.
+lms> help
+Commands:
+  book add
+  book update <book_id>
+  book remove <book_id>
+  book get <book_id>
+  book list
+  book search title=<substr> author=<name> tag=<tag>
+  user add
+  user update <user_id>
+  user get <user_id>
+  user list
+  user deactivate <user_id>
+  user activate <user_id>
+  user ban <user_id>
+  borrow <user_id> <book_id>
+  return <transaction_id>
+  loans active
+  loans overdue
+  loans user <user_id>
+  report summary
+  report user <user_id>
+  save
+  help
+  exit
+lms> book add
+Book ID: b0034
+Title: Js
+Authors (comma separated): Andrew,James
+ISBN: 2344  
+Tags (comma separated): code,web
+Total Copies: 7
+Book added successfully.
+lms> report summary
+Error: Invalid date format for overdue check.
+lms> help
+Commands:
+  book add
+  book update <book_id>
+  book remove <book_id>
+  book get <book_id>
+  book list
+  book search title=<substr> author=<name> tag=<tag>
+  user add
+  user update <user_id>
+  user get <user_id>
+  user list
+  user deactivate <user_id>
+  user activate <user_id>
+  user ban <user_id>
+  borrow <user_id> <book_id>
+  return <transaction_id>
+  loans active
+  loans overdue
+  loans user <user_id>
+  report summary
+  report user <user_id>
+  save
+  help
+  exit
+lms> report user <user_id>
+Error: User not found.
+lms> report user U2006
+No transactions for user.
+lms> report user U2007
+T3005 | Book: B1014 | User: U2007 | Borrow: 11/2/2025 | Due: 11/16/2025 | Return: 11/14/2025 | Status: returned
+lms> help
+Commands:
+  book add
+  book update <book_id>
+  book remove <book_id>
+  book get <book_id>
+  book list
+  book search title=<substr> author=<name> tag=<tag>
+  user add
+  user update <user_id>
+  user get <user_id>
+  user list
+  user deactivate <user_id>
+  user activate <user_id>
+  user ban <user_id>
+  borrow <user_id> <book_id>
+  return <transaction_id>
+  loans active
+  loans overdue
+  loans user <user_id>
+  report summary
+  report user <user_id>
+  save
+  help
+  exit
+lms> user list
+U2001 | Arun Kumar | Email: arun.kumar@ust.com | Status: active | Max Loans: 5
+U2002 | Riya Sharma | Email: riya.sharma@ust.com | Status: active | Max Loans: 5
+U2003 | John Mathew | Email: john.mathew@ust.com | Status: inactive | Max Loans: 5
+U2004 | Nisha Thomas | Email: nisha.thomas@ust.com | Status: active | Max Loans: 3
+U2005 | Anil Kumar | Email: anil.kumar@ust.com | Status: active | Max Loans: 5
+U2006 | Meera Dsouza | Email: meera.dsouza@ust.com | Status: banned | Max Loans: 5
+U2007 | Kiran Mohan | Email: kiran.mohan@ust.com | Status: active | Max Loans: 4
+U2008 | Sona Prakash | Email: sona.prakash@ust.com | Status: active | Max Loans: 5
+U2009 | Ravi Shankar | Email: ravi.shankar@ust.com | Status: active | Max Loans: 2
+U2010 | Mona Raj | Email: mona.raj@ust.com | Status: active | Max Loans: 5
+U2011 | Arvind Iyer | Email: arvind.iyer@ust.com | Status: active | Max Loans: 3
+U2012 | Divya Menon | Email: divya.menon@ust.com | Status: inactive | Max Loans: 5
+U2013 | Hari Nath | Email: hari.nath@ust.com | Status: active | Max Loans: 4
+U2014 | Joel Thomas | Email: joel.thomas@ust.com | Status: active | Max Loans: 5
+U2015 | Philip Mathew | Email: philip.mathew@ust.com | Status: active | Max Loans: 5
+U2016 | Balu Nair | Email: balu.nair@ust.com | Status: active | Max Loans: 5
+U2017 | Aswin Kumar | Email: aswin.kumar@ust.com | Status: active | Max Loans: 5
+U2018 | Leena George | Email: leena.george@ust.com | Status: active | Max Loans: 4
+U2019 | Sandra Joy | Email: sandra.joy@ust.com | Status: active | Max Loans: 3
+U2020 | Vishnu S | Email: vishnu.s@ust.com | Status: active | Max Loans: 3
+U2021 | Ajay Dev | Email: ajay.dev@ust.com | Status: banned | Max Loans: 5
+U2022 | Kavya Sunny | Email: kavya.sunny@ust.com | Status: active | Max Loans: 5
+U2023 | Neeraj Pillai | Email: neeraj.pillai@ust.com | Status: active | Max Loans: 4
+U2024 | Sachin Patel | Email: sachin.patel@ust.com | Status: active | Max Loans: 5
+U2025 | Veena Shetty | Email: veena.shetty@ust.com | Status: active | Max Loans: 2
+lms> help
+Commands:
+  book add
+  book update <book_id>
+  book remove <book_id>
+  book get <book_id>
+  book list
+  book search title=<substr> author=<name> tag=<tag>
+  user add
+  user update <user_id>
+  user get <user_id>
+  user list
+  user deactivate <user_id>
+  user activate <user_id>
+  user ban <user_id>
+  borrow <user_id> <book_id>
+  return <transaction_id>
+  loans active
+  loans overdue
+  loans user <user_id>
+  report summary
+  report user <user_id>
+  save
+  help
+  exit
+  user ban <user_id>
+  borrow <user_id> <book_id>
+  return <transaction_id>
+  loans active
+  loans overdue
+  loans user <user_id>
+  report summary
+  report user <user_id>
+  save
+  help
+  exit
+  loans user <user_id>
+  report summary
+  report user <user_id>
+  save
+  help
+  exit
+  exit
+lms> user get U2009
+U2009 | Ravi Shankar | Email: ravi.shankar@ust.com | Status: active | Max Loans: 2
