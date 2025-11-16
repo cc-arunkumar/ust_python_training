@@ -1,0 +1,552 @@
+===  Library Management System ===
+1.  Manage Books
+2.  Manage Users
+3.  Borrow & Return
+4.  Loan Tracker
+5.  Reports & Insights
+6.  Save Changes
+7.  Help & Guide
+8.  Exit System
+3.  Borrow & Return
+4.  Loan Tracker
+5.  Reports & Insights
+6.  Save Changes
+7.  Help & Guide
+8.  Exit System
+ Please enter your choice: 1
+
+--- Books Menu ---
+1. Add Book
+2. Update Book
+3. Remove Book
+4. Get Book
+5. List Books
+6. Search by Title
+7. Search by Author
+8. Search by Tag
+0. Back to Main Menu
+Choose option: 1
+Book ID: B1041
+Title: Introduction to Java Programming 
+Authors (comma separated): E Balaguruswamy, Ramanuj Das
+ISBN: 3474536
+Tags (comma separated): Java, New Core Java
+Total Copies: 70 
+Available Copies (leave empty to default to Total): 
+ Book added successfully.
+
+--- Books Menu ---
+1. Add Book
+2. Update Book
+3. Remove Book
+4. Get Book
+5. List Books
+6. Search by Title
+7. Search by Author
+8. Search by Tag
+0. Back to Main Menu
+Choose option: 2
+Book ID to update: B1041
+Title (leave blank to skip): 
+Authors (comma separated, leave blank to skip): 
+ISBN (leave blank to skip): 
+Tags (comma separated, leave blank to skip): 
+Total Copies (leave blank to skip): 
+Available Copies (leave blank to skip): 65
+Book updated.
+
+--- Books Menu ---
+1. Add Book
+2. Update Book
+3. Remove Book
+4. Get Book
+5. List Books
+6. Search by Title
+7. Search by Author
+8. Search by Tag
+0. Back to Main Menu
+Choose option: 4
+Book ID: B1041
+B1041 | Introduction to Java Programming | Authors: E Balaguruswamy, Ramanuj Das | ISBN: 3474536 | Tags: Java, New Core Java | Total: 70 | Available: 65
+
+--- Books Menu ---
+1. Add Book
+2. Update Book
+3. Remove Book
+4. Get Book
+5. List Books
+6. Search by Title
+7. Search by Author
+8. Search by Tag
+0. Back to Main Menu
+Choose option: 5
+
+ Available Books
+- B1001 : Python Crash Course (Available: 3)
+- B1002 : Learning SQL (Available: 3)
+- B1003 : Clean Code (Available: 2)
+- B1004 : Fluent Python (Available: 1)
+- B1005 : Head First Design Patterns (Available: 2)
+- B1006 : The Pragmatic Programmer (Available: 5)
+- B1007 : Automate the Boring Stuff (Available: 5)
+- B1008 : Database System Concepts (Available: 3)
+- B1009 : Operating System Concepts (Available: 2)
+- B1010 : Introduction to Algorithms (Available: 5)
+- B1011 : Java Complete Reference (Available: 4)
+- B1012 : Effective Java (Available: 3)
+- B1013 : Java Concurrency in Practice (Available: 2)
+- B1014 : You Don't Know JS (Available: 4)
+- B1015 : Eloquent JavaScript (Available: 4)
+- B1016 : HTML & CSS (Available: 3)
+- B1017 : Designing Data-Intensive Applications (Available: 3)
+- B1018 : Deep Learning (Available: 2)
+- B1019 : Hands-On Machine Learning (Available: 3)
+- B1020 : Introduction to Machine Learning (Available: 3)
+- B1021 : Reinforcement Learning (Available: 2)
+- B1022 : Compilers: Principles Techniques and Tools (Available: 2)
+- B1023 : Computer Networks (Available: 4)
+- B1024 : Distributed Systems (Available: 2)
+- B1025 : Big Data Fundamentals (Available: 3)
+- B1026 : Data Engineering with Python (Available: 3)
+- B1027 : Kafka: The Definitive Guide (Available: 4)
+- B1028 : Spark: The Definitive Guide (Available: 2)
+- B1029 : NoSQL Distilled (Available: 3)
+- B1030 : Learning Docker (Available: 4)
+- B1031 : Kubernetes in Action (Available: 3)
+- B1032 : Terraform Up & Running (Available: 2)
+- B1033 : CI/CD with Jenkins (Available: 3)
+- B1034 : Cloud Architecture Patterns (Available: 3)
+- B1035 : Azure for Architects (Available: 3)
+- B1036 : AWS Certified Solutions Architect (Available: 4)
+- B1037 : GCP Architecture Framework (Available: 3)
+- B1038 : Data Visualization with Python (Available: 3)
+- B1039 : SQL for Data Analysis (Available: 4)
+- B1040 : Introduction to Statistics (Available: 5)
+- B1041 : Introduction to Java Programming (Available: 65)
+
+--- Books Menu ---
+1. Add Book
+2. Update Book
+3. Remove Book
+4. Get Book
+5. List Books
+6. Search by Title
+7. Search by Author
+8. Search by Tag
+0. Back to Main Menu
+Choose option: 6
+Title substring: Java
+- B1011 : Java Complete Reference (Available: 4)
+- B1012 : Effective Java (Available: 3)
+- B1013 : Java Concurrency in Practice (Available: 2)
+- B1015 : Eloquent JavaScript (Available: 4)
+- B1041 : Introduction to Java Programming (Available: 65)
+
+--- Books Menu ---
+1. Add Book
+2. Update Book
+3. Remove Book
+4. Get Book
+5. List Books
+6. Search by Title
+7. Search by Author
+8. Search by Tag
+0. Back to Main Menu
+Choose option: 7
+Author name: Ramanuj Das
+- B1041 : Introduction to Java Programming (Available: 65)
+
+--- Books Menu ---
+1. Add Book
+2. Update Book
+3. Remove Book
+4. Get Book
+5. List Books
+6. Search by Title
+7. Search by Author
+8. Search by Tag
+0. Back to Main Menu
+Choose option: 8
+Tag: New
+
+--- Books Menu ---
+1. Add Book
+2. Update Book
+3. Remove Book
+4. Get Book
+5. List Books
+6. Search by Title
+7. Search by Author
+8. Search by Tag
+0. Back to Main Menu
+Choose option: 0
+
+===  Library Management System ===
+1.  Manage Books
+2.  Manage Users
+3.  Borrow & Return
+4.  Loan Tracker
+5.  Reports & Insights
+6.  Save Changes
+7.  Help & Guide
+8.  Exit System
+ Please enter your choice: 2
+Enter password to access Users Section: 1234
+ Incorrect password. Attempts left: 2
+Enter password to access Users Section: 123
+ Authentication successful.
+
+--- Users Menu ---
+1. Add User
+2. Update User
+3. Get User
+4. List Users
+5. Deactivate User
+6. Activate User
+7. Ban User
+0. Back to Main Menu
+Choose option: 1
+User ID: U1341
+Name: Rohit Kumar
+Email (username only, will append @ust.com): rohit.kumar@ust.com
+Max Loans (default 0): 
+ User added.
+
+--- Users Menu ---
+1. Add User
+2. Update User
+3. Get User
+4. List Users
+5. Deactivate User
+6. Activate User
+7. Ban User
+0. Back to Main Menu
+Choose option: 2
+User ID to update: U1341
+Name (leave blank to skip): 
+Email (username only, leave blank to skip): 
+Status (active/inactive/banned, leave blank to skip): active
+Max Loans (leave blank to skip): 1
+ User updated.
+
+--- Users Menu ---
+1. Add User
+2. Update User
+3. Get User
+4. List Users
+5. Deactivate User
+6. Activate User
+7. Ban User
+0. Back to Main Menu
+Choose option: 3
+User ID: U1341
+U1341 | Rohit Kumar | Email: rohit.kumar@ust.com | Status: active | Max Loans: 1
+
+--- Users Menu ---
+1. Add User
+2. Update User
+3. Get User
+4. List Users
+5. Deactivate User
+6. Activate User
+7. Ban User
+0. Back to Main Menu
+Choose option: 4
+Enter password to access All User Details: 123
+ Authentication successful.
+
+ Registered Users
+- U2001 : Arun Kumar [active]
+- U2002 : Riya Sharma [active]
+- U2003 : John Mathew [inactive]
+- U2004 : Nisha Thomas [active]
+- U2005 : Anil Kumar [active]
+- U2006 : Meera Dsouza [banned]
+- U2007 : Kiran Mohan [active]
+- U2008 : Sona Prakash [active]
+- U2009 : Ravi Shankar [active]
+- U2010 : Mona Raj [active]
+- U2011 : Arvind Iyer [active]
+- U2012 : Divya Menon [inactive]
+- U2013 : Hari Nath [active]
+- U2014 : Joel Thomas [active]
+- U2015 : Philip Mathew [active]
+- U2016 : Balu Nair [active]
+- U2017 : Aswin Kumar [active]
+- U2018 : Leena George [active]
+- U2019 : Sandra Joy [active]
+- U2020 : Vishnu S [active]
+- U2021 : Ajay Dev [banned]
+- U2022 : Kavya Sunny [active]
+- U2023 : Neeraj Pillai [active]
+- U2024 : Sachin Patel [active]
+- U2025 : Veena Shetty [active]
+- U1341 : Rohit Kumar [active]
+
+--- Users Menu ---
+1. Add User
+2. Update User
+3. Get User
+4. List Users
+5. Deactivate User
+6. Activate User
+7. Ban User
+0. Back to Main Menu
+Choose option: 5
+User ID: U1341
+ User deactivated.
+
+--- Users Menu ---
+1. Add User
+2. Update User
+3. Get User
+4. List Users
+5. Deactivate User
+6. Activate User
+7. Ban User
+0. Back to Main Menu
+Choose option: 6
+User ID: U1341
+ User activated.
+
+--- Users Menu ---
+1. Add User
+2. Update User
+3. Get User
+4. List Users
+5. Deactivate User
+6. Activate User
+7. Ban User
+0. Back to Main Menu
+Choose option: 7
+User ID: U1341
+ User banned.
+
+--- Users Menu ---
+1. Add User
+2. Update User
+3. Get User
+4. List Users
+5. Deactivate User
+6. Activate User
+7. Ban User
+0. Back to Main Menu
+Choose option: 3
+User ID: U1341
+U1341 | Rohit Kumar | Email: rohit.kumar@ust.com | Status: banned | Max Loans: 1
+
+--- Users Menu ---
+1. Add User
+2. Update User
+3. Get User
+4. List Users
+5. Deactivate User
+6. Activate User
+7. Ban User
+0. Back to Main Menu
+Choose option: 0
+
+===  Library Management System ===
+1.  Manage Books
+2.  Manage Users
+3.  Borrow & Return
+4.  Loan Tracker
+5.  Reports & Insights
+6.  Save Changes
+7.  Help & Guide
+8.  Exit System
+ Please enter your choice: 3
+
+--- Borrow/Return Menu ---
+1. Borrow Book
+2. Return Book
+0. Back to Main Menu
+Choose option: 1
+User ID: U1341
+Book ID: B1041
+Error: User is not allowed to borrow
+
+--- Borrow/Return Menu ---
+1. Borrow Book
+2. Return Book
+0. Back to Main Menu
+Choose option: 1  
+User ID: U1341
+Book ID: B1041
+Error: User is not allowed to borrow
+
+--- Borrow/Return Menu ---
+1. Borrow Book
+2. Return Book
+0. Back to Main Menu
+Choose option: 1
+User ID: U2001
+Book ID: B1041
+ Borrow successful. Transaction ID: T3021. Due Date: 30-11-2025.
+
+--- Borrow/Return Menu ---
+1. Borrow Book
+2. Return Book
+0. Back to Main Menu
+Choose option: 2
+Transaction ID: T3021
+ Return successful.
+
+--- Borrow/Return Menu ---
+1. Borrow Book
+2. Return Book
+0. Back to Main Menu
+Choose option: 0
+
+===  Library Management System ===
+1.  Manage Books
+2.  Manage Users
+3.  Borrow & Return
+4.  Loan Tracker
+5.  Reports & Insights
+6.  Save Changes
+7.  Help & Guide
+8.  Exit System
+ Please enter your choice: 4
+Enter password to access Loans Section: 123
+ Authentication successful.
+
+--- Loans Menu ---
+1. Active Loans
+2. Overdue Loans
+3. User Loan History
+0. Back to Main Menu
+Choose option: 1
+Enter password to access Active Loans: 123
+ Authentication successful.
+
+ Active Loans
+- T3001 : Book B1001 borrowed by U2001 (Due: 2025-10-15, Status: borrowed)
+- T3004 : Book B1004 borrowed by U2005 (Due: 2025-11-15, Status: borrowed)
+- T3007 : Book B1028 borrowed by U2010 (Due: 2025-11-19, Status: borrowed)
+- T3008 : Book B1038 borrowed by U2013 (Due: 2025-11-20, Status: borrowed)
+- T3010 : Book B1033 borrowed by U2015 (Due: 2025-11-21, Status: borrowed)
+- T3012 : Book B1035 borrowed by U2018 (Due: 2025-11-22, Status: borrowed)
+- T3014 : Book B1019 borrowed by U2020 (Due: 2025-11-15, Status: borrowed)
+- T3016 : Book B1017 borrowed by U2023 (Due: 2025-11-17, Status: borrowed)
+- T3018 : Book B1012 borrowed by U2025 (Due: 2025-11-18, Status: borrowed)
+- T3019 : Book B1005 borrowed by U2009 (Due: 2025-11-19, Status: borrowed)
+
+--- Loans Menu ---
+1. Active Loans
+2. Overdue Loans
+3. User Loan History
+0. Back to Main Menu
+Choose option: 2
+Enter password to access Overdue Loans: 123
+ Authentication successful.
+
+ Overdue Loans
+
+--- Loans Menu ---
+1. Active Loans
+2. Overdue Loans
+3. User Loan History
+0. Back to Main Menu
+Choose option: 3
+Enter password to access User Loan History: 123
+ Authentication successful.
+User ID: U2001
+
+ Loan History for U2001
+- T3001 : Book B1001 borrowed by U2001 (Due: 2025-10-15, Status: borrowed)
+- T3021 : Book B1041 borrowed by U2001 (Due: 30-11-2025, Status: returned)
+
+--- Loans Menu ---
+1. Active Loans
+2. Overdue Loans
+3. User Loan History
+0. Back to Main Menu
+Choose option: 0
+
+===  Library Management System ===
+1.  Manage Books
+2.  Manage Users
+3.  Borrow & Return
+4.  Loan Tracker
+5.  Reports & Insights
+6.  Save Changes
+7.  Help & Guide
+8.  Exit System
+ Please enter your choice: 5
+
+--- Report Menu ---
+1. Summary Report
+2. User History Report
+0. Back to Main Menu
+Choose option: 1
+
+ Library Summary
+- Total Books : 41
+- Total Users : 26
+- Active Loans : 10
+- Overdue Loans : 4
+
+--- Report Menu ---
+1. Summary Report
+2. User History Report
+0. Back to Main Menu
+Choose option: 2
+Enter password to access User History Report: 123
+ Authentication successful.
+User ID: U2001
+
+ User Report for U2001
+- T3001 : Book B1001 borrowed by U2001 (Due: 2025-10-15, Status: borrowed)
+- T3021 : Book B1041 borrowed by U2001 (Due: 30-11-2025, Status: returned)
+
+--- Report Menu ---
+1. Summary Report
+2. User History Report
+0. Back to Main Menu
+Choose option: 0
+
+===  Library Management System ===
+1.  Manage Books
+2.  Manage Users
+3.  Borrow & Return
+4.  Loan Tracker
+5.  Reports & Insights
+6.  Save Changes
+7.  Help & Guide
+8.  Exit System
+ Please enter your choice: 6
+ All data saved to CSV successfully.
+
+===  Library Management System ===
+1.  Manage Books
+2.  Manage Users
+3.  Borrow & Return
+4.  Loan Tracker
+5.  Reports & Insights
+6.  Save Changes
+7.  Help & Guide
+8.  Exit System
+ Please enter your choice: 7
+
+ Help & Guide
+Navigate using numbers. Each section has its own submenu.
+Books → manage books
+Users → manage users (password protected)
+Borrow/Return → borrow or return books
+Loans → view active/overdue loans or user history (password protected)
+Reports → summary or user history reports
+Save → persist all changes to CSV
+Exit → quit the program
+
+===  Library Management System ===
+1.  Manage Books
+2.  Manage Users
+3.  Borrow & Return
+4.  Loan Tracker
+5.  Reports & Insights
+6.  Save Changes
+7.  Help & Guide
+8.  Exit System
+ Please enter your choice: 8
+ Goodbye.
