@@ -1,0 +1,10 @@
+user_id,name,email,status,max_loans
+300,Deva Prasath,dev@outlook.com,active,5
+U100,Asutosh,asu@gmail.com,inactive,5
+U900,Max,max@gmail.com,active,5
+U676,Gopsi,gop@hmail.cp,active,5
+U787,Varun,varun@gmail.com,active,5
+U899,Rohit,,active,5
+U898,mouly,moul@gmail.com,active,5
+U777,Virat,virat@gmail.com,inactive,5
+U656,Raine,raina@gmail.com,active,5

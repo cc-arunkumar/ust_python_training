@@ -255,3 +255,4 @@ class Transaction:
             return_date=return_date,
             status=data["status"]
         )
+

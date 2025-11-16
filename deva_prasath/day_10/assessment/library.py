@@ -10,13 +10,7 @@ from models import (
 )
 
 class Library:
-    """
-    Main business logic layer for the Library Management System.
-    Handles all operations on books, users, and transactions.
-    """
-
     def __init__(self):
-        """Initialize library and load data from CSV files."""
         self.storage = CSVStorage()
         self.books = self.storage.load_books()
         self.users = self.storage.load_users()
@@ -45,7 +39,6 @@ class Library:
         if isbn and isbn in self.isbns:
             raise InvalidBookError("ISBN already exists")
 
-        # Fixed: Use Book, not Books | authors, not author
         book = Book(
             book_id=book_id,
             title=title,
@@ -75,7 +68,7 @@ class Library:
                 if new_total < book.available_copies:
                     raise ValidationError("Total copies cannot be less than available copies")
                 book.total_copies = new_total
-            elif key in ["authors", "tags"]:  # Fixed: authors
+            elif key in ["authors", "tags"]:  
                 if isinstance(value, str):
                     value = [v.strip() for v in value.split(",") if v.strip()]
                 setattr(book, key, value)
@@ -210,7 +203,6 @@ class Library:
         self.transactions.append(tx)
         self.tx_ids.add(tx_id)
 
-        # Decrease available copies
         book.available_copies -= 1
 
         return tx
@@ -231,7 +223,6 @@ class Library:
         today = get_today_str()
         tx.mark_returned(today)
 
-        # Increase available copies
         book = self.get_book(tx.book_id)
         book.available_copies += 1
 
@@ -276,4 +267,3 @@ class Library:
             "transactions": history,
             "overdue": overdue
         }
-        

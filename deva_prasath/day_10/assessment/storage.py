@@ -7,17 +7,16 @@ from models import ValidationError
 
 DATA_DIR = "data"
 
-# CRITICAL: Create directory BEFORE defining file paths
+# === FIX: Create directory FIRST ===
 os.makedirs(DATA_DIR, exist_ok=True)
 
-# Now safe to define paths
+# === Now define file paths ===
 BOOKS_FILE = os.path.join(DATA_DIR, "books.csv")
 USERS_FILE = os.path.join(DATA_DIR, "users.csv")
 TRANSACTIONS_FILE = os.path.join(DATA_DIR, "transactions.csv")
 
-# Ensure data directory exists
-os.makedirs(DATA_DIR, exist_ok=True)
-
+# Remove the duplicate os.makedirs() below
+# os.makedirs(DATA_DIR, exist_ok=True)  ← DELETE THIS LINE
 
 class CSVStorage:
     """
@@ -27,10 +26,6 @@ class CSVStorage:
     - Overwrites entire file on save
     - Uses | as delimiter for list fields
     """
-
-    # ================================
-    # BOOKS
-    # ================================
     @staticmethod
     def _ensure_books_file():
         """Create books.csv with header if not exists."""
@@ -86,9 +81,7 @@ class CSVStorage:
                 data["tags"] = "|".join(data["tags"])
                 writer.writerow(data)
 
-    # ================================
-    # USERS
-    # ================================
+  
     @staticmethod
     def _ensure_users_file():
         """Create users.csv with header if not exists."""
@@ -132,9 +125,7 @@ class CSVStorage:
                 data["email"] = data["email"] or ""
                 writer.writerow(data)
 
-    # ================================
-    # TRANSACTIONS
-    # ================================
+    
     @staticmethod
     def _ensure_transactions_file():
         """Create transactions.csv with header if not exists."""
@@ -183,3 +174,13 @@ class CSVStorage:
             writer.writeheader()
             for tx in transactions:
                 writer.writerow(tx.to_dict())
+
+
+
+
+
+
+
+
+
+

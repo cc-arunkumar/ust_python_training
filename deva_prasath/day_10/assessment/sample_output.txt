@@ -1,0 +1,520 @@
+╔══════════════════════════════════════╗
+║        MAIN MENU [Guest Mode]        ║
+╚══════════════════════════════════════╝
+1. Manage Books
+2. Manage Users
+3. Borrow Book
+4. Return Book
+5. View Loans
+6. Reports
+7. Save
+8. (no logout)
+9. Exit
+Enter option number or type a command (type 'help'): 1
+╔══════════════════════════════════════╗
+║              BOOKS MENU              ║
+╚══════════════════════════════════════╝
+1. Add Book
+2. Update Book
+3. Remove Book
+4. View Book
+5. List All Books
+6. Search Books
+7. Back
+Choose option or type command: 1
+Enter admin password: admin123
+[Success] Access granted.
+=== Add New Book ===
+Book ID: B567
+Title: Good will hunting
+Authors (comma-separated): Matt daemon
+ISBN (optional): 878765
+Tags (comma-separated, optional): Inspirational
+Total Copies: 9
+[Success] Book 'Good will hunting' added (ID: B567)
+
+Press Enter to continue...
+
+
+╔══════════════════════════════════════╗
+║        MAIN MENU [Guest Mode]        ║
+╚══════════════════════════════════════╝
+1. Manage Books
+2. Manage Users
+3. Borrow Book
+4. Return Book
+5. View Loans
+6. Reports
+7. Save
+8. (no logout)
+9. Exit
+Enter option number or type a command (type 'help'): 1
+╔══════════════════════════════════════╗
+║              BOOKS MENU              ║
+╚══════════════════════════════════════╝
+1. Add Book
+2. Update Book
+3. Remove Book
+4. View Book
+5. List All Books
+6. Search Books
+7. Back
+Choose option or type command: 2
+Enter Book ID to update: B1026
+Enter admin password: admin123
+[Success] Access granted.
+=== Updating Book: Data Engineering with Python ===
+Leave blank to keep current value.
+Title [Data Engineering with Python]: Data Enginnering
+Authors [P, a, u, l, C, r, i, c, k, a, r, d]: 
+ISBN [9781789535365]: 
+Tags [d, a, t, a, -, e, n, g, i, n, e, e, r, i, n, g, p, y, t, h, o, n]: 
+Total Copies [3]: 7
+[Success] Book updated.
+
+Press Enter to continue...
+╔══════════════════════════════════════╗
+║              BOOKS MENU              ║
+╚══════════════════════════════════════╝
+1. Add Book
+2. Update Book
+3. Remove Book
+4. View Book
+5. List All Books
+6. Search Books
+7. Back
+Choose option or type command: 3
+Enter Book ID to remove: B1029
+Are you sure you want to remove 'NoSQL Distilled' (ID: B1029)? [y/N]: y
+[Success] Book removed.
+
+Press Enter to continue...
+╔══════════════════════════════════════╗
+║              BOOKS MENU              ║
+╚══════════════════════════════════════╝
+1. Add Book
+2. Update Book
+3. Remove Book
+4. View Book
+5. List All Books
+6. Search Books
+7. Back
+Choose option or type command: 4
+Enter Book ID to view: B1032
+
+--- Book Details ---
+ID: B1032
+Title: Terraform Up & Running
+Authors: Y, e, v, g, e, n, i, y, B, r, i, k, m, a, n
+ISBN: 9781492046903
+Tags: d, e, v, o, p, s, i, n, f, r, a, s, t, r, u, c, t, u, r, e
+Available: 2/2
+Status: Available
+
+Press Enter to continue...
+╔══════════════════════════════════════╗
+║              BOOKS MENU              ║
+╚══════════════════════════════════════╝
+1. Add Book
+2. Update Book
+3. Remove Book
+4. View Book
+5. List All Books
+6. Search Books
+7. Back
+Choose option or type command: 5
+
+=== All Books (41) ===
+B1001: Python Crash Course [3/5] [Available]
+B1002: Learning SQL [3/4] [Available]
+B1003: Clean Code [2/4] [Available]
+B1004: Fluent Python [1/3] [Available]
+B1005: Head First Design Patterns [2/3] [Available]
+B1006: The Pragmatic Programmer [5/5] [Available]
+B1007: Automate the Boring Stuff [5/6] [Available]
+B1008: Database System Concepts [3/3] [Available]
+B1009: Operating System Concepts [2/3] [Available]
+B1010: Introduction to Algorithms [5/5] [Available]
+B1011: Java Complete Reference [4/4] [Available]
+B1012: Effective Java [3/3] [Available]
+B1013: Java Concurrency in Practice [2/2] [Available]
+B1014: You Don't Know JS [4/5] [Available]
+B1015: Javascript [4/4] [Available]
+B1016: HTML & CSS [3/3] [Available]
+B1017: Designing Data-Intensive Applications [3/4] [Available]
+B1018: Deep Learning [2/3] [Available]
+B1019: Hands-On Machine Learning [3/4] [Available]
+B1020: Introduction to Machine Learning [3/3] [Available]
+B1021: Reinforcement Learning [1/2] [Available]
+B1022: Compilers: Principles Techniques and Tools [2/2] [Available]
+B1023: Computer Networks [4/4] [Available]
+B1024: Distributed Systems [2/3] [Available]
+B1025: Big Data Fundamentals [3/3] [Available]
+B1026: Data Enginnering [3/7] [Available]
+B1027: Kafka: The Definitive Guide [4/4] [Available]
+B1028: Spark: The Definitive Guide [2/3] [Available]
+B1030: Learning Docker [4/4] [Available]
+B1031: Kubernetes in Action [3/3] [Available]
+B1032: Terraform Up & Running [2/2] [Available]
+B1033: CI/CD with Jenkins [3/3] [Available]
+B1034: Cloud Architect [1/3] [Available]
+B1035: Azure for Architects [2/3] [Available]
+B1036: AWS Certified Solutions Architect [4/4] [Available]
+B1037: GCP Architecture Framework [3/3] [Available]
+B1038: Data Visualization with Python [3/4] [Available]
+B1039: SQL for Data Analysis [4/4] [Available]
+B1040: Introduction to Statistics [5/5] [Available]
+B191: uiui [8/8] [Available]
+B787: System design [8/8] [Available]
+
+Press Enter to continue...
+╔══════════════════════════════════════╗
+║              BOOKS MENU              ║
+╚══════════════════════════════════════╝
+1. Add Book
+2. Update Book
+3. Remove Book
+4. View Book
+5. List All Books
+6. Search Books
+7. Back
+Choose option or type command: 6
+Search by (title/author/tag): title
+Enter search value: Deep Learning
+
+=== Search Results (1) ===
+B1018: Deep Learning [2/3]
+
+Press Enter to continue...
+╔══════════════════════════════════════╗
+║              BOOKS MENU              ║
+╚══════════════════════════════════════╝
+1. Add Book
+2. Update Book
+3. Remove Book
+4. View Book
+5. List All Books
+6. Search Books
+7. Back
+Choose option or type command: 7
+╔══════════════════════════════════════╗
+║      MAIN MENU [Authenticated]       ║
+╚══════════════════════════════════════╝
+1. Manage Books
+2. Manage Users
+3. Borrow Book
+4. Return Book
+5. View Loans
+6. Reports
+7. Save
+8. Logout
+9. Exit
+
+
+Enter option number or type a command (type 'help'): 2
+╔══════════════════════════════════════╗
+║              USERS MENU              ║
+╚══════════════════════════════════════╝
+1. Add Member
+2. Update Member
+3. View Member
+4. List Members
+5. Activate / Deactivate / Ban
+6. Back
+Choose option or type command: 1
+=== Add New Member ===
+Member ID: U656
+Name: Raine
+Email (optional): raina@gmail.com
+[Success] Member 'Raine' added (ID: U656)
+
+Press Enter to continue...
+╔══════════════════════════════════════╗
+║              USERS MENU              ║
+╚══════════════════════════════════════╝
+1. Add Member
+2. Update Member
+3. View Member
+4. List Members
+5. Activate / Deactivate / Ban
+6. Back
+Choose option or type command: 2
+Enter Member ID to update: 300
+=== Updating Member: Dev ===
+Name [Dev]: Deva Prasath
+Email [dev@outlook.com]: 
+[Success] Member updated.
+
+Press Enter to continue...
+╔══════════════════════════════════════╗
+║              USERS MENU              ║
+╚══════════════════════════════════════╝
+1. Add Member
+2. Update Member
+3. View Member
+4. List Members
+5. Activate / Deactivate / Ban
+6. Back
+Choose option or type command: 3
+Enter Member ID to view: U777
+
+--- Member Details ---
+ID: U777
+Name: Virat
+Email: virat@gmail.com
+Status: Inactive
+Active Loans: 0
+
+Press Enter to continue...
+╔══════════════════════════════════════╗
+║              USERS MENU              ║
+╚══════════════════════════════════════╝
+1. Add Member
+2. Update Member
+3. View Member
+4. List Members
+5. Activate / Deactivate / Ban
+6. Back
+Choose option or type command: 4
+
+=== All Members (9) ===
+300: Deva Prasath [active]
+U100: Asutosh [active]
+U900: Max [active]
+U676: Gopsi [active]
+U787: Varun [active]
+U899: Rohit [active]
+U898: mouly [active]
+U777: Virat [inactive]
+U656: Raine [active]
+
+Press Enter to continue...
+╔══════════════════════════════════════╗
+║              USERS MENU              ║
+╚══════════════════════════════════════╝
+1. Add Member
+2. Update Member
+3. View Member
+4. List Members
+5. Activate / Deactivate / Ban
+6. Back
+Choose option or type command: 5
+Enter Member ID: U100
+Type (activate/deactivate/ban): deactivate
+[Success] Member deactivated.
+
+Press Enter to continue...
+╔══════════════════════════════════════╗
+║              USERS MENU              ║
+╚══════════════════════════════════════╝
+1. Add Member
+2. Update Member
+3. View Member
+4. List Members
+5. Activate / Deactivate / Ban
+6. Back
+Choose option or type command: 6
+╔══════════════════════════════════════╗
+║      MAIN MENU [Authenticated]       ║
+╚══════════════════════════════════════╝
+1. Manage Books
+2. Manage Users
+3. Borrow Book
+4. Return Book
+5. View Loans
+6. Reports
+7. Save
+8. Logout
+9. Exit
+
+╔══════════════════════════════════════╗
+║             BORROW BOOK              ║
+╚══════════════════════════════════════╝
+Enter Member ID: U900
+Enter Book ID: B1012
+[Success] Borrow successful! Transaction ID: T10 Due: 30-11-2025
+
+Press Enter to continue...
+╔══════════════════════════════════════╗
+║      MAIN MENU [Authenticated]       ║
+╚══════════════════════════════════════╝
+1. Manage Books
+2. Manage Users
+3. Borrow Book
+4. Return Book
+5. View Loans
+6. Reports
+7. Save
+8. Logout
+9. Exit
+Enter option number or type a command (type 'help'): 4
+╔══════════════════════════════════════╗
+║             RETURN BOOK              ║
+╚══════════════════════════════════════╝
+Enter Transaction ID to return: T10
+[Success] Book returned successfully.
+
+Press Enter to continue...
+╔══════════════════════════════════════╗
+║      MAIN MENU [Authenticated]       ║
+╚══════════════════════════════════════╝
+1. Manage Books
+2. Manage Users
+3. Borrow Book
+4. Return Book
+5. View Loans
+6. Reports
+7. Save
+8. Logout
+9. Exit
+
+╔══════════════════════════════════════╗
+║                LOANS                 ║
+╚══════════════════════════════════════╝
+1. Active Loans
+2. Overdue Loans
+3. User Loan History
+4. Back
+Choose option or type command: 1
+
+=== Active Loans (5) ===
+T3: B101 → U100 | Due: 29-11-2025
+T4: B1035 → U898 | Due: 30-11-2025
+T5: B1034 → U898 | Due: 30-11-2025
+T6: B1021 → U898 | Due: 30-11-2025
+T7: B1034 → U899 | Due: 30-11-2025
+
+Press Enter to continue...
+╔══════════════════════════════════════╗
+║                LOANS                 ║
+╚══════════════════════════════════════╝
+1. Active Loans
+2. Overdue Loans
+3. User Loan History
+4. Back
+Choose option or type command: 2
+No overdue loans.
+
+Press Enter to continue...
+╔══════════════════════════════════════╗
+║                LOANS                 ║
+╚══════════════════════════════════════╝
+1. Active Loans
+2. Overdue Loans
+3. User Loan History
+4. Back
+Choose option or type command: 3
+Enter Member ID: U898
+
+=== Loan History: mouly (U898) ===
+T4 | B1035 | 16-11-2025 → 30-11-2025 | BORROWED
+T5 | B1034 | 16-11-2025 → 30-11-2025 | BORROWED
+T6 | B1021 | 16-11-2025 → 30-11-2025 | BORROWED
+
+Press Enter to continue...
+╔══════════════════════════════════════╗
+║                LOANS                 ║
+╚══════════════════════════════════════╝
+1. Active Loans
+2. Overdue Loans
+3. User Loan History
+4. Back
+Choose option or type command: 4
+╔══════════════════════════════════════╗
+║      MAIN MENU [Authenticated]       ║
+╚══════════════════════════════════════╝
+1. Manage Books
+2. Manage Users
+3. Borrow Book
+4. Return Book
+5. View Loans
+6. Reports
+7. Save
+8. Logout
+9. Exit
+
+
+╔══════════════════════════════════════╗
+║               REPORTS                ║
+╚══════════════════════════════════════╝
+1. Summary
+2. User Report
+3. Back
+Choose option or type command: 1
+
+=== Library Summary ===
+Total Books : 41
+Total Members: 9
+Active Loans : 5
+Overdue Loans: 0
+
+Press Enter to continue...
+╔══════════════════════════════════════╗
+║               REPORTS                ║
+╚══════════════════════════════════════╝
+1. Summary
+2. User Report
+3. Back
+Choose option or type command: 2
+Enter Member ID: U898
+
+=== Transaction Report: mouly (U898) ===
+T4 | B1035 | 16-11-2025 → 30-11-2025 | BORROWED
+T5 | B1034 | 16-11-2025 → 30-11-2025 | BORROWED
+T6 | B1021 | 16-11-2025 → 30-11-2025 | BORROWED
+
+Press Enter to continue...
+╔══════════════════════════════════════╗
+║               REPORTS                ║
+╚══════════════════════════════════════╝
+1. Summary
+2. User Report
+3. Back
+Choose option or type command: 3
+╔══════════════════════════════════════╗
+║      MAIN MENU [Authenticated]       ║
+╚══════════════════════════════════════╝
+1. Manage Books
+2. Manage Users
+3. Borrow Book
+4. Return Book
+5. View Loans
+6. Reports
+7. Save
+8. Logout
+9. Exit
+
+
+Enter option number or type a command (type 'help'): 7
+All data saved to CSV files.
+╔══════════════════════════════════════╗
+║      MAIN MENU [Authenticated]       ║
+╚══════════════════════════════════════╝
+1. Manage Books
+2. Manage Users
+3. Borrow Book
+4. Return Book
+5. View Loans
+6. Reports
+7. Save
+8. Logout
+9. Exit
+
+Enter option number or type a command (type 'help'): 8
+Logged out. You will need the password again for admin actions.
+╔══════════════════════════════════════╗
+║        MAIN MENU [Guest Mode]        ║
+╚══════════════════════════════════════╝
+1. Manage Books
+2. Manage Users
+3. Borrow Book
+4. Return Book
+5. View Loans
+6. Reports
+7. Save
+8. (no logout)
+9. Exit
+Enter option number or type a command (type 'help'): 9
+Save before exit? [Y/n]: y
+Data saved.
+Goodbye!

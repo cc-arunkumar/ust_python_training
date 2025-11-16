@@ -1,2 +1,0 @@
-tx_id,book_id,user_id,borrow_date,due_date,return_date,status
-T1,B106,U110,15-11-2025,29-11-2025,15-11-2025,returned

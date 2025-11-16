@@ -1,0 +1,42 @@
+book_id,title,authors,isbn,tags,total_copies,available_copies
+B1001,Python Crash Course,E|||r|||i|||c|||M|||a|||t|||t|||h|||e|||s,9781593279288,p|||y|||t|||h|||o|||n|||b|||e|||g|||i|||n|||n|||e|||r|||p|||r|||o|||g|||r|||a|||m|||m|||i|||n|||g,5,3
+B1002,Learning SQL,A|||l|||a|||n|||B|||e|||a|||u|||l|||i|||e|||u,9780596520830,s|||q|||l|||d|||a|||t|||a|||b|||a|||s|||e|||b|||e|||g|||i|||n|||n|||e|||r,4,3
+B1003,Clean Code,R|||o|||b|||e|||r|||t|||C|||.|||M|||a|||r|||t|||i|||n,9780132350884,s|||o|||f|||t|||w|||a|||r|||e|||c|||l|||e|||a|||n|||-|||c|||o|||d|||e|||p|||r|||o|||g|||r|||a|||m|||m|||i|||n|||g,4,2
+B1004,Fluent Python,L|||u|||c|||i|||a|||n|||o|||R|||a|||m|||a|||l|||h|||o,9781491946008,p|||y|||t|||h|||o|||n|||a|||d|||v|||a|||n|||c|||e|||d|||p|||r|||o|||g|||r|||a|||m|||m|||i|||n|||g,3,1
+B1005,Head First Design Patterns,E|||r|||i|||c|||F|||r|||e|||e|||m|||a|||n,9780596007126,d|||e|||s|||i|||g|||n|||-|||p|||a|||t|||t|||e|||r|||n|||s|||o|||o|||p|||a|||r|||c|||h|||i|||t|||e|||c|||t|||u|||r|||e,3,2
+B1006,The Pragmatic Programmer,A|||n|||d|||r|||e|||w|||H|||u|||n|||t,9780201616224,s|||o|||f|||t|||w|||a|||r|||e|||b|||e|||s|||t|||-|||p|||r|||a|||c|||t|||i|||c|||e|||s,5,5
+B1007,Automate the Boring Stuff,A|||l|||S|||w|||e|||i|||g|||a|||r|||t,9781593275990,a|||u|||t|||o|||m|||a|||t|||i|||o|||n|||p|||y|||t|||h|||o|||n|||b|||e|||g|||i|||n|||n|||e|||r,6,5
+B1008,Database System Concepts,H|||e|||n|||r|||y|||K|||o|||r|||t|||h,9780078022159,d|||a|||t|||a|||b|||a|||s|||e|||d|||b|||m|||s|||t|||h|||e|||o|||r|||y,3,3
+B1009,Operating System Concepts,S|||i|||l|||b|||e|||r|||s|||c|||h|||a|||t|||z,9781118063330,o|||s|||t|||h|||e|||o|||r|||y|||s|||y|||s|||t|||e|||m,3,2
+B1010,Introduction to Algorithms,C|||L|||R|||S,9780262032933,a|||l|||g|||o|||r|||i|||t|||h|||m|||s|||d|||s|||a|||c|||o|||m|||p|||e|||t|||i|||t|||i|||v|||e,5,5
+B1011,Java Complete Reference,H|||e|||r|||b|||e|||r|||t|||S|||c|||h|||i|||l|||d|||t,9781260440232,j|||a|||v|||a|||p|||r|||o|||g|||r|||a|||m|||m|||i|||n|||g|||r|||e|||f|||e|||r|||e|||n|||c|||e,4,4
+B1012,Effective Java,J|||o|||s|||h|||u|||a|||B|||l|||o|||c|||h,9780134685991,j|||a|||v|||a|||c|||l|||e|||a|||n|||-|||c|||o|||d|||e|||s|||o|||f|||t|||w|||a|||r|||e,3,3
+B1013,Java Concurrency in Practice,B|||r|||i|||a|||n|||G|||o|||e|||t|||z,9780321349606,j|||a|||v|||a|||c|||o|||n|||c|||u|||r|||r|||e|||n|||c|||y|||a|||d|||v|||a|||n|||c|||e|||d,2,2
+B1014,You Don't Know JS,K|||y|||l|||e|||S|||i|||m|||p|||s|||o|||n,9781491904244,j|||a|||v|||a|||s|||c|||r|||i|||p|||t|||w|||e|||b|||p|||r|||o|||g|||r|||a|||m|||m|||i|||n|||g,5,4
+B1015,Javascript,M|||a|||r|||i|||j|||n|||H|||a|||v|||e|||r|||b|||e|||k|||e,9781593279509,j|||a|||v|||a|||s|||c|||r|||i|||p|||t|||w|||e|||b|||b|||e|||g|||i|||n|||n|||e|||r,4,4
+B1016,HTML & CSS,J|||o|||n|||D|||u|||c|||k|||e|||t|||t,9781118008188,w|||e|||b|||d|||e|||s|||i|||g|||n|||f|||r|||o|||n|||t|||e|||n|||d,3,3
+B1017,Designing Data-Intensive Applications,M|||a|||r|||t|||i|||n|||K|||l|||e|||p|||p|||m|||a|||n|||n,9781449373320,s|||y|||s|||t|||e|||m|||s|||d|||i|||s|||t|||r|||i|||b|||u|||t|||e|||d|||a|||r|||c|||h|||i|||t|||e|||c|||t|||u|||r|||e,4,3
+B1018,Deep Learning,I|||a|||n|||G|||o|||o|||d|||f|||e|||l|||l|||o|||w,9780262035613,a|||i|||m|||l|||d|||e|||e|||p|||-|||l|||e|||a|||r|||n|||i|||n|||g,3,2
+B1019,Hands-On Machine Learning,A|||u|||r|||e|||l|||i|||e|||n|||G|||e|||r|||o|||n,9781492032649,m|||l|||p|||y|||t|||h|||o|||n|||a|||i,4,3
+B1020,Introduction to Machine Learning,A|||l|||p|||a|||y|||d|||i|||n,9780262028189,m|||l|||t|||h|||e|||o|||r|||y|||d|||a|||t|||a,3,3
+B1021,Reinforcement Learning,S|||u|||t|||t|||o|||n|||&|||B|||a|||r|||t|||o,9780262039246,r|||l|||a|||i|||a|||d|||v|||a|||n|||c|||e|||d,2,1
+B1022,Compilers: Principles Techniques and Tools,A|||h|||o|||&|||U|||l|||l|||m|||a|||n,9780321486813,c|||o|||m|||p|||i|||l|||e|||r|||t|||h|||e|||o|||r|||y,2,2
+B1023,Computer Networks,T|||a|||n|||e|||n|||b|||a|||u|||m,9780132126953,n|||e|||t|||w|||o|||r|||k|||s|||t|||h|||e|||o|||r|||y|||s|||y|||s|||t|||e|||m,4,4
+B1024,Distributed Systems,M|||a|||a|||r|||t|||e|||n|||v|||a|||n|||S|||t|||e|||e|||n,9781543057386,d|||i|||s|||t|||r|||i|||b|||u|||t|||e|||d|||s|||y|||s|||t|||e|||m|||s|||t|||h|||e|||o|||r|||y,3,2
+B1025,Big Data Fundamentals,T|||h|||o|||m|||a|||s|||E|||r|||l,9780134291079,b|||i|||g|||-|||d|||a|||t|||a|||d|||a|||t|||a|||-|||e|||n|||g|||i|||n|||e|||e|||r|||i|||n|||g,3,3
+B1026,Data Enginnering,P|||a|||u|||l|||C|||r|||i|||c|||k|||a|||r|||d,9781789535365,d|||a|||t|||a|||-|||e|||n|||g|||i|||n|||e|||e|||r|||i|||n|||g|||p|||y|||t|||h|||o|||n,7,3
+B1027,Kafka: The Definitive Guide,G|||w|||e|||n|||S|||h|||a|||p|||i|||r|||a,9781491936160,d|||a|||t|||a|||-|||s|||t|||r|||e|||a|||m|||i|||n|||g|||k|||a|||f|||k|||a,4,4
+B1028,Spark: The Definitive Guide,B|||i|||l|||l|||C|||h|||a|||m|||b|||e|||r|||s,9781491912218,b|||i|||g|||-|||d|||a|||t|||a|||s|||p|||a|||r|||k,3,2
+B1030,Learning Docker,P|||e|||t|||h|||u|||r|||u|||R|||a|||j,9781784397937,d|||e|||v|||o|||p|||s|||d|||o|||c|||k|||e|||r|||c|||o|||n|||t|||a|||i|||n|||e|||r|||s,4,4
+B1031,Kubernetes in Action,M|||a|||r|||k|||o|||L|||u|||k|||s|||a,9781617293726,d|||e|||v|||o|||p|||s|||k|||u|||b|||e|||r|||n|||e|||t|||e|||s|||o|||r|||c|||h|||e|||s|||t|||r|||a|||t|||i|||o|||n,3,3
+B1032,Terraform Up & Running,Y|||e|||v|||g|||e|||n|||i|||y|||B|||r|||i|||k|||m|||a|||n,9781492046903,d|||e|||v|||o|||p|||s|||i|||n|||f|||r|||a|||s|||t|||r|||u|||c|||t|||u|||r|||e,2,2
+B1033,CI/CD with Jenkins,C|||h|||r|||i|||s|||t|||o|||p|||h|||e|||r|||G|||r|||a|||n|||t,9781787287600,d|||e|||v|||o|||p|||s|||c|||i|||c|||d|||a|||u|||t|||o|||m|||a|||t|||i|||o|||n,3,3
+B1034,Cloud Architect,B|||i|||l|||l|||W|||i|||l|||d|||e|||r,9781449319779,c|||l|||o|||u|||d|||a|||r|||c|||h|||i|||t|||e|||c|||t|||u|||r|||e|||p|||a|||t|||t|||e|||r|||n|||s,3,1
+B1035,Azure for Architects,J|||o|||h|||n|||S|||a|||v|||i|||l|||l,9781119559535,c|||l|||o|||u|||d|||a|||z|||u|||r|||e|||a|||r|||c|||h|||i|||t|||e|||c|||t|||u|||r|||e,3,2
+B1036,AWS Certified Solutions Architect,B|||e|||n|||P|||i|||p|||e|||r,9781119504214,c|||l|||o|||u|||d|||a|||w|||s|||c|||e|||r|||t|||i|||f|||i|||c|||a|||t|||i|||o|||n,4,4
+B1037,GCP Architecture Framework,G|||o|||o|||g|||l|||e|||P|||r|||e|||s|||s,9781098112934,c|||l|||o|||u|||d|||g|||c|||p|||a|||r|||c|||h|||i|||t|||e|||c|||t|||u|||r|||e,3,3
+B1038,Data Visualization with Python,K|||i|||r|||i|||l|||l|||E|||r|||e|||m|||e|||n|||k|||o,9781788295758,d|||a|||t|||a|||v|||i|||s|||u|||a|||l|||i|||z|||a|||t|||i|||o|||n|||p|||y|||t|||h|||o|||n,4,3
+B1039,SQL for Data Analysis,B|||o|||r|||i|||s|||P|||a|||s|||k|||h|||a|||v|||e|||r,9781492072261,d|||a|||t|||a|||s|||q|||l|||a|||n|||a|||l|||y|||t|||i|||c|||s,4,4
+B1040,Introduction to Statistics,R|||o|||n|||L|||a|||r|||s|||o|||n,9780321912749,m|||a|||t|||h|||s|||t|||a|||t|||i|||s|||t|||i|||c|||s|||p|||r|||o|||b|||a|||b|||i|||l|||i|||t|||y,5,5
+B191,uiui,u|||i|||i,900,,8,8
+B787,System design,a|||r|||u|||n|||s|||h|||a|||l|||i|||n,90909,,8,8
