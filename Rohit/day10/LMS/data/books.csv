@@ -10,7 +10,7 @@ B1008,Database System Concepts,Henry Korth,9780078022159,database|dbms|theory,3,
 B1009,Operating System Concepts,Silberschatz,9781118063330,os|theory|system,3,2
 B1010,Introduction to Algorithms,CLRS,9780262032933,algorithms|dsa|competitive,5,5
 B1011,Java Complete Reference,Herbert Schildt,9781260440232,java|programming|reference,4,4
-B1012,Effective Java,Joshua Bloch,9780134685991,java|clean-code|software,3,3
+B1012,Effective Java,Harsh,23456,java|clean-code|software,65,64
 B1013,Java Concurrency in Practice,Brian Goetz,9780321349606,java|concurrency|advanced,2,2
 B1014,You Don't Know JS,Kyle Simpson,9781491904244,javascript|web|programming,5,4
 B1015,Eloquent JavaScript,Marijn Haverbeke,9781593279509,javascript|web|beginner,4,4
@@ -20,11 +20,11 @@ B1018,Deep Learning,Ian Goodfellow,9780262035613,ai|ml|deep-learning,3,2
 B1019,Hands-On Machine Learning,Aurelien Geron,9781492032649,ml|python|ai,4,3
 B1020,Introduction to Machine Learning,Alpaydin,9780262028189,ml|theory|data,3,3
 B1021,Reinforcement Learning,Sutton & Barto,9780262039246,rl|ai|advanced,2,2
-B1022,Compilers: Principles Techniques and Tools,Aho & Ullman,9780321486813,compiler|theory,2,2
+B1022,Compilers: Principles Techniques and Tools,Aho & Ullman,9780321486813,compiler|theory,2,3
 B1023,Computer Networks,Tanenbaum,9780132126953,networks|theory|system,4,4
 B1024,Distributed Systems,Maarten van Steen,9781543057386,distributed|systems|theory,3,2
-B1025,Big Data Fundamentals,Thomas Erl,9780134291079,big-data|data-engineering,3,3
-B1026,Data Engineering with Python,Paul Crickard,9781789535365,data-engineering|python,3,3
+B1025,Big Data Fundamentals,Thomas Erl,9780134291079,big-data|data-engineering,15,10
+B1026,Data Engineering with Python,Paul Crickard,9781789535365,data-engineering|python,18,13
 B1027,Kafka: The Definitive Guide,Gwen Shapira,9781491936160,data-streaming|kafka,4,4
 B1028,Spark: The Definitive Guide,Bill Chambers,9781491912218,big-data|spark,3,2
 B1029,NoSQL Distilled,Pramod Sadalage,9780132983716,database|nosql|theory,3,3
@@ -38,4 +38,5 @@ B1036,AWS Certified Solutions Architect,Ben Piper,9781119504214,cloud|aws|certif
 B1037,GCP Architecture Framework,Google Press,9781098112934,cloud|gcp|architecture,3,3
 B1038,Data Visualization with Python,Kirill Eremenko,9781788295758,data|visualization|python,4,3
 B1039,SQL for Data Analysis,Boris Paskhaver,9781492072261,data|sql|analytics,4,4
-B1040,Introduction to Statistics,Ron Larson,9780321912749,math|statistics|probability,5,5
+B1040,Introduction to Statistics,Ron Larson,9780321912749,math|statistics|probability,5,4
+B0021,Book of Motivation,Harsh Jaiswal,2233112,Confidence,22,2
