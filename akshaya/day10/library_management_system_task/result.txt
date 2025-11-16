@@ -1,0 +1,1113 @@
+================================================
+        LIBRARY MANAGEMENT SYSTEM
+================================================
+1. Manage Books
+2. Manage Users
+3. Borrow / Return Books
+4. View Loans
+5. View Reports
+6. Save Changes
+7. Exit
+================================================
+Enter your choice (1-7): 1
+
+--- Manage Books ---
+1. Add Book
+2. Update Book
+3. Remove Book
+4. Get Book
+5. List Books
+6. Search Books
+Choose an option (1-6): 1
+Book ID: B1046
+Title: AI
+Authors (comma): jenkins
+ISBN: 96578432564307
+Tags (comma): ML,DS
+Total Copies: 5
+Book added successfully.
+
+================================================
+        LIBRARY MANAGEMENT SYSTEM
+================================================
+1. Manage Books
+2. Manage Users
+3. Borrow / Return Books
+4. View Loans
+5. View Reports
+6. Save Changes
+7. Exit
+================================================
+Enter your choice (1-7): 1
+
+--- Manage Books ---
+1. Add Book
+2. Update Book
+3. Remove Book
+4. Get Book
+5. List Books
+6. Search Books
+Choose an option (1-6): 2
+Book ID: B1046
+
+Current details:
+[B1046] AI
+  Authors: jenkins
+  ISBN: 96578432564307
+  Tags: ML, DS
+  Copies: 5/5
+
+Enter new values (leave empty to skip):
+Title: Artificial Intelligence
+Authors (comma): 
+ISBN: 
+Tags (comma): 
+Total Copies: 
+Book updated successfully.
+
+================================================
+        LIBRARY MANAGEMENT SYSTEM
+================================================
+1. Manage Books
+2. Manage Users
+3. Borrow / Return Books
+4. View Loans
+5. View Reports
+6. Save Changes
+7. Exit
+================================================
+Enter your choice (1-7): 1
+
+--- Manage Books ---
+1. Add Book
+2. Update Book
+3. Remove Book
+4. Get Book
+5. List Books
+6. Search Books
+Choose an option (1-6): 3
+Book ID: B1046
+
+About to remove (soft-delete) this book:
+[B1046] Artificial Intelligence
+  Authors: jenkins
+  ISBN: 96578432564307
+  Tags: ML, DS
+  Copies: 5/5
+Type YES to confirm removal: YES
+Book soft-deleted successfully.
+
+================================================
+        LIBRARY MANAGEMENT SYSTEM
+================================================
+1. Manage Books
+2. Manage Users
+3. Borrow / Return Books
+4. View Loans
+5. View Reports
+6. Save Changes
+7. Exit
+================================================
+Enter your choice (1-7): 1
+
+--- Manage Books ---
+1. Add Book
+2. Update Book
+3. Remove Book
+4. Get Book
+5. List Books
+6. Search Books
+Choose an option (1-6): 4
+Book ID: B1042
+[B1042] data visualization
+  Authors: ben parker
+  ISBN: 98765432167843
+  Tags: cloud , seaborn
+  Copies: 4/4
+
+================================================
+        LIBRARY MANAGEMENT SYSTEM
+================================================
+1. Manage Books
+2. Manage Users
+3. Borrow / Return Books
+4. View Loans
+5. View Reports
+6. Save Changes
+7. Exit
+================================================
+Enter your choice (1-7): 1
+
+--- Manage Books ---
+1. Add Book
+2. Update Book
+3. Remove Book
+4. Get Book
+5. List Books
+6. Search Books
+Choose an option (1-6): 5
+[B1002] Learning SQL
+  Authors: Alan Beaulieu
+  ISBN: 9780596520830
+  Tags: sql, database, beginner
+  Copies: 4/4
+[B1003] Clean Code
+  Authors: Robert C. Martin
+  ISBN: 9780132350884
+  Tags: software, clean-code, programming
+  Copies: 4/4
+[B1004] Fluent Python
+  Authors: Luciano Ramalho
+  ISBN: 9781491946008
+  Tags: python, advanced, programming
+  Copies: 3/3
+[B1005] Head First Design Patterns
+  Authors: Eric Freeman
+  ISBN: 9780596007126
+  Tags: design-patterns, oop, architecture
+  Copies: 3/3
+[B1006] The Pragmatic Programmer
+  Authors: Andrew Hunt
+  ISBN: 9780201616224
+  Tags: software, best-practices
+  Copies: 5/5
+[B1007] Automate the Boring Stuff
+  Authors: Al Sweigart
+  ISBN: 9781593275990
+  Tags: automation, python, beginner
+  Copies: 6/6
+[B1008] Database System Concepts
+  Authors: Henry Korth
+  ISBN: 9780078022159
+  Tags: database, dbms, theory
+  Copies: 3/3
+[B1009] Operating System Concepts
+  Authors: Silberschatz
+  ISBN: 9781118063330
+  Tags: os, theory, system
+  Copies: 3/3
+[B1010] Introduction to Algorithms
+  Authors: CLRS
+  ISBN: 9780262032933
+  Tags: algorithms, dsa, competitive
+  Copies: 5/5
+[B1011] Java Complete Reference
+  Authors: Herbert Schildt
+  ISBN: 9781260440232
+  Tags: java, programming, reference
+  Copies: 4/4
+[B1012] Effective Java
+  Authors: Joshua Bloch
+  ISBN: 9780134685991
+  Tags: java, clean-code, software
+  Copies: 3/3
+[B1013] Java Concurrency in Practice
+  Authors: Brian Goetz
+  ISBN: 9780321349606
+  Tags: java, concurrency, advanced
+  Copies: 2/2
+[B1014] You Don't Know JS
+  Authors: Kyle Simpson
+  ISBN: 9781491904244
+  Tags: javascript, web, programming
+  Copies: 5/5
+[B1015] Eloquent JavaScript
+  Authors: Marijn Haverbeke
+  ISBN: 9781593279509
+  Tags: javascript, web, beginner
+  Copies: 4/4
+[B1016] HTML & CSS
+  Authors: Jon Duckett
+  ISBN: 9781118008188
+  Tags: web, design, frontend
+  Copies: 3/3
+[B1017] Designing Data-Intensive Applications
+  Authors: Martin Kleppmann
+  ISBN: 9781449373320
+  Tags: systems, distributed, architecture
+  Copies: 4/4
+[B1018] Deep Learning
+  Authors: Ian Goodfellow
+  ISBN: 9780262035613
+  Tags: ai, ml, deep-learning
+  Copies: 3/3
+[B1019] Hands-On Machine Learning
+  Authors: Aurelien Geron
+  ISBN: 9781492032649
+  Tags: ml, python, ai
+  Copies: 4/4
+[B1020] Introduction to Machine Learning
+  Authors: Alpaydin
+  ISBN: 9780262028189
+  Tags: ml, theory, data
+  Copies: 3/3
+[B1021] Reinforcement Learning
+  Authors: Sutton & Barto
+  ISBN: 9780262039246
+  Tags: rl, ai, advanced
+  Copies: 2/2
+[B1022] Compilers: Principles Techniques and Tools
+  Authors: Aho & Ullman
+  ISBN: 9780321486813
+  Tags: compiler, theory
+  Copies: 2/2
+[B1023] Computer Networks
+  Authors: Tanenbaum
+  ISBN: 9780132126953
+  Tags: networks, theory, system
+  Copies: 4/4
+[B1024] Distributed Systems
+  Authors: Maarten van Steen
+  ISBN: 9781543057386
+  Tags: distributed, systems, theory
+  Copies: 3/3
+[B1025] Big Data Fundamentals
+  Authors: Thomas Erl
+  ISBN: 9780134291079
+  Tags: big-data, data-engineering
+  Copies: 3/3
+[B1026] Data Engineering with Python
+  Authors: Paul Crickard
+  ISBN: 9781789535365
+  Tags: data-engineering, python
+  Copies: 3/3
+[B1027] Kafka: The Definitive Guide
+  Authors: Gwen Shapira
+  ISBN: 9781491936160
+  Tags: data-streaming, kafka
+  Copies: 4/4
+[B1028] Spark: The Definitive Guide
+  Authors: Bill Chambers
+  ISBN: 9781491912218
+  Tags: big-data, spark
+  Copies: 3/3
+[B1029] NoSQL Distilled
+  Authors: Pramod Sadalage
+  ISBN: 9780132983716
+  Tags: database, nosql, theory
+  Copies: 3/3
+[B1030] Learning Docker
+  Authors: Pethuru Raj
+  ISBN: 9781784397937
+  Tags: devops, docker, containers
+  Copies: 4/4
+[B1031] Kubernetes in Action
+  Authors: Marko Luksa
+  ISBN: 9781617293726
+  Tags: devops, kubernetes, orchestration
+  Copies: 3/3
+[B1032] Terraform Up & Running
+  Authors: Yevgeniy Brikman
+  ISBN: 9781492046903
+  Tags: devops, infrastructure
+  Copies: 2/2
+[B1033] CI/CD with Jenkins
+  Authors: Christopher Grant
+  ISBN: 9781787287600
+  Tags: devops, cicd, automation
+  Copies: 3/3
+[B1034] Cloud Architecture Patterns
+  Authors: Bill Wilder
+  ISBN: 9781449319779
+  Tags: cloud, architecture, patterns
+  Copies: 3/3
+[B1035] Azure for Architects
+  Authors: John Savill
+  ISBN: 9781119559535
+  Tags: cloud, azure, architecture
+  Copies: 3/3
+[B1036] AWS Certified Solutions Architect
+  Authors: Ben Piper
+  ISBN: 9781119504214
+  Tags: cloud, aws, certification
+  Copies: 4/4
+[B1037] GCP Architecture Framework
+  Authors: Google Press
+  ISBN: 9781098112934
+  Tags: cloud, gcp, architecture
+  Copies: 3/3
+[B1039] SQL for Data Analysis
+  Authors: Boris Paskhaver
+  ISBN: 9781492072261
+  Tags: data, sql, analytics
+  Copies: 4/4
+[B1041] computer science
+  Authors: Mark Lutz
+  ISBN: 1234567890
+  Tags: programming,  python
+  Copies: 8/8
+[B1042] data visualization
+  Authors: ben parker
+  ISBN: 98765432167843
+  Tags: cloud , seaborn
+  Copies: 4/4
+[B1043] DELETED
+  Authors: -
+  ISBN: -
+  Tags: -
+  Copies: 0/8
+[B1044] knowledge engg
+  Authors: david paul
+  ISBN: 4586321086548
+  Tags: data, cloud
+  Copies: 2/3
+[B1045] data engg
+  Authors: paul steve
+  ISBN: 9654876321075
+  Tags: pyspark, databricks
+  Copies: 8/8
+
+================================================
+        LIBRARY MANAGEMENT SYSTEM
+================================================
+1. Manage Books
+2. Manage Users
+3. Borrow / Return Books
+4. View Loans
+5. View Reports
+6. Save Changes
+7. Exit
+================================================
+Enter your choice (1-7): 1
+
+--- Manage Books ---
+1. Add Book
+2. Update Book
+3. Remove Book
+4. Get Book
+5. List Books
+6. Search Books
+Choose an option (1-6): 6
+Title contains: data
+Author: paul
+Tag: pyspark
+[B1045] data engg
+  Authors: paul steve
+  ISBN: 9654876321075
+  Tags: pyspark, databricks
+  Copies: 8/8
+
+================================================
+        LIBRARY MANAGEMENT SYSTEM
+================================================
+1. Manage Books
+2. Manage Users
+3. Borrow / Return Books
+4. View Loans
+5. View Reports
+6. Save Changes
+7. Exit
+================================================
+Enter your choice (1-7): 2
+Enter password to access Users section: user123
+Authentication successful.
+
+--- Manage Users ---
+1. Add User
+2. Update User
+3. Get User
+4. List Users
+5. Change User Status
+6. Report User Transactions
+Choose an option (1-6): 1
+User ID: U2029
+Name: susan
+Email: susan@ust.com
+Max Loans (default 0): 0
+User added.
+
+================================================
+        LIBRARY MANAGEMENT SYSTEM
+================================================
+1. Manage Books
+2. Manage Users
+3. Borrow / Return Books
+4. View Loans
+5. View Reports
+6. Save Changes
+7. Exit
+================================================
+Enter your choice (1-7): 2
+Enter password to access Users section: user123
+Authentication successful.
+
+--- Manage Users ---
+1. Add User
+2. Update User
+3. Get User
+4. List Users
+5. Change User Status
+6. Report User Transactions
+Choose an option (1-6): 2
+User ID: U2029
+
+Current details:
+[U2029] susan
+  Email: susan@ust.com
+  Status: active
+  Max Loans: 1
+
+Enter new values (leave empty to skip):
+Name: susii
+Email: susii@ust.com
+Max Loans: 
+User updated successfully.
+
+================================================
+        LIBRARY MANAGEMENT SYSTEM
+================================================
+1. Manage Books
+2. Manage Users
+3. Borrow / Return Books
+4. View Loans
+5. View Reports
+6. Save Changes
+7. Exit
+================================================
+Enter your choice (1-7): 2
+Enter password to access Users section: user123
+Authentication successful.
+
+--- Manage Users ---
+1. Add User
+2. Update User
+3. Get User
+4. List Users
+5. Change User Status
+6. Report User Transactions
+Choose an option (1-6): 3
+User ID: U2029
+[U2029] susii
+  Email: susii@ust.com
+  Status: active
+  Max Loans: 1
+
+================================================
+        LIBRARY MANAGEMENT SYSTEM
+================================================
+1. Manage Books
+2. Manage Users
+3. Borrow / Return Books
+4. View Loans
+5. View Reports
+6. Save Changes
+7. Exit
+================================================
+Enter your choice (1-7): 2
+Enter password to access Users section: user123
+Authentication successful.
+
+--- Manage Users ---
+1. Add User
+2. Update User
+3. Get User
+4. List Users
+5. Change User Status
+6. Report User Transactions
+Choose an option (1-6): 4
+[U2001] Arun Kumar
+  Email: arun.kumar@ust.com
+  Status: active
+  Max Loans: 5
+[U2002] Riya Sharma
+  Email: riya.sharma@ust.com
+  Status: active
+  Max Loans: 5
+[U2003] John Mathew
+  Email: john.mathew@ust.com
+  Status: inactive
+  Max Loans: 5
+[U2004] Nisha Thomas
+  Email: nisha.thomas@ust.com
+  Status: active
+  Max Loans: 3
+[U2005] Anil Kumar
+  Email: anil.kumar@ust.com
+  Status: active
+  Max Loans: 5
+[U2006] Meera Dsouza
+  Email: meera.dsouza@ust.com
+  Status: banned
+  Max Loans: 5
+[U2007] Kiran Mohan
+  Email: kiran.mohan@ust.com
+  Status: active
+  Max Loans: 4
+[U2008] Sona Prakash
+  Email: sona.prakash@ust.com
+  Status: active
+  Max Loans: 5
+[U2009] Ravi Shankar
+  Email: ravi.shankar@ust.com
+  Status: active
+  Max Loans: 2
+[U2010] Mona Raj
+  Email: mona.raj@ust.com
+  Status: active
+  Max Loans: 5
+[U2011] Arvind Iyer
+  Email: arvind.iyer@ust.com
+  Status: active
+  Max Loans: 3
+[U2012] Divya Menon
+  Email: divya.menon@ust.com
+  Status: inactive
+  Max Loans: 5
+[U2013] Hari Nath
+  Email: hari.nath@ust.com
+  Status: active
+  Max Loans: 4
+[U2014] Joel Thomas
+  Email: joel.thomas@ust.com
+  Status: active
+  Max Loans: 5
+[U2015] Philip Mathew
+  Email: philip.mathew@ust.com
+  Status: active
+  Max Loans: 5
+[U2016] Balu Nair
+  Email: balu.nair@ust.com
+  Status: active
+  Max Loans: 5
+[U2017] Aswin Kumar
+  Email: aswin.kumar@ust.com
+  Status: active
+  Max Loans: 5
+[U2018] Leena George
+  Email: leena.george@ust.com
+  Status: active
+  Max Loans: 4
+[U2019] Sandra Joy
+  Email: sandra.joy@ust.com
+  Status: active
+  Max Loans: 3
+[U2020] Vishnu S
+  Email: vishnu.s@ust.com
+  Status: active
+  Max Loans: 3
+[U2021] Ajay Dev
+  Email: ajay.dev@ust.com
+  Status: banned
+  Max Loans: 5
+[U2022] Kavya Sunny
+  Email: kavya.sunny@ust.com
+  Status: active
+  Max Loans: 5
+[U2023] Neeraj Pillai
+  Email: neeraj.pillai@ust.com
+  Status: active
+  Max Loans: 4
+[U2024] Sachin Patel
+  Email: sachin.patel@ust.com
+  Status: active
+  Max Loans: 5
+[U2025] Veena Shetty
+  Email: veena.shetty@ust.com
+  Status: active
+  Max Loans: 2
+[U2026] sanjay
+  Email: sanjay@ust.com
+  Status: active
+  Max Loans: 7
+[U2025] vinay sharma
+  Email: vinay@ust.com
+  Status: inactive
+  Max Loans: 3
+[U2027] ashu shetty
+  Email: ashu@ust.com
+  Status: banned
+  Max Loans: 0
+[U2028] rash
+  Email: rash@ust.com
+  Status: active
+  Max Loans: 0
+[U2029] susii
+  Email: susii@ust.com
+  Status: active
+  Max Loans: 1
+
+================================================
+        LIBRARY MANAGEMENT SYSTEM
+================================================
+1. Manage Books
+2. Manage Users
+3. Borrow / Return Books
+4. View Loans
+5. View Reports
+6. Save Changes
+7. Exit
+================================================
+Enter your choice (1-7): 2
+Enter password to access Users section: user123
+Authentication successful.
+
+--- Manage Users ---
+1. Add User
+2. Update User
+3. Get User
+4. List Users
+5. Change User Status
+6. Report User Transactions
+Choose an option (1-6): 5
+User ID: U2029
+1=activate, 2=deactivate, 3=ban
+Status option: 2
+Status updated.
+
+================================================
+        LIBRARY MANAGEMENT SYSTEM
+================================================
+1. Manage Books
+2. Manage Users
+3. Borrow / Return Books
+4. View Loans
+5. View Reports
+6. Save Changes
+7. Exit
+================================================
+Enter your choice (1-7): 2
+Enter password to access Users section: user123
+Authentication successful.
+
+--- Manage Users ---
+1. Add User
+2. Update User
+3. Get User
+4. List Users
+5. Change User Status
+6. Report User Transactions
+Choose an option (1-6): 6
+User ID: U2029
+No transactions.
+
+================================================
+        LIBRARY MANAGEMENT SYSTEM
+================================================
+1. Manage Books
+2. Manage Users
+3. Borrow / Return Books
+4. View Loans
+5. View Reports
+6. Save Changes
+7. Exit
+================================================
+Enter your choice (1-7): 3
+
+1. Borrow Book
+2. Return Book
+Choose: 1
+User ID: U2026
+
+Available books (not borrowed / not deleted):
+[B1002] Learning SQL
+  Authors: Alan Beaulieu
+  ISBN: 9780596520830
+  Tags: sql, database, beginner
+  Copies: 4/4
+[B1003] Clean Code
+  Authors: Robert C. Martin
+  ISBN: 9780132350884
+  Tags: software, clean-code, programming
+  Copies: 4/4
+[B1004] Fluent Python
+  Authors: Luciano Ramalho
+  ISBN: 9781491946008
+  Tags: python, advanced, programming
+  Copies: 3/3
+[B1005] Head First Design Patterns
+  Authors: Eric Freeman
+  ISBN: 9780596007126
+  Tags: design-patterns, oop, architecture
+  Copies: 3/3
+[B1006] The Pragmatic Programmer
+  Authors: Andrew Hunt
+  ISBN: 9780201616224
+  Tags: software, best-practices
+  Copies: 5/5
+[B1007] Automate the Boring Stuff
+  Authors: Al Sweigart
+  ISBN: 9781593275990
+  Tags: automation, python, beginner
+  Copies: 6/6
+[B1008] Database System Concepts
+  Authors: Henry Korth
+  ISBN: 9780078022159
+  Tags: database, dbms, theory
+  Copies: 3/3
+[B1009] Operating System Concepts
+  Authors: Silberschatz
+  ISBN: 9781118063330
+  Tags: os, theory, system
+  Copies: 3/3
+[B1010] Introduction to Algorithms
+  Authors: CLRS
+  ISBN: 9780262032933
+  Tags: algorithms, dsa, competitive
+  Copies: 5/5
+[B1011] Java Complete Reference
+  Authors: Herbert Schildt
+  ISBN: 9781260440232
+  Tags: java, programming, reference
+  Copies: 4/4
+[B1012] Effective Java
+  Authors: Joshua Bloch
+  ISBN: 9780134685991
+  Tags: java, clean-code, software
+  Copies: 3/3
+[B1013] Java Concurrency in Practice
+  Authors: Brian Goetz
+  ISBN: 9780321349606
+  Tags: java, concurrency, advanced
+  Copies: 2/2
+[B1014] You Don't Know JS
+  Authors: Kyle Simpson
+  ISBN: 9781491904244
+  Tags: javascript, web, programming
+  Copies: 5/5
+[B1015] Eloquent JavaScript
+  Authors: Marijn Haverbeke
+  ISBN: 9781593279509
+  Tags: javascript, web, beginner
+  Copies: 4/4
+[B1016] HTML & CSS
+  Authors: Jon Duckett
+  ISBN: 9781118008188
+  Tags: web, design, frontend
+  Copies: 3/3
+[B1017] Designing Data-Intensive Applications
+  Authors: Martin Kleppmann
+  ISBN: 9781449373320
+  Tags: systems, distributed, architecture
+  Copies: 4/4
+[B1018] Deep Learning
+  Authors: Ian Goodfellow
+  ISBN: 9780262035613
+  Tags: ai, ml, deep-learning
+  Copies: 3/3
+[B1019] Hands-On Machine Learning
+  Authors: Aurelien Geron
+  ISBN: 9781492032649
+  Tags: ml, python, ai
+  Copies: 4/4
+[B1020] Introduction to Machine Learning
+  Authors: Alpaydin
+  ISBN: 9780262028189
+  Tags: ml, theory, data
+  Copies: 3/3
+[B1021] Reinforcement Learning
+  Authors: Sutton & Barto
+  ISBN: 9780262039246
+  Tags: rl, ai, advanced
+  Copies: 2/2
+[B1022] Compilers: Principles Techniques and Tools
+  Authors: Aho & Ullman
+  ISBN: 9780321486813
+  Tags: compiler, theory
+  Copies: 2/2
+[B1023] Computer Networks
+  Authors: Tanenbaum
+  ISBN: 9780132126953
+  Tags: networks, theory, system
+  Copies: 4/4
+[B1024] Distributed Systems
+  Authors: Maarten van Steen
+  ISBN: 9781543057386
+  Tags: distributed, systems, theory
+  Copies: 3/3
+[B1025] Big Data Fundamentals
+  Authors: Thomas Erl
+  ISBN: 9780134291079
+  Tags: big-data, data-engineering
+  Copies: 3/3
+[B1026] Data Engineering with Python
+  Authors: Paul Crickard
+  ISBN: 9781789535365
+  Tags: data-engineering, python
+  Copies: 3/3
+[B1027] Kafka: The Definitive Guide
+  Authors: Gwen Shapira
+  ISBN: 9781491936160
+  Tags: data-streaming, kafka
+  Copies: 4/4
+[B1028] Spark: The Definitive Guide
+  Authors: Bill Chambers
+  ISBN: 9781491912218
+  Tags: big-data, spark
+  Copies: 3/3
+[B1029] NoSQL Distilled
+  Authors: Pramod Sadalage
+  ISBN: 9780132983716
+  Tags: database, nosql, theory
+  Copies: 3/3
+[B1030] Learning Docker
+  Authors: Pethuru Raj
+  ISBN: 9781784397937
+  Tags: devops, docker, containers
+  Copies: 4/4
+[B1031] Kubernetes in Action
+  Authors: Marko Luksa
+  ISBN: 9781617293726
+  Tags: devops, kubernetes, orchestration
+  Copies: 3/3
+[B1032] Terraform Up & Running
+  Authors: Yevgeniy Brikman
+  ISBN: 9781492046903
+  Tags: devops, infrastructure
+  Copies: 2/2
+[B1033] CI/CD with Jenkins
+  Authors: Christopher Grant
+  ISBN: 9781787287600
+  Tags: devops, cicd, automation
+  Copies: 3/3
+[B1034] Cloud Architecture Patterns
+  Authors: Bill Wilder
+  ISBN: 9781449319779
+  Tags: cloud, architecture, patterns
+  Copies: 3/3
+[B1035] Azure for Architects
+  Authors: John Savill
+  ISBN: 9781119559535
+  Tags: cloud, azure, architecture
+  Copies: 3/3
+[B1036] AWS Certified Solutions Architect
+  Authors: Ben Piper
+  ISBN: 9781119504214
+  Tags: cloud, aws, certification
+  Copies: 4/4
+[B1037] GCP Architecture Framework
+  Authors: Google Press
+  ISBN: 9781098112934
+  Tags: cloud, gcp, architecture
+  Copies: 3/3
+[B1039] SQL for Data Analysis
+  Authors: Boris Paskhaver
+  ISBN: 9781492072261
+  Tags: data, sql, analytics
+  Copies: 4/4
+[B1041] computer science
+  Authors: Mark Lutz
+  ISBN: 1234567890
+  Tags: programming,  python
+  Copies: 8/8
+[B1042] data visualization
+  Authors: ben parker
+  ISBN: 98765432167843
+  Tags: cloud , seaborn
+  Copies: 4/4
+[B1044] knowledge engg
+  Authors: david paul
+  ISBN: 4586321086548
+  Tags: data, cloud
+  Copies: 2/3
+[B1045] data engg
+  Authors: paul steve
+  ISBN: 9654876321075
+  Tags: pyspark, databricks
+  Copies: 8/8
+Book ID to borrow: B1045
+
+About to borrow:
+[B1045] data engg
+  Authors: paul steve
+  ISBN: 9654876321075
+  Tags: pyspark, databricks
+  Copies: 8/8
+Type YES to confirm borrow: YES
+Borrow successful. Transaction ID: T25  Due: 01-12-2025
+
+================================================
+        LIBRARY MANAGEMENT SYSTEM
+================================================
+1. Manage Books
+2. Manage Users
+3. Borrow / Return Books
+4. View Loans
+5. View Reports
+6. Save Changes
+7. Exit
+================================================
+Enter your choice (1-7): 3
+
+1. Borrow Book
+2. Return Book
+Choose: 2
+Transaction ID: T24
+Transaction details:
+[T24] User=U2030, Book=B1044
+  Borrow: 16-11-2025  Due: 30-11-2025
+  Return: -
+  Status: borrowed
+Type YES to confirm return: YES
+Book returned successfully.
+
+================================================
+        LIBRARY MANAGEMENT SYSTEM
+================================================
+1. Manage Books
+2. Manage Users
+3. Borrow / Return Books
+4. View Loans
+5. View Reports
+6. Save Changes
+7. Exit
+================================================
+Enter your choice (1-7): 4
+
+1. Active Loans
+2. Overdue Loans
+3. Loans by User
+Choose: 1
+[T3001] User=U2001, Book=B1001
+  Borrow: 2025-10-01  Due: 2025-10-15
+  Return: -
+  Status: borrowed
+[T3004] User=U2005, Book=B1004
+  Borrow: 2025-11-01  Due: 2025-11-15
+  Return: -
+  Status: borrowed
+[T3007] User=U2010, Book=B1028
+  Borrow: 2025-11-05  Due: 2025-11-19
+  Return: -
+  Status: borrowed
+[T3012] User=U2018, Book=B1035
+  Borrow: 2025-11-08  Due: 2025-11-22
+  Return: -
+  Status: borrowed
+[T3014] User=U2020, Book=B1019
+  Borrow: 2025-11-01  Due: 2025-11-15
+  Return: -
+  Status: borrowed
+[T3016] User=U2023, Book=B1017
+  Borrow: 2025-11-03  Due: 2025-11-17
+  Return: -
+  Status: borrowed
+[T3018] User=U2025, Book=B1012
+  Borrow: 2025-11-04  Due: 2025-11-18
+  Return: -
+  Status: borrowed
+[T3019] User=U2009, Book=B1005
+  Borrow: 2025-11-05  Due: 2025-11-19
+  Return: -
+  Status: borrowed
+[T21] User=U2026, Book=B1041
+  Borrow: 15-11-2025  Due: 29-11-2025
+  Return: -
+  Status: borrowed
+[T25] User=U2026, Book=B1045
+  Borrow: 17-11-2025  Due: 01-12-2025
+  Return: -
+  Status: borrowed
+
+================================================
+        LIBRARY MANAGEMENT SYSTEM
+================================================
+1. Manage Books
+2. Manage Users
+3. Borrow / Return Books
+4. View Loans
+5. View Reports
+6. Save Changes
+7. Exit
+================================================
+Enter your choice (1-7): 4
+
+1. Active Loans
+2. Overdue Loans
+3. Loans by User
+Choose: 2
+No loans found.
+
+================================================
+        LIBRARY MANAGEMENT SYSTEM
+================================================
+1. Manage Books
+2. Manage Users
+3. Borrow / Return Books
+4. View Loans
+5. View Reports
+6. Save Changes
+7. Exit
+================================================
+Enter your choice (1-7): 4
+
+1. Active Loans
+2. Overdue Loans
+3. Loans by User
+Choose: 3
+User ID: U2001
+[T3001] User=U2001, Book=B1001
+  Borrow: 2025-10-01  Due: 2025-10-15
+  Return: -
+  Status: borrowed
+[T23] User=U2001, Book=B1001
+  Borrow: 15-11-2025  Due: 29-11-2025
+  Return: 16-11-2025
+  Status: returned
+
+================================================
+        LIBRARY MANAGEMENT SYSTEM
+================================================
+1. Manage Books
+2. Manage Users
+3. Borrow / Return Books
+4. View Loans
+5. View Reports
+6. Save Changes
+7. Exit
+================================================
+Enter your choice (1-7): 5
+
+1. Summary Report
+2. User Report
+Choose: 1
+Total books: 41
+Total users: 30
+Active loans: 10
+Overdue loans: 0
+
+================================================
+        LIBRARY MANAGEMENT SYSTEM
+================================================
+1. Manage Books
+2. Manage Users
+3. Borrow / Return Books
+4. View Loans
+5. View Reports
+6. Save Changes
+7. Exit
+================================================
+Enter your choice (1-7): 5
+
+1. Summary Report
+2. User Report
+Choose: 2
+User ID: U2028
+No transactions.
+
+================================================
+        LIBRARY MANAGEMENT SYSTEM
+================================================
+1. Manage Books
+2. Manage Users
+3. Borrow / Return Books
+4. View Loans
+5. View Reports
+6. Save Changes
+7. Exit
+================================================
+Enter your choice (1-7): 6
+Data saved successfully.
+
+================================================
+        LIBRARY MANAGEMENT SYSTEM
+================================================
+1. Manage Books
+2. Manage Users
+3. Borrow / Return Books
+4. View Loans
+5. View Reports
+6. Save Changes
+7. Exit
+================================================
+Enter your choice (1-7): 7
+Goodbye!
