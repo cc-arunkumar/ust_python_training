@@ -11,6 +11,7 @@ class BookNotAvailableError(Exception): pass
 class UserNotAllowedError(Exception): pass
 class TransactionError(Exception): pass
 class ValidationError(Exception): pass
+class AuthFailed(Exception):pass
 
 
 def parse_list_field(value: str) -> List[str]:
@@ -65,6 +66,7 @@ class User:
     email: Optional[str]
     status: str = "active"
     max_loans: int = 5
+    password: Optional[str] = None
 
     def to_dict(self) -> Dict[str, str]:
         return {
@@ -73,6 +75,7 @@ class User:
             "email": self.email or "",
             "status": self.status,
             "max_loans": str(self.max_loans),
+            "password": self.password or self.user_id or "",
         }
 
     def activate(self): self.status = "active"

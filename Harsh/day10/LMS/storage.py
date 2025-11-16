@@ -9,7 +9,7 @@ USERS_CSV = os.path.join(DATA_DIR, "users.csv")
 TX_CSV = os.path.join(DATA_DIR, "transactions.csv")
 
 BOOK_HEADERS = ["book_id", "title", "authors", "isbn", "tags", "total_copies", "available_copies"]
-USER_HEADERS = ["user_id", "name", "email", "status", "max_loans"]
+USER_HEADERS = ["user_id", "name", "email", "status", "max_loans","password"]
 TX_HEADERS = ["tx_id", "book_id", "user_id", "borrow_date", "due_date", "return_date", "status"]
 
 
@@ -55,6 +55,11 @@ class CSVStorage:
         return books
 
     def save_books(self, list_of_books: List[Book]):
+        with open(BOOKS_CSV, "a", newline="", encoding="utf-8") as f:
+            w = csv.DictWriter(f, fieldnames=BOOK_HEADERS)
+            w.writeheader()
+            for b in list_of_books:
+                w.writerow(b.to_dict())
         with open(BOOKS_CSV, "w", newline="", encoding="utf-8") as f:
             w = csv.DictWriter(f, fieldnames=BOOK_HEADERS)
             w.writeheader()
@@ -75,6 +80,7 @@ class CSVStorage:
                             email=row.get("email", "").strip() or None,
                             status=row.get("status", "active").strip(),
                             max_loans=int(row.get("max_loans", "5")),
+                            password=row.get('password') or None,
                         )
                         if not u.user_id:
                             continue
@@ -86,11 +92,19 @@ class CSVStorage:
         return users
 
     def save_users(self, list_of_users: List[User]):
+        with open(USERS_CSV, "a", newline="", encoding="utf-8") as f:
+            w = csv.DictWriter(f, fieldnames=USER_HEADERS)
+            w.writeheader()
+            for u in list_of_users:
+                row = u.to_dict()
+                w.writerow(row)
         with open(USERS_CSV, "w", newline="", encoding="utf-8") as f:
             w = csv.DictWriter(f, fieldnames=USER_HEADERS)
             w.writeheader()
             for u in list_of_users:
-                w.writerow(u.to_dict())
+                row = u.to_dict()
+                # ensure all header fields are present in correct order
+                w.writerow({k: row.get(k, "") for k in USER_HEADERS})
 
     # Transactions
     def load_transactions(self) -> List[Transaction]:

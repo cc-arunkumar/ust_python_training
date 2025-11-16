@@ -106,7 +106,7 @@ class Library:
         if user.user_id in self._users_by_id:
             raise InvalidUserError("User ID must be unique")
         if user.status not in {"active", "inactive", "banned"}:
-            raise ValidationError("Invalid user status")
+            raise ValidationError("Invalid user status")    
         self.users.append(user)
         self._reindex()
         self.storage.save_users(self.users)
@@ -130,6 +130,7 @@ class Library:
         return list(self.users)
 
     def deactivate_user(self, user_id: str):
+        
         u = self._users_by_id.get(user_id)
         if not u:
             raise InvalidUserError("User not found")
@@ -184,6 +185,8 @@ class Library:
         self.storage.save_transactions(self.transactions)
         return t
 
+    
+        
     def return_book(self, tx_id: str) -> Transaction:
         t = self._tx_by_id.get(tx_id)
         if not t:
