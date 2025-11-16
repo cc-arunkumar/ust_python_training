@@ -1,0 +1,294 @@
+Welcome to the UST Library Management System
+
+UST Library Management System - Main Menu
+Please choose an option by number:
+  1) Books
+  2) Users
+  3) Borrow / Return
+  4) Loans
+  5) Reports
+  6) Save Data
+  7) Help
+  0) Exit
+
+Select an option: 1
+
+Books - Options:
+  1) Add Book
+  2) Update Book
+  3) Remove Book
+  4) Get Book by ID
+  5) List All Books
+  6) Search Books
+  0) Back to Main Menu
+
+Books> 1
+Book ID: B0021
+Title: Book of Motivation
+Authors (comma separated): Harsh Jaiswal
+ISBN: 2233112
+Tags (comma separated): Confidence
+Total Copies: 22
+Available Copies (leave empty to default to Total): 2 
+Book added successfully.
+
+Books - Options:
+  1) Add Book
+  2) Update Book
+  3) Remove Book
+  4) Get Book by ID
+  5) List All Books
+  6) Search Books
+  0) Back to Main Menu
+
+Books> 5
+B1001 | Python Crash Course | Authors: Eric Matthes | ISBN: 9781593279288 | Tags: python, beginner, programming | Total: 5 | Available: 3
+B1002 | Learning SQL | Authors: Alan Beaulieu | ISBN: 9780596520830 | Tags: sql, database, beginner | Total: 4 | Available: 3
+B1003 | Clean Code | Authors: Robert C. Martin | ISBN: 9780132350884 | Tags: software, clean-code, programming | Total: 4 | Available: 2
+B1004 | Fluent Python | Authors: Luciano Ramalho | ISBN: 9781491946008 | Tags: python, advanced, programming | Total: 3 | Available: 1
+B1005 | Head First Design Patterns | Authors: Eric Freeman | ISBN: 9780596007126 | Tags: design-patterns, oop, architecture | Total: 3 | Available: 2
+B1006 | The Pragmatic Programmer | Authors: Andrew Hunt | ISBN: 9780201616224 | Tags: software, best-practices | Total: 5 | Available: 5
+B1007 | Automate the Boring Stuff | Authors: Al Sweigart | ISBN: 9781593275990 | Tags: automation, python, beginner | Total: 6 | Available: 5
+B1008 | Database System Concepts | Authors: Henry Korth | ISBN: 9780078022159 | Tags: database, dbms, theory | Total: 3 | Available: 3
+B1009 | Operating System Concepts | Authors: Silberschatz | ISBN: 9781118063330 | Tags: os, theory, system | Total: 3 | Available: 2
+B1010 | Introduction to Algorithms | Authors: CLRS | ISBN: 9780262032933 | Tags: algorithms, dsa, competitive | Total: 5 | Available: 5
+B1011 | Java Complete Reference | Authors: Herbert Schildt | ISBN: 9781260440232 | Tags: java, programming, reference | Total: 4 | Available: 4
+B1012 | Effective Java | Authors: Harsh | ISBN: 23456 | Tags: java, clean-code, software | Total: 65 | Available: 64      
+B1013 | Java Concurrency in Practice | Authors: Brian Goetz | ISBN: 9780321349606 | Tags: java, concurrency, advanced | Total: 2 | Available: 2
+B1014 | You Don't Know JS | Authors: Kyle Simpson | ISBN: 9781491904244 | Tags: javascript, web, programming | Total: 5 | Available: 4
+B1015 | Eloquent JavaScript | Authors: Marijn Haverbeke | ISBN: 9781593279509 | Tags: javascript, web, beginner | Total: 4 | Available: 4
+B1016 | HTML & CSS | Authors: Jon Duckett | ISBN: 9781118008188 | Tags: web, design, frontend | Total: 3 | Available: 3   
+B1017 | Designing Data-Intensive Applications | Authors: Martin Kleppmann | ISBN: 9781449373320 | Tags: systems, distributed, architecture | Total: 4 | Available: 3
+B1018 | Deep Learning | Authors: Ian Goodfellow | ISBN: 9780262035613 | Tags: ai, ml, deep-learning | Total: 3 | Available: 2
+B1019 | Hands-On Machine Learning | Authors: Aurelien Geron | ISBN: 9781492032649 | Tags: ml, python, ai | Total: 4 | Available: 3
+B1020 | Introduction to Machine Learning | Authors: Alpaydin | ISBN: 9780262028189 | Tags: ml, theory, data | Total: 3 | Available: 3
+B1021 | Reinforcement Learning | Authors: Sutton & Barto | ISBN: 9780262039246 | Tags: rl, ai, advanced | Total: 2 | Available: 2
+B1022 | Compilers: Principles Techniques and Tools | Authors: Aho & Ullman | ISBN: 9780321486813 | Tags: compiler, theory | Total: 2 | Available: 3
+B1023 | Computer Networks | Authors: Tanenbaum | ISBN: 9780132126953 | Tags: networks, theory, system | Total: 4 | Available: 4
+B1024 | Distributed Systems | Authors: Maarten van Steen | ISBN: 9781543057386 | Tags: distributed, systems, theory | Total: 3 | Available: 2
+B1025 | Big Data Fundamentals | Authors: Thomas Erl | ISBN: 9780134291079 | Tags: big-data, data-engineering | Total: 15 | Available: 10
+B1026 | Data Engineering with Python | Authors: Paul Crickard | ISBN: 9781789535365 | Tags: data-engineering, python | Total: 18 | Available: 13
+B1027 | Kafka: The Definitive Guide | Authors: Gwen Shapira | ISBN: 9781491936160 | Tags: data-streaming, kafka | Total: 4 | Available: 4
+B1028 | Spark: The Definitive Guide | Authors: Bill Chambers | ISBN: 9781491912218 | Tags: big-data, spark | Total: 3 | Available: 2
+B1029 | NoSQL Distilled | Authors: Pramod Sadalage | ISBN: 9780132983716 | Tags: database, nosql, theory | Total: 3 | Available: 3
+B1030 | Learning Docker | Authors: Pethuru Raj | ISBN: 9781784397937 | Tags: devops, docker, containers | Total: 4 | Available: 4
+B1031 | Kubernetes in Action | Authors: Marko Luksa | ISBN: 9781617293726 | Tags: devops, kubernetes, orchestration | Total: 3 | Available: 3
+B1032 | Terraform Up & Running | Authors: Yevgeniy Brikman | ISBN: 9781492046903 | Tags: devops, infrastructure | Total: 2 | Available: 2
+B1033 | CI/CD with Jenkins | Authors: Christopher Grant | ISBN: 9781787287600 | Tags: devops, cicd, automation | Total: 3 | Available: 3
+B1034 | Cloud Architecture Patterns | Authors: Bill Wilder | ISBN: 9781449319779 | Tags: cloud, architecture, patterns | Total: 3 | Available: 3
+B1035 | Azure for Architects | Authors: John Savill | ISBN: 9781119559535 | Tags: cloud, azure, architecture | Total: 3 | Available: 3
+B1036 | AWS Certified Solutions Architect | Authors: Ben Piper | ISBN: 9781119504214 | Tags: cloud, aws, certification | Total: 4 | Available: 4
+B1037 | GCP Architecture Framework | Authors: Google Press | ISBN: 9781098112934 | Tags: cloud, gcp, architecture | Total: 3 | Available: 3
+B1038 | Data Visualization with Python | Authors: Kirill Eremenko | ISBN: 9781788295758 | Tags: data, visualization, python | Total: 4 | Available: 3
+B1039 | SQL for Data Analysis | Authors: Boris Paskhaver | ISBN: 9781492072261 | Tags: data, sql, analytics | Total: 4 | Available: 4
+B1040 | Introduction to Statistics | Authors: Ron Larson | ISBN: 9780321912749 | Tags: math, statistics, probability | Total: 5 | Available: 4
+B0021 | Book of Motivation | Authors: Harsh Jaiswal | ISBN: 2233112 | Tags: Confidence | Total: 22 | Available: 2
+
+Books - Options:
+  1) Add Book
+  2) Update Book
+  3) Remove Book
+  4) Get Book by ID
+  5) List All Books
+  6) Search Books
+  0) Back to Main Menu
+
+Books> 6
+Search by: 1) Title  2) Author  3) Tag
+Choose (1-3): 2
+Available Book Authors:
+  - ['Eric Matthes']
+  - ['Alan Beaulieu']
+  - ['Robert C. Martin']
+  - ['Luciano Ramalho']
+  - ['Eric Freeman']
+  - ['Andrew Hunt']
+  - ['Al Sweigart']
+  - ['Henry Korth']
+  - ['Silberschatz']
+  - ['CLRS']
+  - ['Herbert Schildt']
+  - ['Harsh']
+  - ['Brian Goetz']
+  - ['Kyle Simpson']
+  - ['Marijn Haverbeke']
+  - ['Jon Duckett']
+  - ['Martin Kleppmann']
+  - ['Ian Goodfellow']
+  - ['Aurelien Geron']
+  - ['Alpaydin']
+  - ['Sutton & Barto']
+  - ['Aho & Ullman']
+  - ['Tanenbaum']
+  - ['Maarten van Steen']
+  - ['Thomas Erl']
+  - ['Paul Crickard']
+  - ['Gwen Shapira']
+  - ['Bill Chambers']
+  - ['Pramod Sadalage']
+  - ['Pethuru Raj']
+  - ['Marko Luksa']
+  - ['Yevgeniy Brikman']
+  - ['Christopher Grant']
+  - ['Bill Wilder']
+  - ['John Savill']
+  - ['Ben Piper']
+  - ['Google Press']
+  - ['Kirill Eremenko']
+  - ['Boris Paskhaver']
+  - ['Ron Larson']
+  - ['Harsh Jaiswal']
+Enter author name: Harsh Jaiswal
+Found 1 book(s):
+B0021 | Book of Motivation | Authors: Harsh Jaiswal | ISBN: 2233112 | Tags: Confidence | Total: 22 | Available: 2
+
+Books - Options:
+  1) Add Book
+  2) Update Book
+  3) Remove Book
+  4) Get Book by ID
+  5) List All Books
+  6) Search Books
+  0) Back to Main Menu
+
+Books> 0
+
+UST Library Management System - Main Menu
+Please choose an option by number:
+  1) Books
+  2) Users
+  3) Borrow / Return
+  4) Loans
+  5) Reports
+  6) Save Data
+  7) Help
+  0) Exit
+
+Select an option: 2
+
+Users - Options:
+  1) Add User
+  2) Update User
+  3) Get User by ID
+  4) List All Users
+  5) Deactivate User
+  6) Activate User
+  7) Ban User
+  0) Back to Main Menu
+
+Users> 1
+User ID: P0023
+Name: sovan 
+Email: sovan@ust.com
+Max Loans (default 5): 3
+Set Password for User: P0023
+User added.
+
+Users - Options:
+  1) Add User
+  2) Update User
+  3) Get User by ID
+  4) List All Users
+  5) Deactivate User
+  6) Activate User
+  7) Ban User
+  0) Back to Main Menu
+
+Users> 3
+Registered User IDs:
+  - U2001 (Arun Kumar)
+  - U2002 (Riya Sharma)
+  - U2003 (John Mathew)
+  - U2004 (Nisha Thomas)
+  - U2005 (Anil Kumar)
+  - U2006 (Meera Dsouza)
+  - U2007 (Kiran Mohan)
+  - U2008 (Sona Prakash)
+  - U2009 (Ravi Shankar)
+  - U2010 (Mona Raj)
+  - U2011 (Arvind Iyer)
+  - U2012 (Divya Menon)
+  - U2013 (Hari Nath)
+  - U2014 (Joel Thomas)
+  - U2015 (Philip Mathew)
+  - U2016 (Balu Nair)
+  - U2017 (Aswin Kumar)
+  - U2018 (Leena George)
+  - U2019 (Sandra Joy)
+  - U2020 (Vishnu S)
+  - U2021 (Ajay Dev)
+  - U2022 (Kavya Sunny)
+  - U2023 (Neeraj Pillai)
+  - U2024 (Sachin Patel)
+  - U2025 (Veena Shetty)
+  - P0023 (sovan )
+User ID: P0023
+P0023 | sovan  | Email: sovan@ust.com | Status: active | Max Loans: 3
+
+Users - Options:
+  1) Add User
+  2) Update User
+  3) Get User by ID
+  4) List All Users
+  5) Deactivate User
+  6) Activate User
+  7) Ban User
+  0) Back to Main Menu
+
+Users - Options:
+  1) Add User
+  2) Update User
+  3) Get User by ID
+  4) List All Users
+  5) Deactivate User
+  6) Activate User
+  7) Ban User
+  0) Back to Main Menu
+
+Users> 7
+Registered User IDs:
+  - U2001 (Arun Kumar)
+  - U2002 (Riya Sharma)
+  - U2003 (John Mathew)
+  - U2004 (Nisha Thomas)
+  - U2005 (Anil Kumar)
+  - U2006 (Meera Dsouza)
+  - U2007 (Kiran Mohan)
+  - U2008 (Sona Prakash)
+  - U2009 (Ravi Shankar)
+  - U2010 (Mona Raj)
+  - U2011 (Arvind Iyer)
+  - U2012 (Divya Menon)
+  - U2013 (Hari Nath)
+  - U2014 (Joel Thomas)
+  - U2015 (Philip Mathew)
+  - U2016 (Balu Nair)
+  - U2017 (Aswin Kumar)
+  - U2018 (Leena George)
+  - U2019 (Sandra Joy)
+  - U2020 (Vishnu S)
+  - U2021 (Ajay Dev)
+  - U2022 (Kavya Sunny)
+  - U2023 (Neeraj Pillai)
+  - U2024 (Sachin Patel)
+  - U2025 (Veena Shetty)
+  - P0023 (sovan)
+User ID to ban: P0023
+User banned.
+
+Reports:
+  1) Summary
+  2) User History
+  0) Back to Main Menu
+
+Reports> 1
+Summary Report:
+  Total books: 41
+  Total users: 26
+  Active loans: 11
+  Overdue loans: 3
+
+Reports:
+  1) Summary
+  2) User History
+  0) Back to Main Menu
