@@ -1,0 +1,760 @@
+=== Library Management System ===
+
+******** BOOK ********
+1. Add Book
+2. Update Book
+3. Remove Book
+4. Get Book Details
+5. List Books
+6. Search Books
+
+******** USER ********
+7. Add User
+8. Update User
+9. Get User Details
+10. List Users
+11. Deactivate/Activate/Ban User
+
+******** TRANSACTIONS ********
+12. Borrow Book
+13. Return Book
+14. View Active Loans
+15. View Overdue Loans
+16. View User Loan History
+17. Save Data to CSV
+18. Exit
+19. Help
+._._._._._._._._._._._._._.
+Enter your choice: 1
+Book ID: B2003
+Title: Clean Code
+Authors (comma separated): Robert C.Martin
+ISBN: 9708132305448
+Tags (comma separated): software,craftmanship
+Total Copies: 5
+Book added successfully.
+
+=== Library Management System ===
+
+******** BOOK ********
+1. Add Book
+2. Update Book
+3. Remove Book
+4. Get Book Details
+5. List Books
+6. Search Books
+
+******** USER ********
+7. Add User
+8. Update User
+9. Get User Details
+10. List Users
+11. Deactivate/Activate/Ban User
+
+******** TRANSACTIONS ********
+12. Borrow Book
+13. Return Book
+14. View Active Loans
+15. View Overdue Loans
+16. View User Loan History
+17. Save Data to CSV
+18. Exit
+19. Help
+._._._._._._._._._._._._._.
+Enter your choice: 2
+Enter the Book ID to update: B1039
+New Title (Current: SQL for Data Analysis): sql
+New Authors (comma separated, Current: Boris Paskhaver): Bhaskar
+New ISBN (Current: 9781492072261): 
+New Tags (comma separated, Current: data, sql, analytics): 
+New Total Copies (Current: 4): 5
+Book updated successfully.
+
+=== Library Management System ===
+
+******** BOOK ********
+1. Add Book
+2. Update Book
+3. Remove Book
+4. Get Book Details
+5. List Books
+6. Search Books
+
+******** USER ********
+7. Add User
+8. Update User
+9. Get User Details
+10. List Users
+11. Deactivate/Activate/Ban User
+
+******** TRANSACTIONS ********
+12. Borrow Book
+13. Return Book
+14. View Active Loans
+15. View Overdue Loans
+16. View User Loan History
+17. Save Data to CSV
+18. Exit
+19. Help
+._._._._._._._._._._._._._.
+Enter your choice: 3
+Enter the Book ID to remove: B1051
+Book removed successfully.
+
+=== Library Management System ===
+
+******** BOOK ********
+1. Add Book
+2. Update Book
+3. Remove Book
+4. Get Book Details
+5. List Books
+6. Search Books
+
+******** USER ********
+7. Add User
+8. Update User
+9. Get User Details
+10. List Users
+11. Deactivate/Activate/Ban User
+
+******** TRANSACTIONS ********
+12. Borrow Book
+13. Return Book
+14. View Active Loans
+15. View Overdue Loans
+16. View User Loan History
+17. Save Data to CSV
+18. Exit
+19. Help
+._._._._._._._._._._._._._.
+Enter your choice: 4
+Enter the Book ID: B1040
+Book ID: B1040
+Title: Introduction to Statistics
+Authors: Ron Larson
+ISBN: 9780321912749
+Tags: math, statistics, probability
+Total Copies: 5
+Available Copies: 5
+
+=== Library Management System ===
+
+******** BOOK ********
+1. Add Book
+2. Update Book
+3. Remove Book
+4. Get Book Details
+5. List Books
+6. Search Books
+
+******** USER ********
+7. Add User
+8. Update User
+9. Get User Details
+10. List Users
+11. Deactivate/Activate/Ban User
+
+******** TRANSACTIONS ********
+12. Borrow Book
+13. Return Book
+14. View Active Loans
+15. View Overdue Loans
+16. View User Loan History
+17. Save Data to CSV
+18. Exit
+19. Help
+._._._._._._._._._._._._._.
+Enter your choice: 5
+Book ID        Title                         Available Copies
+============================================================
+B1001          Python Crash Course           3
+B1002          Learning SQL                  3
+B1003          Clean Code                    2
+B1004          Fluent Python                 1
+B1005          Head First Design Patterns    2
+B1006          The Pragmatic Programmer      5
+B1007          Automate the Boring Stuff     5
+B1008          Database System Concepts      3
+B1009          Operating System Concepts     2
+B1010          Introduction to Algorithms    5
+B1011          Java Complete Reference       4
+B1012          Effective Java                3
+B1013          Java Concurrency in Practice  2
+B1014          You Don't Know JS             4
+B1015          Eloquent JavaScript           4
+B1016          HTML & CSS                    3
+B1017          Designing Data-Intensive Applications3
+B1018          Deep Learning                 2
+B1019          Hands-On Machine Learning     3
+B1020          Introduction to Machine Learning3
+B1021          Reinforcement Learning        2
+B1022          Compilers: Principles Techniques and Tools2
+B1023          Computer Networks             4
+B1024          Distributed Systems           2
+B1025          Big Data Fundamentals         3
+B1026          Data Engineering with Python  3
+B1027          Kafka: The Definitive Guide   4
+B1028          Spark: The Definitive Guide   2
+B1029          NoSQL Distilled               3
+B1030          Learning Docker               4
+B1031          Kubernetes in Action          3
+B1032          Terraform Up & Running        2
+B1033          CI/CD with Jenkins            3
+B1034          Cloud Architecture Patterns   3
+B1035          Azure for Architects          3
+B1036          AWS Certified Solutions Architect4
+B1037          GCP Architecture Framework    3
+B1038          Data Visualization with Python3
+B1039          sql                           5
+B1040          Introduction to Statistics    5
+B1061          Python Basics                 4
+B2003          Clean Code                    5
+
+=== Library Management System ===
+
+******** BOOK ********
+1. Add Book
+2. Update Book
+3. Remove Book
+4. Get Book Details
+5. List Books
+6. Search Books
+
+******** USER ********
+7. Add User
+8. Update User
+9. Get User Details
+10. List Users
+11. Deactivate/Activate/Ban User
+
+******** TRANSACTIONS ********
+12. Borrow Book
+13. Return Book
+14. View Active Loans
+15. View Overdue Loans
+16. View User Loan History
+17. Save Data to CSV
+18. Exit
+19. Help
+._._._._._._._._._._._._._.
+Enter your choice: 6
+Enter title, author, or tag to search: Ben Piper
+Book ID        Title                         Available Copies
+============================================================
+B1036          AWS Certified Solutions Architect4
+
+=== Library Management System ===
+
+******** BOOK ********
+1. Add Book
+2. Update Book
+3. Remove Book
+4. Get Book Details
+5. List Books
+6. Search Books
+
+******** USER ********
+7. Add User
+8. Update User
+9. Get User Details
+10. List Users
+11. Deactivate/Activate/Ban User
+
+******** TRANSACTIONS ********
+12. Borrow Book
+13. Return Book
+14. View Active Loans
+15. View Overdue Loans
+16. View User Loan History
+17. Save Data to CSV
+18. Exit
+19. Help
+._._._._._._._._._._._._._.
+Enter your choice: 7                                                                 
+User ID: U2009
+Name: Shiva
+Email: shiva@gmail.com
+Status (active/inactive/banned): inactive
+Max Loans: 4
+Password: Shiva
+
+=== Library Management System ===
+
+******** BOOK ********
+1. Add Book
+2. Update Book
+3. Remove Book
+4. Get Book Details
+5. List Books
+6. Search Books
+
+******** USER ********
+7. Add User
+8. Update User
+9. Get User Details
+10. List Users
+11. Deactivate/Activate/Ban User
+
+******** TRANSACTIONS ********
+12. Borrow Book
+13. Return Book
+14. View Active Loans
+15. View Overdue Loans
+16. View User Loan History
+17. Save Data to CSV
+18. Exit
+19. Help
+._._._._._._._._._._._._._.
+Enter your choice: 8
+Enter User ID to update: U2010
+Updating details for user: Mona Raj
+1. Update Name
+2. Update Email
+3. Update Status
+4. Update Max Loans
+5. Update Password
+Choose option (1-5): 2
+Enter new Email: mona@ust.com
+User updated successfully.
+
+=== Library Management System ===
+
+******** BOOK ********
+1. Add Book
+2. Update Book
+3. Remove Book
+4. Get Book Details
+5. List Books
+6. Search Books
+
+******** USER ********
+7. Add User
+8. Update User
+9. Get User Details
+10. List Users
+11. Deactivate/Activate/Ban User
+
+******** TRANSACTIONS ********
+12. Borrow Book
+13. Return Book
+14. View Active Loans
+15. View Overdue Loans
+16. View User Loan History
+17. Save Data to CSV
+18. Exit
+19. Help
+._._._._._._._._._._._._._.
+Enter your choice: 9
+Enter the User ID: U2003
+User ID: U2003
+Name: John Mathew
+Email: john.mathew@ust.com
+Status: inactive
+Max Loans: 5
+
+=== Library Management System ===
+
+******** BOOK ********
+1. Add Book
+2. Update Book
+3. Remove Book
+4. Get Book Details
+5. List Books
+6. Search Books
+
+******** USER ********
+7. Add User
+8. Update User
+9. Get User Details
+10. List Users
+11. Deactivate/Activate/Ban User
+
+******** TRANSACTIONS ********
+12. Borrow Book
+13. Return Book
+14. View Active Loans
+15. View Overdue Loans
+16. View User Loan History
+17. Save Data to CSV
+18. Exit
+19. Help
+._._._._._._._._._._._._._.
+Enter your choice: 10
+User ID        Name                          Status
+============================================================
+U2001          Arun Kumar                    active
+U2002          Riya Sharma                   active
+U2003          John Mathew                   inactive
+U2004          Nisha Thomas                  active
+U2005          Anil Kumar                    active
+U2006          Meera Dsouza                  banned
+U2007          Kiran Mohan                   active
+U2008          Sona Prakash                  active
+U2009          Ravi Shankar                  active
+U2010          Mona Raj                      active
+U2011          Arvind Iyer                   active
+U2012          Divya Menon                   inactive
+U2013          Hari Nath                     active
+U2014          Joel Thomas                   active
+U2015          Philip Mathew                 active
+U2016          Balu Nair                     active
+U2017          Aswin Kumar                   active
+U2018          Leena George                  active
+U2019          Sandra Joy                    active
+U2020          Vishnu S                      active
+U2021          Ajay Dev                      banned
+U2022          Kavya Sunny                   active
+U2023          Neeraj Pillai                 active
+U2024          Sachin Patel                  active
+U2025          Veena Shetty                  active
+
+=== Library Management System ===
+
+******** BOOK ********
+1. Add Book
+2. Update Book
+3. Remove Book
+4. Get Book Details
+5. List Books
+6. Search Books
+
+******** USER ********
+7. Add User
+8. Update User
+9. Get User Details
+10. List Users
+11. Deactivate/Activate/Ban User
+
+******** TRANSACTIONS ********
+12. Borrow Book
+13. Return Book
+14. View Active Loans
+15. View Overdue Loans
+16. View User Loan History
+17. Save Data to CSV
+18. Exit
+19. Help
+._._._._._._._._._._._._._.
+Enter your choice: 11
+Enter the User ID to deactivate/activate/ban: U2014
+Enter action (deactivate/activate/ban): deactivate
+User deactivated successfully.
+
+=== Library Management System ===
+
+******** BOOK ********
+1. Add Book
+2. Update Book
+3. Remove Book
+4. Get Book Details
+5. List Books
+6. Search Books
+
+******** USER ********
+7. Add User
+8. Update User
+9. Get User Details
+10. List Users
+11. Deactivate/Activate/Ban User
+
+******** TRANSACTIONS ********
+12. Borrow Book
+13. Return Book
+14. View Active Loans
+15. View Overdue Loans
+16. View User Loan History
+17. Save Data to CSV
+18. Exit
+19. Help
+._._._._._._._._._._._._._.
+Enter your choice: 12
+Enter User ID: U2011
+Enter Book ID: B1033
+Borrow successful. Transaction ID: T23. Due Date: 2025-11-30.
+
+=== Library Management System ===
+
+******** BOOK ********
+1. Add Book
+2. Update Book
+3. Remove Book
+4. Get Book Details
+5. List Books
+6. Search Books
+
+******** USER ********
+7. Add User
+8. Update User
+9. Get User Details
+10. List Users
+11. Deactivate/Activate/Ban User
+
+******** TRANSACTIONS ********
+12. Borrow Book
+13. Return Book
+14. View Active Loans
+15. View Overdue Loans
+16. View User Loan History
+17. Save Data to CSV
+18. Exit
+19. Help
+._._._._._._._._._._._._._.
+Enter your choice: 13
+Enter Transaction ID: T3019
+Return successful. Book ID: B1005 returned.
+
+=== Library Management System ===
+
+******** BOOK ********
+1. Add Book
+2. Update Book
+3. Remove Book
+4. Get Book Details
+5. List Books
+6. Search Books
+
+******** USER ********
+7. Add User
+8. Update User
+9. Get User Details
+10. List Users
+11. Deactivate/Activate/Ban User
+
+******** TRANSACTIONS ********
+12. Borrow Book
+13. Return Book
+14. View Active Loans
+15. View Overdue Loans
+16. View User Loan History
+17. Save Data to CSV
+18. Exit
+19. Help
+._._._._._._._._._._._._._.
+Enter your choice: 14
+Transaction ID User ID        Book ID        Due Date
+============================================================
+T3001          U2001          B1001          2025-10-15
+T3004          U2005          B1004          2025-11-15
+T3007          U2010          B1028          2025-11-19
+T3008          U2013          B1038          2025-11-20
+T3010          U2015          B1033          2025-11-21
+T3012          U2018          B1035          2025-11-22
+T3014          U2020          B1019          2025-11-15
+T3016          U2023          B1017          2025-11-17
+T3018          U2025          B1012          2025-11-18
+T23            U2011          B1033          2025-11-30
+
+=== Library Management System ===
+
+******** BOOK ********
+1. Add Book
+2. Update Book
+3. Remove Book
+4. Get Book Details
+5. List Books
+6. Search Books
+
+******** USER ********
+7. Add User
+8. Update User
+9. Get User Details
+10. List Users
+11. Deactivate/Activate/Ban User
+
+******** TRANSACTIONS ********
+12. Borrow Book
+13. Return Book
+14. View Active Loans
+15. View Overdue Loans
+16. View User Loan History
+17. Save Data to CSV
+18. Exit
+19. Help
+._._._._._._._._._._._._._.
+Enter your choice: 15
+Transaction ID User ID        Book ID        Due Date
+============================================================
+T3001          U2001          B1001          2025-10-15
+T3004          U2005          B1004          2025-11-15
+T3014          U2020          B1019          2025-11-15
+
+=== Library Management System ===
+
+******** BOOK ********
+1. Add Book
+2. Update Book
+3. Remove Book
+4. Get Book Details
+5. List Books
+6. Search Books
+
+******** USER ********
+7. Add User
+8. Update User
+9. Get User Details
+10. List Users
+11. Deactivate/Activate/Ban User
+
+******** TRANSACTIONS ********
+12. Borrow Book
+13. Return Book
+14. View Active Loans
+15. View Overdue Loans
+16. View User Loan History
+17. Save Data to CSV
+18. Exit
+19. Help
+._._._._._._._._._._._._._.
+Enter your choice: 16
+Enter User ID: U2012
+No loans found for User ID: U2012.
+
+=== Library Management System ===
+
+******** BOOK ********
+1. Add Book
+2. Update Book
+3. Remove Book
+4. Get Book Details
+5. List Books
+6. Search Books
+
+******** USER ********
+7. Add User
+8. Update User
+9. Get User Details
+10. List Users
+11. Deactivate/Activate/Ban User
+
+******** TRANSACTIONS ********
+12. Borrow Book
+13. Return Book
+14. View Active Loans
+15. View Overdue Loans
+16. View User Loan History
+17. Save Data to CSV
+18. Exit
+19. Help
+._._._._._._._._._._._._._.
+Enter your choice: 16
+Enter User ID: U2011
+Transaction ID Book ID        Borrow Date    Due Date       Return Date
+================================================================================
+T23            B1033          2025-11-16     2025-11-30     Not Returned
+
+=== Library Management System ===
+
+******** BOOK ********
+1. Add Book
+2. Update Book
+3. Remove Book
+4. Get Book Details
+5. List Books
+6. Search Books
+
+******** USER ********
+7. Add User
+8. Update User
+9. Get User Details
+10. List Users
+11. Deactivate/Activate/Ban User
+
+******** TRANSACTIONS ********
+12. Borrow Book
+13. Return Book
+14. View Active Loans
+15. View Overdue Loans
+16. View User Loan History
+17. Save Data to CSV
+18. Exit
+19. Help
+._._._._._._._._._._._._._.
+Enter your choice: 17
+All data saved to CSV successfully.
+
+=== Library Management System ===
+
+******** BOOK ********
+1. Add Book
+2. Update Book
+3. Remove Book
+4. Get Book Details
+5. List Books
+6. Search Books
+
+******** USER ********
+7. Add User
+8. Update User
+9. Get User Details
+10. List Users
+11. Deactivate/Activate/Ban User
+
+******** TRANSACTIONS ********
+12. Borrow Book
+13. Return Book
+14. View Active Loans
+15. View Overdue Loans
+16. View User Loan History
+17. Save Data to CSV
+18. Exit
+19. Help
+._._._._._._._._._._._._._.
+Enter your choice: 18
+Exiting the Library Management System. Goodbye!
+
+=== Library Management System ===
+
+******** BOOK ********
+1. Add Book
+2. Update Book
+3. Remove Book
+4. Get Book Details
+5. List Books
+6. Search Books
+
+******** USER ********
+7. Add User
+8. Update User
+9. Get User Details
+10. List Users
+11. Deactivate/Activate/Ban User
+
+******** TRANSACTIONS ********
+12. Borrow Book
+13. Return Book
+14. View Active Loans
+15. View Overdue Loans
+16. View User Loan History
+17. Save Data to CSV
+18. Exit
+19. Help
+._._._._._._._._._._._._._.
+Enter your choice: 19
+
+    === Library Management System Help ===
+    book add              - Add a new book to the library
+    book update <book_id>  - Update book details
+    book remove <book_id>  - Remove a book from the library
+    book get <book_id>     - Get details of a specific book
+    book list              - List all books in the library
+    book search <query>    - Search books by title, author, or tag
+
+    user add              - Add a new user
+    user update <user_id> - Update user details
+    user get <user_id>    - Get details of a specific user
+    user list             - List all users
+    user deactivate <user_id> - Deactivate a user
+    user activate <user_id>   - Activate a user
+    user ban <user_id>    - Ban a user
+
+    borrow <user_id> <book_id> - Borrow a book
+    return <transaction_id>    - Return a borrowed book
+
+    loans active           - View all active loans
+    loans overdue          - View overdue loans
+    loans user <user_id>   - View loan history for a specific user
+
+    save                   - Save all data to CSV
+    exit                   - Exit the program
+    help                   - Display this help message
