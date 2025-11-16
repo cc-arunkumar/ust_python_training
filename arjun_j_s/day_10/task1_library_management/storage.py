@@ -1,153 +1,119 @@
-# storage.py
 import csv
 import os
 from models import Book, User, Transaction
 
-
 class CSVStorage:
-    def __init__(self, folder="data"):
-        self.folder = folder
-        self.books_file = f"{folder}/books.csv"
-        self.users_file = f"{folder}/users.csv"
-        self.tx_file = f"{folder}/transactions.csv"
+    def __init__(self, data_dir="data"):
+        BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+        self.data_dir = os.path.join(BASE_DIR, data_dir)
 
-        self._init_files()
+        self.books_file = os.path.join(self.data_dir, "books.csv")
+        self.users_file = os.path.join(self.data_dir, "users.csv")
+        self.transactions_file = os.path.join(self.data_dir, "transactions.csv")
 
-    def _init_files(self):
-        if not os.path.exists(self.books_file):
-            with open(self.books_file, "w", newline="") as f:
-                csv.writer(f).writerow([
-                    "book_id", "title", "authors", "isbn",
-                    "tags", "total_copies", "available_copies"
-                ])
-
-        if not os.path.exists(self.users_file):
-            with open(self.users_file, "w", newline="") as f:
-                csv.writer(f).writerow([
-                    "user_id", "name", "email", "status", "max_loans"
-                ])
-
-        if not os.path.exists(self.tx_file):
-            with open(self.tx_file, "w", newline="") as f:
-                csv.writer(f).writerow([
-                    "tx_id", "book_id", "user_id",
-                    "borrow_date", "due_date", "return_date", "status"
-                ])
-
-    # ============================================================
-    # BOOKS
-    # ============================================================
-
+    # ---------- BOOKS ----------
     def load_books(self):
-        books = []
-        with open(self.books_file, "r") as f:
+        books = {}
+        if not os.path.exists(self.books_file):
+            return books
+
+        with open(self.books_file, newline='', encoding="utf-8") as f:
             reader = csv.DictReader(f)
             for row in reader:
-                books.append(Book(
+                if not row.get("book_id"): 
+                    continue
+                books[row["book_id"]] = Book(
                     row["book_id"],
                     row["title"],
-                    row["authors"].split("|") if row["authors"] else [],
+                    row["authors"],
                     row["isbn"],
-                    row["tags"].split("|") if row["tags"] else [],
+                    row["tags"],
                     int(row["total_copies"]),
                     int(row["available_copies"])
-                ))
+                )
         return books
 
-    # append one book (add)
-    def append_book(self, book):
-        with open(self.books_file, "a", newline="") as f:
-            writer = csv.DictWriter(f, fieldnames=[
-                "book_id", "title", "authors", "isbn",
-                "tags", "total_copies", "available_copies"
-            ])
-            writer.writerow(book.to_dict())
-
-    # overwrite full csv (update)
     def save_books(self, books):
-        with open(self.books_file, "w", newline="") as f:
-            writer = csv.DictWriter(f, fieldnames=[
-                "book_id", "title", "authors", "isbn",
-                "tags", "total_copies", "available_copies"
-            ])
-            writer.writeheader()
-            for b in books:
-                writer.writerow(b.to_dict())
+        with open(self.books_file, "w", newline='', encoding="utf-8") as f:
+            writer = csv.writer(f)
+            writer.writerow(["book_id","title","authors","isbn","tags","total_copies","available_copies"])
+            for b in books.values():
+                writer.writerow([
+                    b.book_id,
+                    b.title,
+                    b.authors,
+                    b.isbn,
+                    "|".join(b.tags),
+                    b.total_copies,
+                    b.available_copies
+                ])
 
-    # ============================================================
-    # USERS
-    # ============================================================
-
+    # ---------- USERS ----------
     def load_users(self):
-        users = []
-        with open(self.users_file, "r") as f:
+        users = {}
+        if not os.path.exists(self.users_file):
+            return users
+
+        with open(self.users_file, newline='', encoding="utf-8") as f:
             reader = csv.DictReader(f)
             for row in reader:
-                users.append(User(
+                if not row.get("user_id"): 
+                    continue
+                users[row["user_id"]] = User(
                     row["user_id"],
                     row["name"],
                     row["email"],
                     row["status"],
                     int(row["max_loans"])
-                ))
+                )
         return users
 
-    # append one user (add)
-    def append_user(self, user):
-        with open(self.users_file, "a", newline="") as f:
-            writer = csv.DictWriter(f, fieldnames=[
-                "user_id", "name", "email", "status", "max_loans"
-            ])
-            writer.writerow(user.to_dict())
-
-    # overwrite full csv (update)
     def save_users(self, users):
-        with open(self.users_file, "w", newline="") as f:
-            writer = csv.DictWriter(f, fieldnames=[
-                "user_id", "name", "email", "status", "max_loans"
-            ])
-            writer.writeheader()
-            for u in users:
-                writer.writerow(u.to_dict())
+        with open(self.users_file, "w", newline='', encoding="utf-8") as f:
+            writer = csv.writer(f)
+            writer.writerow(["user_id","name","email","status","max_loans"])
+            for u in users.values():
+                writer.writerow([
+                    u.user_id,
+                    u.name,
+                    u.email,
+                    u.status,
+                    u.max_loans
+                ])
 
-    # ============================================================
-    # TRANSACTIONS
-    # ============================================================
-
+    # ---------- TRANSACTIONS ----------
     def load_transactions(self):
-        tx_list = []
-        with open(self.tx_file, "r") as f:
+        txs = {}
+        if not os.path.exists(self.transactions_file):
+            return txs
+
+        with open(self.transactions_file, newline='', encoding="utf-8") as f:
             reader = csv.DictReader(f)
             for row in reader:
-                tx_list.append(Transaction(
+                if not row.get("tx_id"):
+                    continue
+                txs[row["tx_id"]] = Transaction(
                     row["tx_id"],
-                    row["book_id"],
                     row["user_id"],
+                    row["book_id"],
                     row["borrow_date"],
                     row["due_date"],
                     row["return_date"],
                     row["status"]
-                ))
-        return tx_list
+                )
+        return txs
 
-    # append one transaction (borrow)
-    def append_transaction(self, tx):
-        with open(self.tx_file, "a", newline="") as f:
-            writer = csv.DictWriter(f, fieldnames=[
-                "tx_id", "book_id", "user_id",
-                "borrow_date", "due_date",
-                "return_date", "status"
-            ])
-            writer.writerow(tx.to_dict())
-
-    # overwrite full csv (return / update)
-    def save_transactions(self, tx_list):
-        with open(self.tx_file, "w", newline="") as f:
-            writer = csv.DictWriter(f, fieldnames=[
-                "tx_id", "book_id", "user_id",
-                "borrow_date", "due_date",
-                "return_date", "status"
-            ])
-            writer.writeheader()
-            for t in tx_list:
-                writer.writerow(t.to_dict())
+    def save_transactions(self, txs):
+        with open(self.transactions_file, "w", newline='', encoding="utf-8") as f:
+            writer = csv.writer(f)
+            writer.writerow(["tx_id","user_id","book_id","borrow_date","due_date","return_date","status"])
+            for t in txs.values():
+                writer.writerow([
+                    t.tx_id,
+                    t.user_id,
+                    t.book_id,
+                    t.borrow_date,
+                    t.due_date,
+                    t.return_date,
+                    t.status
+                ])
