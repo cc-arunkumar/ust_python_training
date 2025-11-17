@@ -10,6 +10,7 @@ with open('employee_data.csv', mode='r') as file:
        
 # step2 :create a csv_reader object
     csv_reader =csv.reader(file)
+    
     # step3: it will iterate to next line and wil skip the first line
     next(csv_reader)
     
