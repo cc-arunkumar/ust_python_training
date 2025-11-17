@@ -52,7 +52,7 @@ class CSVStorage:
             #write the header to csv
             writer.writeheader()
         
-            #write the employee names in csv
+            #write the users  in csv
             writer.writerows(list_of_users)
         
     def load_transactions(self):
@@ -74,6 +74,7 @@ class CSVStorage:
             #write the header to csv
             writer.writeheader()
         
-            #write the employee names in csv
+            #write the transactions in csv
             writer.writerows(list_of_transactions)
+
 
