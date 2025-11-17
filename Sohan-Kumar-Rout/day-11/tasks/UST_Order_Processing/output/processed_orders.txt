@@ -1,0 +1,108 @@
+OrderID: 101
+Customer: Asha Nair
+Product: Laptop
+Quantity: 2
+Unit Price: 45000.0
+Total Cost: 90000
+Order Date: 2025-10-01
+Estimated Delivery: 2025-10-06
+--------------------------------------------------
+OrderID: 106
+Customer: Sameer R
+Product: Headphones
+Quantity: 1
+Unit Price: 2500.0
+Total Cost: 2500
+Order Date: 2025-05-03
+Estimated Delivery: 2025-05-08
+--------------------------------------------------
+OrderID: 109
+Customer: Lekha Joseph
+Product: Printer
+Quantity: 1
+Unit Price: 12000.0
+Total Cost: 12000
+Order Date: 2024-01-12
+Estimated Delivery: 2024-01-17
+--------------------------------------------------
+OrderID: 115
+Customer: Kiran Babu
+Product: Monitor
+Quantity: 1
+Unit Price: 8500.0
+Total Cost: 8500
+Order Date: 2025-05-01
+Estimated Delivery: 2025-05-06
+--------------------------------------------------
+OrderID: 118
+Customer: Nithin P
+Product: Mousepad
+Quantity: 2
+Unit Price: 400.0
+Total Cost: 800
+Order Date: 2025-05-11
+Estimated Delivery: 2025-05-16
+--------------------------------------------------
+OrderID: 122
+Customer: Karthik Iyer
+Product: Mouse
+Quantity: 4
+Unit Price: 800.0
+Total Cost: 3200
+Order Date: 2025-10-02
+Estimated Delivery: 2025-10-07
+--------------------------------------------------
+OrderID: 127
+Customer: Ganesh Rao
+Product: Mousepad
+Quantity: 4
+Unit Price: 500.0
+Total Cost: 2000
+Order Date: 2025-05-06
+Estimated Delivery: 2025-05-12
+--------------------------------------------------
+OrderID: 132
+Customer: Manoj Pillai
+Product: Webcam
+Quantity: 2
+Unit Price: 1800.0
+Total Cost: 3600
+Order Date: 2025-05-02
+Estimated Delivery: 2025-05-07
+--------------------------------------------------
+OrderID: 136
+Customer: Om Prakash
+Product: Monitor
+Quantity: 1
+Unit Price: 8500.0
+Total Cost: 8500
+Order Date: 2025-09-09
+Estimated Delivery: 2025-09-15
+--------------------------------------------------
+OrderID: 140
+Customer: Arvind Gupta
+Product: Router
+Quantity: 1
+Unit Price: 4500.0
+Total Cost: 4500
+Order Date: 2025-01-10
+Estimated Delivery: 2025-01-15
+--------------------------------------------------
+OrderID: 142
+Customer: Kavya Menon
+Product: Keyboard
+Quantity: 3
+Unit Price: 1300.0
+Total Cost: 3900
+Order Date: 2025-05-07
+Estimated Delivery: 2025-05-12
+--------------------------------------------------
+OrderID: 148
+Customer: Sheela Chacko
+Product: Laptop
+Quantity: 2
+Unit Price: 51000.0
+Total Cost: 102000
+Order Date: 2025-10-05
+Estimated Delivery: 2025-10-10
+--------------------------------------------------
