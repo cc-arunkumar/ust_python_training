@@ -280,29 +280,47 @@ def get_user(user_id):
  
 def list_users():
     users = CSVStorage().load_users()
-    # Convert numeric fields from string to int for all users
+    # Convert numeric fields from string to int for all users (be tolerant of empty strings)
     for user in users:
-        user['max_loans'] = int(user['max_loans'])
-        user['active_loans'] = int(user.get('active_loans', 0))
+        try:
+            user['max_loans'] = int(user.get('max_loans') if user.get('max_loans') not in (None, '') else 0)
+        except (ValueError, TypeError):
+            user['max_loans'] = 0
+        try:
+            user['active_loans'] = int(user.get('active_loans') if user.get('active_loans') not in (None, '') else 0)
+        except (ValueError, TypeError):
+            user['active_loans'] = 0
     return users
 
 def list_active_users():
     """List only active users (excluding inactive and banned)"""
     users = CSVStorage().load_users()
-    # Convert numeric fields from string to int
+    # Convert numeric fields from string to int (tolerant)
     for user in users:
-        user['max_loans'] = int(user['max_loans'])
-        user['active_loans'] = int(user.get('active_loans', 0))
-    active_users = [u for u in users if u['status'] == 'active']
+        try:
+            user['max_loans'] = int(user.get('max_loans') if user.get('max_loans') not in (None, '') else 0)
+        except (ValueError, TypeError):
+            user['max_loans'] = 0
+        try:
+            user['active_loans'] = int(user.get('active_loans') if user.get('active_loans') not in (None, '') else 0)
+        except (ValueError, TypeError):
+            user['active_loans'] = 0
+    active_users = [u for u in users if u.get('status') == 'active']
     return active_users
 
 def list_all_users_with_status():
     """List all users with their status information"""
     users = CSVStorage().load_users()
-    # Convert numeric fields from string to int
+    # Convert numeric fields from string to int (tolerant)
     for user in users:
-        user['max_loans'] = int(user['max_loans'])
-        user['active_loans'] = int(user.get('active_loans', 0))
+        try:
+            user['max_loans'] = int(user.get('max_loans') if user.get('max_loans') not in (None, '') else 0)
+        except (ValueError, TypeError):
+            user['max_loans'] = 0
+        try:
+            user['active_loans'] = int(user.get('active_loans') if user.get('active_loans') not in (None, '') else 0)
+        except (ValueError, TypeError):
+            user['active_loans'] = 0
     return users
  
 def deactivate_user(user_id):
