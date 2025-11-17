@@ -1,0 +1,207 @@
+============================================================
+============================================================
+             LIBRARY MANAGEMENT SYSTEM - LOGIN
+============================================================
+============================================================
+          LIBRARY MANAGEMENT SYSTEM - USER: U2026
+============================================================
+
+============================================================
+                           LOGIN
+============================================================
+
+User ID: U2026
+Password: u2026
+
+============================================================
+                    USER ACCESS GRANTED
+============================================================
+
+  Welcome, Felix!
+
+
+Press Enter to continue...
+
+
+  1. Search Books
+  2. My Active Loans
+  3. My Loan History
+  4. View My Profile
+  5. Logout
+
+Select option (1-5):
+
+============================================================
+                 LIBRARY MANAGEMENT SYSTEM
+============================================================
+============================================================
+============================================================
+                        ADD NEW BOOK
+============================================================
+
+============================================================
+                      BOOK MANAGEMENT
+============================================================
+                     VIEW BOOK DETAILS
+============================================================
+
+Enter Book ID: B1040
+
+------------------------------------------------------------
+============================================================
+                      BOOK MANAGEMENT
+============================================================
+                        UPDATE BOOK
+============================================================
+
+Enter Book ID: B1041
+
+ Current Details:    
+  Title: Hello There 
+  Author: Joe        
+  ISBN: 1234655665765
+  Tags: home, ground 
+  Total Copies: 5
+  Available Copies: 5
+
+  (Leave blank to keep current value)
+============================================================
+                      BOOK MANAGEMENT
+============================================================
+                        REMOVE BOOK
+============================================================
+                      BOOK MANAGEMENT
+============================================================   
+                         ALL BOOKS
+============================================================   
+
+  ID              Title
+  ------------------------------------------------------------ 
+  B1001           Python Crash Course
+  B1002           Learning SQL
+  B1003           Clean Code
+  B1004           Fluent Python
+  B1005           Head First Design Patterns
+  B1006           The Pragmatic Programmer
+  B1007           Automate the Boring Stuff
+  B1008           Database System Concepts
+  B1009           Operating System Concepts
+  B1010           Introduction to Algorithms
+  B1011           Java Complete Reference
+  B1012           Effective Java
+  B1013           Java Concurrency in Practice
+  B1014           You Don't Know JS
+  B1015           Eloquent JavaScript
+  B1016           HTML & CSS
+  B1017           Designing Data-Intensive Applications
+  B1018           Deep Learning
+  B1019           Hands-On Machine Learning
+  B1020           Introduction to Machine Learning
+  B1021           Reinforcement Learning
+  B1022           Compilers: Principles Techniques and Tools
+  B1023           Computer Networks
+  B1024           Distributed Systems
+  B1025           Big Data Fundamentals
+  B1026           Data Engineering with Python
+  B1027           Kafka: The Definitive Guide
+  B1028           Spark: The Definitive Guide
+  B1029           NoSQL Distilled
+  B1030           Learning Docker
+  B1031           Kubernetes in Action
+  B1032           Terraform Up & Running
+============================================================
+                      BOOK MANAGEMENT
+============================================================
+                 LIBRARY MANAGEMENT SYSTEM
+============================================================
+                      USER MANAGEMENT
+============================================================
+============================================================
+                      USER MANAGEMENT
+============================================================
+                     VIEW USER DETAILS
+============================================================
+
+Enter User ID: U2026
+
+============================================================
+                      USER MANAGEMENT
+============================================================
+                         LIST USERS
+============================================================
+
+  Filter by:
+  1. All Users
+  2. Active Users Only
+  3. Inactive Users Only
+  4. Banned Users Only
+
+Select filter (1-4): 1
+
+  ALL USERS
+  ============================================================
+
+  ID              Name
+  ------------------------------------------------------------
+  U2001           Arun Kumar
+  U2002           Riya Sharma
+  U2003           John Mathew
+  U2004           Nisha Thomas
+  U2005           Anil Kumar
+  U2006           Meera Dsouza
+  U2007           Kiran Mohan
+  U2008           Sona Prakash
+  U2009           Ravi Shankar
+  U2010           Mona Raj
+  U2011           Arvind Iyer
+  U2012           Divya Menon
+  U2013           Hari Nath
+  U2014           Joel Thomas
+  U2015           Philip Mathew
+  U2016           Balu Nair
+  U2017           Aswin Kumar
+  U2018           Leena George
+============================================================
+                      USER MANAGEMENT
+============================================================
+                     CHANGE USER STATUS
+============================================================
+
+Enter User ID: U2026
+
+  Current Status: ACTIVE
+============================================================
+                      USER MANAGEMENT
+============================================================
+                 LIBRARY MANAGEMENT SYSTEM
+============================================================
+                        BORROW BOOK
+============================================================
+                 LIBRARY MANAGEMENT SYSTEM
+============================================================
+============================================================
+                      LIBRARY SUMMARY
+============================================================
+============================================================
+============================================================
+                        ACTIVE LOANS
+============================================================
+
+  TX ID      User ID         Book ID         Due Date
+  ----------------------------------------------------
+  T3001      B1001           U2001           2025-10-15
+  T3004      B1004           U2005           2025-11-15
+============================================================
+============================================================
+============================================================
+============================================================
+                 LIBRARY MANAGEMENT SYSTEM
+============================================================
+                        SEARCH BOOKS
+============================================================
+                 LIBRARY MANAGEMENT SYSTEM
+============================================================
+                          GOODBYE!
+============================================================
+
+  Thank you for using the Library Management System!
