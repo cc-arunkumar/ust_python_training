@@ -19,7 +19,7 @@ salary = int(input("Enter Employee Salary: "))
 # Creating Employee object with user inputs
 emp1 = Employee(name, age, salary)
 
-# Displaying employee details
+# Displaying employee  details
 print(f"Employee Name: {emp1.name}")
 print(f"Employee Age: {emp1.age}")
 print(f"Employee Salary: {emp1.salary}")
