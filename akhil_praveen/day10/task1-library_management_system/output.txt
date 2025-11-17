@@ -1,0 +1,334 @@
+============================================================
+             LIBRARY MANAGEMENT SYSTEM - LOGIN
+============================================================
+
+  1. Login
+  2. Register
+  3. Exit
+
+Select option (1-3): 2
+
+============================================================
+                     USER REGISTRATION
+============================================================
+
+Enter User ID: U3001
+Enter Name: Akhil Praveen
+Enter Email: akhil@ust.com
+
+  Registration successful!
+  Your password is: u3001
+  (Password is case-sensitive)
+
+Press Enter to continue...
+============================================================
+             LIBRARY MANAGEMENT SYSTEM - LOGIN
+============================================================
+
+  1. Login
+  2. Register
+  3. Exit
+
+Select option (1-3): 1
+
+============================================================
+                           LOGIN
+============================================================
+
+User ID: U3001
+Password: u3001
+
+============================================================
+                    USER ACCESS GRANTED
+============================================================
+
+  Welcome, Akhil Praveen!
+
+
+Press Enter to continue...
+
+============================================================
+          LIBRARY MANAGEMENT SYSTEM - USER: U3001
+============================================================
+
+  1. Search Books
+  2. My Active Loans
+  3. My Loan History
+  4. View My Profile
+  5. Logout
+
+Select option (1-5): 1
+
+Search for the available Books
+
+============================================================
+                        SEARCH BOOKS
+============================================================
+
+  Search by:
+  Title (or press Enter to skip): 
+  Author (or press Enter to skip): 
+  Tag (or press Enter to skip): 
+
+  Found 42 book(s):
+
+  ID           Title                          Available  Total   
+  ------------------------------------------------------------
+  B1001        Python Crash Course            Yes        5       
+  B1002        Learning SQL                   Yes        4       
+  B1003        Clean Code                     Yes        4       
+  B1004        Fluent Python                  Yes        3       
+  B1005        Head First Design Patterns     Yes        3       
+  B1006        The Pragmatic Programmer       Yes        5       
+  B1007        Automate the Boring Stuff      Yes        6       
+  B1008        Database System Concepts       Yes        3       
+  B1009        Operating System Concepts      Yes        3       
+  B1010        Introduction to Algorithms     Yes        5
+  B1011        Java Complete Reference        Yes        4
+  B1012        Effective Java                 Yes        3
+  B1013        Java Concurrency in Practice   Yes        2
+  B1014        You Don't Know JS              Yes        5
+  B1015        Eloquent JavaScript            Yes        4
+  B1016        HTML & CSS                     Yes        3
+  B1017        Designing Data-Intensive App.. Yes        4
+  B1018        Deep Learning                  Yes        3
+  B1019        Hands-On Machine Learning      Yes        4
+  B1020        Introduction to Machine Lear.. Yes        3
+  B1021        Reinforcement Learning         Yes        2
+  B1022        Compilers: Principles Techni.. Yes        2
+  B1023        Computer Networks              Yes        4
+  B1024        Distributed Systems            Yes        3
+  B1025        Big Data Fundamentals          Yes        3
+  B1026        Data Engineering with Python   Yes        3
+  B1027        Kafka: The Definitive Guide    Yes        4
+  B1028        Spark: The Definitive Guide    Yes        3
+  B1029        NoSQL Distilled                Yes        3
+  B1030        Learning Docker                Yes        4
+  B1031        Kubernetes in Action           Yes        3
+  B1032        Terraform Up & Running         Yes        2
+  B1033        CI/CD with Jenkins             Yes        3
+  B1034        Cloud Architecture Patterns    Yes        3
+  B1035        Azure for Architects           Yes        3
+  B1036        AWS Certified Solutions Arch.. Yes        4
+  B1037        GCP Architecture Framework     Yes        3
+  B1038        Data Visualization with Python Yes        4
+  B1039        SQL for Data Analysis          Yes        4
+  B1040        Introduction to Statistics     Yes        5
+  B1041        fdsv                           Yes        4
+  B1045        sfsef                          Yes        5
+
+Press Enter to continue...
+
+============================================================
+          LIBRARY MANAGEMENT SYSTEM - USER: U3001
+============================================================
+
+  1. Search Books
+  2. My Active Loans
+  3. My Loan History
+  4. View My Profile
+  5. Logout
+
+Select option (1-5): 5
+
+============================================================
+                           LOGOUT
+============================================================
+
+  Logged out successfully!
+
+
+Press Enter to continue...
+
+######admin login#########
+
+============================================================
+                           LOGIN
+============================================================
+
+User ID: admin
+Password: admin
+
+============================================================
+                    ADMIN ACCESS GRANTED
+============================================================
+
+  Welcome, Administrator!
+
+
+Press Enter to continue...
+
+============================================================
+                 LIBRARY MANAGEMENT SYSTEM
+============================================================
+
+  1. Book Management
+  2. User Management
+  3. Borrow & Return
+  4. Reports & Loans
+  5. Search Books
+  6. Exit
+
+Select option (1-6): 1
+
+============================================================
+                      BOOK MANAGEMENT
+============================================================
+
+  1. Add New Book
+  2. View Book Details
+  3. Update Book
+  4. Remove Book
+  5. List All Books
+  6. Back to Main Menu
+
+Select option (1-6): 2
+
+============================================================
+                     VIEW BOOK DETAILS
+============================================================
+
+Enter Book ID: B1001
+
+------------------------------------------------------------
+  Book ID       : B1001
+  Title         : Python Crash Course
+  Author(s)     : Eric Matthes
+  ISBN          : 9781593279288
+  Tags          : python, beginner, programming
+  Total Copies  : 5
+  Available     : 3
+------------------------------------------------------------
+
+Press Enter to continue...
+
+============================================================
+                        ADD NEW BOOK
+============================================================
+
+Book ID: B1100
+Title: Solo leveling        
+Author: sung woo
+ISBN: 12415710
+Tags (separate with |): Anime,Manga
+Total Copies: 5
+
+  Book added successfully!
+
+Press Enter to continue...
+
+============================================================
+                        UPDATE BOOK
+============================================================
+
+Enter Book ID: B1100      
+
+ Current Details:
+  Title: Solo leveling
+  Author: sung woo
+  ISBN: 12415710
+  Tags: Anime, Manga
+  Total Copies: 10
+  Available Copies: 10
+
+  (Leave blank to keep current value)
+
+New Title:      
+New Author: 
+New ISBN: 
+New Tags (| separated): Anime|Manga
+New Total Copies: 5
+
+  Book updated successfully!
+
+Press Enter to continue...
+
+============================================================
+                         ALL BOOKS
+============================================================
+
+  ID              Title
+  ------------------------------------------------------------
+  B1001           Python Crash Course
+  B1002           Learning SQL
+  B1003           Clean Code
+  B1004           Fluent Python
+  B1005           Head First Design Patterns
+  B1006           The Pragmatic Programmer
+  B1007           Automate the Boring Stuff
+  B1008           Database System Concepts
+  B1009           Operating System Concepts
+  B1010           Introduction to Algorithms
+  B1011           Java Complete Reference
+  B1012           Effective Java
+  B1013           Java Concurrency in Practice
+  B1014           You Don't Know JS
+  B1015           Eloquent JavaScript
+  B1016           HTML & CSS
+  B1017           Designing Data-Intensive Applications
+  B1018           Deep Learning
+  B1019           Hands-On Machine Learning
+  B1020           Introduction to Machine Learning
+  B1021           Reinforcement Learning
+  B1022           Compilers: Principles Techniques and Tools
+  B1023           Computer Networks
+  B1024           Distributed Systems
+  B1025           Big Data Fundamentals
+  B1026           Data Engineering with Python
+  B1027           Kafka: The Definitive Guide
+  B1028           Spark: The Definitive Guide
+  B1029           NoSQL Distilled
+  B1030           Learning Docker
+  B1031           Kubernetes in Action
+  B1032           Terraform Up & Running
+  B1033           CI/CD with Jenkins
+  B1034           Cloud Architecture Patterns
+  B1035           Azure for Architects
+  B1036           AWS Certified Solutions Architect
+  B1037           GCP Architecture Framework
+  B1038           Data Visualization with Python
+  B1039           SQL for Data Analysis
+  B1040           Introduction to Statistics
+  B1041           fdsv
+  B1045           sfsef
+  B1100           Solo leveling
+
+Press Enter to continue...
+
+============================================================
+                        REMOVE BOOK
+============================================================
+
+Enter Book ID to remove: B1001
+
+  Title: Python Crash Course
+Are you sure? (yes/no): no
+
+  Operation cancelled.
+
+Press Enter to continue...
+
+============================================================
+                           LOGOUT
+============================================================
+
+  Admin logged out successfully!
+
+
+Press Enter to continue...
+
+============================================================
+             LIBRARY MANAGEMENT SYSTEM - LOGIN
+============================================================
+
+  1. Login
+  2. Register
+  3. Exit
+
+Select option (1-3): 3
+
+============================================================
+                          GOODBYE!
+============================================================
+
+  Thank you for using the Library Management System!
