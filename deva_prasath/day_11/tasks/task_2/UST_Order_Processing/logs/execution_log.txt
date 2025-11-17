@@ -1,0 +1,50 @@
+[2025-11-17] INFO:Calculated total price
+[2025-11-17] INFO:Calculated total price
+[2025-11-17] INFO:Calculated total price
+[2025-11-17] INFO:Calculated total price
+[2025-11-17] INFO:Calculated total price
+[2025-11-17] INFO:Calculated total price
+[2025-11-17] INFO:Calculated total price
+[2025-11-17] INFO:Calculated total price
+[2025-11-17] INFO:Calculated total price
+[2025-11-17] INFO:Calculated total price
+[2025-11-17] INFO:Calculated total price
+[2025-11-17] INFO:Calculated total price
+[2025-11-17] INFO:Calculated total price
+[2025-11-17] INFO:Calculated total price
+[2025-11-17] INFO:Calculated total price
+[2025-11-17] INFO:Calculated total price
+[2025-11-17] INFO:Calculated total price
+[2025-11-17] INFO:Calculated total price
+[2025-11-17] INFO:Calculated total price
+[2025-11-17] INFO:Calculated total price
+[2025-11-17] INFO:Calculated total price
+[2025-11-17] INFO:Calculated total price
+[2025-11-17] INFO:Calculated total price
+[2025-11-17] INFO:Calculated total price
+[2025-11-17] INFO:Calculated total price
+[2025-11-17] INFO:Calculated total price
+[2025-11-17] INFO:Calculated total price
+[2025-11-17] INFO:Calculated total price
+[2025-11-17] INFO:Calculated total price
+[2025-11-17] INFO:Calculated total price
+[2025-11-17] WARNING:Order103 skipped -Invalid number format
+[2025-11-17] WARNING:Order104 skipped -Invalid date
+[2025-11-17] WARNING:Order105 skipped -Invalid date
+[2025-11-17] WARNING:Order107 skipped -Invalid number format
+[2025-11-17] WARNING:Order108 skipped -Invalid number format
+[2025-11-17] WARNING:Order112 skipped -Invalid date
+[2025-11-17] WARNING:Order113 skipped -Invalid date
+[2025-11-17] WARNING:Order114 skipped -Invalid date
+[2025-11-17] WARNING:Order116 skipped -Invalid number format
+[2025-11-17] WARNING:Order117 skipped -Invalid date
+[2025-11-17] WARNING:Order123 skipped -Invalid date
+[2025-11-17] WARNING:Order126 skipped -Invalid number format
+[2025-11-17] WARNING:Order128 skipped -Invalid number format
+[2025-11-17] WARNING:Order130 skipped -Invalid date
+[2025-11-17] WARNING:Order131 skipped -Invalid number format
+[2025-11-17] WARNING:Order135 skipped -Invalid number format
+[2025-11-17] WARNING:Order141 skipped -Invalid number format
+[2025-11-17] WARNING:Order144 skipped -Invalid number format
+[2025-11-17] WARNING:Order147 skipped -Invalid date
+[2025-11-17] WARNING:Order150 skipped -Invalid date
