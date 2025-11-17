@@ -20,7 +20,7 @@ except ZeroDivisionError:
     # Executes when denominator is zero
     print("Division Error : Enter Denominator > 0")
 
-# Generic exception (commented by user)
+#Generic exception (commented by user)
 # except Exception as e:
 #     print("Please check :", e)
 
