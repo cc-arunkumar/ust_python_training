@@ -1,0 +1,21 @@
+order_id,customer_name,product,quantity,unit_price,order_date,total_cost,delivery_date,reason
+103,Divya Iyer,Mouse,-1,700,2025-09-20,,,
+104,Pradeep Kumar,Monitor,1,8500,2025-02-30,,,day 30 must be in range 1..28 for month 2 in year 2025
+105,Anjali S,Laptop,2,42000,2026-01-01,,,Invalid date and time
+107,Meera Pillai,Webcam,0,1800,2025-04-10,,,
+108,Arun Raj,Mousepad,2,-500,2025-03-12,,,
+112,Aparna Devi,Laptop,2,48000,2025-01-32,,,unconverted data remains: 2
+113,Shreya T,Keyboard,3,1500,2025-13-10,,,time data '2025-13-10' does not match format '%Y-%m-%d'
+114,Harish Mohan,Mouse,2,700,2025-00-15,,,time data '2025-00-15' does not match format '%Y-%m-%d'
+116,Farhan Ali,Headphones,-2,2000,2025-03-01,,,
+117,Harini R,SSD,1,3000,2027-05-10,,,Invalid date and time
+123,Dhanya L,Webcam,1,2000,2025-02-29,,,day 29 must be in range 1..28 for month 2 in year 2025
+126,Bhavana Joshi,Keyboard,-3,1500,2025-08-10,,,
+128,Sushma R,Headphones,2,0,2025-06-10,,,
+130,Simran Kaur,Router,1,4500,2025-04-31,,,day 31 must be in range 1..30 for month 4 in year 2025
+131,Vishnu Das,Printer,1,-1000,2025-07-11,,,
+135,Deepak Nair,Keyboard,0,1200,2025-03-19,,,
+141,Teena Joseph,Printer,-1,14000,2025-11-02,,,
+144,Jayesh R,Monitor,0,8000,2025-04-12,,,
+147,Pranav Pai,SSD,2,3600,2025-12-15,,,Invalid date and time
+150,Divakar M,Mousepad,1,500,2025-12-20,,,Invalid date and time
