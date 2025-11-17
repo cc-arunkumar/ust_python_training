@@ -1,0 +1,20 @@
+OrderID: order_id | Reason: Invalid quantity
+OrderID: order_id | Reason: Invalid date
+OrderID: order_id | Reason: Order date in the future
+OrderID: order_id | Reason: Invalid quantity
+OrderID: order_id | Reason: Invalid unit price
+OrderID: order_id | Reason: Invalid date
+OrderID: order_id | Reason: Invalid date
+OrderID: order_id | Reason: Invalid date
+OrderID: order_id | Reason: Invalid quantity
+OrderID: order_id | Reason: Order date in the future
+OrderID: order_id | Reason: Invalid date
+OrderID: order_id | Reason: Invalid quantity
+OrderID: order_id | Reason: Invalid unit price
+OrderID: order_id | Reason: Invalid date
+OrderID: order_id | Reason: Invalid unit price
+OrderID: order_id | Reason: Invalid quantity
+OrderID: order_id | Reason: Invalid quantity
+OrderID: order_id | Reason: Invalid quantity
+OrderID: order_id | Reason: Order date in the future
+OrderID: order_id | Reason: Order date in the future
