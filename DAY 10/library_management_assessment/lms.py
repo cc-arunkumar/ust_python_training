@@ -10,24 +10,24 @@ from utils import parse_comma_list, input_nonempty
 
 def print_book(book):
     print(f"[{book.book_id}] {book.title}")
-    print(f"  Authors: {', '.join(book.authors)}")
-    print(f"  ISBN: {book.isbn}")
-    print(f"  Tags: {', '.join(book.tags)}")
-    print(f"  Copies: {book.available_copies}/{book.total_copies}")
+    print(f"Authors: {', '.join(book.authors)}")
+    print(f"ISBN: {book.isbn}")
+    print(f"Tags: {', '.join(book.tags)}")
+    print(f"Copies: {book.available_copies}/{book.total_copies}")
 
 
 def print_user(user):
     print(f"[{user.user_id}] {user.name}")
-    print(f"  Email: {user.email}")
-    print(f"  Status: {user.status}")
-    print(f"  Max Loans: {user.max_loans}")
+    print(f"Email: {user.email}")
+    print(f"Status: {user.status}")
+    print(f"Max Loans: {user.max_loans}")
 
 
 def print_tx(tx):
     print(f"[{tx.tx_id}] User={tx.user_id}, Book={tx.book_id}")
-    print(f"  Borrow: {tx.borrow_date}  Due: {tx.due_date}")
-    print(f"  Return: {tx.return_date or '-'}")
-    print(f"  Status: {tx.status}")
+    print(f"Borrow: {tx.borrow_date}  Due: {tx.due_date}")
+    print(f"Return: {tx.return_date or '-'}")
+    print(f"Status: {tx.status}")
 
 
 def main():
@@ -52,7 +52,7 @@ def main():
 
             # ---------- Exit ----------
             if choice == "7":
-                print("Goodbye!")
+                print("Thankyou!")
                 sys.exit(0)
 
             # ---------- Manage Books ----------
@@ -131,7 +131,7 @@ def main():
             # ---------- Manage Users ----------
             elif choice == "2":
                 pwd = input("Enter password to access Users section: ").strip()
-                if pwd != "user123":
+                if pwd != "1234":
                     print("Invalid credentials. Returning to main menu...")
                     continue  # Go back to main menu
                 else:
@@ -159,7 +159,7 @@ def main():
 
                 elif sub == "2":  # Update User
                     pwd = input("Enter password to access Users section: ").strip()
-                    if pwd != "user123":
+                    if pwd != "1234":
                         print("Invalid credentials. Returning to main menu...")
                         continue  # Go back to main menu
                     else:
@@ -181,7 +181,7 @@ def main():
 
                 elif sub == "3":  # Get User
                     pwd = input("Enter password to access Users section: ").strip()
-                    if pwd != "user123":
+                    if pwd != "1234":
                         print("Invalid credentials. Returning to main menu...")
                         continue  # Go back to main menu
                     else:
@@ -198,7 +198,7 @@ def main():
 
                 elif sub == "4":  # List Users
                     pwd = input("Enter password to access Users section: ").strip()
-                    if pwd != "user123":
+                    if pwd != "1234":
                         print("Invalid credentials. Returning to main menu...")
                         continue  # Go back to main menu
                     else:
@@ -212,7 +212,7 @@ def main():
 
                 elif sub == "5":  # Change Status
                     pwd = input("Enter password to access Users section: ").strip()
-                    if pwd != "user123":
+                    if pwd != "1234":
                         print("Invalid credentials. Returning to main menu...")
                         continue  # Go back to main menu
                     else:

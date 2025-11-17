@@ -3,7 +3,7 @@ import csv
 import os
 from models import Book, User, Transaction
 
-DATA_DIR = "data"
+DATA_DIR = "DAY 10\\library_management_assessment\\data"
 
 class CSVStorage:
     def __init__(self):

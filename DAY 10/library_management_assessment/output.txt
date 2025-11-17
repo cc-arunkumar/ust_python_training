@@ -1,3 +1,228 @@
+
+==================================================
+        LIBRARY MANAGEMENT SYSTEM
+==================================================
+1. Manage Books
+2. Manage Users
+3. Borrow / Return Books
+4. View Loans
+5. View Reports
+6. Save Changes
+7. Exit
+==================================================
+Enter your choice (1-7): 2
+Enter password to access Users section: 1234
+Authentication successfull!!
+
+--- Manage Users ---
+1. Add User
+2. Update User
+3. Get User
+4. List Users
+5. Change User Status
+6. Report User
+Choose an option (1-6): 1
+User ID: 0001
+Name: Gowtham
+Email: gowtham@ust.com
+User added.
+
+==================================================
+        LIBRARY MANAGEMENT SYSTEM
+==================================================
+1. Manage Books
+2. Manage Users
+3. Borrow / Return Books
+4. View Loans
+5. View Reports
+6. Save Changes
+7. Exit
+==================================================
+Enter your choice (1-7): 6
+Data saved successfully.
+
+==================================================
+        LIBRARY MANAGEMENT SYSTEM
+==================================================
+1. Manage Books
+2. Manage Users
+3. Borrow / Return Books
+4. View Loans
+5. View Reports
+6. Save Changes
+7. Exit
+==================================================
+Enter your choice (1-7): 2
+Enter password to access Users section: 1234
+Authentication successfull!!
+
+--- Manage Users ---
+1. Add User
+2. Update User
+3. Get User
+4. List Users
+5. Change User Status
+6. Report User
+Choose an option (1-6): 3
+Enter password to access Users section: 1234
+Authentication successfull!!
+[U2001] Arun Kumar
+Email: arun.kumar@ust.com
+Status: active
+Max Loans: 5
+[U2002] Riya Sharma
+Email: riya.sharma@ust.com
+Status: active
+Max Loans: 5
+[U2003] John Mathew
+Email: john.mathew@ust.com
+Status: inactive
+Max Loans: 5
+[U2004] Nisha Thomas
+Email: nisha.thomas@ust.com
+Status: active
+Max Loans: 3
+[U2005] Anil Kumar
+Email: anil.kumar@ust.com
+Status: active
+Max Loans: 5
+[U2006] Meera Dsouza
+Email: meera.dsouza@ust.com
+Status: banned
+Max Loans: 5
+[U2007] Kiran Mohan
+Email: kiran.mohan@ust.com
+Status: active
+Max Loans: 4
+[U2008] Sona Prakash
+Email: sona.prakash@ust.com
+Status: active
+Max Loans: 5
+[U2009] Ravi Shankar
+Email: ravi.shankar@ust.com
+Status: active
+Max Loans: 2
+[U2010] Mona Raj
+Email: mona.raj@ust.com
+Status: active
+Max Loans: 5
+[U2011] Arvind Iyer
+Email: arvind.iyer@ust.com
+Status: active
+Max Loans: 3
+[U2012] Divya Menon
+Email: divya.menon@ust.com
+Status: inactive
+Max Loans: 5
+[U2013] Hari Nath
+Email: hari.nath@ust.com
+Status: active
+Max Loans: 4
+[U2014] Joel Thomas
+Email: joel.thomas@ust.com
+Status: active
+Max Loans: 5
+[U2015] Philip Mathew
+Email: philip.mathew@ust.com
+Status: active
+Max Loans: 5
+[U2016] Balu Nair
+Email: balu.nair@ust.com
+Status: active
+Max Loans: 5
+[U2017] Aswin Kumar
+Email: aswin.kumar@ust.com
+Status: active
+Max Loans: 5
+[U2018] Leena George
+Email: leena.george@ust.com
+Status: active
+Max Loans: 4
+[U2019] Sandra Joy
+Email: sandra.joy@ust.com
+Status: active
+Max Loans: 3
+[U2020] Vishnu S
+Email: vishnu.s@ust.com
+Status: active
+Max Loans: 3
+[U2021] Ajay Dev
+Email: ajay.dev@ust.com
+Status: banned
+Max Loans: 5
+[U2022] Kavya Sunny
+Email: kavya.sunny@ust.com
+Status: active
+Max Loans: 5
+[U2023] Neeraj Pillai
+Email: neeraj.pillai@ust.com
+Status: active
+Max Loans: 4
+[U2024] Sachin Patel
+Email: sachin.patel@ust.com
+Status: active
+Max Loans: 5
+[U2025] Veena Shetty
+Email: veena.shetty@ust.com
+Status: active
+Max Loans: 2
+[U3457] Raj
+Email: etee@gmail.com
+Status: active
+Max Loans: 8
+[0001] Gowtham
+Email: gowtham@ust.com
+Status: active
+Max Loans: 0
+Enter User ID to view details: 0001 
+[0001] Gowtham
+Email: gowtham@ust.com
+Status: active
+Max Loans: 0
+
+==================================================
+        LIBRARY MANAGEMENT SYSTEM
+==================================================
+1. Manage Books
+2. Manage Users
+3. Borrow / Return Books
+4. View Loans
+5. View Reports
+6. Save Changes
+7. Exit
+==================================================
+Enter your choice (1-7): 1
+
+--- Manage Books ---
+1. Add Book
+2. Update Book
+3. Remove Book
+4. Get Book
+5. List Books
+6. Search Books
+Choose an option (1-6): 1
+Book ID: B0001
+Title: Money to money
+Authors (comma): Gowtham
+ISBN: 1234567890
+Tags (comma): Finance
+Total Copies: 3
+Book added successfully.
+
+==================================================
+        LIBRARY MANAGEMENT SYSTEM
+==================================================
+1. Manage Books
+2. Manage Users
+3. Borrow / Return Books
+4. View Loans
+5. View Reports
+6. Save Changes
+7. Exit
+==================================================
+Enter your choice (1-7): 6
+Data saved successfully.
+
 ==================================================
         LIBRARY MANAGEMENT SYSTEM
 ==================================================
@@ -20,180 +245,190 @@ Enter your choice (1-7): 1
 6. Search Books
 Choose an option (1-6): 5
 [B1001] Python Crash Course
-  Authors: Eric Matthes
-  ISBN: 9.78159E+12
-  Tags: python, beginner, programming
-  Copies: 3/5
+Authors: Eric Matthes
+ISBN: 9.78159E+12
+Tags: python, beginner, programming
+Copies: 3/5
 [B1002] rtyg
-  Authors: ryie
-  ISBN: 774
-  Tags: trur
-  Copies: 4/8
+Authors: ryie
+ISBN: 774
+Tags: trur
+Copies: 4/8
 [B1003] Clean Code
-  Authors: Robert C. Martin
-  ISBN: 9.78013E+12
-  Tags: software, clean-code, programming
-  Copies: 2/4
+Authors: Robert C. Martin
+ISBN: 9.78013E+12
+Tags: software, clean-code, programming
+Copies: 2/4
 [B1004] Fluent Python
-  Authors: Luciano Ramalho
-  ISBN: 9.78149E+12
-  Tags: python, advanced, programming
-  Copies: 1/3
+Authors: Luciano Ramalho
+ISBN: 9.78149E+12
+Tags: python, advanced, programming
+Copies: 1/3
 [B1005] Head First Design Patterns
-  Authors: Eric Freeman
-  ISBN: 9.7806E+12
-  Tags: design-patterns, oop, architecture
-  Copies: 2/3
+Authors: Eric Freeman
+ISBN: 9.7806E+12
+Tags: design-patterns, oop, architecture
+Copies: 2/3
 [B1006] The Pragmatic Programmer
-  Authors: Andrew Hunt
-  ISBN: 9.7802E+12
-  Tags: software, best-practices
-  Copies: 5/5
+Authors: Andrew Hunt
+ISBN: 9.7802E+12
+Tags: software, best-practices
+Copies: 5/5
 [B1007] Automate the Boring Stuff
-  Authors: Al Sweigart
-  ISBN: 9.78159E+12
-  Tags: automation, python, beginner
-  Copies: 5/6
+Authors: Al Sweigart
+ISBN: 9.78159E+12
+Tags: automation, python, beginner
+Copies: 5/6
 [B1008] Database System Concepts
-  Authors: Henry Korth
-  ISBN: 9.78008E+12
-  Tags: database, dbms, theory
-  Copies: 3/3
+Authors: Henry Korth
+ISBN: 9.78008E+12
+Tags: database, dbms, theory
+Copies: 3/3
 [B1009] Operating System Concepts
-  Authors: Silberschatz
-  ISBN: 9.78112E+12
-  Tags: os, theory, system
-  Copies: 2/3
+Authors: Silberschatz
+ISBN: 9.78112E+12
+Tags: os, theory, system
+Copies: 2/3
 [B1010] Introduction to Algorithms
-  Authors: CLRS
-  ISBN: 9.78026E+12
-  Tags: algorithms, dsa, competitive
-  Copies: 5/5
+Authors: CLRS
+ISBN: 9.78026E+12
+Tags: algorithms, dsa, competitive
+Copies: 5/5
 [B1011] Java Complete Reference
-  Authors: Herbert Schildt
-  ISBN: 9.78126E+12
-  Tags: java, programming, reference
-  Copies: 4/4
+Authors: Herbert Schildt
+ISBN: 9.78126E+12
+Tags: java, programming, reference
+Copies: 4/4
 [B1012] Effective Java
-  Authors: Joshua Bloch
-  ISBN: 9.78013E+12
-  Tags: java, clean-code, software
-  Copies: 3/3
+Authors: Joshua Bloch
+ISBN: 9.78013E+12
+Tags: java, clean-code, software
+Copies: 3/3
 [B1013] Java Concurrency in Practice
-  Authors: Brian Goetz
-  ISBN: 9.78032E+12
-  Tags: java, concurrency, advanced
-  Copies: 2/2
+Authors: Brian Goetz
+ISBN: 9.78032E+12
+Tags: java, concurrency, advanced
+Copies: 2/2
 [B1014] You Don't Know JS
-  Authors: Kyle Simpson
-  ISBN: 9.78149E+12
-  Tags: javascript, web, programming
-  Copies: 4/5
+Authors: Kyle Simpson
+ISBN: 9.78149E+12
+Tags: javascript, web, programming
+Copies: 4/5
 [B1015] Eloquent JavaScript
-  Authors: Marijn Haverbeke
-  ISBN: 9.78159E+12
-  Tags: javascript, web, beginner
-  Copies: 4/4
+Authors: Marijn Haverbeke
+ISBN: 9.78159E+12
+Tags: javascript, web, beginner
+Copies: 4/4
 [B1016] HTML & CSS
-  Authors: Jon Duckett
-  ISBN: 9.78112E+12
-  Tags: web, design, frontend
-  Copies: 3/3
+Authors: Jon Duckett
+ISBN: 9.78112E+12
+Tags: web, design, frontend
+Copies: 3/3
 [B1017] Designing Data-Intensive Applications
-  Authors: Martin Kleppmann
-  ISBN: 9.78145E+12
-  Tags: systems, distributed, architecture
-  Copies: 3/4
+Authors: Martin Kleppmann
+ISBN: 9.78145E+12
+Tags: systems, distributed, architecture
+Copies: 3/4
 [B1018] Deep Learning
-  Authors: Ian Goodfellow
-  ISBN: 9.78026E+12
-  Tags: ai, ml, deep-learning
-  Copies: 2/3
+Authors: Ian Goodfellow
+ISBN: 9.78026E+12
+Tags: ai, ml, deep-learning
+Copies: 2/3
 [B1019] Hands-On Machine Learning
-  Authors: Aurelien Geron
-  ISBN: 9.78149E+12
-  Tags: ml, python, ai
-  Copies: 3/4
+Authors: Aurelien Geron
+ISBN: 9.78149E+12
+Tags: ml, python, ai
+Copies: 3/4
 [B1020] Introduction to Machine Learning
-  Authors: Alpaydin
-  ISBN: 9.78026E+12
-  Tags: ml, theory, data
-  Copies: 3/3
+Authors: Alpaydin
+ISBN: 9.78026E+12
+Tags: ml, theory, data
+Copies: 3/3
 [B1021] Reinforcement Learning
-  Authors: Sutton & Barto
-  ISBN: 9.78026E+12
-  Tags: rl, ai, advanced
-  Copies: 2/2
+Authors: Sutton & Barto
+ISBN: 9.78026E+12
+Tags: rl, ai, advanced
+Copies: 2/2
 [B1022] Compilers: Principles Techniques and Tools
-  Authors: Aho & Ullman
-  ISBN: 9.78032E+12
-  Tags: compiler, theory
-  Copies: 2/2
+Authors: Aho & Ullman
+ISBN: 9.78032E+12
+Tags: compiler, theory
+Copies: 2/2
 [B1023] Computer Networks
-  Authors: Tanenbaum
-  ISBN: 9.78013E+12
-  Tags: networks, theory, system
-  Copies: 4/4
+Authors: Tanenbaum
+ISBN: 9.78013E+12
+Tags: networks, theory, system
+Copies: 4/4
 [B1024] Distributed Systems
-  Authors: Maarten van Steen
-  ISBN: 9.78154E+12
-  Tags: distributed, systems, theory
-  Copies: 2/3
+Authors: Maarten van Steen
+ISBN: 9.78154E+12
+Tags: distributed, systems, theory
+Copies: 2/3
 [B1025] Big Data Fundamentals
-  Authors: Thomas Erl
-  ISBN: 9.78013E+12
-  Tags: big-data, data-engineering
-  Copies: 3/3
+Authors: Thomas Erl
+ISBN: 9.78013E+12
+Tags: big-data, data-engineering
+Copies: 3/3
 [B1026] Data Engineering with Python
-  Authors: Paul Crickard
-  ISBN: 9.78179E+12
-  Tags: data-engineering, python
-  Copies: 3/3
+Authors: Paul Crickard
+ISBN: 9.78179E+12
+Tags: data-engineering, python
+Copies: 3/3
 [B1027] Kafka: The Definitive Guide
-  Authors: Gwen Shapira
-  ISBN: 9.78149E+12
-  Tags: data-streaming, kafka
-  Copies: 4/4
+Authors: Gwen Shapira
+ISBN: 9.78149E+12
+Tags: data-streaming, kafka
+Copies: 4/4
 [B1028] Spark: The Definitive Guide
-  Authors: Bill Chambers
-  ISBN: 9.78149E+12
-  Tags: big-data, spark
-  Copies: 2/3
+Authors: Bill Chambers
+ISBN: 9.78149E+12
+Tags: big-data, spark
+Copies: 2/3
 [B1029] NoSQL Distilled
-  Authors: Pramod Sadalage
-  ISBN: 9.78013E+12
-  Tags: database, nosql, theory
-  Copies: 3/3
+Authors: Pramod Sadalage
+ISBN: 9.78013E+12
+Tags: database, nosql, theory
+Copies: 3/3
 [B1030] Learning Docker
-  Authors: Pethuru Raj
-  ISBN: 9.78178E+12
-  Tags: devops, docker, containers
-  Copies: 4/4
+Authors: Pethuru Raj
+ISBN: 9.78178E+12
+Tags: devops, docker, containers
+Copies: 4/4
 [B1031] Kubernetes in Action
-  Authors: Marko Luksa
-  ISBN: 9.78162E+12
-  Tags: devops, kubernetes, orchestration
-  Copies: 3/3
+Authors: Marko Luksa
+ISBN: 9.78162E+12
+Tags: devops, kubernetes, orchestration
+Copies: 3/3
 [B1032] Terraform Up & Running
-  Authors: Yevgeniy Brikman
-  ISBN: 9.78149E+12
-  Tags: devops, infrastructure
-  Copies: 2/2
+Authors: Yevgeniy Brikman
+ISBN: 9.78149E+12
+Tags: devops, infrastructure
+Copies: 2/2
 [B1033] CI/CD with Jenkins
-  Authors: Christopher Grant
-  ISBN: 9.78179E+12
-  Tags: devops, cicd, automation
-  Copies: 3/3
+Authors: Christopher Grant
+ISBN: 9.78179E+12
+Tags: devops, cicd, automation
+Copies: 3/3
 [B1034] Cloud Architecture Patterns
-  Authors: Bill Wilder
-  ISBN: 9.78145E+12
-  Tags: cloud, architecture, patterns
-  Copies: 3/3
+Authors: Bill Wilder
+ISBN: 9.78145E+12
+Tags: cloud, architecture, patterns
+Copies: 3/3
 [202] C++
-  Authors: Sovan
-  ISBN: 3737
-  Tags: C++
-  Copies: 6/6
+Authors: Sovan
+ISBN: 3737
+Tags: C++
+Copies: 6/6
+[21] Money to Money
+Authors: Gowtham
+ISBN: 12345689
+Tags: Finance
+Copies: 3/3
+[B0001] Money to money
+Authors: Gowtham
+ISBN: 1234567890
+Tags: Finance
+Copies: 3/3
 
 ==================================================
         LIBRARY MANAGEMENT SYSTEM
@@ -206,155 +441,14 @@ Choose an option (1-6): 5
 6. Save Changes
 7. Exit
 ==================================================
-Enter your choice (1-7): 2
-Enter password to access Users section: user123
-Authentication successfull!!
+Enter your choice (1-7): 3
 
---- Manage Users ---
-1. Add User
-2. Update User
-3. Get User
-4. List Users
-5. Change User Status
-6. Report User
-Choose an option (1-6): 4
-Enter password to access Users section: user123
-Authentication successfull!!
-[U2001] Arun Kumar
-  Email: arun.kumar@ust.com
-  Status: active
-  Max Loans: 5
-[U2002] Riya Sharma
-  Email: riya.sharma@ust.com
-  Status: active
-  Max Loans: 5
-[U2003] John Mathew
-  Email: john.mathew@ust.com
-  Status: inactive
-  Max Loans: 5
-[U2004] Nisha Thomas
-  Email: nisha.thomas@ust.com
-  Status: active
-  Max Loans: 3
-[U2005] Anil Kumar
-  Email: anil.kumar@ust.com
-  Status: active
-  Max Loans: 5
-[U2006] Meera Dsouza
-  Email: meera.dsouza@ust.com
-  Status: banned
-  Max Loans: 5
-[U2007] Kiran Mohan
-  Email: kiran.mohan@ust.com
-  Status: active
-  Max Loans: 4
-[U2008] Sona Prakash
-  Email: sona.prakash@ust.com
-  Status: active
-  Max Loans: 5
-[U2009] Ravi Shankar
-  Email: ravi.shankar@ust.com
-  Status: active
-  Max Loans: 2
-[U2010] Mona Raj
-  Email: mona.raj@ust.com
-  Status: active
-  Max Loans: 5
-[U2011] Arvind Iyer
-  Email: arvind.iyer@ust.com
-  Status: active
-  Max Loans: 3
-[U2012] Divya Menon
-  Email: divya.menon@ust.com
-  Status: inactive
-  Max Loans: 5
-[U2013] Hari Nath
-  Email: hari.nath@ust.com
-  Status: active
-  Max Loans: 4
-[U2014] Joel Thomas
-  Email: joel.thomas@ust.com
-  Status: active
-  Max Loans: 5
-[U2015] Philip Mathew
-  Email: philip.mathew@ust.com
-  Status: active
-  Max Loans: 5
-[U2016] Balu Nair
-  Email: balu.nair@ust.com
-  Status: active
-  Max Loans: 5
-[U2017] Aswin Kumar
-  Email: aswin.kumar@ust.com
-  Status: active
-  Max Loans: 5
-[U2018] Leena George
-  Email: leena.george@ust.com
-  Status: active
-  Max Loans: 4
-[U2019] Sandra Joy
-  Email: sandra.joy@ust.com
-  Status: active
-  Max Loans: 3
-[U2020] Vishnu S
-  Email: vishnu.s@ust.com
-  Status: active
-  Max Loans: 3
-[U2021] Ajay Dev
-  Email: ajay.dev@ust.com
-  Status: banned
-  Max Loans: 5
-[U2022] Kavya Sunny
-  Email: kavya.sunny@ust.com
-  Status: active
-  Max Loans: 5
-[U2023] Neeraj Pillai
-  Email: neeraj.pillai@ust.com
-  Status: active
-  Max Loans: 4
-[U2024] Sachin Patel
-  Email: sachin.patel@ust.com
-  Status: active
-  Max Loans: 5
-[U2025] Veena Shetty
-  Email: veena.shetty@ust.com
-  Status: active
-  Max Loans: 2
-[U3457] Raj
-  Email: etee@gmail.com
-  Status: active
-  Max Loans: 8
-[U5569] erywe
-  Email: yuyfiwy@ust.com
-  Status: active
-  Max Loans: 5
-[U6000] Rajveer
-  Email: yyrurie@ust.com
-  Status: active
-  Max Loans: 5
-[U6234] Suraj
-  Email: suraj@ust.com
-  Status: active
-  Max Loans: 0
-
-==================================================
-        LIBRARY MANAGEMENT SYSTEM
-==================================================
-1. Manage Books
-2. Manage Users
-3. Borrow / Return Books
-4. View Loans
-5. View Reports
-6. Save Changes
-7. Exit
-==================================================
-Enter your choice (1-7): 4
-
-1. Active Loans
-2. Overdue Loans
-3. Loans by User
-Choose: 2
-No loans found.
+1. Borrow Book
+2. Return Book
+Choose: 1
+User ID: 0001
+Book ID: B0001
+Error: Loan limit reached.
 
 ==================================================
         LIBRARY MANAGEMENT SYSTEM
@@ -372,8 +466,8 @@ Enter your choice (1-7): 5
 1. Summary Report
 2. User Report
 Choose: 1
-Total books: 35
-Total users: 29
+Total books: 37
+Total users: 27
 Active loans: 10
 Overdue loans: 0
 
@@ -388,5 +482,280 @@ Overdue loans: 0
 6. Save Changes
 7. Exit
 ==================================================
+Enter your choice (1-7): 1
+
+--- Manage Books ---
+1. Add Book
+2. Update Book
+3. Remove Book
+4. Get Book
+5. List Books
+6. Search Books
+Choose an option (1-6): 6
+Title contains: money
+Author: Gowtham
+Tag: Finance
+[21] Money to Money
+Authors: Gowtham
+ISBN: 12345689
+Tags: Finance
+Copies: 3/3
+[B0001] Money to money
+Authors: Gowtham
+ISBN: 1234567890
+Tags: Finance
+Copies: 3/3
+
+==================================================
+        LIBRARY MANAGEMENT SYSTEM
+==================================================
+1. Manage Books
+2. Manage Users
+3. Borrow / Return Books
+4. View Loans
+5. View Reports
+6. Save Changes
+7. Exit
+==================================================
+Enter your choice (1-7): 1
+
+--- Manage Books ---
+1. Add Book
+2. Update Book
+3. Remove Book
+4. Get Book
+5. List Books
+6. Search Books
+Choose an option (1-6): 3
+Book ID: B0001
+Book removed.
+
+==================================================
+        LIBRARY MANAGEMENT SYSTEM
+==================================================
+1. Manage Books
+2. Manage Users
+3. Borrow / Return Books
+4. View Loans
+5. View Reports
+6. Save Changes
+7. Exit
+==================================================
+Enter your choice (1-7): 6
+Data saved successfully.
+
+==================================================
+        LIBRARY MANAGEMENT SYSTEM
+==================================================
+1. Manage Books
+2. Manage Users
+3. Borrow / Return Books
+4. View Loans
+5. View Reports
+6. Save Changes
+7. Exit
+==================================================
+Enter your choice (1-7): 1
+
+--- Manage Books ---
+1. Add Book
+2. Update Book
+3. Remove Book
+4. Get Book
+5. List Books
+6. Search Books
+Choose an option (1-6): 5
+[B1001] Python Crash Course
+Authors: Eric Matthes
+ISBN: 9.78159E+12
+Tags: python, beginner, programming
+Copies: 3/5
+[B1002] rtyg
+Authors: ryie
+ISBN: 774
+Tags: trur
+Copies: 4/8
+[B1003] Clean Code
+Authors: Robert C. Martin
+ISBN: 9.78013E+12
+Tags: software, clean-code, programming
+Copies: 2/4
+[B1004] Fluent Python
+Authors: Luciano Ramalho
+ISBN: 9.78149E+12
+Tags: python, advanced, programming
+Copies: 1/3
+[B1005] Head First Design Patterns
+Authors: Eric Freeman
+ISBN: 9.7806E+12
+Tags: design-patterns, oop, architecture
+Copies: 2/3
+[B1006] The Pragmatic Programmer
+Authors: Andrew Hunt
+ISBN: 9.7802E+12
+Tags: software, best-practices
+Copies: 5/5
+[B1007] Automate the Boring Stuff
+Authors: Al Sweigart
+ISBN: 9.78159E+12
+Tags: automation, python, beginner
+Copies: 5/6
+[B1008] Database System Concepts
+Authors: Henry Korth
+ISBN: 9.78008E+12
+Tags: database, dbms, theory
+Copies: 3/3
+[B1009] Operating System Concepts
+Authors: Silberschatz
+ISBN: 9.78112E+12
+Tags: os, theory, system
+Copies: 2/3
+[B1010] Introduction to Algorithms
+Authors: CLRS
+ISBN: 9.78026E+12
+Tags: algorithms, dsa, competitive
+Copies: 5/5
+[B1011] Java Complete Reference
+Authors: Herbert Schildt
+ISBN: 9.78126E+12
+Tags: java, programming, reference
+Copies: 4/4
+[B1012] Effective Java
+Authors: Joshua Bloch
+ISBN: 9.78013E+12
+Tags: java, clean-code, software
+Copies: 3/3
+[B1013] Java Concurrency in Practice
+Authors: Brian Goetz
+ISBN: 9.78032E+12
+Tags: java, concurrency, advanced
+Copies: 2/2
+[B1014] You Don't Know JS
+Authors: Kyle Simpson
+ISBN: 9.78149E+12
+Tags: javascript, web, programming
+Copies: 4/5
+[B1015] Eloquent JavaScript
+Authors: Marijn Haverbeke
+ISBN: 9.78159E+12
+Tags: javascript, web, beginner
+Copies: 4/4
+[B1016] HTML & CSS
+Authors: Jon Duckett
+ISBN: 9.78112E+12
+Tags: web, design, frontend
+Copies: 3/3
+[B1017] Designing Data-Intensive Applications
+Authors: Martin Kleppmann
+ISBN: 9.78145E+12
+Tags: systems, distributed, architecture
+Copies: 3/4
+[B1018] Deep Learning
+Authors: Ian Goodfellow
+ISBN: 9.78026E+12
+Tags: ai, ml, deep-learning
+Copies: 2/3
+[B1019] Hands-On Machine Learning
+Authors: Aurelien Geron
+ISBN: 9.78149E+12
+Tags: ml, python, ai
+Copies: 3/4
+[B1020] Introduction to Machine Learning
+Authors: Alpaydin
+ISBN: 9.78026E+12
+Tags: ml, theory, data
+Copies: 3/3
+[B1021] Reinforcement Learning
+Authors: Sutton & Barto
+ISBN: 9.78026E+12
+Tags: rl, ai, advanced
+Copies: 2/2
+[B1022] Compilers: Principles Techniques and Tools
+Authors: Aho & Ullman
+ISBN: 9.78032E+12
+Tags: compiler, theory
+Copies: 2/2
+[B1023] Computer Networks
+Authors: Tanenbaum
+ISBN: 9.78013E+12
+Tags: networks, theory, system
+Copies: 4/4
+[B1024] Distributed Systems
+Authors: Maarten van Steen
+ISBN: 9.78154E+12
+Tags: distributed, systems, theory
+Copies: 2/3
+[B1025] Big Data Fundamentals
+Authors: Thomas Erl
+ISBN: 9.78013E+12
+Tags: big-data, data-engineering
+Copies: 3/3
+[B1026] Data Engineering with Python
+Authors: Paul Crickard
+ISBN: 9.78179E+12
+Tags: data-engineering, python
+Copies: 3/3
+[B1027] Kafka: The Definitive Guide
+Authors: Gwen Shapira
+ISBN: 9.78149E+12
+Tags: data-streaming, kafka
+Copies: 4/4
+[B1028] Spark: The Definitive Guide
+Authors: Bill Chambers
+ISBN: 9.78149E+12
+Tags: big-data, spark
+Copies: 2/3
+[B1029] NoSQL Distilled
+Authors: Pramod Sadalage
+ISBN: 9.78013E+12
+Tags: database, nosql, theory
+Copies: 3/3
+[B1030] Learning Docker
+Authors: Pethuru Raj
+ISBN: 9.78178E+12
+Tags: devops, docker, containers
+Copies: 4/4
+[B1031] Kubernetes in Action
+Authors: Marko Luksa
+ISBN: 9.78162E+12
+Tags: devops, kubernetes, orchestration
+Copies: 3/3
+[B1032] Terraform Up & Running
+Authors: Yevgeniy Brikman
+ISBN: 9.78149E+12
+Tags: devops, infrastructure
+Copies: 2/2
+[B1033] CI/CD with Jenkins
+Authors: Christopher Grant
+ISBN: 9.78179E+12
+Tags: devops, cicd, automation
+Copies: 3/3
+[B1034] Cloud Architecture Patterns
+Authors: Bill Wilder
+ISBN: 9.78145E+12
+Tags: cloud, architecture, patterns
+Copies: 3/3
+[202] C++
+Authors: Sovan
+ISBN: 3737
+Tags: C++
+Copies: 6/6
+[21] Money to Money
+Authors: Gowtham
+ISBN: 12345689
+Tags: Finance
+Copies: 3/3
+
+==================================================
+        LIBRARY MANAGEMENT SYSTEM
+==================================================
+1. Manage Books
+2. Manage Users
+3. Borrow / Return Books
+4. View Loans
+5. View Reports
+6. Save Changes
+7. Exit
+==================================================
 Enter your choice (1-7): 7
-Goodbye!
+Thankyou!
