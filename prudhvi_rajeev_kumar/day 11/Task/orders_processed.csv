@@ -1,0 +1,89 @@
+order_id,customer_name,state,product,quantity,price_per_unit,total_amount,status
+1001,Asha Verma,Uttar Pradesh,Mobile Phone,1,15000.0,15000.0,SHIPPED
+1008,Joseph Dsouza,Goa,USB Cable,5,150.0,750.0,DELIVERED
+1010,Ramesh Naik,Andhra Pradesh,Speaker,1,1200.0,1200.0,PENDING
+1011,Alok Pandey,Uttarakhand,Mouse,2,450.0,900.0,DELIVERED
+1014,Naveen Patil,Karnataka,Tablet,4,18000.0,72000.0,SHIPPED
+1015,Sheela Mishra,Madhya Pradesh,Laptop Bag,2,900.0,1800.0,PENDING
+1016,Karan Arora,Haryana,Charger,1,450.0,450.0,SHIPPED
+1018,Sameer Khan,Rajasthan,Mouse,2,350.0,700.0,DELIVERED
+1020,Vijay Gupta,Uttar Pradesh,Mobile Phone,2,14500.0,29000.0,SHIPPED
+1022,K. Suresh,Tamil Nadu,Keyboard,1,700.0,700.0,SHIPPED
+1023,Naresh Joshi,Gujarat,Charger,2,450.0,900.0,PENDING
+1025,Anita Yadav,Haryana,Tablet,3,16000.0,48000.0,SHIPPED
+1027,Arun Babu,Andhra Pradesh,USB Cable,4,200.0,800.0,SHIPPED
+1028,Manoj Kumar,Bihar,Mouse,1,450.0,450.0,DELIVERED
+1030,Rita Fernandes,Goa,Laptop Bag,2,850.0,1700.0,PENDING
+1031,Rohit Sharma,Delhi,Smartwatch,1,3500.0,3500.0,SHIPPED
+1033,Megha Kapoor,Rajasthan,Charger,1,300.0,300.0,DELIVERED
+1034,Shruti Rao,Karnataka,Mobile Phone,2,16000.0,32000.0,SHIPPED
+1036,Vishal Mehta,Gujarat,Keyboard,1,750.0,750.0,DELIVERED
+1037,Pooja Sethi,Haryana,Headphones,4,999.0,3996.0,SHIPPED
+1040,Trisha Dutt,West Bengal,Charger,3,250.0,750.0,SHIPPED
+1041,Aamir Hussain,Jharkhand,USB Cable,2,200.0,400.0,DELIVERED
+1042,Deepak Oraon,Chhattisgarh,Laptop Bag,1,800.0,800.0,SHIPPED
+1044,Akash Singh,Delhi,Mobile Phone,2,15000.0,30000.0,CANCELLED
+1046,Rajiv Patel,Gujarat,Keyboard,1,650.0,650.0,SHIPPED
+1047,Mohan Lal,Himachal Pradesh,Mouse,2,350.0,700.0,PENDING
+1049,Salman Yusuf,Karnataka,Laptop,1,48000.0,48000.0,DELIVERED
+1050,Aparna Pillai,Kerala,Tablet,2,15000.0,30000.0,SHIPPED
+1052,Shivani Goyal,Haryana,Mobile Phone,2,15000.0,30000.0,SHIPPED
+1053,Omkar Joshi,Goa,Charger,3,300.0,900.0,DELIVERED
+1055,Farida Rahman,Assam,Keyboard,1,700.0,700.0,SHIPPED
+1056,Lalit Kumar,Bihar,Smartwatch,2,2500.0,5000.0,CANCELLED
+1058,John Abraham,Kerala,Headphones,2,900.0,1800.0,SHIPPED
+1060,Hari Krishnan,Tamil Nadu,USB Cable,2,200.0,400.0,SHIPPED
+1061,Suman Das,West Bengal,Laptop Bag,1,750.0,750.0,DELIVERED
+1064,Ritika Rao,Karnataka,Speaker,1,1200.0,1200.0,SHIPPED
+1065,Jessica Dsouza,Goa,Tablet,4,18000.0,72000.0,PENDING
+1066,Satish Anand,Punjab,Mobile Phone,2,15000.0,30000.0,DELIVERED
+1067,Latika Tiwari,Uttar Pradesh,Charger,3,250.0,750.0,SHIPPED
+1069,Reema Khan,Delhi,Keyboard,2,750.0,1500.0,SHIPPED
+1070,Vineet Soni,Himachal Pradesh,USB Cable,4,200.0,800.0,DELIVERED
+1072,Kabir Arora,Punjab,Laptop,1,52000.0,52000.0,SHIPPED
+1074,Sachin Kumar,Bihar,Headphones,3,999.0,2997.0,CANCELLED
+1076,Amrit Pal,Haryana,Mouse,2,350.0,700.0,SHIPPED
+1077,Varsha Bhandari,Gujarat,Keyboard,1,700.0,700.0,DELIVERED
+1079,Priya Nair,Kerala,Smartwatch,2,2500.0,5000.0,SHIPPED
+1080,Farhan Ali,Uttar Pradesh,Speaker,1,1200.0,1200.0,CANCELLED
+1082,Deepika Madhavan,Karnataka,Charger,2,300.0,600.0,PENDING
+1083,Mohan Rao,Andhra Pradesh,Laptop Bag,1,850.0,850.0,DELIVERED
+1084,Nalini Sharma,Rajasthan,Mouse,2,450.0,900.0,SHIPPED
+1086,Aditi Gupta,Delhi,Mobile Phone,2,15000.0,30000.0,SHIPPED
+1088,Kavin Kumar,Tamil Nadu,Headphones,5,999.0,4995.0,PENDING
+1090,Alisha Fernandes,Goa,Smartwatch,2,3000.0,6000.0,DELIVERED
+1093,Manish Patel,Gujarat,USB Cable,2,200.0,400.0,DELIVERED
+1096,Savita Jain,Delhi,Charger,4,300.0,1200.0,DELIVERED
+1097,Raghav Sharma,Rajasthan,Smartwatch,2,2600.0,5200.0,CANCELLED
+1099,Rafiq Alam,Bihar,Mouse,1,400.0,400.0,PENDING
+1102,Vasudha Rao,Karnataka,Speaker,1,1200.0,1200.0,DELIVERED
+1103,Bhavana Singh,Uttarakhand,Mobile Phone,2,14000.0,28000.0,PENDING
+1104,Sujit Kumar,Jharkhand,Tablet,1,15500.0,15500.0,SHIPPED
+1105,Karishma Mehta,Gujarat,Mouse,2,450.0,900.0,SHIPPED
+1108,Ritesh Sharma,Rajasthan,USB Cable,5,200.0,1000.0,CANCELLED
+1110,Tina Karki,Sikkim,Smartwatch,1,2500.0,2500.0,PENDING
+1112,Sneha Nambiar,Kerala,Charger,1,300.0,300.0,SHIPPED
+1113,Rohit Sinha,Bihar,Headphones,4,899.0,3596.0,PENDING
+1116,Lavanya Rao,Andhra Pradesh,Keyboard,1,700.0,700.0,PENDING
+1118,Saurabh Das,Assam,Speaker,1,1200.0,1200.0,SHIPPED
+1119,Shankar Iyer,Tamil Nadu,Smartwatch,2,2600.0,5200.0,DELIVERED
+1120,Aneesh George,Kerala,Mouse,3,400.0,1200.0,PENDING
+1122,Asha Dey,Tripura,USB Cable,2,200.0,400.0,DELIVERED
+1124,Aryan Mehra,Haryana,Keyboard,1,650.0,650.0,SHIPPED
+1125,Yusuf Pathan,Gujarat,Mouse,3,350.0,1050.0,SHIPPED
+1126,Divya M,Karnataka,Smartwatch,1,2500.0,2500.0,DELIVERED
+1127,Pritam Paul,West Bengal,Laptop Bag,2,850.0,1700.0,PENDING
+1131,Jyoti Kiran,Bihar,Keyboard,1,700.0,700.0,PENDING
+1133,Ishita Sen,West Bengal,Tablet,1,16000.0,16000.0,SHIPPED
+1135,Rajesh Sinha,Chhattisgarh,Mouse,1,450.0,450.0,PENDING
+1136,Anand Nair,Kerala,Keyboard,1,750.0,750.0,SHIPPED
+1137,Indu Priya,Karnataka,Smartwatch,2,2500.0,5000.0,DELIVERED
+1138,Om Prakash,Haryana,Speaker,3,1200.0,3600.0,PENDING
+1140,Kiran Rathod,Gujarat,Mobile Phone,2,15000.0,30000.0,DELIVERED
+1141,Anupama Singh,Uttar Pradesh,USB Cable,2,200.0,400.0,SHIPPED
+1145,Pooja Kaur,Punjab,Keyboard,1,700.0,700.0,DELIVERED
+1146,Faizan Ali,Jharkhand,Smartwatch,2,2500.0,5000.0,CANCELLED
+1147,Girish Patil,Karnataka,Headphones,3,950.0,2850.0,SHIPPED
+1148,Nitu Rani,Bihar,Mouse,2,350.0,700.0,PENDING
+1149,Arjun Singh,Himachal Pradesh,USB Cable,5,200.0,1000.0,DELIVERED
+1150,Damodhar Reddy,Andhra Pradesh,Tablet,1,16000.0,16000.0,SHIPPED
