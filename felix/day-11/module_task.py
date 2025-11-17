@@ -168,3 +168,16 @@ with open(input_file, "r") as file:
 # Final summary
 print("Processed data: ", processed)
 print("Skipped data: ", skipped)
+
+
+# output
+
+# ust_order_processing Directory already exists
+# input Directory already exists
+# output Directory already exists
+# processed.csv already exists
+# skipped.csv already exists
+# logs Directory already exists
+# excicution_log.txt already exists
+# Processed data:  30
+# Skipped data:  20
