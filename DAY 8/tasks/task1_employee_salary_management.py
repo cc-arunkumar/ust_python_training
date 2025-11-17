@@ -5,7 +5,7 @@ class Employee:
         self.__salary=0 # private
         # self.__salary=salary
 
-
+    #setter 
     def set_salary(self,amount):
         if amount>0:
             self.__salary=amount

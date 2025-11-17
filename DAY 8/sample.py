@@ -11,3 +11,9 @@ class Test:
 t1=Test()
 t1.new_elements()
 print(t1.__dict__)
+
+
+"""
+SAMPLE OUTPUT
+{'a': 10, 'b': 20, 'c': 30, 'd': 40}
+"""

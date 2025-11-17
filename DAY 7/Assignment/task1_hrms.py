@@ -22,7 +22,7 @@ class Developers(Employees):
         Employees.__init__(self, emp_id, name, base_salary)
         self.programming_lang = programming_lang  # List of programming languages
     
-    # Method to show developer skills
+    # Method to show the developer skills
     def show_skills(self):
         print(f"{self.name} knows {self.programming_lang}")
 

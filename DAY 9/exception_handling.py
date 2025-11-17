@@ -25,7 +25,7 @@ except ZeroDivisionError:
 #     print("Please check :", e)
 
 # End message
-print("Thanks For Using UST Calculator")
+print("Thank you For Using UST Calculator")
 
 
 

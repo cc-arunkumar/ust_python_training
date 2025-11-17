@@ -42,7 +42,7 @@ missed_types=[]
 
 required_fields=["claim_id","employee","type","amount","days"]
 
-#To see Duplicate row is counting
+#To see the Duplicate row is counting
 visited_claim_id=set()
 
 

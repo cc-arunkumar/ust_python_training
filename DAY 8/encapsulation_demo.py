@@ -5,6 +5,7 @@ class Employee:
         self._designation="SDE 1"
         self.__salary=30000
     
+    #function call
     def show_emp_details(self):
         print("Name :",self.name)
         print("Designation :",self._designation)

@@ -21,7 +21,7 @@ class DigitalWalletPayment(Payment):
     def pay_bill(self,amount):
         print(f"Paying bill of {amount} by using Digital Wallet")
 
-# Created object for UPI payment
+# Created an object for UPI payment
 upi_payment=UPIPayment()
 upi_payment.pay_bill(1000)
 

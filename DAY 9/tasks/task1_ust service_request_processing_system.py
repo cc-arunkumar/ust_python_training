@@ -65,7 +65,7 @@ r2 = HRDocumentRequest(2, "Mani", "High")
 r3 = FacilityRequest(3, "Dinesh", "Medium")
 r4 = SoftwareAccessRequest(4, "Gowtham", "Low")
 
-# Storing objects in a list
+# storing objects in a list
 requested_service = [r1, r2, r3, r4]
 
 # Iterating and processing each request

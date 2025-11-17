@@ -31,7 +31,7 @@ OUTPUT FOR ABOVE
 {'engine': 'Tata', 'fuel_injection': 'UST', 'Ac': 'Yes', 'music': 'Sony', 'perfume': 'Nivea', 'airbag': 2, 'abs': 'NO ABS', 'fog': 'Default'}
 """
 
-# C2 object is not using the method that has perfume
+# C2 object is not using the method that have perfume
 print(c2.perfume)
 
 """"

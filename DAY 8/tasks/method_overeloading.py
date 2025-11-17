@@ -3,7 +3,8 @@
 class mo:
     def __init__(self):
         pass
-
+    
+    #same name
     def add(self,a=1,b=2,c=3,d=4):
         print(a+b+c+d)
         print("Method 3 Called")

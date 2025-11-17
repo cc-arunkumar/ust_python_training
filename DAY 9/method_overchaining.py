@@ -16,7 +16,7 @@ class Developer(Employee):
     
     # Display developer information
     def show_details(self):
-        print("ID :", self.id)
+        print("Id :", self.id)
         print("Name :", self.name)
         print("Department :", self.dept)
         print("Platform :", self.platform)

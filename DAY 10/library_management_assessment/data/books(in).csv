@@ -1,6 +1,6 @@
 book_id,title,authors,isbn,tags,total_copies,available_copies
 B1001,Python Crash Course,Eric Matthes,9.78159E+12,python|beginner|programming,5,3
-B1002,Learning SQL,Alan Beaulieu,9.7806E+12,sql|database|beginner,4,3
+B1002,rtyg,ryie,774,trur,8,4
 B1003,Clean Code,Robert C. Martin,9.78013E+12,software|clean-code|programming,4,2
 B1004,Fluent Python,Luciano Ramalho,9.78149E+12,python|advanced|programming,3,1
 B1005,Head First Design Patterns,Eric Freeman,9.7806E+12,design-patterns|oop|architecture,3,2
@@ -33,4 +33,4 @@ B1031,Kubernetes in Action,Marko Luksa,9.78162E+12,devops|kubernetes|orchestrati
 B1032,Terraform Up & Running,Yevgeniy Brikman,9.78149E+12,devops|infrastructure,2,2
 B1033,CI/CD with Jenkins,Christopher Grant,9.78179E+12,devops|cicd|automation,3,3
 B1034,Cloud Architecture Patterns,Bill Wilder,9.78145E+12,cloud|architecture|patterns,3,3
-B1035,Azure for,,,,,
+202,C++,Sovan,3737,C++,6,6

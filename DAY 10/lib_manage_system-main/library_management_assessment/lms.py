@@ -309,25 +309,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-
-"""
-SAMPLE OUTPUT
-
-T1001 | Arjun Selvan | Email: arjun.selvan@gmail.com
- | Status: active | Max Loans: 5
-
-T1002 | Priya Natarajan | Email: priya.natarajan@yahoo.com
- | Status: active | Max Loans: 4
-
-T1003 | Karthik Ramesh | Email: karthik.ramesh@outlook.com
- | Status: active | Max Loans: 5
-
-T1004 | Divya Lakshmi | Email: divya.lakshmi@gmail.com
- | Status: active | Max Loans: 3
-
-T1005 | Sathish Kumar | Email: sathish.kumar@hotmail.com
- | Status: active | Max Loans: 4
-
-"""

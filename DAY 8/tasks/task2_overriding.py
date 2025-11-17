@@ -9,6 +9,7 @@ class Developer(Employee):
     def work(self):
         print("Developer is working")
 
+#Inheritance
 class Manager(Employee):
     def drop(self):
         print("Manager is working")

@@ -22,7 +22,7 @@ class Tester(Employee):
 Employee=[Employee(),Manager(),Developer(),Tester()]
 
 
-#iterating through the list and calling its methods
+#iterating through the List and calling its methods
 for i in Employee:
     i.perform_task()
 

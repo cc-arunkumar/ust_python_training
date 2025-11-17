@@ -18,7 +18,7 @@ with open("DAY 6/employee_data01.csv", "r") as file:
 
 print("Total number of employees in IT:", it_count)
 
-#Write the filtered data (salary > 60000) into a new file high_salary.csv.
+#Write the filtered data (salary > 60000) into a new file high_salary.csv
 with open("DAY 6/high_salary.csv","w",newline="") as file:
     csv_writer=csv.writer(file)
     csv_writer.writerow(header)  
