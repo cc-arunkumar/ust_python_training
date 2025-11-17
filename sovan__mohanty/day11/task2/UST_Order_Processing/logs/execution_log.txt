@@ -1,0 +1,331 @@
+[2025-11-17] INFO: Folder check completed
+[2025-11-17] INFO: Started Order Processing
+[2025-11-17] ERROR: Orders file not found
+[2025-11-17] INFO: Folder check completed
+[2025-11-17] INFO: Started Order Processing
+[2025-11-17] ERROR: Orders file not found
+[2025-11-17] INFO: Folder check completed
+[2025-11-17] INFO: Started Order Processing
+[2025-11-17] ERROR: Orders file not found
+[2025-11-17] INFO: Folder check completed
+[2025-11-17] INFO: Started Order Processing
+[2025-11-17] ERROR: Orders file not found
+[2025-11-17] INFO: Folder check completed
+[2025-11-17] INFO: Started Order Processing
+[2025-11-17] ERROR: Orders file not found
+[2025-11-17] INFO: Folder check completed
+[2025-11-17] INFO: Started Order Processing
+[2025-11-17] ERROR: Orders file not found
+[2025-11-17] INFO: Folder check completed
+[2025-11-17] INFO: Started Order Processing
+[2025-11-17] ERROR: Orders file not found
+[2025-11-17] INFO: Folder check completed
+[2025-11-17] INFO: Started Order Processing
+[2025-11-17] ERROR: Orders file not found
+[2025-11-17] INFO: Folder check completed
+[2025-11-17] INFO: Started Order Processing
+[2025-11-17] INFO: Folder check completed
+[2025-11-17] INFO: Started Order Processing
+[2025-11-17] INFO: Folder check completed
+[2025-11-17] INFO: Started Order Processing
+[2025-11-17] INFO: Folder check completed
+[2025-11-17] INFO: Started Order Processing
+[2025-11-17] WARNING: Order 101 skipped - Invalid date format
+[2025-11-17] WARNING: Order 102 skipped - Invalid date format
+[2025-11-17] WARNING: Order 103 skipped - Invalid quantity
+[2025-11-17] WARNING: Order 104 skipped - Invalid date format
+[2025-11-17] WARNING: Order 105 skipped - Invalid date format
+[2025-11-17] WARNING: Order 106 skipped - Invalid date format
+[2025-11-17] WARNING: Order 107 skipped - Invalid quantity
+[2025-11-17] WARNING: Order 108 skipped - Invalid unit price
+[2025-11-17] WARNING: Order 109 skipped - Invalid date format
+[2025-11-17] WARNING: Order 110 skipped - Invalid date format
+[2025-11-17] WARNING: Order 111 skipped - Invalid date format
+[2025-11-17] WARNING: Order 112 skipped - Invalid date format
+[2025-11-17] WARNING: Order 113 skipped - Invalid date format
+[2025-11-17] WARNING: Order 114 skipped - Invalid date format
+[2025-11-17] WARNING: Order 115 skipped - Invalid date format
+[2025-11-17] WARNING: Order 116 skipped - Invalid quantity
+[2025-11-17] WARNING: Order 117 skipped - Invalid date format
+[2025-11-17] WARNING: Order 118 skipped - Invalid date format
+[2025-11-17] WARNING: Order 119 skipped - Invalid date format
+[2025-11-17] WARNING: Order 120 skipped - Invalid date format
+[2025-11-17] WARNING: Order 121 skipped - Invalid date format
+[2025-11-17] WARNING: Order 122 skipped - Invalid date format
+[2025-11-17] WARNING: Order 123 skipped - Invalid date format
+[2025-11-17] WARNING: Order 124 skipped - Invalid date format
+[2025-11-17] WARNING: Order 125 skipped - Invalid date format
+[2025-11-17] WARNING: Order 126 skipped - Invalid quantity
+[2025-11-17] WARNING: Order 127 skipped - Invalid date format
+[2025-11-17] WARNING: Order 128 skipped - Invalid unit price
+[2025-11-17] WARNING: Order 129 skipped - Invalid date format
+[2025-11-17] WARNING: Order 130 skipped - Invalid date format
+[2025-11-17] WARNING: Order 131 skipped - Invalid unit price
+[2025-11-17] WARNING: Order 132 skipped - Invalid date format
+[2025-11-17] WARNING: Order 133 skipped - Invalid date format
+[2025-11-17] WARNING: Order 134 skipped - Invalid date format
+[2025-11-17] WARNING: Order 135 skipped - Invalid quantity
+[2025-11-17] WARNING: Order 136 skipped - Invalid date format
+[2025-11-17] WARNING: Order 137 skipped - Invalid date format
+[2025-11-17] WARNING: Order 138 skipped - Invalid date format
+[2025-11-17] WARNING: Order 139 skipped - Invalid date format
+[2025-11-17] WARNING: Order 140 skipped - Invalid date format
+[2025-11-17] WARNING: Order 141 skipped - Invalid quantity
+[2025-11-17] WARNING: Order 142 skipped - Invalid date format
+[2025-11-17] WARNING: Order 143 skipped - Invalid date format
+[2025-11-17] WARNING: Order 144 skipped - Invalid quantity
+[2025-11-17] WARNING: Order 145 skipped - Invalid date format
+[2025-11-17] WARNING: Order 146 skipped - Invalid date format
+[2025-11-17] WARNING: Order 147 skipped - Invalid date format
+[2025-11-17] WARNING: Order 148 skipped - Invalid date format
+[2025-11-17] WARNING: Order 149 skipped - Invalid date format
+[2025-11-17] WARNING: Order 150 skipped - Invalid date format
+[2025-11-17] INFO: Finished Order Processing
+[2025-11-17] INFO: Folder check completed
+[2025-11-17] INFO: Started Order Processing
+[2025-11-17] WARNING: Order 101 skipped - Invalid date format
+[2025-11-17] WARNING: Order 102 skipped - Invalid date format
+[2025-11-17] WARNING: Order 103 skipped - Invalid quantity
+[2025-11-17] WARNING: Order 104 skipped - Invalid date format
+[2025-11-17] WARNING: Order 105 skipped - Invalid date format
+[2025-11-17] WARNING: Order 106 skipped - Invalid date format
+[2025-11-17] WARNING: Order 107 skipped - Invalid quantity
+[2025-11-17] WARNING: Order 108 skipped - Invalid unit price
+[2025-11-17] WARNING: Order 109 skipped - Invalid date format
+[2025-11-17] WARNING: Order 110 skipped - Invalid date format
+[2025-11-17] WARNING: Order 111 skipped - Invalid date format
+[2025-11-17] WARNING: Order 112 skipped - Invalid date format
+[2025-11-17] WARNING: Order 113 skipped - Invalid date format
+[2025-11-17] WARNING: Order 114 skipped - Invalid date format
+[2025-11-17] WARNING: Order 115 skipped - Invalid date format
+[2025-11-17] WARNING: Order 116 skipped - Invalid quantity
+[2025-11-17] WARNING: Order 117 skipped - Invalid date format
+[2025-11-17] WARNING: Order 118 skipped - Invalid date format
+[2025-11-17] WARNING: Order 119 skipped - Invalid date format
+[2025-11-17] WARNING: Order 120 skipped - Invalid date format
+[2025-11-17] WARNING: Order 121 skipped - Invalid date format
+[2025-11-17] WARNING: Order 122 skipped - Invalid date format
+[2025-11-17] WARNING: Order 123 skipped - Invalid date format
+[2025-11-17] WARNING: Order 124 skipped - Invalid date format
+[2025-11-17] WARNING: Order 125 skipped - Invalid date format
+[2025-11-17] WARNING: Order 126 skipped - Invalid quantity
+[2025-11-17] WARNING: Order 127 skipped - Invalid date format
+[2025-11-17] WARNING: Order 128 skipped - Invalid unit price
+[2025-11-17] WARNING: Order 129 skipped - Invalid date format
+[2025-11-17] WARNING: Order 130 skipped - Invalid date format
+[2025-11-17] WARNING: Order 131 skipped - Invalid unit price
+[2025-11-17] WARNING: Order 132 skipped - Invalid date format
+[2025-11-17] WARNING: Order 133 skipped - Invalid date format
+[2025-11-17] WARNING: Order 134 skipped - Invalid date format
+[2025-11-17] WARNING: Order 135 skipped - Invalid quantity
+[2025-11-17] WARNING: Order 136 skipped - Invalid date format
+[2025-11-17] WARNING: Order 137 skipped - Invalid date format
+[2025-11-17] WARNING: Order 138 skipped - Invalid date format
+[2025-11-17] WARNING: Order 139 skipped - Invalid date format
+[2025-11-17] WARNING: Order 140 skipped - Invalid date format
+[2025-11-17] WARNING: Order 141 skipped - Invalid quantity
+[2025-11-17] WARNING: Order 142 skipped - Invalid date format
+[2025-11-17] WARNING: Order 143 skipped - Invalid date format
+[2025-11-17] WARNING: Order 144 skipped - Invalid quantity
+[2025-11-17] WARNING: Order 145 skipped - Invalid date format
+[2025-11-17] WARNING: Order 146 skipped - Invalid date format
+[2025-11-17] WARNING: Order 147 skipped - Invalid date format
+[2025-11-17] WARNING: Order 148 skipped - Invalid date format
+[2025-11-17] WARNING: Order 149 skipped - Invalid date format
+[2025-11-17] WARNING: Order 150 skipped - Invalid date format
+[2025-11-17] INFO: Finished Order Processing
+[2025-11-17] INFO: Folder check completed
+[2025-11-17] INFO: Started Order Processing
+[2025-11-17] INFO: Processing order 101
+[2025-11-17] INFO: Order 101 processed successfully
+[2025-11-17] WARNING: Order 102 skipped - Invalid date format
+[2025-11-17] WARNING: Order 103 skipped - Invalid quantity
+[2025-11-17] WARNING: Order 104 skipped - Invalid date format
+[2025-11-17] WARNING: Order 105 skipped - Order date is in the future
+[2025-11-17] INFO: Processing order 106
+[2025-11-17] INFO: Order 106 processed successfully
+[2025-11-17] WARNING: Order 107 skipped - Invalid quantity
+[2025-11-17] WARNING: Order 108 skipped - Invalid unit price
+[2025-11-17] INFO: Processing order 109
+[2025-11-17] INFO: Order 109 processed successfully
+[2025-11-17] WARNING: Order 110 skipped - Invalid date format
+[2025-11-17] WARNING: Order 111 skipped - Invalid date format
+[2025-11-17] WARNING: Order 112 skipped - Invalid date format
+[2025-11-17] WARNING: Order 113 skipped - Invalid date format
+[2025-11-17] WARNING: Order 114 skipped - Invalid date format
+[2025-11-17] INFO: Processing order 115
+[2025-11-17] INFO: Order 115 processed successfully
+[2025-11-17] WARNING: Order 116 skipped - Invalid quantity
+[2025-11-17] WARNING: Order 117 skipped - Order date is in the future
+[2025-11-17] INFO: Processing order 118
+[2025-11-17] INFO: Order 118 processed successfully
+[2025-11-17] WARNING: Order 119 skipped - Invalid date format
+[2025-11-17] WARNING: Order 120 skipped - Invalid date format
+[2025-11-17] WARNING: Order 121 skipped - Invalid date format
+[2025-11-17] INFO: Processing order 122
+[2025-11-17] INFO: Order 122 processed successfully
+[2025-11-17] WARNING: Order 123 skipped - Invalid date format
+[2025-11-17] WARNING: Order 124 skipped - Invalid date format
+[2025-11-17] WARNING: Order 125 skipped - Invalid date format
+[2025-11-17] WARNING: Order 126 skipped - Invalid quantity
+[2025-11-17] INFO: Processing order 127
+[2025-11-17] INFO: Order 127 processed successfully
+[2025-11-17] WARNING: Order 128 skipped - Invalid unit price
+[2025-11-17] WARNING: Order 129 skipped - Invalid date format
+[2025-11-17] WARNING: Order 130 skipped - Invalid date format
+[2025-11-17] WARNING: Order 131 skipped - Invalid unit price
+[2025-11-17] INFO: Processing order 132
+[2025-11-17] INFO: Order 132 processed successfully
+[2025-11-17] WARNING: Order 133 skipped - Invalid date format
+[2025-11-17] WARNING: Order 134 skipped - Invalid date format
+[2025-11-17] WARNING: Order 135 skipped - Invalid quantity
+[2025-11-17] INFO: Processing order 136
+[2025-11-17] INFO: Order 136 processed successfully
+[2025-11-17] WARNING: Order 137 skipped - Invalid date format
+[2025-11-17] WARNING: Order 138 skipped - Invalid date format
+[2025-11-17] WARNING: Order 139 skipped - Invalid date format
+[2025-11-17] INFO: Processing order 140
+[2025-11-17] INFO: Order 140 processed successfully
+[2025-11-17] WARNING: Order 141 skipped - Invalid quantity
+[2025-11-17] INFO: Processing order 142
+[2025-11-17] INFO: Order 142 processed successfully
+[2025-11-17] WARNING: Order 143 skipped - Invalid date format
+[2025-11-17] WARNING: Order 144 skipped - Invalid quantity
+[2025-11-17] WARNING: Order 145 skipped - Invalid date format
+[2025-11-17] WARNING: Order 146 skipped - Invalid date format
+[2025-11-17] WARNING: Order 147 skipped - Invalid date format
+[2025-11-17] INFO: Processing order 148
+[2025-11-17] INFO: Order 148 processed successfully
+[2025-11-17] WARNING: Order 149 skipped - Invalid date format
+[2025-11-17] WARNING: Order 150 skipped - Invalid date format
+[2025-11-17] INFO: Finished Order Processing
+[2025-11-17] INFO: Folder check completed
+[2025-11-17] INFO: Started Order Processing
+[2025-11-17] INFO: Processing order 101
+[2025-11-17] INFO: Order 101 processed successfully
+[2025-11-17] WARNING: Order 102 skipped - Invalid date format
+[2025-11-17] WARNING: Order 103 skipped - Invalid quantity
+[2025-11-17] WARNING: Order 104 skipped - Invalid date format
+[2025-11-17] WARNING: Order 105 skipped - Order date is in the future
+[2025-11-17] INFO: Processing order 106
+[2025-11-17] INFO: Order 106 processed successfully
+[2025-11-17] WARNING: Order 107 skipped - Invalid quantity
+[2025-11-17] WARNING: Order 108 skipped - Invalid unit price
+[2025-11-17] INFO: Processing order 109
+[2025-11-17] INFO: Order 109 processed successfully
+[2025-11-17] WARNING: Order 110 skipped - Invalid date format
+[2025-11-17] WARNING: Order 111 skipped - Invalid date format
+[2025-11-17] WARNING: Order 112 skipped - Invalid date format
+[2025-11-17] WARNING: Order 113 skipped - Invalid date format
+[2025-11-17] WARNING: Order 114 skipped - Invalid date format
+[2025-11-17] INFO: Processing order 115
+[2025-11-17] INFO: Order 115 processed successfully
+[2025-11-17] WARNING: Order 116 skipped - Invalid quantity
+[2025-11-17] WARNING: Order 117 skipped - Order date is in the future
+[2025-11-17] INFO: Processing order 118
+[2025-11-17] INFO: Order 118 processed successfully
+[2025-11-17] WARNING: Order 119 skipped - Invalid date format
+[2025-11-17] WARNING: Order 120 skipped - Invalid date format
+[2025-11-17] WARNING: Order 121 skipped - Invalid date format
+[2025-11-17] INFO: Processing order 122
+[2025-11-17] INFO: Order 122 processed successfully
+[2025-11-17] WARNING: Order 123 skipped - Invalid date format
+[2025-11-17] WARNING: Order 124 skipped - Invalid date format
+[2025-11-17] WARNING: Order 125 skipped - Invalid date format
+[2025-11-17] WARNING: Order 126 skipped - Invalid quantity
+[2025-11-17] INFO: Processing order 127
+[2025-11-17] INFO: Order 127 processed successfully
+[2025-11-17] WARNING: Order 128 skipped - Invalid unit price
+[2025-11-17] WARNING: Order 129 skipped - Invalid date format
+[2025-11-17] WARNING: Order 130 skipped - Invalid date format
+[2025-11-17] WARNING: Order 131 skipped - Invalid unit price
+[2025-11-17] INFO: Processing order 132
+[2025-11-17] INFO: Order 132 processed successfully
+[2025-11-17] WARNING: Order 133 skipped - Invalid date format
+[2025-11-17] WARNING: Order 134 skipped - Invalid date format
+[2025-11-17] WARNING: Order 135 skipped - Invalid quantity
+[2025-11-17] INFO: Processing order 136
+[2025-11-17] INFO: Order 136 processed successfully
+[2025-11-17] WARNING: Order 137 skipped - Invalid date format
+[2025-11-17] WARNING: Order 138 skipped - Invalid date format
+[2025-11-17] WARNING: Order 139 skipped - Invalid date format
+[2025-11-17] INFO: Processing order 140
+[2025-11-17] INFO: Order 140 processed successfully
+[2025-11-17] WARNING: Order 141 skipped - Invalid quantity
+[2025-11-17] INFO: Processing order 142
+[2025-11-17] INFO: Order 142 processed successfully
+[2025-11-17] WARNING: Order 143 skipped - Invalid date format
+[2025-11-17] WARNING: Order 144 skipped - Invalid quantity
+[2025-11-17] WARNING: Order 145 skipped - Invalid date format
+[2025-11-17] WARNING: Order 146 skipped - Invalid date format
+[2025-11-17] WARNING: Order 147 skipped - Invalid date format
+[2025-11-17] INFO: Processing order 148
+[2025-11-17] INFO: Order 148 processed successfully
+[2025-11-17] WARNING: Order 149 skipped - Invalid date format
+[2025-11-17] WARNING: Order 150 skipped - Invalid date format
+[2025-11-17] INFO: Finished Order Processing
+[2025-11-17] INFO: Folder check completed
+[2025-11-17] INFO: Started Order Processing
+[2025-11-17] INFO: Processing order 101
+[2025-11-17] INFO: Order 101 processed successfully
+[2025-11-17] WARNING: Order 102 skipped - Invalid date format
+[2025-11-17] WARNING: Order 103 skipped - Invalid quantity
+[2025-11-17] WARNING: Order 104 skipped - Invalid date format
+[2025-11-17] WARNING: Order 105 skipped - Order date is in the future
+[2025-11-17] INFO: Processing order 106
+[2025-11-17] INFO: Order 106 processed successfully
+[2025-11-17] WARNING: Order 107 skipped - Invalid quantity
+[2025-11-17] WARNING: Order 108 skipped - Invalid unit price
+[2025-11-17] INFO: Processing order 109
+[2025-11-17] INFO: Order 109 processed successfully
+[2025-11-17] WARNING: Order 110 skipped - Invalid date format
+[2025-11-17] WARNING: Order 111 skipped - Invalid date format
+[2025-11-17] WARNING: Order 112 skipped - Invalid date format
+[2025-11-17] WARNING: Order 113 skipped - Invalid date format
+[2025-11-17] WARNING: Order 114 skipped - Invalid date format
+[2025-11-17] INFO: Processing order 115
+[2025-11-17] INFO: Order 115 processed successfully
+[2025-11-17] WARNING: Order 116 skipped - Invalid quantity
+[2025-11-17] WARNING: Order 117 skipped - Order date is in the future
+[2025-11-17] INFO: Processing order 118
+[2025-11-17] INFO: Order 118 processed successfully
+[2025-11-17] WARNING: Order 119 skipped - Invalid date format
+[2025-11-17] WARNING: Order 120 skipped - Invalid date format
+[2025-11-17] WARNING: Order 121 skipped - Invalid date format
+[2025-11-17] INFO: Processing order 122
+[2025-11-17] INFO: Order 122 processed successfully
+[2025-11-17] WARNING: Order 123 skipped - Invalid date format
+[2025-11-17] WARNING: Order 124 skipped - Invalid date format
+[2025-11-17] WARNING: Order 125 skipped - Invalid date format
+[2025-11-17] WARNING: Order 126 skipped - Invalid quantity
+[2025-11-17] INFO: Processing order 127
+[2025-11-17] INFO: Order 127 processed successfully
+[2025-11-17] WARNING: Order 128 skipped - Invalid unit price
+[2025-11-17] WARNING: Order 129 skipped - Invalid date format
+[2025-11-17] WARNING: Order 130 skipped - Invalid date format
+[2025-11-17] WARNING: Order 131 skipped - Invalid unit price
+[2025-11-17] INFO: Processing order 132
+[2025-11-17] INFO: Order 132 processed successfully
+[2025-11-17] WARNING: Order 133 skipped - Invalid date format
+[2025-11-17] WARNING: Order 134 skipped - Invalid date format
+[2025-11-17] WARNING: Order 135 skipped - Invalid quantity
+[2025-11-17] INFO: Processing order 136
+[2025-11-17] INFO: Order 136 processed successfully
+[2025-11-17] WARNING: Order 137 skipped - Invalid date format
+[2025-11-17] WARNING: Order 138 skipped - Invalid date format
+[2025-11-17] WARNING: Order 139 skipped - Invalid date format
+[2025-11-17] INFO: Processing order 140
+[2025-11-17] INFO: Order 140 processed successfully
+[2025-11-17] WARNING: Order 141 skipped - Invalid quantity
+[2025-11-17] INFO: Processing order 142
+[2025-11-17] INFO: Order 142 processed successfully
+[2025-11-17] WARNING: Order 143 skipped - Invalid date format
+[2025-11-17] WARNING: Order 144 skipped - Invalid quantity
+[2025-11-17] WARNING: Order 145 skipped - Invalid date format
+[2025-11-17] WARNING: Order 146 skipped - Invalid date format
+[2025-11-17] WARNING: Order 147 skipped - Invalid date format
+[2025-11-17] INFO: Processing order 148
+[2025-11-17] INFO: Order 148 processed successfully
+[2025-11-17] WARNING: Order 149 skipped - Invalid date format
+[2025-11-17] WARNING: Order 150 skipped - Invalid date format
+[2025-11-17] INFO: Finished Order Processing

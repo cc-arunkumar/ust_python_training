@@ -1,0 +1,38 @@
+OrderID: 102 | Reason: Invalid date format
+OrderID: 103 | Reason: Invalid quantity
+OrderID: 104 | Reason: Invalid date format
+OrderID: 105 | Reason: Order date is in the future
+OrderID: 107 | Reason: Invalid quantity
+OrderID: 108 | Reason: Invalid unit price
+OrderID: 110 | Reason: Invalid date format
+OrderID: 111 | Reason: Invalid date format
+OrderID: 112 | Reason: Invalid date format
+OrderID: 113 | Reason: Invalid date format
+OrderID: 114 | Reason: Invalid date format
+OrderID: 116 | Reason: Invalid quantity
+OrderID: 117 | Reason: Order date is in the future
+OrderID: 119 | Reason: Invalid date format
+OrderID: 120 | Reason: Invalid date format
+OrderID: 121 | Reason: Invalid date format
+OrderID: 123 | Reason: Invalid date format
+OrderID: 124 | Reason: Invalid date format
+OrderID: 125 | Reason: Invalid date format
+OrderID: 126 | Reason: Invalid quantity
+OrderID: 128 | Reason: Invalid unit price
+OrderID: 129 | Reason: Invalid date format
+OrderID: 130 | Reason: Invalid date format
+OrderID: 131 | Reason: Invalid unit price
+OrderID: 133 | Reason: Invalid date format
+OrderID: 134 | Reason: Invalid date format
+OrderID: 135 | Reason: Invalid quantity
+OrderID: 137 | Reason: Invalid date format
+OrderID: 138 | Reason: Invalid date format
+OrderID: 139 | Reason: Invalid date format
+OrderID: 141 | Reason: Invalid quantity
+OrderID: 143 | Reason: Invalid date format
+OrderID: 144 | Reason: Invalid quantity
+OrderID: 145 | Reason: Invalid date format
+OrderID: 146 | Reason: Invalid date format
+OrderID: 147 | Reason: Invalid date format
+OrderID: 149 | Reason: Invalid date format
+OrderID: 150 | Reason: Invalid date format
