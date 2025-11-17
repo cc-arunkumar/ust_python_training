@@ -1,348 +1,318 @@
-# lms.py
-from library import (
-    Library,
-    InvalidBookError,
-    InvalidUserError,
-    BookNotAvailableError,
-    UserNotAllowedError,
-    TransactionError,
-    ValidationError
+import sys
+from library import Library
+from models import (
+    InvalidBookError, InvalidUserError, BookNotAvailableError,
+    UserNotAllowedError, TransactionError, ValidationError
 )
-from models import Book, User,Transaction
-from utils import parse_csv_list, safe_int, print_book, print_user, print_tx,today_str
+from models import Book, User
+from utils import parse_comma_list, input_nonempty
 
-def print_help():
-    print("Commands:")
-    print("  book add")
-    print("  book update <book_id>")
-    print("  book remove <book_id>")
-    print("  book get <book_id>")
-    print("  book list")
-    print("  book search title=<substr> author=<name> tag=<tag>")
-    print("  user add")
-    print("  user update <user_id>")
-    print("  user get <user_id>")
-    print("  user list")
-    print("  user deactivate <user_id>")
-    print("  user activate <user_id>")
-    print("  user ban <user_id>")
-    print("  borrow <user_id> <book_id>")
-    print("  return <transaction_id>")
-    print("  loans active")
-    print("  loans overdue")
-    print("  loans user <user_id>")
-    print("  report summary")
-    print("  report user <user_id>")
-    print("  save")
-    print("  help")
-    print("  exit")
+
+def print_book(book):
+    print(f"[{book.book_id}] {book.title}")
+    print(f"  Authors: {', '.join(book.authors)}")
+    print(f"  ISBN: {book.isbn}")
+    print(f"  Tags: {', '.join(book.tags)}")
+    print(f"  Copies: {book.available_copies}/{book.total_copies}")
+
+
+def print_user(user):
+    print(f"[{user.user_id}] {user.name}")
+    print(f"  Email: {user.email}")
+    print(f"  Status: {user.status}")
+    print(f"  Max Loans: {user.max_loans}")
+
+
+def print_tx(tx):
+    print(f"[{tx.tx_id}] User={tx.user_id}, Book={tx.book_id}")
+    print(f"  Borrow: {tx.borrow_date}  Due: {tx.due_date}")
+    print(f"  Return: {tx.return_date or '-'}")
+    print(f"  Status: {tx.status}")
+
 
 def main():
     lib = Library()
-    print("Welcome to Library Management System (LMS)")
-    print("Type 'help' for commands.")
+
     while True:
         try:
-            raw = input("lms> ").strip()
-        except (EOFError, KeyboardInterrupt):
-            print("\nExiting.")
-            break
-        if not raw:
-            continue
-        parts = raw.split()
-        cmd = parts[0].lower()
+            # ---------- Main Menu ----------
+            print("\n" + "="*50)
+            print("        LIBRARY MANAGEMENT SYSTEM")
+            print("="*50)
+            print("1. Manage Books")
+            print("2. Manage Users")
+            print("3. Borrow / Return Books")
+            print("4. View Loans")
+            print("5. View Reports")
+            print("6. Save Changes")
+            print("7. Exit")
+            print("="*50)
 
-        try:
-            if cmd == "help":
-                print_help()
+            choice = input("Enter your choice (1-7): ").strip()
 
-            # ---------------- BOOK COMMANDS ----------------
-            elif cmd == "book":
-                if len(parts) < 2:
-                    print("Usage: book <add|update|get|remove|list|search>")
-                    continue
-                sub = parts[1].lower()
+            # ---------- Exit ----------
+            if choice == "7":
+                print("Goodbye!")
+                sys.exit(0)
 
-                if sub == "add":
-                    book_id = input("Book ID: ").strip()
-                    title = input("Title: ").strip()
-                    authors_raw = input("Authors (comma separated): ").strip()
+            # ---------- Manage Books ----------
+            elif choice == "1":
+                print("\n--- Manage Books ---")
+                print("1. Add Book")
+                print("2. Update Book")
+                print("3. Remove Book")
+                print("4. Get Book")
+                print("5. List Books")
+                print("6. Search Books")
+                sub = input("Choose an option (1-6): ").strip()
+
+                if sub == "1":  # Add Book
+                    book_id = input_nonempty("Book ID: ")
+                    title = input_nonempty("Title: ")
+                    authors = parse_comma_list(input("Authors (comma): "))
                     isbn = input("ISBN: ").strip()
-                    tags_raw = input("Tags (comma separated): ").strip()
-                    total = safe_int("Total Copies: ")
-                    book = Book(
-                        book_id,
-                        title,
-                        parse_csv_list(authors_raw, ","),
-                        isbn,
-                        parse_csv_list(tags_raw, ","),
-                        total,
-                        total
-                    )
-                    lib.add_book(book)
+                    tags = parse_comma_list(input("Tags (comma): "))
+                    total = int(input_nonempty("Total Copies: "))
+                    available = total
+                    lib.add_book(Book(book_id, title, authors, isbn, tags, total, available))
                     print("Book added successfully.")
 
-                elif sub == "update":
-                    if len(parts) < 3:
-                        print("Usage: book update <book_id>")
-                        continue
-                    book_id = parts[2]
-                    print("Leave fields empty to keep current values.")
-                    title = input("Title: ").strip()
-                    authors_raw = input("Authors (comma separated): ").strip()
-                    isbn = input("ISBN: ").strip()
-                    tags_raw = input("Tags (comma separated): ").strip()
-                    total_raw = input("Total Copies: ").strip()
-                    available_raw = input("Available Copies: ").strip()
+                elif sub == "2":  # Update Book
+                    bid = input_nonempty("Book ID: ")
+                    book = lib.get_book(bid)
+                    print("Leave empty to skip.")
+                    t = input("Title: ").strip()
+                    a = input("Authors (comma): ").strip()
+                    i = input("ISBN: ").strip()
+                    tg = input("Tags (comma): ").strip()
+                    tc = input("Total Copies: ").strip()
 
-                    payload = {}
-                    if title:
-                        payload["title"] = title
-                    if authors_raw:
-                        payload["authors"] = parse_csv_list(authors_raw, ",")
-                    if isbn:
-                        payload["isbn"] = isbn
-                    if tags_raw:
-                        payload["tags"] = parse_csv_list(tags_raw, ",")
-                    if total_raw:
-                        payload["total_copies"] = int(total_raw)
-                    if available_raw:
-                        payload["available_copies"] = int(available_raw)
+                    updates = {}
+                    if t: updates["title"] = t
+                    if a: updates["authors"] = parse_comma_list(a)
+                    if i: updates["isbn"] = i
+                    if tg: updates["tags"] = parse_comma_list(tg)
+                    if tc: updates["total_copies"] = int(tc)
 
-                    book = lib.update_book(book_id, **payload)
-                    print("Book updated successfully.")
-                    print_book(book)
+                    lib.update_book(bid, **updates)
+                    print("Book updated.")
 
-                elif sub == "remove":
-                    if len(parts) < 3:
-                        print("Usage: book remove <book_id>")
-                        continue
-                    lib.remove_book(parts[2])
-                    print("Book removed successfully.")
+                elif sub == "3":  # Remove Book
+                    bid = input_nonempty("Book ID: ")
+                    lib.remove_book(bid)
+                    print("Book removed.")
 
-                elif sub == "get":
-                    if len(parts) < 3:
-                        print("Usage: book get <book_id>")
-                        continue
-                    book = lib.get_book(parts[2])
-                    print_book(book)
+                elif sub == "4":  # Get Book
+                    bid = input_nonempty("Book ID: ")
+                    print_book(lib.get_book(bid))
 
-                elif sub == "list":
+                elif sub == "5":  # List Books
                     books = lib.list_books()
                     if not books:
-                        print("No books found.")
+                        print("No books available.")
                     else:
                         for b in books:
                             print_book(b)
 
-                elif sub == "search":
-                    title = None
-                    author = None
-                    tag = None
-                    for token in parts[2:]:
-                        if token.startswith("title="):
-                            title = token.split("=", 1)[1]
-                        elif token.startswith("author="):
-                            author = token.split("=", 1)[1]
-                        elif token.startswith("tag="):
-                            tag = token.split("=", 1)[1]
-                    results = lib.search_books(title_substr=title, author=author, tag=tag)
+                elif sub == "6":  # Search Books
+                    t = input("Title contains: ").strip()
+                    a = input("Author: ").strip()
+                    tg = input("Tag: ").strip()
+                    results = lib.search_books(t, a, tg)
                     if not results:
-                        print("No matching books.")
+                        print("No results.")
                     else:
                         for b in results:
                             print_book(b)
 
-            # ---------------- USER COMMANDS ----------------
-            elif cmd == "user":
-                if len(parts) < 2:
-                    print("Usage: user <add|update|get|list|deactivate|activate|ban>")
-                    continue
-                sub = parts[1].lower()
+                else:
+                    print("Invalid option.")
 
-                if sub == "add":
-                    user_id = input("User ID: ").strip()
-                    name = input("Name: ").strip()
+            # ---------- Manage Users ----------
+            elif choice == "2":
+                pwd = input("Enter password to access Users section: ").strip()
+                if pwd != "user123":
+                    print("Invalid credentials. Returning to main menu...")
+                    continue  # Go back to main menu
+                else:
+                     print("Authentication successfull!!")
+
+
+                print("\n--- Manage Users ---")
+                print("1. Add User")
+                print("2. Update User")
+                print("3. Get User")
+                print("4. List Users")
+                print("5. Change User Status")
+                print("6. Report User")
+                sub = input("Choose an option (1-6): ").strip()
+
+                if sub == "1": # Add User
+                    uid = input_nonempty("User ID: ")
+                    name = input_nonempty("Name: ")
                     email = input("Email: ").strip()
-                    max_loans_input = input("Max Loans (default=5): ").strip()
-                    max_loans = int(max_loans_input) if max_loans_input else 5
-                    user = User(user_id, name, email, "active", max_loans)
-                    lib.add_user(user)
+                    if not email.endswith("@ust.com"):
+                        print("Invalid email. Returning to Main menu.")
+                        continue 
+                    lib.add_user(User(uid, name, email,max_loans=0))
                     print("User added.")
 
-                elif sub == "update":
-                    if len(parts) < 3:
-                        print("Usage: user update <user_id>")
-                        continue
-                    user_id = parts[2]
-                    print("Leave fields empty to keep current values.")
-                    name = input("Name: ").strip()
-                    email = input("Email: ").strip()
-                    status = input("Status (active/inactive/banned): ").strip()
-                    max_loans = input("Max Loans: ").strip()
-                    payload = {}
-                    if name:
-                        payload["name"] = name
-                    if email:
-                        payload["email"] = email
-                    if status:
-                        payload["status"] = status
-                    if max_loans:
-                        payload["max_loans"] = int(max_loans)
-                    user = lib.update_user(user_id, **payload)
-                    print("User updated successfully.")
-                    print_user(user)
-
-                elif sub == "get":
-                    if len(parts) < 3:
-                        print("Usage: user get <user_id>")
-                        continue
-                    user = lib.get_user(parts[2])
-                    print_user(user)
-
-                elif sub == "list":
-                    users = lib.list_users()
-                    if not users:
-                        print("No users found.")
+                elif sub == "2":  # Update User
+                    pwd = input("Enter password to access Users section: ").strip()
+                    if pwd != "user123":
+                        print("Invalid credentials. Returning to main menu...")
+                        continue  # Go back to main menu
                     else:
-                        for u in users:
-                            print_user(u)
+                     print("Authentication successfull!!")
+                     uid = input_nonempty("User ID: ")
+                     user = lib.get_user(uid)
+                     print("Leave empty to skip.")
+                     name = input("Name: ").strip()
+                     email = input("Email: ").strip()
+                     ml = input("Max Loans: ").strip()
 
-                elif sub in {"deactivate", "activate", "ban"}:
-                    if len(parts) < 3:
-                        print(f"Usage: user {sub} <user_id>")
-                        continue
-                    user = lib.set_user_status(parts[2], sub)
-                    print(f"User {sub}d successfully.")
-                    print_user(user)
+                     updates = {}
+                     if name: updates["name"] = name
+                     if email: updates["email"] = email
+                     if ml: updates["max_loans"] = int(ml)
 
-            # ---------------- BORROW / RETURN ----------------
-            elif cmd == "borrow":
-                if len(parts) < 3:
-                    print("Usage: borrow <user_id> <book_id>")
-                    continue
-                tx = lib.borrow_book(parts[1], parts[2])
-                print(f"Borrow successful. Transaction ID: {tx.tx_id}. Due Date: {tx.due_date}.")
+                     lib.update_user(uid, **updates)
+                     print("User updated.")
 
-            elif cmd == "return":
-                if len(parts) < 2:
-                    print("Usage: return <transaction_id>")
-                    continue
-                lib.return_book(parts[1])
-                print("Return successful.")
-
-            # ---------------- LOANS ----------------
-            elif cmd == "loans":
-                if len(parts) < 2:
-                    print("Usage: loans <active|overdue|user>")
-                    continue
-                sub = parts[1].lower()
-                if sub == "active":
-                    loans = lib.loans_active()
-                    if not loans:
-                        print("No active loans.")
+                elif sub == "3":  # Get User
+                    pwd = input("Enter password to access Users section: ").strip()
+                    if pwd != "user123":
+                        print("Invalid credentials. Returning to main menu...")
+                        continue  # Go back to main menu
                     else:
-                        for tx in loans:
-                            print_tx(tx)
-                elif sub == "overdue":
-                    loans = lib.loans_overdue()
-                    if not loans:
-                        print("No overdue loans.")
+                     print("Authentication successfull!!")
+
+                     users = lib.list_users()
+                     if not users:
+                         print("No users found.")
+                     else:
+                         for u in users:
+                             print_user(u)
+                     uid = input_nonempty("Enter User ID to view details: ")
+                     print_user(lib.get_user(uid))
+
+                elif sub == "4":  # List Users
+                    pwd = input("Enter password to access Users section: ").strip()
+                    if pwd != "user123":
+                        print("Invalid credentials. Returning to main menu...")
+                        continue  # Go back to main menu
                     else:
-                        for tx in loans:
-                            print_tx(tx)
-                elif sub == "user":
-                    if len(parts) < 3:
-                        print("Usage: loans user <user_id>")
-                        continue
-                    loans = lib.loans_user(parts[2])
-                    if not loans:
-                        print("No loans for user.")
+                     print("Authentication successfull!!")
+                     users = lib.list_users()
+                     if not users:
+                         print("No users found.")
+                     else:
+                         for u in users:
+                             print_user(u)
+
+                elif sub == "5":  # Change Status
+                    pwd = input("Enter password to access Users section: ").strip()
+                    if pwd != "user123":
+                        print("Invalid credentials. Returning to main menu...")
+                        continue  # Go back to main menu
                     else:
-                        for tx in loans:
+                     print("Authentication successfull!!")
+                     uid = input_nonempty("User ID: ")
+                     print("1=activate, 2=deactivate, 3=ban")
+                     opt = input("Status: ").strip()
+                     status = {"1": "activate", "2": "deactivate", "3": "ban"}.get(opt)
+                     if not status:
+                         print("Invalid status.")
+                     else:
+                         lib.set_user_status(uid, status)
+                         print("Status updated.")
+
+                elif sub == "6":  # Report User
+                    uid = input_nonempty("User ID: ")
+                    items = lib.report_user(uid)
+                    if not items:
+                        print("No transactions.")
+                    else:
+                        for tx in items:
                             print_tx(tx)
 
-                        # ---------------- REPORTS ----------------
-            elif cmd == "report":
-                if len(parts) < 2:
-                    print("Usage: report <summary|user>")
-                    continue
-                sub = parts[1].lower()
-                if sub == "summary":
-                    summary = lib.report_summary()
-                    for k, v in summary.items():
-                        print(f"{k}: {v}")
-                elif sub == "user":
-                    if len(parts) < 3:
-                        print("Usage: report user <user_id>")
-                        continue
-                    report = lib.report_user(parts[2])
-                    if not report:
-                        print("No transactions for user.")
-                    else:
-                        for r in report:
-                            overdue_flag = " (OVERDUE)" if r.is_overdue(today_str()) else ""
-                            print_tx(r)
-                            if overdue_flag:
-                                print(f"   -> {overdue_flag}")
                 else:
-                    print("Unknown report subcommand.")
+                    print("Invalid option.")
 
-            # ---------------- SAVE / EXIT ----------------
-            elif cmd == "save":
+            # ---------- Borrow / Return ----------
+            elif choice == "3":
+                print("\n1. Borrow Book\n2. Return Book")
+                sub = input("Choose: ").strip()
+                if sub == "1":
+                    uid = input_nonempty("User ID: ")
+                    bid = input_nonempty("Book ID: ")
+                    tx = lib.borrow_book(uid, bid)
+                    print(f"Borrow successful. Transaction ID: {tx.tx_id}")
+                elif sub == "2":
+                    txid = input_nonempty("Transaction ID: ")
+                    lib.return_book(txid)
+                    print("Book returned.")
+                else:
+                    print("Invalid option.")
+
+            # ---------- View Loans ----------
+            elif choice == "4":
+                print("\n1. Active Loans\n2. Overdue Loans\n3. Loans by User")
+                sub = input("Choose: ").strip()
+                if sub == "1":
+                    loans = lib.loans_active()
+                elif sub == "2":
+                    loans = lib.loans_overdue()
+                elif sub == "3":
+                    uid = input_nonempty("User ID: ")
+                    loans = lib.loans_user(uid)
+                else:
+                    print("Invalid option.")
+                    continue
+
+                if not loans:
+                    print("No loans found.")
+                else:
+                    for tx in loans:
+                        print_tx(tx)
+
+            # ---------- View Reports ----------
+            elif choice == "5":
+                print("\n1. Summary Report\n2. User Report")
+                sub = input("Choose: ").strip()
+                if sub == "1":
+                    r = lib.report_summary()
+                    for k, v in r.items():
+                        print(f"{k}: {v}")
+                elif sub == "2":
+                    uid = input_nonempty("User ID: ")
+                    items = lib.report_user(uid)
+                    if not items:
+                        print("No transactions.")
+                    else:
+                        for tx in items:
+                            print_tx(tx)
+                else:
+                    print("Invalid option.")
+
+            # ---------- Save Changes ----------
+            elif choice == "6":
                 lib.save_all()
-                print("All data saved to CSV successfully.")
-
-            elif cmd == "exit":
-                print("Goodbye.")
-                break
+                print("Data saved successfully.")
 
             else:
-                print("Unknown command. Type 'help' for available commands.")
+                print("Invalid choice.")
 
-        except (InvalidBookError, InvalidUserError, BookNotAvailableError,
-                UserNotAllowedError, TransactionError, ValidationError) as e:
+        except (
+            InvalidBookError, InvalidUserError,
+            BookNotAvailableError, UserNotAllowedError,
+            TransactionError, ValidationError, ValueError
+        ) as e:
             print(f"Error: {e}")
-        except Exception as e:
-            # General catch to ensure the CLI never crashes
-            print(f"Unexpected error: {e}")
+        except KeyboardInterrupt:
+            print("\nExiting...")
+            sys.exit(0)
+
 
 if __name__ == "__main__":
     main()
-
-# sample output:
-
-# Commands:
-#   book add
-#   book update <book_id>
-#   book remove <book_id>
-#   book get <book_id>
-#   book list
-#   book search title=<substr> author=<name> tag=<tag>
-#   user add
-#   user update <user_id>
-#   user get <user_id>
-#   user list
-#   user deactivate <user_id>
-#   user activate <user_id>
-#   user ban <user_id>
-#   borrow <user_id> <book_id>
-#   return <transaction_id>
-#   loans active
-#   loans overdue
-#   loans user <user_id>
-#   report summary
-#   report user <user_id>
-#   save
-#   help
-#   exit
-# lms>   book add
-# Book ID: 1298
-# Title: man vs wild
-# Authors (comma separated): maddiemk28 
-# ISBN: 4567
-# Tags (comma separated): red
-# Total Copies: 2  
-# Book added successfully.
-# lms> save
-# All data saved to CSV successfully.
