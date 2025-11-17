@@ -1,0 +1,20 @@
+OrderID: 103|Reason :Invalid quantity 
+OrderID: 104|Reason :Invalid date 
+OrderID: 105|Reason :Order date in the future 
+OrderID: 107|Reason :Invalid quantity 
+OrderID: 108|Reason :Invalid unit price 
+OrderID: 112|Reason :Invalid date 
+OrderID: 113|Reason :Invalid date 
+OrderID: 114|Reason :Invalid date 
+OrderID: 116|Reason :Invalid quantity 
+OrderID: 117|Reason :Order date in the future 
+OrderID: 123|Reason :Invalid date 
+OrderID: 126|Reason :Invalid quantity 
+OrderID: 128|Reason :Invalid unit price 
+OrderID: 130|Reason :Invalid date 
+OrderID: 131|Reason :Invalid unit price 
+OrderID: 135|Reason :Invalid quantity 
+OrderID: 141|Reason :Invalid quantity 
+OrderID: 144|Reason :Invalid quantity 
+OrderID: 147|Reason :Order date in the future 
+OrderID: 150|Reason :Order date in the future 
