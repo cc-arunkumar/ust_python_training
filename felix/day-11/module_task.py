@@ -1,149 +1,170 @@
-import os,csv,datetime,math
+import os, csv, datetime, math
 
-current_path = "C:/Users/Administrator/Desktop/ust_python_training-1/felix/day-11/ust_order_processing"
+# Set the base directory where all other folders will be created
+current_path = "C:/Users/303383/Desktop/Python training/ust_python_training/felix/day-11/ust_order_processing"
 
+# Create main directory if not exists
 if os.path.exists(current_path):
-    print("ust_order_processing Diarectory already exists")
+    print("ust_order_processing Directory already exists")
 else:
     os.mkdir(current_path)
     print("ust_order_processing created")
-    
 
-input = "input"
-input_path = os.path.join(current_path,input)
+# Create input directory
+input_dir = "input"
+input_path = os.path.join(current_path, input_dir)
 if os.path.exists(input_path):
-    print("input Diarectory already exists")
+    print("input Directory already exists")
 else:
     os.mkdir(input_path)
-    print("input Diarectory created")
-    
-output = "output"
-output_path = os.path.join(current_path,output)
+    print("input Directory created")
+
+# Create output directory
+output_dir = "output"
+output_path = os.path.join(current_path, output_dir)
 if os.path.exists(output_path):
-    print("output Diarectory already exists")
+    print("output Directory already exists")
 else:
     os.mkdir(output_path)
-    print("output Diarectory created")
-    
-in_file = "orders.csv"
-input_file = os.path.join(input_path,in_file)
+    print("output Directory created")
 
+# Input CSV file path
+in_file = "orders.csv"
+input_file = os.path.join(input_path, in_file)
+
+# Output CSV files
 processed_path = "processed.csv"
 skipped_path = "skipped.csv"
-if os.path.exists(os.path.join(output_path,processed_path)):
-    print("processed.csv already exist")
+
+# Create processed.csv if not present
+if os.path.exists(os.path.join(output_path, processed_path)):
+    print("processed.csv already exists")
 else:
-    with open(os.path.join(output_path,processed_path),"w") as file:
+    with open(os.path.join(output_path, processed_path), "w") as file:
         pass
-    
-if os.path.exists(os.path.join(output_path,skipped_path)):
-    print("skipped.csv already exist")
+
+# Create skipped.csv if not present
+if os.path.exists(os.path.join(output_path, skipped_path)):
+    print("skipped.csv already exists")
 else:
-    with open(os.path.join(output_path,skipped_path),"w") as file:
+    with open(os.path.join(output_path, skipped_path), "w") as file:
         pass
-    
-logs_path = os.path.join(current_path,"logs")
+
+# Create logs directory
+logs_path = os.path.join(current_path, "logs")
 if os.path.exists(logs_path):
-    print("logs Diarectory already exists")
+    print("logs Directory already exists")
 else:
     os.mkdir(logs_path)
     print("logs created")
-    
-excicution_log = os.path.join(logs_path,"excicution_log.txt")
+
+# Execution log file
+excicution_log = os.path.join(logs_path, "excicution_log.txt")
 if os.path.exists(excicution_log):
-    print("excicution_log.txt already exist")
+    print("excicution_log.txt already exists")
 else:
-    with open(excicution_log,"w") as file:
+    with open(excicution_log, "w") as file:
         pass
-    
+
+# Counters for processed and skipped records
 skipped = 0
 processed = 0
 
-
-
-
+# Custom Exceptions
 class QuantityError(Exception):
     pass
+
 class UnitPriceError(Exception):
     pass
+
 class DateInvalidError(Exception):
     pass
+
 class DateInFutureError(Exception):
     pass
 
+# Write skipped items to skipped.csv
+def write_to_skipped(item):
+    with open(os.path.join(output_path, skipped_path), "a", newline="") as file:
+        writer = csv.writer(file)
+        writer.writerow(item.values())
 
+# Write messages to log file
+def write_to_log(msg):
+    with open(excicution_log, "a", newline="") as file:
+        file.writelines(f"{datetime.date.today()} {msg}\n")
 
-
-with open(input_file,"r") as file:
+# Read and process the orders.csv file
+with open(input_file, "r") as file:
     data = csv.DictReader(file)
     header = data.fieldnames
+
     for item in data:
         try:
-            if int(item["quantity"])<=0:
+            # Validate quantity
+            if int(item["quantity"]) <= 0:
                 raise QuantityError
-            
-            if int(item["unit_price"])<=0:
-                raise UnitPriceError
-            
-            if datetime.date.fromisoformat(item["order_date"]):
-                today = datetime.date.today()
-                
-                if datetime.date.strptime(item["order_date"],"%Y-%m-%d")>today:
-                    raise Exception
-                
-            order_date = datetime.date.strptime(item["order_date"],"%Y-%m-%d")
 
+            # Validate unit price
+            if int(item["unit_price"]) <= 0:
+                raise UnitPriceError
+
+            # Validate and parse order_date
+            today = datetime.date.today()
+            order_date = datetime.datetime.strptime(item["order_date"], "%Y-%m-%d").date()
+
+            # Check if order_date is in the future
+            if order_date > today:
+                raise DateInFutureError
+
+            # Calculate total cost (rounded up)
             total_cost = math.ceil(int(item["quantity"]) * int(item["unit_price"]))
             item["total_cost"] = total_cost
 
-            
-            
+            # Calculate delivery date (5 days after order)
             delivery_date = order_date + datetime.timedelta(5)
-            
-            if delivery_date.weekday() == 6:
-                delivery_date = order_date + datetime.timedelta(1)
+
+            # If delivery date is Sunday, shift to next day
+            if delivery_date.weekday() == 6:  # Sunday = 6
+                delivery_date = delivery_date + datetime.timedelta(1)
+
             item["delivery_date"] = delivery_date
-                
-            
-        except QuantityError as q:
+
+        except QuantityError:
             skipped += 1
-            with open(os.path.join(output_path,skipped_path),"a",newline="") as file:
-                writer = csv.writer(file)
-                writer.writerow(item.values())
-            with open(excicution_log,"a",newline="") as file:
-                file.writelines(f"{datetime.date.today()} Warning: quantity less than Zero\n")
-            
-                
-        except UnitPriceError as u:
+            write_to_skipped(item)
+            write_to_log("Warning: quantity must be greater than zero")
+
+        except UnitPriceError:
             skipped += 1
-            with open(os.path.join(output_path,skipped_path),"a",newline="") as file:
-                writer = csv.writer(file)
-                writer.writerow(item.values())
-            with open(excicution_log,"a",newline="") as file:
-                file.writelines(f"{datetime.date.today()} Warning: unit price must be greater than zero\n")
-                
+            write_to_skipped(item)
+            write_to_log("Warning: unit price must be greater than zero")
+
         except ValueError as v:
             skipped += 1
-            with open(os.path.join(output_path,skipped_path),"a",newline="") as file:
-                writer = csv.writer(file)
-                writer.writerow(item.values())
-            with open(excicution_log,"a",newline="") as file:
-                file.writelines(f"{datetime.date.today()} Warning: {v}\n")
-                
-        except Exception as e:
+            write_to_skipped(item)
+            write_to_log(f"Warning: {v}")
+
+        except DateInFutureError:
             skipped += 1
-            with open(os.path.join(output_path,skipped_path),"a",newline="") as file:
-                writer = csv.writer(file)
-                writer.writerow(item.values())
-            with open(excicution_log,"a",newline="") as file:
-                file.writelines(f"{datetime.date.today()} Warning: {e}\n")
-                
+            write_to_skipped(item)
+            write_to_log("Warning: order date cannot be in the future")
+
+        except Exception:
+            skipped += 1
+            write_to_skipped(item)
+            write_to_log("Warning: Error in date format")
+
         else:
+            # Write processed data to processed.csv
             processed += 1
-            with open(os.path.join(output_path,processed_path),"a",newline="") as file:
+            with open(os.path.join(output_path, processed_path), "a", newline="") as file:
                 writer = csv.writer(file)
                 writer.writerow(item.values())
-            with open(excicution_log,"a",newline="") as file:
-                file.writelines(f"{datetime.date.today()} INFO order {item["order_id"]} processed successfully\n")
-                
-print(skipped,processed)
+
+            # Log successful processing
+            write_to_log(f"INFO order {item['order_id']} processed successfully")
+
+# Final summary
+print("Processed data: ", processed)
+print("Skipped data: ", skipped)

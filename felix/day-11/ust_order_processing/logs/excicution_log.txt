@@ -1,50 +1,50 @@
 2025-11-17 INFO order 101 processed successfully
 2025-11-17 INFO order 102 processed successfully
-2025-11-17 Warning: quantity less than Zero
-2025-11-17 Warning: day 30 must be in range 1..28 for month 2 in year 2025
-2025-11-17 Warning: 
+2025-11-17 Warning: quantity must be greater than zero
+2025-11-17 Warning: day is out of range for month
+2025-11-17 Warning: order date cannot be in the future
 2025-11-17 INFO order 106 processed successfully
-2025-11-17 Warning: quantity less than Zero
+2025-11-17 Warning: quantity must be greater than zero
 2025-11-17 Warning: unit price must be greater than zero
 2025-11-17 INFO order 109 processed successfully
 2025-11-17 INFO order 110 processed successfully
 2025-11-17 INFO order 111 processed successfully
-2025-11-17 Warning: day 32 must be in range 1..31 for month 1 in year 2025
-2025-11-17 Warning: month must be in 1..12, not 13
-2025-11-17 Warning: month must be in 1..12, not 0
+2025-11-17 Warning: unconverted data remains: 2
+2025-11-17 Warning: time data '2025-13-10' does not match format '%Y-%m-%d'
+2025-11-17 Warning: time data '2025-00-15' does not match format '%Y-%m-%d'
 2025-11-17 INFO order 115 processed successfully
-2025-11-17 Warning: quantity less than Zero
-2025-11-17 Warning: 
+2025-11-17 Warning: quantity must be greater than zero
+2025-11-17 Warning: order date cannot be in the future
 2025-11-17 INFO order 118 processed successfully
 2025-11-17 INFO order 119 processed successfully
 2025-11-17 INFO order 120 processed successfully
 2025-11-17 INFO order 121 processed successfully
 2025-11-17 INFO order 122 processed successfully
-2025-11-17 Warning: day 29 must be in range 1..28 for month 2 in year 2025
+2025-11-17 Warning: day is out of range for month
 2025-11-17 INFO order 124 processed successfully
 2025-11-17 INFO order 125 processed successfully
-2025-11-17 Warning: quantity less than Zero
+2025-11-17 Warning: quantity must be greater than zero
 2025-11-17 INFO order 127 processed successfully
 2025-11-17 Warning: unit price must be greater than zero
 2025-11-17 INFO order 129 processed successfully
-2025-11-17 Warning: day 31 must be in range 1..30 for month 4 in year 2025
+2025-11-17 Warning: day is out of range for month
 2025-11-17 Warning: unit price must be greater than zero
 2025-11-17 INFO order 132 processed successfully
 2025-11-17 INFO order 133 processed successfully
 2025-11-17 INFO order 134 processed successfully
-2025-11-17 Warning: quantity less than Zero
+2025-11-17 Warning: quantity must be greater than zero
 2025-11-17 INFO order 136 processed successfully
 2025-11-17 INFO order 137 processed successfully
 2025-11-17 INFO order 138 processed successfully
 2025-11-17 INFO order 139 processed successfully
 2025-11-17 INFO order 140 processed successfully
-2025-11-17 Warning: quantity less than Zero
+2025-11-17 Warning: quantity must be greater than zero
 2025-11-17 INFO order 142 processed successfully
 2025-11-17 INFO order 143 processed successfully
-2025-11-17 Warning: quantity less than Zero
+2025-11-17 Warning: quantity must be greater than zero
 2025-11-17 INFO order 145 processed successfully
 2025-11-17 INFO order 146 processed successfully
-2025-11-17 Warning: 
+2025-11-17 Warning: order date cannot be in the future
 2025-11-17 INFO order 148 processed successfully
 2025-11-17 INFO order 149 processed successfully
-2025-11-17 Warning: 
+2025-11-17 Warning: order date cannot be in the future
