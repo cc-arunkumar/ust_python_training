@@ -67,7 +67,7 @@ with open(details_file,"r",encoding="utf-8") as ip_file:
             skipped_rows += 1
             continue
 
-        # Converting billed_amount to float 
+        # Converting billed_amount to  float 
         try:
             row["billed_amount"] = round(float(row["billed_amount"]), 2)
         except ValueError:
