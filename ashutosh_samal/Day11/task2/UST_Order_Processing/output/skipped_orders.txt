@@ -1,0 +1,18 @@
+order_id,customer_name,product,quantity,unit_price,order_date,error_reason
+103,Divya Iyer,Mouse,-1,700,2025-09-20,value must be a positive integer
+104,Pradeep Kumar,Monitor,1,8500,2025-02-30,order date value error
+105,Anjali S,Laptop,2,42000,2026-01-01,order date is in future
+107,Meera Pillai,Webcam,0,1800,2025-04-10,value must be a positive integer
+112,Aparna Devi,Laptop,2,48000,2025-01-32,order date value error
+113,Shreya T,Keyboard,3,1500,2025-13-10,order date value error
+114,Harish Mohan,Mouse,2,700,2025-00-15,order date value error
+116,Farhan Ali,Headphones,-2,2000,2025-03-01,value must be a positive integer
+117,Harini R,SSD,1,3000,2027-05-10,order date is in future
+123,Dhanya L,Webcam,1,2000,2025-02-29,order date value error
+126,Bhavana Joshi,Keyboard,-3,1500,2025-08-10,value must be a positive integer
+130,Simran Kaur,Router,1,4500,2025-04-31,order date value error
+135,Deepak Nair,Keyboard,0,1200,2025-03-19,value must be a positive integer
+141,Teena Joseph,Printer,-1,14000,2025-11-02,value must be a positive integer
+144,Jayesh R,Monitor,0,8000,2025-04-12,value must be a positive integer
+147,Pranav Pai,SSD,2,3600,2025-12-15,order date is in future
+150,Divakar M,Mousepad,1,500,2025-12-20,order date is in future
