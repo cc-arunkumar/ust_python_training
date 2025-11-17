@@ -2,7 +2,7 @@
 from datetime import datetime, timedelta
 
 def today():
-    return datetime.now().strftime("%Y-%m-%d")
+    return datetime.now().strftime("%d-%m-%Y")
 
 def due_after_14_days():
     return (datetime.now() + timedelta(days=14)).strftime("%d-%m-%Y")

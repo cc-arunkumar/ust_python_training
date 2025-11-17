@@ -1,4 +1,3 @@
-
 # models.py
 from datetime import datetime, timedelta
 
@@ -15,9 +14,21 @@ class Book:
                  total_copies, available_copies):
         self.book_id = book_id
         self.title = title
-        self.authors = authors
+        
+        # Handle authors - can be string or list
+        if isinstance(authors, str):
+            self.authors = [a.strip() for a in authors.split("|") if a.strip()] if authors else []
+        else:
+            self.authors = authors if authors else []
+        
         self.isbn = isbn
-        self.tags = tags
+        
+        # Handle tags - can be string or list
+        if isinstance(tags, str):
+            self.tags = [t.strip() for t in tags.split("|") if t.strip()] if tags else []
+        else:
+            self.tags = tags if tags else []
+        
         self.total_copies = int(total_copies)
         self.available_copies = int(available_copies)
 
@@ -34,7 +45,11 @@ class Book:
 
     def update(self, **kwargs):
         for key, value in kwargs.items():
-            if hasattr(self, key) and value is not None:
+            if key == "authors" and isinstance(value, str):
+                self.authors = [a.strip() for a in value.split("|") if a.strip()] if value else []
+            elif key == "tags" and isinstance(value, str):
+                self.tags = [t.strip() for t in value.split("|") if t.strip()] if value else []
+            elif hasattr(self, key) and value is not None:
                 setattr(self, key, value)
 
     def is_available(self):
@@ -84,7 +99,7 @@ class Transaction:
         self.user_id = user_id
         self.borrow_date = borrow_date
         self.due_date = due_date
-        self.return_date = return_date
+        self.return_date = return_date if return_date else None
         self.status = status
 
     def to_dict(self):
@@ -94,7 +109,7 @@ class Transaction:
             "user_id": self.user_id,
             "borrow_date": self.borrow_date,
             "due_date": self.due_date,
-            "return_date": self.return_date,
+            "return_date": self.return_date if self.return_date else "",
             "status": self.status
         }
 
@@ -107,5 +122,8 @@ class Transaction:
     def is_overdue(self, today):
         if self.status == "returned":
             return False
-        return datetime.strptime(today, "%Y-%m-%d") > \
-               datetime.strptime(self.due_date, "%Y-%m-%d")
+        try:
+            return datetime.strptime(today, "%d-%m-%Y") > \
+                   datetime.strptime(self.due_date, "%d-%m-%Y")
+        except:
+            return False
