@@ -1,0 +1,155 @@
+============================================================
+             LIBRARY MANAGEMENT SYSTEM - LOGIN
+============================================================
+
+  1. Login
+  2. Register
+  3. Exit
+
+Select option (1-3): 1
+
+============================================================
+                           LOGIN
+============================================================
+
+User ID: U2023
+Password: u2023
+
+============================================================
+                    USER ACCESS GRANTED
+============================================================
+
+  Welcome, Neeraj Pillai!
+
+
+Press Enter to continue...
+
+============================================================
+          LIBRARY MANAGEMENT SYSTEM - USER: U2023
+============================================================
+
+  1. Search Books
+  2. My Active Loans
+  3. My Loan History
+  4. View My Profile
+  5. Logout
+
+Select option (1-5): 
+
+============================================================
+                        SEARCH BOOKS
+============================================================
+
+  Search by:
+  Title (or press Enter to skip): POP
+  Author (or press Enter to skip): 
+  Tag (or press Enter to skip): 
+
+  Found 1 book(s):
+
+  ID           Title                          Available  Total
+  ------------------------------------------------------------
+  B002         POP                            Yes        8
+
+Press Enter to continue...
+
+============================================================
+                        SEARCH BOOKS
+============================================================
+
+  Search by:
+  Title (or press Enter to skip): POP
+  Author (or press Enter to skip): 
+  Tag (or press Enter to skip): 
+
+  Found 1 book(s):
+
+  ID           Title                          Available  Total
+  ------------------------------------------------------------
+  B002         POP                            Yes        8
+
+Press Enter to continue...
+
+============================================================
+                    ADMIN ACCESS GRANTED
+============================================================
+
+  Welcome, Administrator!
+
+
+Press Enter to continue...
+
+============================================================
+                 LIBRARY MANAGEMENT SYSTEM
+============================================================
+
+  1. Book Management
+  2. User Management
+  3. Borrow & Return
+  4. Reports & Loans
+  5. Search Books
+  6. Exit
+
+Select option (1-6):4
+
+============================================================
+                      REPORTS & LOANS
+============================================================
+
+  1. Library Summary
+  2. Active Loans
+  3. Overdue Loans
+  4. User History
+  5. Back to Main Menu
+
+Select option (1-5):1
+
+============================================================
+                      LIBRARY SUMMARY
+============================================================
+
+
+============================================================
+  Total Books      : 36
+  Total Users      : 28
+  Active Loans     : 10
+  Overdue Loans    : 0
+============================================================
+
+Press Enter to continue...
+
+============================================================
+                        ACTIVE LOANS
+============================================================
+
+  TX ID      User ID         Book ID         Due Date
+  ----------------------------------------------------
+  T3001      B1001           U2001           2025-10-15
+  T3004      B1004           U2005           2025-11-15
+  T3007      B1028           U2010           2025-11-19
+  T3008      B1038           U2013           2025-11-20
+  T3010      B1033           U2015           2025-11-21
+  T3012      B1035           U2018           2025-11-22
+  T3014      B1019           U2020           2025-11-15
+  T3016      B1017           U2023           2025-11-17
+  T3018      B1012           U2025           2025-11-18
+  T3019      B1005           U2009           2025-11-19
+
+Press Enter to continue...
+
+============================================================
+                           LOGOUT
+============================================================
+
+  Admin logged out successfully!
+
+
+Press Enter to continue...
+
+============================================================
+                 LIBRARY MANAGEMENT SYSTEM
+============================================================
+                          GOODBYE!
+============================================================
+
+  Thank you for using the Library Management System!
