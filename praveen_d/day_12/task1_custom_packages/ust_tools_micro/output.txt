@@ -1,0 +1,6 @@
+Inventory Path: c:\UST python\Praveen D\day 12\task1_custom_packages\data\inventory.csv
+Orders Path   : c:\UST python\Praveen D\day 12\task1_custom_packages\data\orders.csv
+ALLOCATED: O1 -> ITM1 (2)
+FAILED: O2 -> ITM1 (4)
+ALLOCATED: O3 -> ITM2 (1)
+FAILED: O4 -> ITM999 (1)

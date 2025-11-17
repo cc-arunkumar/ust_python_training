@@ -1,3 +1,47 @@
+
+==================================================
+        LIBRARY MANAGEMENT SYSTEM
+==================================================
+1. Manage Books
+2. Manage Users
+3. Borrow / Return Books
+4. View Loans
+5. View Reports
+6. Save Changes
+7. Exit
+==================================================
+Enter your choice (1-7): 1
+
+--- Manage Books ---
+1. Add Book
+2. Update Book
+3. Remove Book
+4. Get Book
+5. List Books
+6. Search Books
+Choose an option (1-6): 1
+Book ID: B101
+Title: Harry potter and the crust child
+Authors (comma): Harry,potter
+ISBN: 383892
+Tags (comma): horror,fantasy
+Total Copies: 100
+Error: Duplicate Book ID.
+
+==================================================
+        LIBRARY MANAGEMENT SYSTEM
+==================================================
+1. Manage Books
+2. Manage Users
+3. Borrow / Return Books
+4. View Loans
+5. View Reports
+6. Save Changes
+7. Exit
+==================================================
+Enter your choice (1-7): 6
+Data saved successfully.
+
 ==================================================
         LIBRARY MANAGEMENT SYSTEM
 ==================================================
@@ -194,6 +238,67 @@ Choose an option (1-6): 5
   ISBN: 3737
   Tags: C++
   Copies: 6/6
+[B101] Harry
+  Authors: Robert
+  ISBN: 123456
+  Tags: Horrer, fiction
+  Copies: 10/10
+
+==================================================
+        LIBRARY MANAGEMENT SYSTEM
+==================================================
+1. Manage Books
+2. Manage Users
+3. Borrow / Return Books
+4. View Loans
+5. View Reports
+6. Save Changes
+7. Exit
+==================================================
+Enter your choice (1-7): 2
+Enter password to access Users section: user123
+Authentication successfull!!
+
+--- Manage Users ---
+1. Add User
+2. Update User
+3. Get User
+4. List Users
+5. Change User Status
+6. Report User
+Choose an option (1-6): 1
+User ID: U1234
+Name: Praveen
+Email: praveen@ust
+Invalid email. Returning to Main menu.
+
+==================================================
+        LIBRARY MANAGEMENT SYSTEM
+==================================================
+1. Manage Books
+2. Manage Users
+3. Borrow / Return Books
+4. View Loans
+5. View Reports
+6. Save Changes
+7. Exit
+==================================================
+Enter your choice (1-7): 2
+Enter password to access Users section: user123
+Authentication successfull!!
+
+--- Manage Users ---
+1. Add User
+2. Update User
+3. Get User
+4. List Users
+5. Change User Status
+6. Report User
+Choose an option (1-6): 1
+User ID: U2929
+Name: Praveen D
+Email: praveen@ust.com
+User added.
 
 ==================================================
         LIBRARY MANAGEMENT SYSTEM
@@ -324,16 +429,8 @@ Authentication successfull!!
   Email: etee@gmail.com
   Status: active
   Max Loans: 8
-[U5569] erywe
-  Email: yuyfiwy@ust.com
-  Status: active
-  Max Loans: 5
-[U6000] Rajveer
-  Email: yyrurie@ust.com
-  Status: active
-  Max Loans: 5
-[U6234] Suraj
-  Email: suraj@ust.com
+[U2929] Praveen D
+  Email: praveen@ust.com
   Status: active
   Max Loans: 0
 
@@ -353,8 +450,47 @@ Enter your choice (1-7): 4
 1. Active Loans
 2. Overdue Loans
 3. Loans by User
-Choose: 2
-No loans found.
+Choose: 1
+[T3001] User=U2001, Book=B1001
+  Borrow: 10/1/2025  Due: 10/15/2025
+  Return: -
+  Status: borrowed
+[T3004] User=U2005, Book=B1004
+  Borrow: 11/1/2025  Due: 11/15/2025
+  Return: -
+  Status: borrowed
+[T3007] User=U2010, Book=B1028
+  Borrow: 11/5/2025  Due: 11/19/2025
+  Return: -
+  Status: borrowed
+[T3008] User=U2013, Book=B1038
+  Borrow: 11/6/2025  Due: 11/20/2025
+  Return: -
+  Status: borrowed
+[T3010] User=U2015, Book=B1033
+  Borrow: 11/7/2025  Due: 11/21/2025
+  Return: -
+  Status: borrowed
+[T3012] User=U2018, Book=B1035
+  Borrow: 11/8/2025  Due: 11/22/2025
+  Return: -
+  Status: borrowed
+[T3014] User=U2020, Book=B1019
+  Borrow: 11/1/2025  Due: 11/15/2025
+  Return: -
+  Status: borrowed
+[T3016] User=U2023, Book=B1017
+  Borrow: 11/3/2025  Due: 11/17/2025
+  Return: -
+  Status: borrowed
+[T3018] User=U2025, Book=B1012
+  Borrow: 11/4/2025  Due: 11/18/2025
+  Return: -
+  Status: borrowed
+[T3019] User=U2009, Book=B1005
+  Borrow: 11/5/2025  Due: 11/19/2025
+  Return: -
+  Status: borrowed
 
 ==================================================
         LIBRARY MANAGEMENT SYSTEM
@@ -371,11 +507,64 @@ Enter your choice (1-7): 5
 
 1. Summary Report
 2. User Report
+Choose: 2
+User ID: U2009
+[T3019] User=U2009, Book=B1005
+  Borrow: 11/5/2025  Due: 11/19/2025
+  Return: -
+  Status: borrowed
+[T3020] User=U2009, Book=B1040
+  Borrow: 10/1/2025  Due: 10/15/2025
+  Return: 10/12/2025
+  Status: returned
+
+==================================================
+        LIBRARY MANAGEMENT SYSTEM
+==================================================
+1. Manage Books
+2. Manage Users
+3. Borrow / Return Books
+4. View Loans
+5. View Reports
+6. Save Changes
+7. Exit
+==================================================
+Enter your choice (1-7): 6
+Data saved successfully.
+
+==================================================
+        LIBRARY MANAGEMENT SYSTEM
+==================================================
+1. Manage Books
+2. Manage Users
+3. Borrow / Return Books
+4. View Loans
+5. View Reports
+6. Save Changes
+7. Exit
+==================================================
+Enter your choice (1-7): 3
+
+1. Borrow Book
+2. Return Book
 Choose: 1
-Total books: 35
-Total users: 29
-Active loans: 10
-Overdue loans: 0
+User ID: U2009
+Book ID: B1005
+Borrow successful. Transaction ID: T21
+
+==================================================
+        LIBRARY MANAGEMENT SYSTEM
+==================================================
+1. Manage Books
+2. Manage Users
+3. Borrow / Return Books
+4. View Loans
+5. View Reports
+6. Save Changes
+7. Exit
+==================================================
+Enter your choice (1-7): 6
+Data saved successfully.
 
 ==================================================
         LIBRARY MANAGEMENT SYSTEM

@@ -3,7 +3,7 @@ B1001,Python Crash Course,Eric Matthes,9.78159E+12,python|beginner|programming,5
 B1002,rtyg,ryie,774,trur,8,4
 B1003,Clean Code,Robert C. Martin,9.78013E+12,software|clean-code|programming,4,2
 B1004,Fluent Python,Luciano Ramalho,9.78149E+12,python|advanced|programming,3,1
-B1005,Head First Design Patterns,Eric Freeman,9.7806E+12,design-patterns|oop|architecture,3,2
+B1005,Head First Design Patterns,Eric Freeman,9.7806E+12,design-patterns|oop|architecture,3,1
 B1006,The Pragmatic Programmer,Andrew Hunt,9.7802E+12,software|best-practices,5,5
 B1007,Automate the Boring Stuff,Al Sweigart,9.78159E+12,automation|python|beginner,6,5
 B1008,Database System Concepts,Henry Korth,9.78008E+12,database|dbms|theory,3,3
@@ -34,3 +34,4 @@ B1032,Terraform Up & Running,Yevgeniy Brikman,9.78149E+12,devops|infrastructure,
 B1033,CI/CD with Jenkins,Christopher Grant,9.78179E+12,devops|cicd|automation,3,3
 B1034,Cloud Architecture Patterns,Bill Wilder,9.78145E+12,cloud|architecture|patterns,3,3
 202,C++,Sovan,3737,C++,6,6
+B101,Harry,Robert,123456,Horrer|fiction,10,10
