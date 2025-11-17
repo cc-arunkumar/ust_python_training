@@ -1,0 +1,7 @@
+-------- file handling -------write to file
+opening file 
+reading a file
+making the changes
+appending new line 1.
+appending new line in to the file 2.
+
