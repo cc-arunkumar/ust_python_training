@@ -1,0 +1,270 @@
+OrderID: 101
+Customer: Asha Nair
+Product: Laptop
+Quantity: 2
+Unit Price: 45000.0
+Total Cost: 90000
+Order Date: 10-01-25,Friday
+Estimated Delivery: 15-01-25,Wednesday
+--------------------------------------------------
+OrderID: 102
+Customer: Rahul Menon
+Product: Keyboard
+Quantity: 3
+Unit Price: 1200.0
+Total Cost: 3600
+Order Date: 15-01-25,Wednesday
+Estimated Delivery: 20-01-25,Monday
+--------------------------------------------------
+OrderID: 106
+Customer: Sameer R
+Product: Headphones
+Quantity: 1
+Unit Price: 2500.0
+Total Cost: 2500
+Order Date: 05-03-25,Wednesday
+Estimated Delivery: 10-03-25,Monday
+--------------------------------------------------
+OrderID: 109
+Customer: Lekha Joseph
+Product: Printer
+Quantity: 1
+Unit Price: 12000.0
+Total Cost: 12000
+Order Date: 01-12-24,Sunday
+Estimated Delivery: 06-12-24,Friday
+--------------------------------------------------
+OrderID: 110
+Customer: John Daniel
+Product: SSD
+Quantity: 3
+Unit Price: 3500.0
+Total Cost: 10500
+Order Date: 18-07-25,Friday
+Estimated Delivery: 23-07-25,Wednesday
+--------------------------------------------------
+OrderID: 111
+Customer: Vinod Kumar
+Product: Router
+Quantity: 1
+Unit Price: 4500.0
+Total Cost: 4500
+Order Date: 22-05-25,Thursday
+Estimated Delivery: 27-05-25,Tuesday
+--------------------------------------------------
+OrderID: 115
+Customer: Kiran Babu
+Product: Monitor
+Quantity: 1
+Unit Price: 8500.0
+Total Cost: 8500
+Order Date: 05-01-25,Sunday
+Estimated Delivery: 10-01-25,Friday
+--------------------------------------------------
+OrderID: 118
+Customer: Nithin P
+Product: Mousepad
+Quantity: 2
+Unit Price: 400.0
+Total Cost: 800
+Order Date: 05-11-25,Wednesday
+Estimated Delivery: 10-11-25,Monday
+--------------------------------------------------
+OrderID: 119
+Customer: Sachin Patil
+Product: Printer
+Quantity: 1
+Unit Price: 13000.0
+Total Cost: 13000
+Order Date: 28-10-25,Tuesday
+Estimated Delivery: 03-11-25,Monday
+--------------------------------------------------
+OrderID: 120
+Customer: Roshan George
+Product: Laptop
+Quantity: 2
+Unit Price: 55000.0
+Total Cost: 110000
+Order Date: 17-04-25,Thursday
+Estimated Delivery: 22-04-25,Tuesday
+--------------------------------------------------
+OrderID: 121
+Customer: Anu Mathew
+Product: Keyboard
+Quantity: 3
+Unit Price: 1600.0
+Total Cost: 4800
+Order Date: 15-03-25,Saturday
+Estimated Delivery: 20-03-25,Thursday
+--------------------------------------------------
+OrderID: 122
+Customer: Karthik Iyer
+Product: Mouse
+Quantity: 4
+Unit Price: 800.0
+Total Cost: 3200
+Order Date: 10-02-25,Monday
+Estimated Delivery: 15-02-25,Saturday
+--------------------------------------------------
+OrderID: 124
+Customer: Suhail Ahmed
+Product: Monitor
+Quantity: 2
+Unit Price: 9000.0
+Total Cost: 18000
+Order Date: 25-11-24,Monday
+Estimated Delivery: 30-11-24,Saturday
+--------------------------------------------------
+OrderID: 125
+Customer: Keerthi S
+Product: Laptop
+Quantity: 1
+Unit Price: 47000.0
+Total Cost: 47000
+Order Date: 14-09-25,Sunday
+Estimated Delivery: 19-09-25,Friday
+--------------------------------------------------
+OrderID: 127
+Customer: Ganesh Rao
+Product: Mousepad
+Quantity: 4
+Unit Price: 500.0
+Total Cost: 2000
+Order Date: 05-06-25,Thursday
+Estimated Delivery: 10-06-25,Tuesday
+--------------------------------------------------
+OrderID: 129
+Customer: Arjun S
+Product: SSD
+Quantity: 3
+Unit Price: 3800.0
+Total Cost: 11400
+Order Date: 30-12-24,Monday
+Estimated Delivery: 04-01-25,Saturday
+--------------------------------------------------
+OrderID: 132
+Customer: Manoj Pillai
+Product: Webcam
+Quantity: 2
+Unit Price: 1800.0
+Total Cost: 3600
+Order Date: 05-02-25,Wednesday
+Estimated Delivery: 10-02-25,Monday
+--------------------------------------------------
+OrderID: 133
+Customer: Sreedevi P
+Product: Mouse
+Quantity: 1
+Unit Price: 700.0
+Total Cost: 700
+Order Date: 20-05-23,Saturday
+Estimated Delivery: 25-05-23,Thursday
+--------------------------------------------------
+OrderID: 134
+Customer: Tanvi Shah
+Product: Laptop
+Quantity: 2
+Unit Price: 50000.0
+Total Cost: 100000
+Order Date: 25-05-25,Sunday
+Estimated Delivery: 30-05-25,Friday
+--------------------------------------------------
+OrderID: 136
+Customer: Om Prakash
+Product: Monitor
+Quantity: 1
+Unit Price: 8500.0
+Total Cost: 8500
+Order Date: 09-09-25,Tuesday
+Estimated Delivery: 15-09-25,Monday
+--------------------------------------------------
+OrderID: 137
+Customer: Meghana R
+Product: SSD
+Quantity: 2
+Unit Price: 3000.0
+Total Cost: 6000
+Order Date: 20-08-25,Wednesday
+Estimated Delivery: 25-08-25,Monday
+--------------------------------------------------
+OrderID: 138
+Customer: Nazim Khan
+Product: Mousepad
+Quantity: 2
+Unit Price: 500.0
+Total Cost: 1000
+Order Date: 28-02-25,Friday
+Estimated Delivery: 05-03-25,Wednesday
+--------------------------------------------------
+OrderID: 139
+Customer: Riya Sen
+Product: Headphones
+Quantity: 1
+Unit Price: 2500.0
+Total Cost: 2500
+Order Date: 15-06-25,Sunday
+Estimated Delivery: 20-06-25,Friday
+--------------------------------------------------
+OrderID: 140
+Customer: Arvind Gupta
+Product: Router
+Quantity: 1
+Unit Price: 4500.0
+Total Cost: 4500
+Order Date: 01-10-25,Wednesday
+Estimated Delivery: 06-10-25,Monday
+--------------------------------------------------
+OrderID: 142
+Customer: Kavya Menon
+Product: Keyboard
+Quantity: 3
+Unit Price: 1300.0
+Total Cost: 3900
+Order Date: 05-07-25,Saturday
+Estimated Delivery: 10-07-25,Thursday
+--------------------------------------------------
+OrderID: 143
+Customer: Anoop Krishnan
+Product: Laptop
+Quantity: 2
+Unit Price: 52000.0
+Total Cost: 104000
+Order Date: 22-03-25,Saturday
+Estimated Delivery: 27-03-25,Thursday
+--------------------------------------------------
+OrderID: 145
+Customer: Swapna Rao
+Product: Mouse
+Quantity: 3
+Unit Price: 700.0
+Total Cost: 2100
+Order Date: 30-06-25,Monday
+Estimated Delivery: 05-07-25,Saturday
+--------------------------------------------------
+OrderID: 146
+Customer: Niharika S
+Product: Router
+Quantity: 1
+Unit Price: 4500.0
+Total Cost: 4500
+Order Date: 27-02-25,Thursday
+Estimated Delivery: 04-03-25,Tuesday
+--------------------------------------------------
+OrderID: 148
+Customer: Sheela Chacko
+Product: Laptop
+Quantity: 2
+Unit Price: 51000.0
+Total Cost: 102000
+Order Date: 10-05-25,Saturday
+Estimated Delivery: 15-05-25,Thursday
+--------------------------------------------------
+OrderID: 149
+Customer: Rohit Shetty
+Product: Keyboard
+Quantity: 3
+Unit Price: 1100.0
+Total Cost: 3300
+Order Date: 18-05-25,Sunday
+Estimated Delivery: 23-05-25,Friday
+--------------------------------------------------
