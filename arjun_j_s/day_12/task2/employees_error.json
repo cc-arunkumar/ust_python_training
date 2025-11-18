@@ -1,0 +1,74 @@
+[
+  {
+    "UST003": "No valid value"
+  },
+  {
+    "UST004": "Not valid salary"
+  },
+  {
+    "UST006": "No valid value"
+  },
+  {
+    "UST007": "invalid literal for int() with base 10: 'not available'"
+  },
+  {
+    "UST010": "Not a valid phone number"
+  },
+  {
+    "UST012": "Not a valid age for employee"
+  },
+  {
+    "UST014": "invalid literal for int() with base 10: '98a7654321'"
+  },
+  {
+    "UST016": "No valid value"
+  },
+  {
+    "UST018": "invalid literal for int() with base 10: 'abc1234567'"
+  },
+  {
+    "UST022": "No valid value"
+  },
+  {
+    "UST025": "Not a valid age for employee"
+  },
+  {
+    "UST026": "Not valid salary"
+  },
+  {
+    "UST029": "No valid value"
+  },
+  {
+    "UST030": "invalid literal for int() with base 10: 'abcd987654'"
+  },
+  {
+    "UST032": "invalid literal for int() with base 10: '91 23456780'"
+  },
+  {
+    "UST033": "Not a valid email"
+  },
+  {
+    "UST035": "No valid value"
+  },
+  {
+    "UST037": "invalid literal for int() with base 10: 'abc123'"
+  },
+  {
+    "UST040": "Not valid salary"
+  },
+  {
+    "UST042": "Not a valid phone number"
+  },
+  {
+    "UST044": "No valid value"
+  },
+  {
+    "UST046": "No valid value"
+  },
+  {
+    "UST049": "Not a valid email"
+  },
+  {
+    "UST050": "Not a valid phone number"
+  }
+]
