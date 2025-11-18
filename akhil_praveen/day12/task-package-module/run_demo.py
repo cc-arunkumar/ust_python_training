@@ -1,7 +1,8 @@
 # from csv_utils  import read_csv
 # from validation import required_fields
+import os
 from ust_tool_micro import (read_csv,required_fields,Inventory)
-current = "C:/Users/303394/Desktop/ust_python_training/akhil_praveen/day12/task-package-module/data"
+current = os.getcwd() + "\\akhil_praveen\\day12\\task-package-module\\data"
 
 inventory_obj = Inventory()
 
