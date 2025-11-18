@@ -18,7 +18,14 @@ with open("employees_raw.json","r") as employee_data:
                 break
         if flag == 1:
             continue
-        
+        name = ""
+        for i in item[required_fields[1]].split(" "):
+            if i != "":
+                name += i
+                name += " "
+                
+        item[required_fields[1]] = name.strip()\
+            
         if int(item[required_fields[2]]) <18 or item[required_fields[2]]>65:
             errors.append({"id":item[required_fields[0]],"error_reason":"age is not valid"})
             continue

@@ -1,7 +1,7 @@
 [
   {
     "emp_id": "UST001",
-    "name": "Aarav    Sharma",
+    "name": "Aarav Sharma",
     "age": 29,
     "gender": "male",
     "city": "Bangalore",
@@ -18,7 +18,7 @@
   },
   {
     "emp_id": "UST002",
-    "name": "Priya   Varma",
+    "name": "Priya Varma",
     "age": 31,
     "gender": "female",
     "city": "Trivandrum",
@@ -35,7 +35,7 @@
   },
   {
     "emp_id": "UST005",
-    "name": "Arjun    Reddy",
+    "name": "Arjun Reddy",
     "age": 34,
     "gender": "male",
     "city": "Hyderabad",
@@ -53,7 +53,7 @@
   },
   {
     "emp_id": "UST008",
-    "name": "Lavanya   Menon",
+    "name": "Lavanya Menon",
     "age": 24,
     "gender": "female",
     "city": "Kochi",
@@ -70,7 +70,7 @@
   },
   {
     "emp_id": "UST009",
-    "name": "Vikram   Iyer",
+    "name": "Vikram Iyer",
     "age": 22,
     "gender": "male",
     "city": "Chennai",
@@ -87,7 +87,7 @@
   },
   {
     "emp_id": "UST011",
-    "name": "Mohammed   Arif",
+    "name": "Mohammed Arif",
     "age": 36,
     "gender": "male",
     "city": "Hyderabad",
@@ -105,7 +105,7 @@
   },
   {
     "emp_id": "UST013",
-    "name": "Girish   Kulkarni",
+    "name": "Girish Kulkarni",
     "age": 52,
     "gender": "male",
     "city": "Pune",
@@ -122,7 +122,7 @@
   },
   {
     "emp_id": "UST015",
-    "name": "Naveen   Nair",
+    "name": "Naveen Nair",
     "age": 33,
     "gender": "male",
     "city": "Trivandrum",
@@ -139,7 +139,7 @@
   },
   {
     "emp_id": "UST017",
-    "name": "Imran  Siddiqui",
+    "name": "Imran Siddiqui",
     "age": 45,
     "gender": "male",
     "city": "Lucknow",
@@ -157,7 +157,7 @@
   },
   {
     "emp_id": "UST019",
-    "name": "Harish   Gupta",
+    "name": "Harish Gupta",
     "age": 56,
     "gender": "male",
     "city": "Delhi",
@@ -174,7 +174,7 @@
   },
   {
     "emp_id": "UST020",
-    "name": "Sony    Mathew",
+    "name": "Sony Mathew",
     "age": 28,
     "gender": "female",
     "city": "Kottayam",
@@ -191,7 +191,7 @@
   },
   {
     "emp_id": "UST021",
-    "name": "Karan  Thakur",
+    "name": "Karan Thakur",
     "age": 42,
     "gender": "male",
     "city": "Shimla",
@@ -208,7 +208,7 @@
   },
   {
     "emp_id": "UST023",
-    "name": "Rohit   Jain",
+    "name": "Rohit Jain",
     "age": 25,
     "gender": "male",
     "city": "Jaipur",
@@ -225,7 +225,7 @@
   },
   {
     "emp_id": "UST024",
-    "name": "Neha   Arora",
+    "name": "Neha Arora",
     "age": 35,
     "gender": "female",
     "city": "Delhi",
@@ -242,7 +242,7 @@
   },
   {
     "emp_id": "UST027",
-    "name": "Manish   Soni",
+    "name": "Manish Soni",
     "age": 19,
     "gender": "male",
     "city": "Udaipur",
@@ -258,7 +258,7 @@
   },
   {
     "emp_id": "UST028",
-    "name": "Farah    Ali",
+    "name": "Farah Ali",
     "age": 32,
     "gender": "female",
     "city": "Mumbai",
@@ -276,7 +276,7 @@
   },
   {
     "emp_id": "UST031",
-    "name": "Abhinav   Mishra",
+    "name": "Abhinav Mishra",
     "age": 29,
     "gender": "male",
     "city": "Kanpur",
@@ -293,7 +293,7 @@
   },
   {
     "emp_id": "UST034",
-    "name": "Rohan   Desai",
+    "name": "Rohan Desai",
     "age": 59,
     "gender": "male",
     "city": "Ahmedabad",
@@ -310,7 +310,7 @@
   },
   {
     "emp_id": "UST036",
-    "name": "Ashwin   Rao",
+    "name": "Ashwin Rao",
     "age": 31,
     "gender": "male",
     "city": "Hubli",
@@ -327,7 +327,7 @@
   },
   {
     "emp_id": "UST038",
-    "name": "Amit   Chawla",
+    "name": "Amit Chawla",
     "age": 63,
     "gender": "male",
     "city": "Chandigarh",
@@ -344,7 +344,7 @@
   },
   {
     "emp_id": "UST039",
-    "name": "Deepa    Nair",
+    "name": "Deepa Nair",
     "age": 25,
     "gender": "female",
     "city": "Trivandrum",
@@ -361,7 +361,7 @@
   },
   {
     "emp_id": "UST041",
-    "name": "Nisha   Kaur",
+    "name": "Nisha Kaur",
     "age": 29,
     "gender": "female",
     "city": "Amritsar",
@@ -378,7 +378,7 @@
   },
   {
     "emp_id": "UST043",
-    "name": "Ayesha   Siddiqui",
+    "name": "Ayesha Siddiqui",
     "age": 44,
     "gender": "female",
     "city": "Lucknow",
@@ -396,7 +396,7 @@
   },
   {
     "emp_id": "UST045",
-    "name": "Simran   Gill",
+    "name": "Simran Gill",
     "age": 46,
     "gender": "female",
     "city": "Ludhiana",
@@ -413,7 +413,7 @@
   },
   {
     "emp_id": "UST047",
-    "name": "Gayathri   Natarajan",
+    "name": "Gayathri Natarajan",
     "age": 39,
     "gender": "female",
     "city": "Chennai",
@@ -430,7 +430,7 @@
   },
   {
     "emp_id": "UST048",
-    "name": "Ramesh   Prasad",
+    "name": "Ramesh Prasad",
     "age": 62,
     "gender": "male",
     "city": "Patna",
