@@ -1,0 +1,103 @@
+[2025-11-17] INFO: Started Order Processing
+[2025-11-17] INFO: Folder check completed
+[2025-11-17] INFO: Processing order 101
+[2025-11-17] INFO: Order 101 processed successfully
+[2025-11-17] INFO: Processing order 102
+[2025-11-17] INFO: Order 102 processed successfully
+[2025-11-17] INFO: Processing order 103
+[2025-11-17] WARNING: Order 103 skipped - Invalid quantity
+[2025-11-17] INFO: Processing order 104
+[2025-11-17] WARNING: Order 104 skipped - Invalid date
+[2025-11-17] INFO: Processing order 105
+[2025-11-17] WARNING: Order 105 skipped - Future date
+[2025-11-17] INFO: Processing order 106
+[2025-11-17] INFO: Order 106 processed successfully
+[2025-11-17] INFO: Processing order 107
+[2025-11-17] WARNING: Order 107 skipped - Invalid quantity
+[2025-11-17] INFO: Processing order 108
+[2025-11-17] WARNING: Order 108 skipped - Invalid unit price
+[2025-11-17] INFO: Processing order 109
+[2025-11-17] INFO: Order 109 processed successfully
+[2025-11-17] INFO: Processing order 110
+[2025-11-17] INFO: Order 110 processed successfully
+[2025-11-17] INFO: Processing order 111
+[2025-11-17] INFO: Order 111 processed successfully
+[2025-11-17] INFO: Processing order 112
+[2025-11-17] WARNING: Order 112 skipped - Invalid date
+[2025-11-17] INFO: Processing order 113
+[2025-11-17] WARNING: Order 113 skipped - Invalid date
+[2025-11-17] INFO: Processing order 114
+[2025-11-17] WARNING: Order 114 skipped - Invalid date
+[2025-11-17] INFO: Processing order 115
+[2025-11-17] INFO: Order 115 processed successfully
+[2025-11-17] INFO: Processing order 116
+[2025-11-17] WARNING: Order 116 skipped - Invalid quantity
+[2025-11-17] INFO: Processing order 117
+[2025-11-17] WARNING: Order 117 skipped - Future date
+[2025-11-17] INFO: Processing order 118
+[2025-11-17] INFO: Order 118 processed successfully
+[2025-11-17] INFO: Processing order 119
+[2025-11-17] INFO: Order 119 processed successfully
+[2025-11-17] INFO: Processing order 120
+[2025-11-17] INFO: Order 120 processed successfully
+[2025-11-17] INFO: Processing order 121
+[2025-11-17] INFO: Order 121 processed successfully
+[2025-11-17] INFO: Processing order 122
+[2025-11-17] INFO: Order 122 processed successfully
+[2025-11-17] INFO: Processing order 123
+[2025-11-17] WARNING: Order 123 skipped - Invalid date
+[2025-11-17] INFO: Processing order 124
+[2025-11-17] INFO: Order 124 processed successfully
+[2025-11-17] INFO: Processing order 125
+[2025-11-17] INFO: Order 125 processed successfully
+[2025-11-17] INFO: Processing order 126
+[2025-11-17] WARNING: Order 126 skipped - Invalid quantity
+[2025-11-17] INFO: Processing order 127
+[2025-11-17] INFO: Order 127 processed successfully
+[2025-11-17] INFO: Processing order 128
+[2025-11-17] WARNING: Order 128 skipped - Invalid unit price
+[2025-11-17] INFO: Processing order 129
+[2025-11-17] INFO: Order 129 processed successfully
+[2025-11-17] INFO: Processing order 130
+[2025-11-17] WARNING: Order 130 skipped - Invalid date
+[2025-11-17] INFO: Processing order 131
+[2025-11-17] WARNING: Order 131 skipped - Invalid unit price
+[2025-11-17] INFO: Processing order 132
+[2025-11-17] INFO: Order 132 processed successfully
+[2025-11-17] INFO: Processing order 133
+[2025-11-17] INFO: Order 133 processed successfully
+[2025-11-17] INFO: Processing order 134
+[2025-11-17] INFO: Order 134 processed successfully
+[2025-11-17] INFO: Processing order 135
+[2025-11-17] WARNING: Order 135 skipped - Invalid quantity
+[2025-11-17] INFO: Processing order 136
+[2025-11-17] INFO: Order 136 processed successfully
+[2025-11-17] INFO: Processing order 137
+[2025-11-17] INFO: Order 137 processed successfully
+[2025-11-17] INFO: Processing order 138
+[2025-11-17] INFO: Order 138 processed successfully
+[2025-11-17] INFO: Processing order 139
+[2025-11-17] INFO: Order 139 processed successfully
+[2025-11-17] INFO: Processing order 140
+[2025-11-17] INFO: Order 140 processed successfully
+[2025-11-17] INFO: Processing order 141
+[2025-11-17] WARNING: Order 141 skipped - Invalid quantity
+[2025-11-17] INFO: Processing order 142
+[2025-11-17] INFO: Order 142 processed successfully
+[2025-11-17] INFO: Processing order 143
+[2025-11-17] INFO: Order 143 processed successfully
+[2025-11-17] INFO: Processing order 144
+[2025-11-17] WARNING: Order 144 skipped - Invalid quantity
+[2025-11-17] INFO: Processing order 145
+[2025-11-17] INFO: Order 145 processed successfully
+[2025-11-17] INFO: Processing order 146
+[2025-11-17] INFO: Order 146 processed successfully
+[2025-11-17] INFO: Processing order 147
+[2025-11-17] WARNING: Order 147 skipped - Future date
+[2025-11-17] INFO: Processing order 148
+[2025-11-17] INFO: Order 148 processed successfully
+[2025-11-17] INFO: Processing order 149
+[2025-11-17] INFO: Order 149 processed successfully
+[2025-11-17] INFO: Processing order 150
+[2025-11-17] WARNING: Order 150 skipped - Future date
+[2025-11-17] INFO: Finished Order Processing
