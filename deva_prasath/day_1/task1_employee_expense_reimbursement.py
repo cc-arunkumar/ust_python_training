@@ -44,7 +44,7 @@ while(True):
     elif chc == '5':
         print("Thank You! Have a great day")
         break
-        
+    
     # Invalid choice
     else:
         print("Invalid choice. Please enter a number between 1 and 5")

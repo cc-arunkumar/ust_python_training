@@ -1,0 +1,5 @@
+from exceptions import InvalidCustomerAgeException,InvalidCustomerIDexception
+from validations import validate_customer_age,validate_customer_id
+
+validate_customer_id(10)
+validate_customer_age(10)

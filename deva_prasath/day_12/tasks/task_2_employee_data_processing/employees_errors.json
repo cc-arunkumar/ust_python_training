@@ -1,0 +1,100 @@
+{
+  "errors": [
+    {
+      "emp_id": "UST003",
+      "error_reason": "Dataageis missing"
+    },
+    {
+      "emp_id": "UST004",
+      "error_reason": "Salary must be a positive integer"
+    },
+    {
+      "emp_id": "UST006",
+      "error_reason": "Invalid email ID"
+    },
+    {
+      "emp_id": "UST007",
+      "error_reason": "Salary is not a valid number"
+    },
+    {
+      "emp_id": "UST010",
+      "error_reason": "Invalid phone number"
+    },
+    {
+      "emp_id": "UST012",
+      "error_reason": "Invalid age"
+    },
+    {
+      "emp_id": "UST014",
+      "error_reason": "Invalid phone number"
+    },
+    {
+      "emp_id": "UST016",
+      "error_reason": "Salary is not a valid number"
+    },
+    {
+      "emp_id": "UST018",
+      "error_reason": "Invalid phone number"
+    },
+    {
+      "emp_id": "UST022",
+      "error_reason": "Invalid age"
+    },
+    {
+      "emp_id": "UST025",
+      "error_reason": "Invalid age"
+    },
+    {
+      "emp_id": "UST026",
+      "error_reason": "Salary must be a positive integer"
+    },
+    {
+      "emp_id": "UST029",
+      "error_reason": "Invalid department"
+    },
+    {
+      "emp_id": "UST030",
+      "error_reason": "Invalid phone number"
+    },
+    {
+      "emp_id": "UST032",
+      "error_reason": "Invalid phone number"
+    },
+    {
+      "emp_id": "UST033",
+      "error_reason": "Invalid email ID"
+    },
+    {
+      "emp_id": "UST035",
+      "error_reason": "Salary is not a valid number"
+    },
+    {
+      "emp_id": "UST037",
+      "error_reason": "Invalid phone number"
+    },
+    {
+      "emp_id": "UST040",
+      "error_reason": "Salary must be a positive integer"
+    },
+    {
+      "emp_id": "UST042",
+      "error_reason": "Invalid phone number"
+    },
+    {
+      "emp_id": "UST044",
+      "error_reason": "Invalid department"
+    },
+    {
+      "emp_id": "UST046",
+      "error_reason": "Salary is not a valid number"
+    },
+    {
+      "emp_id": "UST049",
+      "error_reason": "Invalid email ID"
+    },
+    {
+      "emp_id": "UST050",
+      "error_reason": "Invalid phone number"
+    }
+  ]
+}
