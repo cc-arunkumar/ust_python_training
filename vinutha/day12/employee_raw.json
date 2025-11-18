@@ -1,0 +1,102 @@
+{
+ "employees": [
+ {
+ "emp_id": "UST001",
+ "name": "Aarav Sharma",
+ "age": 29,
+ "gender": "male",
+ "city": "Bangalore",
+ "state": "Karnataka",
+ "department": "AI",
+ "salary": 950000,
+ "phone": "9876543210",
+ "email": "aarav.sharma@ust.com",
+ "languages": ["Hindi", "English"],
+ "is_active": true
+ },
+ {
+ "emp_id": "UST002",
+ "name": "Priya Varma",
+ "age": 31,
+ "gender": "female",
+ "city": "Trivandrum",
+ "state": "Kerala",
+ "department": "Cloud",
+ "salary": "1050000",
+ "phone": "9999988888",
+ "email": "priya.varma@ust.com",
+ "languages": ["Malayalam", "English"],
+ "is_active": true
+ },
+ {
+ "emp_id": "UST003",
+ "name": "Rahul Singh",
+ "age": null,
+ "gender": "male",
+ "city": "Kochi",
+ "state": "Kerala",
+ "department": "Testing",
+ "salary": 650000,
+ "phone": "12345",
+ "email": "rahul.singh@ust.com",
+ "languages": ["Hindi", "English"],
+ "is_active": true
+ },
+ {
+ "emp_id": "UST004",
+ "name": "Fathima Noor",
+ "age": 26,
+ "gender": "female",
+ "city": "Chennai",
+ "state": "Tamil Nadu",
+ "department": "Cybersecurity",
+ "salary": -50000,
+ "phone": "8888877777",
+ "email": "fathima.noor@ust.com",
+ "languages": ["Tamil", "English"],
+ "is_active": true
+ },
+ {
+ "emp_id": "UST005",
+ "name": "Arjun Reddy",
+ "age": 34,
+ "gender": "male",
+ "city": "Hyderabad",
+ "state": "Telangana",
+ "department": "DevOps",
+ "salary": 1200000,
+ "phone": "9848012345",
+ "email": "arjun.reddy@ust.com",
+ "languages": ["Telugu", "Hindi", "English"],
+ "is_active": false
+ },
+ {
+ "emp_id": "UST006",
+ "name": "Meera Kapoor",
+ "age": 28,
+ "gender": "female",
+ "city": "Pune",
+ "state": "Maharashtra",
+ "department": "",
+ "salary": 890000,
+ "phone": "9876500000",
+ "email": "meerakapoorust.com",
+ "languages": ["Marathi", "English"],
+ "is_active": true
+ },
+ {
+ "emp_id": "UST007",
+ "name": "Sanjay O'Neil",
+ "age": 41,
+ "gender": "male",
+ "city": "Bangalore",
+ "state": "Karnataka",
+ "department": "HR",
+ "salary": "not available",
+ "phone": "9999000011",
+ "email": "sanjay.oneil@ust.com",
+ "languages": ["English"],
+ "is_active": true
+ }
+ ]
+}
