@@ -1,0 +1,327 @@
+[
+  {
+    "emp_id": "UST001",
+    "error_reason": [
+      "Invalid phone"
+    ]
+  },
+  {
+    "emp_id": "UST002",
+    "error_reason": [
+      "Invalid phone"
+    ]
+  },
+  {
+    "emp_id": "UST003",
+    "error_reason": [
+      "age is empty",
+      "Age must be numeric",
+      "Invalid phone"
+    ]
+  },
+  {
+    "emp_id": "UST004",
+    "error_reason": [
+      "Salary must be positive",
+      "Invalid phone"
+    ]
+  },
+  {
+    "emp_id": "UST005",
+    "error_reason": [
+      "Invalid phone"
+    ]
+  },
+  {
+    "emp_id": "UST006",
+    "error_reason": [
+      "department is empty",
+      "Invalid email",
+      "Invalid department",
+      "Invalid phone"
+    ]
+  },
+  {
+    "emp_id": "UST007",
+    "error_reason": [
+      "Salary must be positive : ",
+      "Invalid phone"
+    ]
+  },
+  {
+    "emp_id": "UST008",
+    "error_reason": [
+      "Invalid phone"
+    ]
+  },
+  {
+    "emp_id": "UST009",
+    "error_reason": [
+      "Invalid phone"
+    ]
+  },
+  {
+    "emp_id": "UST010",
+    "error_reason": [
+      "Invalid phone"
+    ]
+  },
+  {
+    "emp_id": "UST011",
+    "error_reason": [
+      "Invalid phone"
+    ]
+  },
+  {
+    "emp_id": "UST012",
+    "error_reason": [
+      "Invalid age (must be 18-65)",
+      "Invalid phone"
+    ]
+  },
+  {
+    "emp_id": "UST013",
+    "error_reason": [
+      "Invalid phone"
+    ]
+  },
+  {
+    "emp_id": "UST014",
+    "error_reason": [
+      "Invalid phone"
+    ]
+  },
+  {
+    "emp_id": "UST015",
+    "error_reason": [
+      "Invalid phone"
+    ]
+  },
+  {
+    "emp_id": "UST016",
+    "error_reason": [
+      "salary is empty",
+      "Salary must be positive : ",
+      "Invalid phone"
+    ]
+  },
+  {
+    "emp_id": "UST017",
+    "error_reason": [
+      "Invalid phone"
+    ]
+  },
+  {
+    "emp_id": "UST018",
+    "error_reason": [
+      "Invalid phone"
+    ]
+  },
+  {
+    "emp_id": "UST019",
+    "error_reason": [
+      "Invalid phone"
+    ]
+  },
+  {
+    "emp_id": "UST020",
+    "error_reason": [
+      "Invalid phone"
+    ]
+  },
+  {
+    "emp_id": "UST021",
+    "error_reason": [
+      "Invalid phone"
+    ]
+  },
+  {
+    "emp_id": "UST022",
+    "error_reason": [
+      "age is empty",
+      "Age must be numeric",
+      "Invalid phone"
+    ]
+  },
+  {
+    "emp_id": "UST023",
+    "error_reason": [
+      "Invalid phone"
+    ]
+  },
+  {
+    "emp_id": "UST024",
+    "error_reason": [
+      "Invalid phone"
+    ]
+  },
+  {
+    "emp_id": "UST025",
+    "error_reason": [
+      "Invalid age (must be 18-65)",
+      "Invalid phone"
+    ]
+  },
+  {
+    "emp_id": "UST026",
+    "error_reason": [
+      "Salary must be positive",
+      "Invalid phone"
+    ]
+  },
+  {
+    "emp_id": "UST027",
+    "error_reason": [
+      "Invalid phone"
+    ]
+  },
+  {
+    "emp_id": "UST028",
+    "error_reason": [
+      "Invalid phone"
+    ]
+  },
+  {
+    "emp_id": "UST029",
+    "error_reason": [
+      "department is empty",
+      "Invalid department",
+      "Invalid phone"
+    ]
+  },
+  {
+    "emp_id": "UST030",
+    "error_reason": [
+      "Invalid phone"
+    ]
+  },
+  {
+    "emp_id": "UST031",
+    "error_reason": [
+      "Invalid phone"
+    ]
+  },
+  {
+    "emp_id": "UST032",
+    "error_reason": [
+      "Invalid phone"
+    ]
+  },
+  {
+    "emp_id": "UST033",
+    "error_reason": [
+      "Invalid email",
+      "Invalid phone"
+    ]
+  },
+  {
+    "emp_id": "UST034",
+    "error_reason": [
+      "Invalid phone"
+    ]
+  },
+  {
+    "emp_id": "UST035",
+    "error_reason": [
+      "salary is empty",
+      "Salary must be positive : ",
+      "Invalid phone"
+    ]
+  },
+  {
+    "emp_id": "UST036",
+    "error_reason": [
+      "Invalid phone"
+    ]
+  },
+  {
+    "emp_id": "UST037",
+    "error_reason": [
+      "Invalid phone"
+    ]
+  },
+  {
+    "emp_id": "UST038",
+    "error_reason": [
+      "Invalid phone"
+    ]
+  },
+  {
+    "emp_id": "UST039",
+    "error_reason": [
+      "Invalid phone"
+    ]
+  },
+  {
+    "emp_id": "UST040",
+    "error_reason": [
+      "Salary must be positive",
+      "Invalid phone"
+    ]
+  },
+  {
+    "emp_id": "UST041",
+    "error_reason": [
+      "Invalid phone"
+    ]
+  },
+  {
+    "emp_id": "UST042",
+    "error_reason": [
+      "Invalid phone"
+    ]
+  },
+  {
+    "emp_id": "UST043",
+    "error_reason": [
+      "Invalid phone"
+    ]
+  },
+  {
+    "emp_id": "UST044",
+    "error_reason": [
+      "department is empty",
+      "Invalid department",
+      "Invalid phone"
+    ]
+  },
+  {
+    "emp_id": "UST045",
+    "error_reason": [
+      "Invalid phone"
+    ]
+  },
+  {
+    "emp_id": "UST046",
+    "error_reason": [
+      "salary is empty",
+      "Salary must be positive : ",
+      "Invalid phone"
+    ]
+  },
+  {
+    "emp_id": "UST047",
+    "error_reason": [
+      "Invalid phone"
+    ]
+  },
+  {
+    "emp_id": "UST048",
+    "error_reason": [
+      "Invalid phone"
+    ]
+  },
+  {
+    "emp_id": "UST049",
+    "error_reason": [
+      "Invalid email",
+      "Invalid phone"
+    ]
+  },
+  {
+    "emp_id": "UST050",
+    "error_reason": [
+      "Invalid phone"
+    ]
+  }
+]
