@@ -6,7 +6,6 @@ from models import (
 )
 from utils import today_str, add_days_str
 
-
 class Library:
     def __init__(self, storage):
         self.storage = storage
