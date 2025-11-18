@@ -1,3 +1,8 @@
+
+# Library management system core module:
+# - Manages books, users, transactions
+# - Provides CRUD operations, borrowing/returning logic, reports, and persistenc
+
 from models import (
     Book, User, Transaction,
     InvalidBookError, InvalidUserError,
@@ -9,6 +14,7 @@ from utils import today_str, due_date_str
 
 class Library:
     def __init__(self):
+          # Initialize storage backend and load persisted data into in-memory lists
         self.storage = CSVStorage()
         self.books = self.storage.load_books()
         self.users = self.storage.load_users()

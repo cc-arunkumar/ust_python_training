@@ -14,7 +14,7 @@ write , append , seek , etc.) while maintaining data consistency
 import os
 from datetime import datetime
 
-EMP_FILE=r"C:\Training\Day5\nsample.txt"
+emp_file="C:\\Training\\Day5\\nsample.txt"
 
 def add_employee():
     id=input("Enter Employee ID : ")
@@ -24,19 +24,19 @@ def add_employee():
     salary=input("Enter Salary : ")
     doj=input("Enter Date (YYYY-MM-DD):")
 
-    with open(EMP_FILE,"a") as f:
+    with open(emp_file,"a") as f:
         f.write(f"{id},{name},{department},{salary},{doj}\n")
         
     print("File Added Sucessfully")
 
 def display():
-    with open(EMP_FILE,"r") as f:
+    with open(emp_file,"r") as f:
         content=f.read()
         print(content)
 
 def search():
     id_to_find=input("Enter Employee ID to search :")
-    with open(EMP_FILE,"r") as f:
+    with open(emp_file,"r") as f:
         for line in f:
             if line.startswith(id_to_find+","):
                 id,name,dep, salary,doj= line.strip().split(",")
@@ -49,10 +49,10 @@ def delete_emp():
     emp_id=input("Enter Employee ID to delete :")
     found=False
 
-    with open(EMP_FILE,"r") as f:
+    with open(emp_file,"r") as f:
         lines=f.readlines()
 
-    with open(EMP_FILE,"w") as f:
+    with open(emp_file,"w") as f:
         for line in lines:
             if not line.startswith(emp_id+","):
                 f.write(line)
@@ -66,10 +66,10 @@ def updated_salary():
     up_sal=int(input("Enter Updated Salary :"))
     found=False
 
-    with open(EMP_FILE,"r") as f:
+    with open(emp_file,"r") as f:
         lines=f.readlines()
     
-    with open(EMP_FILE,"w") as f:
+    with open(emp_file,"w") as f:
         for line in lines:
             if line.startswith(up_id+","):
                 parts=line.strip().split(",")
@@ -83,13 +83,13 @@ def updated_salary():
     else: print("No employees FOund")
 
 def generate_rep():
-    if not os.path.exists(EMP_FILE) or os.path.getsize(EMP_FILE)==0:
+    if not os.path.exists(emp_file) or os.path.getsize(emp_file)==0:
         print("No employee data available to generate report.")
         return
 
     dept_data={}
 
-    with open(EMP_FILE,"r") as f:
+    with open(emp_file,"r") as f:
         for line in f:
             id,name,dep,salary,doj=line.strip().split(",")
             salary=int(salary)
