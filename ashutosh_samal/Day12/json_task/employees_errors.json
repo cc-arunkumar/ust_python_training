@@ -1,0 +1,80 @@
+[
+  {
+    "UST002": "Unexpected error for '>' not supported between instances of 'str' and 'int'"
+  },
+  {
+    "UST003": "Missing field:Missing required field in emp: {'emp_id': 'UST003', 'name': 'Rahul  Singh', 'age': None, 'gender': 'male', 'city': 'Kochi', 'state': 'Kerala', 'department': 'Testing', 'salary': 650000, 'phone': '12345', 'email': 'rahul.singh@ust.com', 'languages': ['Hindi', 'English'], 'is_active': True}"
+  },
+  {
+    "UST004": "Unexpected error for Invalid salary : -50000"
+  },
+  {
+    "UST006": "Unexpected error for Invalid Email : meerakapoorust.com"
+  },
+  {
+    "UST007": "Unexpected error for '>' not supported between instances of 'str' and 'int'"
+  },
+  {
+    "UST009": "Unexpected error for '>' not supported between instances of 'str' and 'int'"
+  },
+  {
+    "UST010": "Unexpected error for Invalid Mobile Number :9876543"
+  },
+  {
+    "UST012": "Unexpected error for Invalid age : UST012"
+  },
+  {
+    "UST013": "Unexpected error for '>' not supported between instances of 'str' and 'int'"
+  },
+  {
+    "UST016": "Unexpected error for '>' not supported between instances of 'str' and 'int'"
+  },
+  {
+    "UST022": "Unexpected error for '<=' not supported between instances of 'int' and 'str'"
+  },
+  {
+    "UST024": "Unexpected error for '>' not supported between instances of 'str' and 'int'"
+  },
+  {
+    "UST025": "Unexpected error for Invalid age : UST025"
+  },
+  {
+    "UST026": "Unexpected error for Invalid salary : -700000"
+  },
+  {
+    "UST028": "Unexpected error for '>' not supported between instances of 'str' and 'int'"
+  },
+  {
+    "UST029": "Missing field:Department value missing :"
+  },
+  {
+    "UST032": "Unexpected error for '>' not supported between instances of 'str' and 'int'"
+  },
+  {
+    "UST033": "Unexpected error for Invalid Email : kavya.shekarust.com"
+  },
+  {
+    "UST035": "Unexpected error for '>' not supported between instances of 'str' and 'int'"
+  },
+  {
+    "UST037": "Unexpected error for '>' not supported between instances of 'str' and 'int'"
+  },
+  {
+    "UST040": "Unexpected error for Invalid salary : -80000"
+  },
+  {
+    "UST042": "Unexpected error for '>' not supported between instances of 'str' and 'int'"
+  },
+  {
+    "UST044": "Missing field:Department value missing :"
+  },
+  {
+    "UST046": "Unexpected error for '>' not supported between instances of 'str' and 'int'"
+  },
+  {
+    "UST049": "Unexpected error for '>' not supported between instances of 'str' and 'int'"
+  },
+  {
+    "UST050": "Unexpected error for Invalid Mobile Number :998877665544"
+  }
+]
