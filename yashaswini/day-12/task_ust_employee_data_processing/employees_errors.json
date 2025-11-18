@@ -1,0 +1,98 @@
+[
+  {
+    "id": "UST003",
+    "error_reason": "field is none"
+  },
+  {
+    "id": "UST004",
+    "error_reason": "Invalid Salary"
+  },
+  {
+    "id": "UST006",
+    "error_reason": "field is none"
+  },
+  {
+    "id": "UST007",
+    "error_reason": "invalid phone number"
+  },
+  {
+    "id": "UST010",
+    "error_reason": "Invalid phone number"
+  },
+  {
+    "id": "UST012",
+    "error_reason": "Age is not valid"
+  },
+  {
+    "id": "UST014",
+    "error_reason": "Invalid phone number"
+  },
+  {
+    "id": "UST016",
+    "error_reason": "field is none"
+  },
+  {
+    "id": "UST018",
+    "error_reason": "Invalid phone number"
+  },
+  {
+    "id": "UST022",
+    "error_reason": "field is none"
+  },
+  {
+    "id": "UST025",
+    "error_reason": "Age is not valid"
+  },
+  {
+    "id": "UST026",
+    "error_reason": "Invalid Salary"
+  },
+  {
+    "id": "UST029",
+    "error_reason": "field is none"
+  },
+  {
+    "id": "UST030",
+    "error_reason": "Invalid phone number"
+  },
+  {
+    "id": "UST032",
+    "error_reason": "Invalid phone number"
+  },
+  {
+    "id": "UST033",
+    "error_reason": "Invalid email"
+  },
+  {
+    "id": "UST035",
+    "error_reason": "field is none"
+  },
+  {
+    "id": "UST037",
+    "error_reason": "Invalid phone number"
+  },
+  {
+    "id": "UST040",
+    "error_reason": "Invalid Salary"
+  },
+  {
+    "id": "UST042",
+    "error_reason": "Invalid phone number"
+  },
+  {
+    "id": "UST044",
+    "error_reason": "field is none"
+  },
+  {
+    "id": "UST046",
+    "error_reason": "field is none"
+  },
+  {
+    "id": "UST049",
+    "error_reason": "Invalid email"
+  },
+  {
+    "id": "UST050",
+    "error_reason": "Invalid phone number"
+  }
+]
