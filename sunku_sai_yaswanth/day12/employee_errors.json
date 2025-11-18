@@ -1,0 +1,100 @@
+{
+  "errors": [
+    {
+      "emp_id": "UST003",
+      "error": "Invalid age None for employee UST003. "
+    },
+    {
+      "emp_id": "UST004",
+      "error": "Salary must be a positive integer"
+    },
+    {
+      "emp_id": "UST006",
+      "error": "Invalid email meerakapoorust.com for employee"
+    },
+    {
+      "emp_id": "UST007",
+      "error": "Salary is not a valid number"
+    },
+    {
+      "emp_id": "UST010",
+      "error": "Invalid phone number"
+    },
+    {
+      "emp_id": "UST012",
+      "error": "Invalid age 17 for employee UST012. "
+    },
+    {
+      "emp_id": "UST014",
+      "error": "Invalid phone number"
+    },
+    {
+      "emp_id": "UST016",
+      "error": "Salary is not a valid number"
+    },
+    {
+      "emp_id": "UST018",
+      "error": "Invalid phone number"
+    },
+    {
+      "emp_id": "UST022",
+      "error": "Invalid age  for employee UST022. "
+    },
+    {
+      "emp_id": "UST025",
+      "error": "Invalid age 66 for employee UST025. "
+    },
+    {
+      "emp_id": "UST026",
+      "error": "Salary must be a positive integer"
+    },
+    {
+      "emp_id": "UST029",
+      "error": "Field 'department' is missing for employee"
+    },
+    {
+      "emp_id": "UST030",
+      "error": "Invalid phone number"
+    },
+    {
+      "emp_id": "UST032",
+      "error": "Invalid phone number"
+    },
+    {
+      "emp_id": "UST033",
+      "error": "Invalid email kavya.shekarust.com for employee"
+    },
+    {
+      "emp_id": "UST035",
+      "error": "Salary is not a valid number"
+    },
+    {
+      "emp_id": "UST037",
+      "error": "Invalid phone number"
+    },
+    {
+      "emp_id": "UST040",
+      "error": "Salary must be a positive integer"
+    },
+    {
+      "emp_id": "UST042",
+      "error": "Invalid phone number"
+    },
+    {
+      "emp_id": "UST044",
+      "error": "Field 'department' is missing for employee"
+    },
+    {
+      "emp_id": "UST046",
+      "error": "Salary is not a valid number"
+    },
+    {
+      "emp_id": "UST049",
+      "error": "Invalid email anjali.sharmagmail.com for employee"
+    },
+    {
+      "emp_id": "UST050",
+      "error": "Invalid phone number"
+    }
+  ]
+}
