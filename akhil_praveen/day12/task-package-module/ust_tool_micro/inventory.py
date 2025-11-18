@@ -1,4 +1,4 @@
-from csv_utils import read_csv
+from .csv_utils import read_csv
 
 class Inventory:
         
@@ -6,22 +6,24 @@ class Inventory:
     def inventory(self,data,header):
         self.dict = {}
         for row in data:
-            dict[row[header[0]]] = row[header[1]]
+            self.dict[row[header[0]]] = int(row[header[1]])
     
     def from_csv(self,path):
         data,header = read_csv(path)
         self.inventory(data,header)
         
     def allocate(self,item_id,quantity):
-        if self.dict[item_id] and self.dict[item_id]>0:
-            self.dict[item_id] -=quantity
-            return True
+        if self.dict[item_id]:
+            self.dict[item_id] +=quantity
+            if self.dict[item_id]>=0:
+                print(f"ALLOCATED: {item_id} -> {item_id} ({quantity})")
+            else:
+                print(f"FAILED: {item_id} -> {item_id} ({quantity})")
+                self.dict[item_id] +=quantity
         else:
-            return False
+            print(f"{item_id} doesn't exists")
         
     def release(self,item_id,quantity):
         if self.dict[item_id]:
             self.dict[item_id] +=quantity
-            return True
-        else:
-            return False
+            print(f"{item_id} released successfully")
