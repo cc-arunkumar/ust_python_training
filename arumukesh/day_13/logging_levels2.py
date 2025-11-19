@@ -1,0 +1,32 @@
+import logging
+
+logger_payment= logging.getLogger("app.payment")
+logger_payment.setLevel(logging.DEBUG)
+ch_payment=logging.StreamHandler()
+ch_payment.setLevel(logging.DEBUG)
+
+formatter_payment=logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+ch_payment.setFormatter(formatter_payment)
+logger_payment.addHandler(ch_payment)
+
+logger_customer= logging.getLogger("app.customer")
+logger_customer.setLevel(logging.DEBUG)
+fh_customer=logging.FileHandler("customer_errors.log")
+fh_customer.setLevel(logging.DEBUG)
+ch_customer=logging.StreamHandler()
+ch_customer.setLevel(logging.ERROR)
+formatter_customer=logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+ch_customer.setFormatter(formatter_customer)    
+
+fh_customer.setFormatter(formatter_customer)
+logger_customer.addHandler(fh_customer)
+logger_customer.addHandler(ch_customer)
+logger_payment.debug("Payment debug message")
+logger_payment.info("Payment info message")     
+logger_payment.warning("Payment warning message")
+logger_payment.error("Payment error message")       
+logger_customer.debug("Customer debug message")
+logger_customer.info("Customer info message")       
+logger_customer.warning("Customer warning message")
+logger_customer.error("Customer error message") 
+print("thank you")

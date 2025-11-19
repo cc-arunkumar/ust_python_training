@@ -1,0 +1,22 @@
+DEBUG ------->level_10----TRACE variable Value
+
+
+INFO Level --->level 20----> to show progress or action performed 
+
+
+WARNING ---->level 30 ------->Something unexpected happened might beocome a problem but program exexcutes
+example:logger.WARNING("low disk space")
+
+
+ERROR---->level 40----------> aerious issue occured,A part of program fail,program continues to run specific part problem
+example:Failed to read Failed
+
+
+CRITICAL--------->level50--------->program crashed(about to crash),Extremely serious,immmediate action required since system unusable
+example: logger.CRITICAL("server Down!")
+
+
+
+
+
+
