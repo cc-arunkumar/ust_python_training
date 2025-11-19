@@ -1,0 +1,11 @@
+DEBUG-level 10,tarce valuable values or program exceution files
+EXAMPLE: connect into DB
+INFO-level 20, show progress or action performs
+EXAMPLE- user logged in
+WARNING-level 30,something unexpected happen,might become a problem but program exceutes
+EXAMPLE-logger.warning("low disk space")
+ERROR-level 40, a serious issue occured a part of program failed
+program continue running,a specific part failed
+EXAMPLE:logger.error("fail to read file")
+CRITICAL-level 50, program crashed(about to crash) extremely serious, next time immediate action required since system is unusable
+EXAMPLE:logger.critical("Server down)
