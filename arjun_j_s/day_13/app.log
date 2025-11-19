@@ -1,0 +1,4 @@
+2025-11-19 12:11:03,925 | INFO | Info is running | app.customer
+2025-11-19 12:11:03,925 | WARNING | Warning is running | app.customer
+2025-11-19 12:11:03,925 | ERROR | Error is running | app.payment
+2025-11-19 12:11:03,925 | CRITICAL | Critical is running | app.payment
