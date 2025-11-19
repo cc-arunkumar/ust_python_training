@@ -1,0 +1,6 @@
+
+this is a debug message (only on file)|DEBUG | this is a debug message (only on file)|
+this is a info message|INFO | this is a info message|
+this is a warning message|WARNING | this is a warning message|
+this is a error message|ERROR | this is a error message|
+this is a critical message|CRITICAL | this is a critical message|
