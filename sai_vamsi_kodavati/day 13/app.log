@@ -1,0 +1,6 @@
+2025-11-19 11:55:15,089 | WARNING | This is a WARNING message(only file)
+2025-11-19 11:55:15,090 | ERROR | This is a ERROR message
+2025-11-19 11:55:51,440 | DEBUG | This is a DEBUG message(only file)
+2025-11-19 11:55:51,440 | INFO | This is an INFO message
+2025-11-19 11:55:51,440 | WARNING | This is a WARNING message(only file)
+2025-11-19 11:55:51,440 | ERROR | This is a ERROR message

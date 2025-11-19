@@ -1,0 +1,25 @@
+2025-11-19 12:17:31,875 | 20 | This is an INFO message
+2025-11-19 12:17:31,875 | 30 | This is a WARNING message
+2025-11-19 12:17:31,875 | 40 | This is an ERROR message
+2025-11-19 12:17:31,875 | 50 | This is a CRITICAL message
+
+
+2025-11-19 12:18:09,339 | 20 | This is an INFO message
+2025-11-19 12:18:09,339 | 30 | This is a WARNING message
+2025-11-19 12:18:09,339 | 40 | This is an ERROR message
+2025-11-19 12:18:09,339 | 50 | This is a CRITICAL message
+2025-11-19 12:18:40,486 | 20 | This is an INFO message
+2025-11-19 12:18:40,487 | 30 | This is a WARNING message
+2025-11-19 12:18:40,487 | 40 | This is an ERROR message
+2025-11-19 12:18:40,487 | 50 | This is a CRITICAL message
+2025-11-19 12:22:11,352 | 10 | This is a DUBUG message
+2025-11-19 12:22:11,352 | 10 | This is a DUBUG message
+2025-11-19 12:22:11,352 | 20 | This is an INFO message
+2025-11-19 12:22:11,352 | 30 | This is a WARNING message
+2025-11-19 12:22:11,352 | 40 | This is an ERROR message
+2025-11-19 12:22:11,352 | 50 | This is a CRITICAL message
+2025-11-19 12:22:36,899 | 10 | This is a DUBUG message
+2025-11-19 12:22:36,899 | 20 | This is an INFO message
+2025-11-19 12:22:36,899 | 30 | This is a WARNING message
+2025-11-19 12:22:36,899 | 40 | This is an ERROR message
+2025-11-19 12:22:36,899 | 50 | This is a CRITICAL message
