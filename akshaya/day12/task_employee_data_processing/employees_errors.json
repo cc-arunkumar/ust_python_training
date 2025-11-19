@@ -1,0 +1,84 @@
+{
+  "errors": [
+    {
+      "emp_id": "UST031",
+      "error_reason": "Missing field: name"
+    },
+    {
+      "emp_id": "UST032",
+      "error_reason": "Missing field: age"
+    },
+    {
+      "emp_id": "UST033",
+      "error_reason": "Invalid age"
+    },
+    {
+      "emp_id": "UST034",
+      "error_reason": "Invalid age"
+    },
+    {
+      "emp_id": "UST035",
+      "error_reason": "Invalid salary"
+    },
+    {
+      "emp_id": "UST036",
+      "error_reason": "Invalid salary"
+    },
+    {
+      "emp_id": "UST037",
+      "error_reason": "Missing field: department"
+    },
+    {
+      "emp_id": "UST038",
+      "error_reason": "Invalid phone number"
+    },
+    {
+      "emp_id": "UST039",
+      "error_reason": "Invalid phone number"
+    },
+    {
+      "emp_id": "UST040",
+      "error_reason": "Invalid email"
+    },
+    {
+      "emp_id": "UST041",
+      "error_reason": "Missing field: name"
+    },
+    {
+      "emp_id": "UST042",
+      "error_reason": "Missing field: phone"
+    },
+    {
+      "emp_id": "UST043",
+      "error_reason": "Invalid age"
+    },
+    {
+      "emp_id": "UST044",
+      "error_reason": "Invalid phone number"
+    },
+    {
+      "emp_id": "UST045",
+      "error_reason": "Invalid phone number"
+    },
+    {
+      "emp_id": "UST046",
+      "error_reason": "Missing field: salary"
+    },
+    {
+      "emp_id": "UST047",
+      "error_reason": "Invalid phone number"
+    },
+    {
+      "emp_id": "UST048",
+      "error_reason": "Invalid age"
+    },
+    {
+      "emp_id": "UST049",
+      "error_reason": "Missing field: department"
+    },
+    {
+      "emp_id": "UST050",
+      "error_reason": "Invalid salary"
+    }
+  ]
+}
