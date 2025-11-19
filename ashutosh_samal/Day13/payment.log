@@ -1,0 +1,4 @@
+2025-11-19 12:22:28,343 | DEBUG | This is a DEBUG message | payment
+2025-11-19 12:22:28,344 | INFO | This is a INFO message | payment
+2025-11-19 12:22:28,345 | WARNING | This is a WARNING message | payment
+2025-11-19 12:22:28,345 | ERROR | This is an ERROR message | payment

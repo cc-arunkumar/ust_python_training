@@ -1,0 +1,4 @@
+2025-11-19 12:20:54,397 | DEBUG | This is a DEBUG message | customer
+2025-11-19 12:20:54,398 | INFO | This is a INFO message | customer
+2025-11-19 12:20:54,398 | WARNING | This is a WARNING message | customer
+2025-11-19 12:20:54,398 | ERROR | This is an ERROR message | customer

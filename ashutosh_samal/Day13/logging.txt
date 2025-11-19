@@ -1,0 +1,11 @@
+level20 - show progress or sction performed
+level30 - warning - Something unexpected happened, might become a problem but program continue to execute
+logger.warning-"low disk space"
+
+level40 - A serious issue occured, a part of program failed, 
+program continue running, a specific part failed
+Ex-logger.error:"failed to read file"
+
+level50 - critical - program crashed(about to crash)
+immidiate action required since system is unusable
+Ex- logger.critical:"server down"
