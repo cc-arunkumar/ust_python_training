@@ -39,7 +39,7 @@ def update_skill(emp_id, skill, level):
     if emp_id not in employee_skills:
         employee_skills[emp_id] = {}
     employee_skills[emp_id][skill] = level
-
+    
     # Add employee to the skill-to-employees mapping
     if skill not in skill_to_employees:
         skill_to_employees[skill] = set()

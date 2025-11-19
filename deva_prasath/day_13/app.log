@@ -1,0 +1,4 @@
+2025-11-19 11:48:47,806 | WARNING |This is a WARNING message |app
+2025-11-19 11:48:47,806 | ERROR |This is an ERROR message |app
+2025-11-19 11:56:03,475 | WARNING |This is a WARNING message |app
+2025-11-19 11:56:03,476 | ERROR |This is an ERROR message |app

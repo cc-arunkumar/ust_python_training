@@ -1,0 +1,4 @@
+WARNING, |WARNING message |line: 65, |app_payment
+ERROR, |ERROR message |line: 66, |app_payment
+WARNING, |WARNING message |line: 65, |app_payment
+ERROR, |ERROR message |line: 66, |app_payment
