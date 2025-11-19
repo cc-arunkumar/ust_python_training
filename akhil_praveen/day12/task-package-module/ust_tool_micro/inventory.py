@@ -14,7 +14,7 @@ class Inventory:
         
     def allocate(self,item_id,quantity):
         if self.dict[item_id]:
-            self.dict[item_id] +=quantity
+            self.dict[item_id] -=quantity
             if self.dict[item_id]>=0:
                 print(f"ALLOCATED: {item_id} -> {item_id} ({quantity})")
             else:
