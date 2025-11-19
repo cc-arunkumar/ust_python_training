@@ -1,0 +1,4 @@
+2025-11-19 12:12:21,586 | WARNING | app_customer |Warning
+2025-11-19 12:12:21,586 | ERROR | app_customer |Error
+2025-11-19 12:12:21,586 | CRITICAL | app_customer |Critical
+2025-11-19 12:12:45,361 | WARNING | app_customer |Warning

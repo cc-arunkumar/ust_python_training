@@ -1,0 +1,15 @@
+2025-11-19 12:12:07,970 | DEBUG | app.payment |Debugging
+2025-11-19 12:12:07,971 | INFO | app.payment |Information
+2025-11-19 12:12:07,971 | WARNING | app.payment |Warning
+2025-11-19 12:12:07,971 | ERROR | app.payment |Error
+2025-11-19 12:12:07,972 | CRITICAL | app.payment |Critical
+2025-11-19 12:12:21,584 | DEBUG | app.payment |Debugging
+2025-11-19 12:12:21,584 | INFO | app.payment |Information
+2025-11-19 12:12:21,584 | WARNING | app.payment |Warning
+2025-11-19 12:12:21,584 | ERROR | app.payment |Error
+2025-11-19 12:12:21,585 | CRITICAL | app.payment |Critical
+2025-11-19 12:12:45,358 | DEBUG | app.payment |Debugging
+2025-11-19 12:12:45,358 | INFO | app.payment |Information
+2025-11-19 12:12:45,358 | WARNING | app.payment |Warning
+2025-11-19 12:12:45,360 | ERROR | app.payment |Error
+2025-11-19 12:12:45,361 | CRITICAL | app.payment |Critical

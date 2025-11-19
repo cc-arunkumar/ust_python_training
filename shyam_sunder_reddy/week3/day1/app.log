@@ -1,0 +1,11 @@
+
+2025-11-19 11:58:52,839 | DEBUG | app |Debugging
+2025-11-19 11:58:52,839 | INFO | app |Information
+2025-11-19 11:58:52,840 | WARNING | app |Warning
+2025-11-19 11:58:52,840 | ERROR | app |Error
+2025-11-19 11:58:52,841 | CRITICAL | app |Critical
+2025-11-19 12:08:18,841 | DEBUG | app |Debugging
+2025-11-19 12:08:18,841 | INFO | app |Information
+2025-11-19 12:08:18,841 | WARNING | app |Warning
+2025-11-19 12:08:18,841 | ERROR | app |Error
+2025-11-19 12:08:18,842 | CRITICAL | app |Critical
