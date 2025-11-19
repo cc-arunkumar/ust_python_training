@@ -1,0 +1,4 @@
+this is Info message | INFO | app | 29
+this is Warning message | WARNING | app | 30
+this is error message | ERROR | app | 31
+this is Critical message | CRITICAL | app | 32
