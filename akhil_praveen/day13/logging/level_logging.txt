@@ -1,0 +1,24 @@
+Debug level
+
+level 10 - creates variable value or program flow
+example - Connecting to DB
+
+INFO level
+level 20 - to show progress or actions performed
+example - User logged in
+
+Warning level
+level 30 - something unexpected happened, might become a problem but program execute
+
+example - logger.warning("low disk space")
+
+Error level
+level 40 - A serious issue occurred, a part of program failed
+	   program continue running, a specific part failed
+example - failed to read file
+
+Critical level
+level 50 - Program crashed (about to crash), Extremely serious
+	   immediate action required, since system is unusable
+
+example - logger.critical("server down")

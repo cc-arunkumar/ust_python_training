@@ -1,0 +1,31 @@
+
+{
+"employees": [
+                {
+                    "id": 101,
+                    "name": "Aarav Nair",
+                    "role": "Software Engineer",
+                    "skills": ["Python", "Django", "SQL"],
+                    "projects": [
+                        {"name": "UST HealthCare Portal", "hours_logged": 120},
+                        {"name": "UST AI Chatbot", "hours_logged": 85}
+                    ]
+                },
+                {
+                    "id": 102,
+                    "name": "Diya Gupta",
+                    "role": "Data Engineer",
+                    "skills": ["Python", "ETL", "Spark"],
+                    "projects": [
+                        {"name": "UST Cloud Migration", "hours_logged": 200}
+                    ]
+                },
+                {
+                    "id": 103,
+                    "name": "Sanjay Patil",
+                    "role": "QA Analyst",
+                    "skills": ["Selenium", "Postman"],
+                    "projects": []
+                }
+            ]
+}
