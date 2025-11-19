@@ -1,0 +1,5 @@
+WARNING | this is warning | 30
+ERROR | this is error | 40
+CRITICAL | this is critical | 50
+ERROR | this is error | 40
+CRITICAL | this is critical | 50
