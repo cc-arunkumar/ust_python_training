@@ -1,0 +1,449 @@
+{
+  "cleaned_employees": [
+    {
+      "emp_id": "UST001",
+      "name": "Aarav Sharma",
+      "age": 29,
+      "gender": "male",
+      "city": "Bangalore",
+      "state": "Karnataka",
+      "department": "AI",
+      "salary": 950000.0,
+      "phone": "9876543210",
+      "email": "aarav.sharma@ust.com",
+      "languages": [
+        "Hindi",
+        "English"
+      ],
+      "is_active": true
+    },
+    {
+      "emp_id": "UST002",
+      "name": "Priya Varma",
+      "age": 31,
+      "gender": "female",
+      "city": "Trivandrum",
+      "state": "Kerala",
+      "department": "Cloud",
+      "salary": 1050000.0,
+      "phone": "9999988888",
+      "email": "priya.varma@ust.com",
+      "languages": [
+        "Malayalam",
+        "English"
+      ],
+      "is_active": true
+    },
+    {
+      "emp_id": "UST005",
+      "name": "Arjun Reddy",
+      "age": 34,
+      "gender": "male",
+      "city": "Hyderabad",
+      "state": "Telangana",
+      "department": "DevOps",
+      "salary": 1200000.0,
+      "phone": "9848012345",
+      "email": "arjun.reddy@ust.com",
+      "languages": [
+        "Telugu",
+        "Hindi",
+        "English"
+      ],
+      "is_active": false
+    },
+    {
+      "emp_id": "UST008",
+      "name": "Lavanya Menon",
+      "age": 24,
+      "gender": "female",
+      "city": "Kochi",
+      "state": "Kerala",
+      "department": "AI",
+      "salary": 780000.0,
+      "phone": "9123456780",
+      "email": "lavanya.menon@ust.com",
+      "languages": [
+        "Malayalam",
+        "English"
+      ],
+      "is_active": true
+    },
+    {
+      "emp_id": "UST009",
+      "name": "Vikram Iyer",
+      "age": 22,
+      "gender": "male",
+      "city": "Chennai",
+      "state": "Tamil Nadu",
+      "department": "Support",
+      "salary": 700000.0,
+      "phone": "9898989898",
+      "email": "vikram.iyer@ust.com",
+      "languages": [
+        "Tamil",
+        "English"
+      ],
+      "is_active": true
+    },
+    {
+      "emp_id": "UST011",
+      "name": "Mohammed Arif",
+      "age": 36,
+      "gender": "male",
+      "city": "Hyderabad",
+      "state": "Telangana",
+      "department": "Cloud",
+      "salary": 1400000.0,
+      "phone": "9000000000",
+      "email": "mohammed.arif@ust.com",
+      "languages": [
+        "Urdu",
+        "Hindi",
+        "English"
+      ],
+      "is_active": true
+    },
+    {
+      "emp_id": "UST013",
+      "name": "Girish Kulkarni",
+      "age": 52,
+      "gender": "male",
+      "city": "Pune",
+      "state": "Maharashtra",
+      "department": "AI",
+      "salary": 1320000.0,
+      "phone": "9999988776",
+      "email": "girish.kulkarni@ust.com",
+      "languages": [
+        "Marathi",
+        "English"
+      ],
+      "is_active": true
+    },
+    {
+      "emp_id": "UST015",
+      "name": "Naveen Nair",
+      "age": 33,
+      "gender": "male",
+      "city": "Trivandrum",
+      "state": "Kerala",
+      "department": "Cybersecurity",
+      "salary": 1100000.0,
+      "phone": "9999443322",
+      "email": "naveen.nair@ust.com",
+      "languages": [
+        "Malayalam",
+        "English"
+      ],
+      "is_active": true
+    },
+    {
+      "emp_id": "UST017",
+      "name": "Imran Siddiqui",
+      "age": 45,
+      "gender": "male",
+      "city": "Lucknow",
+      "state": "Uttar Pradesh",
+      "department": "Testing",
+      "salary": 990000.0,
+      "phone": "9000011111",
+      "email": "imran.siddiqui@ust.com",
+      "languages": [
+        "Urdu",
+        "Hindi",
+        "English"
+      ],
+      "is_active": true
+    },
+    {
+      "emp_id": "UST019",
+      "name": "Harish Gupta",
+      "age": 56,
+      "gender": "male",
+      "city": "Delhi",
+      "state": "Delhi",
+      "department": "AI",
+      "salary": 1500000.0,
+      "phone": "9876512341",
+      "email": "harish.gupta@ust.com",
+      "languages": [
+        "Hindi",
+        "English"
+      ],
+      "is_active": true
+    },
+    {
+      "emp_id": "UST020",
+      "name": "Sony Mathew",
+      "age": 28,
+      "gender": "female",
+      "city": "Kottayam",
+      "state": "Kerala",
+      "department": "Finance",
+      "salary": 870000.0,
+      "phone": "9933445566",
+      "email": "sony.mathew@ust.com",
+      "languages": [
+        "Malayalam",
+        "English"
+      ],
+      "is_active": true
+    },
+    {
+      "emp_id": "UST021",
+      "name": "Karan Thakur",
+      "age": 42,
+      "gender": "male",
+      "city": "Shimla",
+      "state": "Himachal Pradesh",
+      "department": "Cloud",
+      "salary": 880000.0,
+      "phone": "9999000022",
+      "email": "karan.thakur@ust.com",
+      "languages": [
+        "Hindi",
+        "English"
+      ],
+      "is_active": true
+    },
+    {
+      "emp_id": "UST023",
+      "name": "Rohit Jain",
+      "age": 25,
+      "gender": "male",
+      "city": "Jaipur",
+      "state": "Rajasthan",
+      "department": "DevOps",
+      "salary": 700000.0,
+      "phone": "9900990099",
+      "email": "rohit.jain@ust.com",
+      "languages": [
+        "Hindi",
+        "English"
+      ],
+      "is_active": true
+    },
+    {
+      "emp_id": "UST024",
+      "name": "Neha Arora",
+      "age": 35,
+      "gender": "female",
+      "city": "Delhi",
+      "state": "Delhi",
+      "department": "Support",
+      "salary": 820000.0,
+      "phone": "9991112223",
+      "email": "neha.arora@ust.com",
+      "languages": [
+        "Hindi",
+        "English"
+      ],
+      "is_active": true
+    },
+    {
+      "emp_id": "UST027",
+      "name": "Manish Soni",
+      "age": 19,
+      "gender": "male",
+      "city": "Udaipur",
+      "state": "Rajasthan",
+      "department": "AI",
+      "salary": 510000.0,
+      "phone": "9876543211",
+      "email": "manish.soni@ust.com",
+      "languages": [
+        "Hindi"
+      ],
+      "is_active": true
+    },
+    {
+      "emp_id": "UST028",
+      "name": "Farah Ali",
+      "age": 32,
+      "gender": "female",
+      "city": "Mumbai",
+      "state": "Maharashtra",
+      "department": "HR",
+      "salary": 900000.0,
+      "phone": "9812345678",
+      "email": "farah.ali@ust.com",
+      "languages": [
+        "Urdu",
+        "Hindi",
+        "English"
+      ],
+      "is_active": true
+    },
+    {
+      "emp_id": "UST031",
+      "name": "Abhinav Mishra",
+      "age": 29,
+      "gender": "male",
+      "city": "Kanpur",
+      "state": "Uttar Pradesh",
+      "department": "Cybersecurity",
+      "salary": 1000000.0,
+      "phone": "9000012345",
+      "email": "abhinav.mishra@ust.com",
+      "languages": [
+        "Hindi",
+        "English"
+      ],
+      "is_active": true
+    },
+    {
+      "emp_id": "UST034",
+      "name": "Rohan Desai",
+      "age": 59,
+      "gender": "male",
+      "city": "Ahmedabad",
+      "state": "Gujarat",
+      "department": "Finance",
+      "salary": 1450000.0,
+      "phone": "9977665544",
+      "email": "rohan.desai@ust.com",
+      "languages": [
+        "Gujarati",
+        "English"
+      ],
+      "is_active": true
+    },
+    {
+      "emp_id": "UST036",
+      "name": "Ashwin Rao",
+      "age": 31,
+      "gender": "male",
+      "city": "Hubli",
+      "state": "Karnataka",
+      "department": "Support",
+      "salary": 690000.0,
+      "phone": "8833445566",
+      "email": "ashwin.rao@ust.com",
+      "languages": [
+        "Kannada",
+        "English"
+      ],
+      "is_active": true
+    },
+    {
+      "emp_id": "UST038",
+      "name": "Amit Chawla",
+      "age": 63,
+      "gender": "male",
+      "city": "Chandigarh",
+      "state": "Punjab",
+      "department": "DevOps",
+      "salary": 1180000.0,
+      "phone": "9900991188",
+      "email": "amit.chawla@ust.com",
+      "languages": [
+        "Punjabi",
+        "English"
+      ],
+      "is_active": true
+    },
+    {
+      "emp_id": "UST039",
+      "name": "Deepa Nair",
+      "age": 25,
+      "gender": "female",
+      "city": "Trivandrum",
+      "state": "Kerala",
+      "department": "Testing",
+      "salary": 720000.0,
+      "phone": "9876543219",
+      "email": "deepa.nair@ust.com",
+      "languages": [
+        "Malayalam",
+        "English"
+      ],
+      "is_active": true
+    },
+    {
+      "emp_id": "UST041",
+      "name": "Nisha Kaur",
+      "age": 29,
+      "gender": "female",
+      "city": "Amritsar",
+      "state": "Punjab",
+      "department": "AI",
+      "salary": 880000.0,
+      "phone": "9988776655",
+      "email": "nisha.kaur@ust.com",
+      "languages": [
+        "Punjabi",
+        "English"
+      ],
+      "is_active": true
+    },
+    {
+      "emp_id": "UST043",
+      "name": "Ayesha Siddiqui",
+      "age": 44,
+      "gender": "female",
+      "city": "Lucknow",
+      "state": "Uttar Pradesh",
+      "department": "Support",
+      "salary": 1020000.0,
+      "phone": "9998887776",
+      "email": "ayesha.siddiqui@ust.com",
+      "languages": [
+        "Urdu",
+        "Hindi",
+        "English"
+      ],
+      "is_active": true
+    },
+    {
+      "emp_id": "UST045",
+      "name": "Simran Gill",
+      "age": 46,
+      "gender": "female",
+      "city": "Ludhiana",
+      "state": "Punjab",
+      "department": "Cybersecurity",
+      "salary": 1300000.0,
+      "phone": "9988779900",
+      "email": "simran.gill@ust.com",
+      "languages": [
+        "Punjabi",
+        "English"
+      ],
+      "is_active": true
+    },
+    {
+      "emp_id": "UST047",
+      "name": "Gayathri Natarajan",
+      "age": 39,
+      "gender": "female",
+      "city": "Chennai",
+      "state": "Tamil Nadu",
+      "department": "Cloud",
+      "salary": 930000.0,
+      "phone": "9876501234",
+      "email": "gayathri.natarajan@ust.com",
+      "languages": [
+        "Tamil",
+        "English"
+      ],
+      "is_active": true
+    },
+    {
+      "emp_id": "UST048",
+      "name": "Ramesh Prasad",
+      "age": 62,
+      "gender": "male",
+      "city": "Patna",
+      "state": "Bihar",
+      "department": "Finance",
+      "salary": 1250000.0,
+      "phone": "9000088888",
+      "email": "ramesh.prasad@ust.com",
+      "languages": [
+        "Hindi"
+      ],
+      "is_active": true
+    }
+  ]
+}
