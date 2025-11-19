@@ -1,0 +1,5 @@
+DEBUF - level 10, tarce valuable values or program execution flow,eg-connection to db
+INFO-level 20 , show progress or actions performs,eg - user loggin
+WARNING-level 30 , something unexpected happen, might become a problem but program executes, eg-logger.warning("low disk space)
+ERROR-level 40,a serious issue occured, a part of program failed,program contnue running a specific part fail,eg-logger.error("fail to read file)
+CRITICAL-level 50 , program crashed(about to crash),extremely serious,immediate actions required since system is unusable,eg- logger.critcal("server down)
