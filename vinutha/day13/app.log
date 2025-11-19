@@ -1,0 +1,39 @@
+2025-11-19 11:53:21,372|DEBUG|This is a debug message (only file)
+2025-11-19 11:53:21,372|INFO|This is an info message
+2025-11-19 11:53:21,373|WARNING|This is a warning message
+2025-11-19 11:53:21,373|ERROR|This is an error message
+2025-11-19 12:06:41,452|DEBUG|This is a debug message (only file)
+2025-11-19 12:06:41,453|INFO|This is an info message
+2025-11-19 12:06:41,453|WARNING|This is a warning message
+2025-11-19 12:06:41,454|ERROR|This is an error message
+2025-11-19 12:06:41,456|INFO|This is an info message
+2025-11-19 12:06:41,457|WARNING|This is a warning message
+2025-11-19 12:06:41,458|ERROR|This is an error in customer service message
+2025-11-19 12:09:49,504|DEBUG|This is a debug message  for payment service(only file)
+2025-11-19 12:09:49,505|INFO|This is an info message
+2025-11-19 12:09:49,505|WARNING|This is a warning message
+2025-11-19 12:09:49,506|ERROR|This is an error message
+2025-11-19 12:09:49,506|INFO|This is an info message for customer
+2025-11-19 12:09:49,506|WARNING|This is a warning message in customer service
+2025-11-19 12:09:49,506|ERROR|This is an error in customer service 
+2025-11-19 12:09:53,085|DEBUG|This is a debug message  for payment service(only file)
+2025-11-19 12:09:53,085|INFO|This is an info message
+2025-11-19 12:09:53,085|WARNING|This is a warning message
+2025-11-19 12:09:53,086|ERROR|This is an error message
+2025-11-19 12:09:53,087|INFO|This is an info message for customer
+2025-11-19 12:09:53,087|WARNING|This is a warning message in customer service
+2025-11-19 12:09:53,088|ERROR|This is an error in customer service 
+
+
+
+
+2025-11-19 12:10:15,509|DEBUG|This is a debug message  for payment service(only file)
+2025-11-19 12:10:15,509|INFO|This is an info message
+2025-11-19 12:10:15,510|WARNING|This is a warning message
+2025-11-19 12:10:15,510|ERROR|This is an error message
+2025-11-19 12:10:15,510|INFO|This is an info message for customer
+2025-11-19 12:10:15,510|WARNING|This is a warning message in customer service
+2025-11-19 12:10:15,511|ERROR|This is an error in customer service 
+
+
+

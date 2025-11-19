@@ -1,0 +1,8 @@
+2025-11-19 12:14:22,105|DEBUG|This is a debug message  for payment service(only file)
+2025-11-19 12:14:22,106|INFO|This is an info message
+2025-11-19 12:14:22,106|WARNING|This is a warning message
+2025-11-19 12:14:22,106|ERROR|This is an error message
+2025-11-19 12:17:24,843|DEBUG|This is a debug message  for payment service(only file)
+2025-11-19 12:17:24,844|INFO|This is an info message
+2025-11-19 12:17:24,844|WARNING|This is a warning message
+2025-11-19 12:17:24,844|ERROR|This is an error message
