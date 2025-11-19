@@ -12,6 +12,7 @@ class Inventory:
             
     def allocate(self,item_id,qty):
         if int(self.items["available_stock"]) >= int(qty):
+            self.items["available_stock"] = int(self.items["available_stock"]) + int(qty)
             return True
         else:
             return False
