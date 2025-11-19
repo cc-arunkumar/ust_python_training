@@ -1,98 +1,98 @@
 [
   {
     "id": "UST003",
-    "error_reason": "Field if None"
+    "error_reason": "Field is None"
   },
   {
     "id": "UST004",
-    "error_reason": "salary not valid"
+    "error_reason": "Salary not valid"
   },
   {
     "id": "UST006",
-    "error_reason": "Field if None"
+    "error_reason": "Field is None"
   },
   {
     "id": "UST007",
-    "error_reason": "phone number not valid"
+    "error_reason": "Phone number not valid"
   },
   {
     "id": "UST010",
-    "error_reason": "phone number not valid"
+    "error_reason": "Phone number not valid"
   },
   {
     "id": "UST012",
-    "error_reason": "age is not valid"
+    "error_reason": "Age is not valid"
   },
   {
     "id": "UST014",
-    "error_reason": "phone number not valid"
+    "error_reason": "Phone number not valid"
   },
   {
     "id": "UST016",
-    "error_reason": "Field if None"
+    "error_reason": "Field is None"
   },
   {
     "id": "UST018",
-    "error_reason": "phone number not valid"
+    "error_reason": "Phone number not valid"
   },
   {
     "id": "UST022",
-    "error_reason": "Field if None"
+    "error_reason": "Field is None"
   },
   {
     "id": "UST025",
-    "error_reason": "age is not valid"
+    "error_reason": "Age is not valid"
   },
   {
     "id": "UST026",
-    "error_reason": "salary not valid"
+    "error_reason": "Salary not valid"
   },
   {
     "id": "UST029",
-    "error_reason": "Field if None"
+    "error_reason": "Field is None"
   },
   {
     "id": "UST030",
-    "error_reason": "phone number not valid"
+    "error_reason": "Phone number not valid"
   },
   {
     "id": "UST032",
-    "error_reason": "phone number not valid"
+    "error_reason": "Phone number not valid"
   },
   {
     "id": "UST033",
-    "error_reason": "email is not valid"
+    "error_reason": "Email is not valid"
   },
   {
     "id": "UST035",
-    "error_reason": "Field if None"
+    "error_reason": "Field is None"
   },
   {
     "id": "UST037",
-    "error_reason": "phone number not valid"
+    "error_reason": "Phone number not valid"
   },
   {
     "id": "UST040",
-    "error_reason": "salary not valid"
+    "error_reason": "Salary not valid"
   },
   {
     "id": "UST042",
-    "error_reason": "phone number not valid"
+    "error_reason": "Phone number not valid"
   },
   {
     "id": "UST044",
-    "error_reason": "Field if None"
+    "error_reason": "Field is None"
   },
   {
     "id": "UST046",
-    "error_reason": "Field if None"
+    "error_reason": "Field is None"
   },
   {
     "id": "UST049",
-    "error_reason": "email is not valid"
+    "error_reason": "Email is not valid"
   },
   {
     "id": "UST050",
-    "error_reason": "phone number not valid"
+    "error_reason": "Phone number not valid"
   }
 ]
