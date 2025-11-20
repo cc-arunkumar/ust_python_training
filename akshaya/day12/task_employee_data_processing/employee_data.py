@@ -5,7 +5,7 @@ def load_employees(file_path):
     try:
         with open(file_path, "r") as file:
             data = json.load(file)
-            return data.get("employees", [])
+            return data.get("employees")
     except (FileNotFoundError, json.JSONDecodeError) as e:
         print(f"Error loading file: {e}")
         return []
