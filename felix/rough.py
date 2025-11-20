@@ -21,10 +21,12 @@ for i in range(10):
         else:
             print(" ",end="")
     print()
-    
+
+print()
+
 print("Butterfly")
-for i in range(10):
-    for j in range(10):
+for i in range(9):
+    for j in range(9):
         if i<5 and i<=j and i+j<=9:
             print("*",end="")
         elif i>=5 and i+j>=9 and j<=i:
@@ -32,6 +34,8 @@ for i in range(10):
         else:
             print(" ",end="")
     print()
+
+print()
 
 print("----X----")
 for i in range(5):
@@ -41,6 +45,8 @@ for i in range(5):
         else:
             print(" ",end="")
     print()
+
+print()
     
 print("----u----")
 for i in range(5):
@@ -50,7 +56,20 @@ for i in range(5):
         else:
             print(" ",end="")
     print()
-    
+
+print()
+
+print("----C----")
+for i in range(5):
+    for j in range(5):
+        if i==0 or j==0 or i==4:
+            print("*",end="")
+        else:
+            print(" ",end="")
+    print()
+
+print()
+
 print("----+----")
 for i in range(5):
     for j in range(5):
@@ -59,14 +78,3 @@ for i in range(5):
         else:
             print(" ",end="")
     print()
-    
-#   0 1 2 3 4 5 6 7 8 9
-# 1 *                *  
-# 2   *           *
-# 3     *       *
-# 4       *   *
-# 5         *
-# 6       *   *
-# 7     *       *
-# 8   *           *
-# 9 * * * * * * * * * 
