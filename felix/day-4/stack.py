@@ -8,19 +8,16 @@ class Stack:
         return len(self.stack)
     
     def is_empty(self):
-        # print("Is stack empty: ",end="")
         return False if self.stack else True
     
     def peek(self):
         if not self.is_empty():
-            # print("Element at the top: ",end="")
             return self.stack[-1]
         else:
             print("Stack is empty")
     
     def pop(self):
         if not self.is_empty():
-            # print("Element poped: ",end="")
             return self.stack.pop()
         else:
             print("Stack is empty")

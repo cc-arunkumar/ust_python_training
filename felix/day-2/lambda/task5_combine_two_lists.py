@@ -1,6 +1,6 @@
 # combine two list
 
-from functools import reduce
+# from functools import reduce
 
 names = ['Arun', 'Neha', 'Vikram']
 depts = ['HR', 'IT', 'Finance']

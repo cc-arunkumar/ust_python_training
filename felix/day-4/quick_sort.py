@@ -2,7 +2,7 @@
 
 def partition(low,high,arr):
     pivot = arr[high]
-    j = low-1
+    j = low
     for i in range(low,high):
         if arr[i]<pivot:
             j +=1
