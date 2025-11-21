@@ -83,7 +83,7 @@ def update(id:int,emp:Employee):
     for e in employees:
         if e["id"]==id:
             for other in employees:
-                if other["email"]==emp.email:
+                if other["email"]==emp["email"]:
                     raise HTTPException(status_code=409,detail="Email already exist")
             e["name"] = emp["name"]
             e["email"] = emp["email"]
