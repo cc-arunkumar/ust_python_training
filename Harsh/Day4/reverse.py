@@ -15,20 +15,24 @@
 #     print("false")
 
 
-n=33426
-mean_sum=0
-extreme_sum=n%10
-n=n//10
-while(n>9):
-    mean_sum=n%10 + mean_sum
+n=1234
+rev=0
+while n>0:
+    digit=n%10
+    rev=rev*10+digit
     n=n//10
-extreme_sum=extreme_sum+n
 
-if(extreme_sum==extreme_sum):
-    print("true")
-else:
-    print("false")
+print(rev)
 
+
+s="hello world"
+words=s.split()
+rev=[]
+for w in words:
+    rev.append(w[::-1])
+    
+res=" ".join(rev)
+print(res)
 
     
 
