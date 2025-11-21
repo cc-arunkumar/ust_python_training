@@ -1,0 +1,1247 @@
+[2025-11-17] Started Order Processing
+[2025-11-17] Folder check completed
+[2025-11-17] Files logged In101
+[2025-11-17] Started Order Processing
+[2025-11-17] Folder check completed
+[2025-11-17] Files logged In101
+[2025-11-17] INFO: Started Order Processing
+[2025-11-17] INFP: Folder check completed
+[2025-11-17] Files logged In101
+[2025-11-17] INFO: Started Order Processing
+[2025-11-17] INFP: Folder check completed
+[2025-11-17] Files logged In101
+[2025-11-17] INFO: Started Order Processing
+[2025-11-17] INFP: Folder check completed
+[2025-11-17] Files logged In101
+[2025-11-17] INFO: Started Order Processing
+[2025-11-17] INFP: Folder check completed
+[2025-11-17] Files logged In101
+[2025-11-17] INFO: Started Order Processing
+[2025-11-17] INFP: Folder check completed
+[2025-11-17] Files logged In101
+[2025-11-17] INFO: Order 101 Processed Sucessfully
+
+[2025-11-17] Files logged In102
+[2025-11-17] INFO: Order 102 Processed Sucessfully
+
+[2025-11-17] Files logged In103
+[2025-11-17] Order Skipped 103: Invalid Quantity
+[2025-11-17] Files logged In104
+[2025-11-17] WARNING: Order Skipped 104 | Reason : Invalid Date
+[2025-11-17] Files logged In105
+[2025-11-17] Order Skipped 105 | Reason : Order Date in IN future
+[2025-11-17] Files logged In106
+[2025-11-17] INFO: Order 106 Processed Sucessfully
+
+[2025-11-17] Files logged In107
+[2025-11-17] INFO: Order 107 Processed Sucessfully
+
+[2025-11-17] Files logged In108
+[2025-11-17] Order Skipped 108 | Reason : Invalid Unit Price
+[2025-11-17] Files logged In109
+[2025-11-17] INFO: Order 109 Processed Sucessfully
+
+[2025-11-17] Files logged In110
+[2025-11-17] INFO: Order 110 Processed Sucessfully
+
+[2025-11-17] Files logged In111
+[2025-11-17] INFO: Order 111 Processed Sucessfully
+
+[2025-11-17] Files logged In112
+[2025-11-17] WARNING: Order Skipped 112 | Reason : Invalid Date
+[2025-11-17] Files logged In113
+[2025-11-17] WARNING: Order Skipped 113 | Reason : Invalid Date
+[2025-11-17] Files logged In114
+[2025-11-17] WARNING: Order Skipped 114 | Reason : Invalid Date
+[2025-11-17] Files logged In115
+[2025-11-17] INFO: Order 115 Processed Sucessfully
+
+[2025-11-17] Files logged In116
+[2025-11-17] Order Skipped 116: Invalid Quantity
+[2025-11-17] Files logged In117
+[2025-11-17] Order Skipped 117 | Reason : Order Date in IN future
+[2025-11-17] Files logged In118
+[2025-11-17] INFO: Order 118 Processed Sucessfully
+
+[2025-11-17] Files logged In119
+[2025-11-17] INFO: Order 119 Processed Sucessfully
+
+[2025-11-17] Files logged In120
+[2025-11-17] INFO: Order 120 Processed Sucessfully
+
+[2025-11-17] Files logged In121
+[2025-11-17] INFO: Order 121 Processed Sucessfully
+
+[2025-11-17] Files logged In122
+[2025-11-17] INFO: Order 122 Processed Sucessfully
+
+[2025-11-17] Files logged In123
+[2025-11-17] WARNING: Order Skipped 123 | Reason : Invalid Date
+[2025-11-17] Files logged In124
+[2025-11-17] INFO: Order 124 Processed Sucessfully
+
+[2025-11-17] Files logged In125
+[2025-11-17] INFO: Order 125 Processed Sucessfully
+
+[2025-11-17] Files logged In126
+[2025-11-17] Order Skipped 126: Invalid Quantity
+[2025-11-17] Files logged In127
+[2025-11-17] INFO: Order 127 Processed Sucessfully
+
+[2025-11-17] Files logged In128
+[2025-11-17] INFO: Order 128 Processed Sucessfully
+
+[2025-11-17] Files logged In129
+[2025-11-17] INFO: Order 129 Processed Sucessfully
+
+[2025-11-17] Files logged In130
+[2025-11-17] WARNING: Order Skipped 130 | Reason : Invalid Date
+[2025-11-17] Files logged In131
+[2025-11-17] Order Skipped 131 | Reason : Invalid Unit Price
+[2025-11-17] Files logged In132
+[2025-11-17] INFO: Order 132 Processed Sucessfully
+
+[2025-11-17] Files logged In133
+[2025-11-17] INFO: Order 133 Processed Sucessfully
+
+[2025-11-17] Files logged In134
+[2025-11-17] INFO: Order 134 Processed Sucessfully
+
+[2025-11-17] Files logged In135
+[2025-11-17] INFO: Order 135 Processed Sucessfully
+
+[2025-11-17] Files logged In136
+[2025-11-17] INFO: Order 136 Processed Sucessfully
+
+[2025-11-17] Files logged In137
+[2025-11-17] INFO: Order 137 Processed Sucessfully
+
+[2025-11-17] Files logged In138
+[2025-11-17] INFO: Order 138 Processed Sucessfully
+
+[2025-11-17] Files logged In139
+[2025-11-17] INFO: Order 139 Processed Sucessfully
+
+[2025-11-17] Files logged In140
+[2025-11-17] INFO: Order 140 Processed Sucessfully
+
+[2025-11-17] Files logged In141
+[2025-11-17] Order Skipped 141: Invalid Quantity
+[2025-11-17] Files logged In142
+[2025-11-17] INFO: Order 142 Processed Sucessfully
+
+[2025-11-17] Files logged In143
+[2025-11-17] INFO: Order 143 Processed Sucessfully
+
+[2025-11-17] Files logged In144
+[2025-11-17] INFO: Order 144 Processed Sucessfully
+
+[2025-11-17] Files logged In145
+[2025-11-17] INFO: Order 145 Processed Sucessfully
+
+[2025-11-17] Files logged In146
+[2025-11-17] INFO: Order 146 Processed Sucessfully
+
+[2025-11-17] Files logged In147
+[2025-11-17] Order Skipped 147 | Reason : Order Date in IN future
+[2025-11-17] Files logged In148
+[2025-11-17] INFO: Order 148 Processed Sucessfully
+
+[2025-11-17] Files logged In149
+[2025-11-17] INFO: Order 149 Processed Sucessfully
+
+[2025-11-17] Files logged In150
+[2025-11-17] Order Skipped 150 | Reason : Order Date in IN future
+[2025-11-17] INFO: Started Order Processing
+[2025-11-17] INFP: Folder check completed
+[2025-11-17] Files logged In101
+[2025-11-17] INFO: Order 101 Processed Sucessfully
+
+[2025-11-17] Files logged In102
+[2025-11-17] INFO: Order 102 Processed Sucessfully
+
+[2025-11-17] Files logged In103
+[2025-11-17] Order Skipped 103: Invalid Quantity
+[2025-11-17] Files logged In104
+[2025-11-17] WARNING: Order Skipped 104 | Reason : Invalid Date
+[2025-11-17] Files logged In105
+[2025-11-17] Order Skipped 105 | Reason : Order Date in IN future
+[2025-11-17] Files logged In106
+[2025-11-17] INFO: Order 106 Processed Sucessfully
+
+[2025-11-17] Files logged In107
+[2025-11-17] INFO: Order 107 Processed Sucessfully
+
+[2025-11-17] Files logged In108
+[2025-11-17] Order Skipped 108 | Reason : Invalid Unit Price
+[2025-11-17] Files logged In109
+[2025-11-17] INFO: Order 109 Processed Sucessfully
+
+[2025-11-17] Files logged In110
+[2025-11-17] INFO: Order 110 Processed Sucessfully
+
+[2025-11-17] Files logged In111
+[2025-11-17] INFO: Order 111 Processed Sucessfully
+
+[2025-11-17] Files logged In112
+[2025-11-17] WARNING: Order Skipped 112 | Reason : Invalid Date
+[2025-11-17] Files logged In113
+[2025-11-17] WARNING: Order Skipped 113 | Reason : Invalid Date
+[2025-11-17] Files logged In114
+[2025-11-17] WARNING: Order Skipped 114 | Reason : Invalid Date
+[2025-11-17] Files logged In115
+[2025-11-17] INFO: Order 115 Processed Sucessfully
+
+[2025-11-17] Files logged In116
+[2025-11-17] Order Skipped 116: Invalid Quantity
+[2025-11-17] Files logged In117
+[2025-11-17] Order Skipped 117 | Reason : Order Date in IN future
+[2025-11-17] Files logged In118
+[2025-11-17] INFO: Order 118 Processed Sucessfully
+
+[2025-11-17] Files logged In119
+[2025-11-17] INFO: Order 119 Processed Sucessfully
+
+[2025-11-17] Files logged In120
+[2025-11-17] INFO: Order 120 Processed Sucessfully
+
+[2025-11-17] Files logged In121
+[2025-11-17] INFO: Order 121 Processed Sucessfully
+
+[2025-11-17] Files logged In122
+[2025-11-17] INFO: Order 122 Processed Sucessfully
+
+[2025-11-17] Files logged In123
+[2025-11-17] WARNING: Order Skipped 123 | Reason : Invalid Date
+[2025-11-17] Files logged In124
+[2025-11-17] INFO: Order 124 Processed Sucessfully
+
+[2025-11-17] Files logged In125
+[2025-11-17] INFO: Order 125 Processed Sucessfully
+
+[2025-11-17] Files logged In126
+[2025-11-17] Order Skipped 126: Invalid Quantity
+[2025-11-17] Files logged In127
+[2025-11-17] INFO: Order 127 Processed Sucessfully
+
+[2025-11-17] Files logged In128
+[2025-11-17] INFO: Order 128 Processed Sucessfully
+
+[2025-11-17] Files logged In129
+[2025-11-17] INFO: Order 129 Processed Sucessfully
+
+[2025-11-17] Files logged In130
+[2025-11-17] WARNING: Order Skipped 130 | Reason : Invalid Date
+[2025-11-17] Files logged In131
+[2025-11-17] Order Skipped 131 | Reason : Invalid Unit Price
+[2025-11-17] Files logged In132
+[2025-11-17] INFO: Order 132 Processed Sucessfully
+
+[2025-11-17] Files logged In133
+[2025-11-17] INFO: Order 133 Processed Sucessfully
+
+[2025-11-17] Files logged In134
+[2025-11-17] INFO: Order 134 Processed Sucessfully
+
+[2025-11-17] Files logged In135
+[2025-11-17] INFO: Order 135 Processed Sucessfully
+
+[2025-11-17] Files logged In136
+[2025-11-17] INFO: Order 136 Processed Sucessfully
+
+[2025-11-17] Files logged In137
+[2025-11-17] INFO: Order 137 Processed Sucessfully
+
+[2025-11-17] Files logged In138
+[2025-11-17] INFO: Order 138 Processed Sucessfully
+
+[2025-11-17] Files logged In139
+[2025-11-17] INFO: Order 139 Processed Sucessfully
+
+[2025-11-17] Files logged In140
+[2025-11-17] INFO: Order 140 Processed Sucessfully
+
+[2025-11-17] Files logged In141
+[2025-11-17] Order Skipped 141: Invalid Quantity
+[2025-11-17] Files logged In142
+[2025-11-17] INFO: Order 142 Processed Sucessfully
+
+[2025-11-17] Files logged In143
+[2025-11-17] INFO: Order 143 Processed Sucessfully
+
+[2025-11-17] Files logged In144
+[2025-11-17] INFO: Order 144 Processed Sucessfully
+
+[2025-11-17] Files logged In145
+[2025-11-17] INFO: Order 145 Processed Sucessfully
+
+[2025-11-17] Files logged In146
+[2025-11-17] INFO: Order 146 Processed Sucessfully
+
+[2025-11-17] Files logged In147
+[2025-11-17] Order Skipped 147 | Reason : Order Date in IN future
+[2025-11-17] Files logged In148
+[2025-11-17] INFO: Order 148 Processed Sucessfully
+
+[2025-11-17] Files logged In149
+[2025-11-17] INFO: Order 149 Processed Sucessfully
+
+[2025-11-17] Files logged In150
+[2025-11-17] Order Skipped 150 | Reason : Order Date in IN future
+[2025-11-17] INFO: Started Order Processing
+[2025-11-17] INFP: Folder check completed
+[2025-11-17] Files logged In101
+[2025-11-17] INFO: Order 101 Processed Sucessfully
+
+[2025-11-17] Files logged In102
+[2025-11-17] INFO: Order 102 Processed Sucessfully
+
+[2025-11-17] Files logged In103
+[2025-11-17] Order Skipped 103: Invalid Quantity
+[2025-11-17] Files logged In104
+[2025-11-17] WARNING: Order Skipped 104 | Reason : Invalid Date
+[2025-11-17] Files logged In105
+[2025-11-17] Order Skipped 105 | Reason : Order Date in IN future
+[2025-11-17] Files logged In106
+[2025-11-17] INFO: Order 106 Processed Sucessfully
+
+[2025-11-17] Files logged In107
+[2025-11-17] INFO: Order 107 Processed Sucessfully
+
+[2025-11-17] Files logged In108
+[2025-11-17] Order Skipped 108 | Reason : Invalid Unit Price
+[2025-11-17] Files logged In109
+[2025-11-17] INFO: Order 109 Processed Sucessfully
+
+[2025-11-17] Files logged In110
+[2025-11-17] INFO: Order 110 Processed Sucessfully
+
+[2025-11-17] Files logged In111
+[2025-11-17] INFO: Order 111 Processed Sucessfully
+
+[2025-11-17] Files logged In112
+[2025-11-17] WARNING: Order Skipped 112 | Reason : Invalid Date
+[2025-11-17] Files logged In113
+[2025-11-17] WARNING: Order Skipped 113 | Reason : Invalid Date
+[2025-11-17] Files logged In114
+[2025-11-17] WARNING: Order Skipped 114 | Reason : Invalid Date
+[2025-11-17] Files logged In115
+[2025-11-17] INFO: Order 115 Processed Sucessfully
+
+[2025-11-17] Files logged In116
+[2025-11-17] Order Skipped 116: Invalid Quantity
+[2025-11-17] Files logged In117
+[2025-11-17] Order Skipped 117 | Reason : Order Date in IN future
+[2025-11-17] Files logged In118
+[2025-11-17] INFO: Order 118 Processed Sucessfully
+
+[2025-11-17] Files logged In119
+[2025-11-17] INFO: Order 119 Processed Sucessfully
+
+[2025-11-17] Files logged In120
+[2025-11-17] INFO: Order 120 Processed Sucessfully
+
+[2025-11-17] Files logged In121
+[2025-11-17] INFO: Order 121 Processed Sucessfully
+
+[2025-11-17] Files logged In122
+[2025-11-17] INFO: Order 122 Processed Sucessfully
+
+[2025-11-17] Files logged In123
+[2025-11-17] WARNING: Order Skipped 123 | Reason : Invalid Date
+[2025-11-17] Files logged In124
+[2025-11-17] INFO: Order 124 Processed Sucessfully
+
+[2025-11-17] Files logged In125
+[2025-11-17] INFO: Order 125 Processed Sucessfully
+
+[2025-11-17] Files logged In126
+[2025-11-17] Order Skipped 126: Invalid Quantity
+[2025-11-17] Files logged In127
+[2025-11-17] INFO: Order 127 Processed Sucessfully
+
+[2025-11-17] Files logged In128
+[2025-11-17] INFO: Order 128 Processed Sucessfully
+
+[2025-11-17] Files logged In129
+[2025-11-17] INFO: Order 129 Processed Sucessfully
+
+[2025-11-17] Files logged In130
+[2025-11-17] WARNING: Order Skipped 130 | Reason : Invalid Date
+[2025-11-17] Files logged In131
+[2025-11-17] Order Skipped 131 | Reason : Invalid Unit Price
+[2025-11-17] Files logged In132
+[2025-11-17] INFO: Order 132 Processed Sucessfully
+
+[2025-11-17] Files logged In133
+[2025-11-17] INFO: Order 133 Processed Sucessfully
+
+[2025-11-17] Files logged In134
+[2025-11-17] INFO: Order 134 Processed Sucessfully
+
+[2025-11-17] Files logged In135
+[2025-11-17] INFO: Order 135 Processed Sucessfully
+
+[2025-11-17] Files logged In136
+[2025-11-17] INFO: Order 136 Processed Sucessfully
+
+[2025-11-17] Files logged In137
+[2025-11-17] INFO: Order 137 Processed Sucessfully
+
+[2025-11-17] Files logged In138
+[2025-11-17] INFO: Order 138 Processed Sucessfully
+
+[2025-11-17] Files logged In139
+[2025-11-17] INFO: Order 139 Processed Sucessfully
+
+[2025-11-17] Files logged In140
+[2025-11-17] INFO: Order 140 Processed Sucessfully
+
+[2025-11-17] Files logged In141
+[2025-11-17] Order Skipped 141: Invalid Quantity
+[2025-11-17] Files logged In142
+[2025-11-17] INFO: Order 142 Processed Sucessfully
+
+[2025-11-17] Files logged In143
+[2025-11-17] INFO: Order 143 Processed Sucessfully
+
+[2025-11-17] Files logged In144
+[2025-11-17] INFO: Order 144 Processed Sucessfully
+
+[2025-11-17] Files logged In145
+[2025-11-17] INFO: Order 145 Processed Sucessfully
+
+[2025-11-17] Files logged In146
+[2025-11-17] INFO: Order 146 Processed Sucessfully
+
+[2025-11-17] Files logged In147
+[2025-11-17] Order Skipped 147 | Reason : Order Date in IN future
+[2025-11-17] Files logged In148
+[2025-11-17] INFO: Order 148 Processed Sucessfully
+
+[2025-11-17] Files logged In149
+[2025-11-17] INFO: Order 149 Processed Sucessfully
+
+[2025-11-17] Files logged In150
+[2025-11-17] Order Skipped 150 | Reason : Order Date in IN future
+[2025-11-17] INFO: Started Order Processing
+[2025-11-17] INFP: Folder check completed
+[2025-11-17] Files logged In101
+[2025-11-17] INFO: Order 101 Processed Sucessfully
+
+[2025-11-17] Files logged In102
+[2025-11-17] INFO: Order 102 Processed Sucessfully
+
+[2025-11-17] Files logged In103
+[2025-11-17] Order Skipped 103: Invalid Quantity
+[2025-11-17] Files logged In104
+[2025-11-17] WARNING: Order Skipped 104 | Reason : Invalid Date
+[2025-11-17] Files logged In105
+[2025-11-17] Order Skipped 105 | Reason : Order Date in IN future
+[2025-11-17] Files logged In106
+[2025-11-17] INFO: Order 106 Processed Sucessfully
+
+[2025-11-17] Files logged In107
+[2025-11-17] INFO: Order 107 Processed Sucessfully
+
+[2025-11-17] Files logged In108
+[2025-11-17] Order Skipped 108 | Reason : Invalid Unit Price
+[2025-11-17] Files logged In109
+[2025-11-17] INFO: Order 109 Processed Sucessfully
+
+[2025-11-17] Files logged In110
+[2025-11-17] INFO: Order 110 Processed Sucessfully
+
+[2025-11-17] Files logged In111
+[2025-11-17] INFO: Order 111 Processed Sucessfully
+
+[2025-11-17] Files logged In112
+[2025-11-17] WARNING: Order Skipped 112 | Reason : Invalid Date
+[2025-11-17] Files logged In113
+[2025-11-17] WARNING: Order Skipped 113 | Reason : Invalid Date
+[2025-11-17] Files logged In114
+[2025-11-17] WARNING: Order Skipped 114 | Reason : Invalid Date
+[2025-11-17] Files logged In115
+[2025-11-17] INFO: Order 115 Processed Sucessfully
+
+[2025-11-17] Files logged In116
+[2025-11-17] Order Skipped 116: Invalid Quantity
+[2025-11-17] Files logged In117
+[2025-11-17] Order Skipped 117 | Reason : Order Date in IN future
+[2025-11-17] Files logged In118
+[2025-11-17] INFO: Order 118 Processed Sucessfully
+
+[2025-11-17] Files logged In119
+[2025-11-17] INFO: Order 119 Processed Sucessfully
+
+[2025-11-17] Files logged In120
+[2025-11-17] INFO: Order 120 Processed Sucessfully
+
+[2025-11-17] Files logged In121
+[2025-11-17] INFO: Order 121 Processed Sucessfully
+
+[2025-11-17] Files logged In122
+[2025-11-17] INFO: Order 122 Processed Sucessfully
+
+[2025-11-17] Files logged In123
+[2025-11-17] WARNING: Order Skipped 123 | Reason : Invalid Date
+[2025-11-17] Files logged In124
+[2025-11-17] INFO: Order 124 Processed Sucessfully
+
+[2025-11-17] Files logged In125
+[2025-11-17] INFO: Order 125 Processed Sucessfully
+
+[2025-11-17] Files logged In126
+[2025-11-17] Order Skipped 126: Invalid Quantity
+[2025-11-17] Files logged In127
+[2025-11-17] INFO: Order 127 Processed Sucessfully
+
+[2025-11-17] Files logged In128
+[2025-11-17] INFO: Order 128 Processed Sucessfully
+
+[2025-11-17] Files logged In129
+[2025-11-17] INFO: Order 129 Processed Sucessfully
+
+[2025-11-17] Files logged In130
+[2025-11-17] WARNING: Order Skipped 130 | Reason : Invalid Date
+[2025-11-17] Files logged In131
+[2025-11-17] Order Skipped 131 | Reason : Invalid Unit Price
+[2025-11-17] Files logged In132
+[2025-11-17] INFO: Order 132 Processed Sucessfully
+
+[2025-11-17] Files logged In133
+[2025-11-17] INFO: Order 133 Processed Sucessfully
+
+[2025-11-17] Files logged In134
+[2025-11-17] INFO: Order 134 Processed Sucessfully
+
+[2025-11-17] Files logged In135
+[2025-11-17] INFO: Order 135 Processed Sucessfully
+
+[2025-11-17] Files logged In136
+[2025-11-17] INFO: Order 136 Processed Sucessfully
+
+[2025-11-17] Files logged In137
+[2025-11-17] INFO: Order 137 Processed Sucessfully
+
+[2025-11-17] Files logged In138
+[2025-11-17] INFO: Order 138 Processed Sucessfully
+
+[2025-11-17] Files logged In139
+[2025-11-17] INFO: Order 139 Processed Sucessfully
+
+[2025-11-17] Files logged In140
+[2025-11-17] INFO: Order 140 Processed Sucessfully
+
+[2025-11-17] Files logged In141
+[2025-11-17] Order Skipped 141: Invalid Quantity
+[2025-11-17] Files logged In142
+[2025-11-17] INFO: Order 142 Processed Sucessfully
+
+[2025-11-17] Files logged In143
+[2025-11-17] INFO: Order 143 Processed Sucessfully
+
+[2025-11-17] Files logged In144
+[2025-11-17] INFO: Order 144 Processed Sucessfully
+
+[2025-11-17] Files logged In145
+[2025-11-17] INFO: Order 145 Processed Sucessfully
+
+[2025-11-17] Files logged In146
+[2025-11-17] INFO: Order 146 Processed Sucessfully
+
+[2025-11-17] Files logged In147
+[2025-11-17] Order Skipped 147 | Reason : Order Date in IN future
+[2025-11-17] Files logged In148
+[2025-11-17] INFO: Order 148 Processed Sucessfully
+
+[2025-11-17] Files logged In149
+[2025-11-17] INFO: Order 149 Processed Sucessfully
+
+[2025-11-17] Files logged In150
+[2025-11-17] Order Skipped 150 | Reason : Order Date in IN future
+[2025-11-17] INFO: Started Order Processing
+[2025-11-17] INFP: Folder check completed
+[2025-11-17] Files logged In101
+[2025-11-17] INFO: Order 101 Processed Sucessfully
+
+[2025-11-17] Files logged In102
+[2025-11-17] INFO: Order 102 Processed Sucessfully
+
+[2025-11-17] Files logged In103
+[2025-11-17] Order Skipped 103: Invalid Quantity
+[2025-11-17] Files logged In104
+[2025-11-17] WARNING: Order Skipped 104 | Reason : Invalid Date
+[2025-11-17] Files logged In105
+[2025-11-17] Order Skipped 105 | Reason : Order Date in IN future
+[2025-11-17] Files logged In106
+[2025-11-17] INFO: Order 106 Processed Sucessfully
+
+[2025-11-17] Files logged In107
+[2025-11-17] INFO: Order 107 Processed Sucessfully
+
+[2025-11-17] Files logged In108
+[2025-11-17] Order Skipped 108 | Reason : Invalid Unit Price
+[2025-11-17] Files logged In109
+[2025-11-17] INFO: Order 109 Processed Sucessfully
+
+[2025-11-17] Files logged In110
+[2025-11-17] INFO: Order 110 Processed Sucessfully
+
+[2025-11-17] Files logged In111
+[2025-11-17] INFO: Order 111 Processed Sucessfully
+
+[2025-11-17] Files logged In112
+[2025-11-17] WARNING: Order Skipped 112 | Reason : Invalid Date
+[2025-11-17] Files logged In113
+[2025-11-17] WARNING: Order Skipped 113 | Reason : Invalid Date
+[2025-11-17] Files logged In114
+[2025-11-17] WARNING: Order Skipped 114 | Reason : Invalid Date
+[2025-11-17] Files logged In115
+[2025-11-17] INFO: Order 115 Processed Sucessfully
+
+[2025-11-17] Files logged In116
+[2025-11-17] Order Skipped 116: Invalid Quantity
+[2025-11-17] Files logged In117
+[2025-11-17] Order Skipped 117 | Reason : Order Date in IN future
+[2025-11-17] Files logged In118
+[2025-11-17] INFO: Order 118 Processed Sucessfully
+
+[2025-11-17] Files logged In119
+[2025-11-17] INFO: Order 119 Processed Sucessfully
+
+[2025-11-17] Files logged In120
+[2025-11-17] INFO: Order 120 Processed Sucessfully
+
+[2025-11-17] Files logged In121
+[2025-11-17] INFO: Order 121 Processed Sucessfully
+
+[2025-11-17] Files logged In122
+[2025-11-17] INFO: Order 122 Processed Sucessfully
+
+[2025-11-17] Files logged In123
+[2025-11-17] WARNING: Order Skipped 123 | Reason : Invalid Date
+[2025-11-17] Files logged In124
+[2025-11-17] INFO: Order 124 Processed Sucessfully
+
+[2025-11-17] Files logged In125
+[2025-11-17] INFO: Order 125 Processed Sucessfully
+
+[2025-11-17] Files logged In126
+[2025-11-17] Order Skipped 126: Invalid Quantity
+[2025-11-17] Files logged In127
+[2025-11-17] INFO: Order 127 Processed Sucessfully
+
+[2025-11-17] Files logged In128
+[2025-11-17] INFO: Order 128 Processed Sucessfully
+
+[2025-11-17] Files logged In129
+[2025-11-17] INFO: Order 129 Processed Sucessfully
+
+[2025-11-17] Files logged In130
+[2025-11-17] WARNING: Order Skipped 130 | Reason : Invalid Date
+[2025-11-17] Files logged In131
+[2025-11-17] Order Skipped 131 | Reason : Invalid Unit Price
+[2025-11-17] Files logged In132
+[2025-11-17] INFO: Order 132 Processed Sucessfully
+
+[2025-11-17] Files logged In133
+[2025-11-17] INFO: Order 133 Processed Sucessfully
+
+[2025-11-17] Files logged In134
+[2025-11-17] INFO: Order 134 Processed Sucessfully
+
+[2025-11-17] Files logged In135
+[2025-11-17] INFO: Order 135 Processed Sucessfully
+
+[2025-11-17] Files logged In136
+[2025-11-17] INFO: Order 136 Processed Sucessfully
+
+[2025-11-17] Files logged In137
+[2025-11-17] INFO: Order 137 Processed Sucessfully
+
+[2025-11-17] Files logged In138
+[2025-11-17] INFO: Order 138 Processed Sucessfully
+
+[2025-11-17] Files logged In139
+[2025-11-17] INFO: Order 139 Processed Sucessfully
+
+[2025-11-17] Files logged In140
+[2025-11-17] INFO: Order 140 Processed Sucessfully
+
+[2025-11-17] Files logged In141
+[2025-11-17] Order Skipped 141: Invalid Quantity
+[2025-11-17] Files logged In142
+[2025-11-17] INFO: Order 142 Processed Sucessfully
+
+[2025-11-17] Files logged In143
+[2025-11-17] INFO: Order 143 Processed Sucessfully
+
+[2025-11-17] Files logged In144
+[2025-11-17] INFO: Order 144 Processed Sucessfully
+
+[2025-11-17] Files logged In145
+[2025-11-17] INFO: Order 145 Processed Sucessfully
+
+[2025-11-17] Files logged In146
+[2025-11-17] INFO: Order 146 Processed Sucessfully
+
+[2025-11-17] Files logged In147
+[2025-11-17] Order Skipped 147 | Reason : Order Date in IN future
+[2025-11-17] Files logged In148
+[2025-11-17] INFO: Order 148 Processed Sucessfully
+
+[2025-11-17] Files logged In149
+[2025-11-17] INFO: Order 149 Processed Sucessfully
+
+[2025-11-17] Files logged In150
+[2025-11-17] Order Skipped 150 | Reason : Order Date in IN future
+[2025-11-17] INFO: Finished Order Processing
+[2025-11-17] INFO: Started Order Processing
+[2025-11-17] INFP: Folder check completed
+[2025-11-17] Files logged In101
+[2025-11-17] INFO: Order 101 Processed Sucessfully
+
+[2025-11-17] Files logged In102
+[2025-11-17] INFO: Order 102 Processed Sucessfully
+
+[2025-11-17] Files logged In103
+[2025-11-17] Order Skipped 103: Invalid Quantity
+[2025-11-17] Files logged In104
+[2025-11-17] WARNING: Order Skipped 104 | Reason : Invalid Date
+[2025-11-17] Files logged In105
+[2025-11-17] Order Skipped 105 | Reason : Order Date in IN future
+[2025-11-17] Files logged In106
+[2025-11-17] INFO: Order 106 Processed Sucessfully
+
+[2025-11-17] Files logged In107
+[2025-11-17] INFO: Order 107 Processed Sucessfully
+
+[2025-11-17] Files logged In108
+[2025-11-17] Order Skipped 108 | Reason : Invalid Unit Price
+[2025-11-17] Files logged In109
+[2025-11-17] INFO: Order 109 Processed Sucessfully
+
+[2025-11-17] Files logged In110
+[2025-11-17] INFO: Order 110 Processed Sucessfully
+
+[2025-11-17] Files logged In111
+[2025-11-17] INFO: Order 111 Processed Sucessfully
+
+[2025-11-17] Files logged In112
+[2025-11-17] WARNING: Order Skipped 112 | Reason : Invalid Date
+[2025-11-17] Files logged In113
+[2025-11-17] WARNING: Order Skipped 113 | Reason : Invalid Date
+[2025-11-17] Files logged In114
+[2025-11-17] WARNING: Order Skipped 114 | Reason : Invalid Date
+[2025-11-17] Files logged In115
+[2025-11-17] INFO: Order 115 Processed Sucessfully
+
+[2025-11-17] Files logged In116
+[2025-11-17] Order Skipped 116: Invalid Quantity
+[2025-11-17] Files logged In117
+[2025-11-17] Order Skipped 117 | Reason : Order Date in IN future
+[2025-11-17] Files logged In118
+[2025-11-17] INFO: Order 118 Processed Sucessfully
+
+[2025-11-17] Files logged In119
+[2025-11-17] INFO: Order 119 Processed Sucessfully
+
+[2025-11-17] Files logged In120
+[2025-11-17] INFO: Order 120 Processed Sucessfully
+
+[2025-11-17] Files logged In121
+[2025-11-17] INFO: Order 121 Processed Sucessfully
+
+[2025-11-17] Files logged In122
+[2025-11-17] INFO: Order 122 Processed Sucessfully
+
+[2025-11-17] Files logged In123
+[2025-11-17] WARNING: Order Skipped 123 | Reason : Invalid Date
+[2025-11-17] Files logged In124
+[2025-11-17] INFO: Order 124 Processed Sucessfully
+
+[2025-11-17] Files logged In125
+[2025-11-17] INFO: Order 125 Processed Sucessfully
+
+[2025-11-17] Files logged In126
+[2025-11-17] Order Skipped 126: Invalid Quantity
+[2025-11-17] Files logged In127
+[2025-11-17] INFO: Order 127 Processed Sucessfully
+
+[2025-11-17] Files logged In128
+[2025-11-17] INFO: Order 128 Processed Sucessfully
+
+[2025-11-17] Files logged In129
+[2025-11-17] INFO: Order 129 Processed Sucessfully
+
+[2025-11-17] Files logged In130
+[2025-11-17] WARNING: Order Skipped 130 | Reason : Invalid Date
+[2025-11-17] Files logged In131
+[2025-11-17] Order Skipped 131 | Reason : Invalid Unit Price
+[2025-11-17] Files logged In132
+[2025-11-17] INFO: Order 132 Processed Sucessfully
+
+[2025-11-17] Files logged In133
+[2025-11-17] INFO: Order 133 Processed Sucessfully
+
+[2025-11-17] Files logged In134
+[2025-11-17] INFO: Order 134 Processed Sucessfully
+
+[2025-11-17] Files logged In135
+[2025-11-17] INFO: Order 135 Processed Sucessfully
+
+[2025-11-17] Files logged In136
+[2025-11-17] INFO: Order 136 Processed Sucessfully
+
+[2025-11-17] Files logged In137
+[2025-11-17] INFO: Order 137 Processed Sucessfully
+
+[2025-11-17] Files logged In138
+[2025-11-17] INFO: Order 138 Processed Sucessfully
+
+[2025-11-17] Files logged In139
+[2025-11-17] INFO: Order 139 Processed Sucessfully
+
+[2025-11-17] Files logged In140
+[2025-11-17] INFO: Order 140 Processed Sucessfully
+
+[2025-11-17] Files logged In141
+[2025-11-17] Order Skipped 141: Invalid Quantity
+[2025-11-17] Files logged In142
+[2025-11-17] INFO: Order 142 Processed Sucessfully
+
+[2025-11-17] Files logged In143
+[2025-11-17] INFO: Order 143 Processed Sucessfully
+
+[2025-11-17] Files logged In144
+[2025-11-17] INFO: Order 144 Processed Sucessfully
+
+[2025-11-17] Files logged In145
+[2025-11-17] INFO: Order 145 Processed Sucessfully
+
+[2025-11-17] Files logged In146
+[2025-11-17] INFO: Order 146 Processed Sucessfully
+
+[2025-11-17] Files logged In147
+[2025-11-17] Order Skipped 147 | Reason : Order Date in IN future
+[2025-11-17] Files logged In148
+[2025-11-17] INFO: Order 148 Processed Sucessfully
+
+[2025-11-17] Files logged In149
+[2025-11-17] INFO: Order 149 Processed Sucessfully
+
+[2025-11-17] Files logged In150
+[2025-11-17] Order Skipped 150 | Reason : Order Date in IN future
+[2025-11-17] INFO: Finished Order Processing
+[2025-11-17] INFO: Started Order Processing
+[2025-11-17] INFP: Folder check completed
+[2025-11-17] Files logged In101
+[2025-11-17] INFO: Order 101 Processed Sucessfully
+
+[2025-11-17] Files logged In102
+[2025-11-17] INFO: Order 102 Processed Sucessfully
+
+[2025-11-17] Files logged In103
+[2025-11-17] Order Skipped 103: Invalid Quantity
+[2025-11-17] Files logged In104
+[2025-11-17] WARNING: Order Skipped 104 | Reason : Invalid Date
+[2025-11-17] Files logged In105
+[2025-11-17] Order Skipped 105 | Reason : Order Date in IN future
+[2025-11-17] Files logged In106
+[2025-11-17] INFO: Order 106 Processed Sucessfully
+
+[2025-11-17] Files logged In107
+[2025-11-17] INFO: Order 107 Processed Sucessfully
+
+[2025-11-17] Files logged In108
+[2025-11-17] Order Skipped 108 | Reason : Invalid Unit Price
+[2025-11-17] Files logged In109
+[2025-11-17] INFO: Order 109 Processed Sucessfully
+
+[2025-11-17] Files logged In110
+[2025-11-17] INFO: Order 110 Processed Sucessfully
+
+[2025-11-17] Files logged In111
+[2025-11-17] INFO: Order 111 Processed Sucessfully
+
+[2025-11-17] Files logged In112
+[2025-11-17] WARNING: Order Skipped 112 | Reason : Invalid Date
+[2025-11-17] Files logged In113
+[2025-11-17] WARNING: Order Skipped 113 | Reason : Invalid Date
+[2025-11-17] Files logged In114
+[2025-11-17] WARNING: Order Skipped 114 | Reason : Invalid Date
+[2025-11-17] Files logged In115
+[2025-11-17] INFO: Order 115 Processed Sucessfully
+
+[2025-11-17] Files logged In116
+[2025-11-17] Order Skipped 116: Invalid Quantity
+[2025-11-17] Files logged In117
+[2025-11-17] Order Skipped 117 | Reason : Order Date in IN future
+[2025-11-17] Files logged In118
+[2025-11-17] INFO: Order 118 Processed Sucessfully
+
+[2025-11-17] Files logged In119
+[2025-11-17] INFO: Order 119 Processed Sucessfully
+
+[2025-11-17] Files logged In120
+[2025-11-17] INFO: Order 120 Processed Sucessfully
+
+[2025-11-17] Files logged In121
+[2025-11-17] INFO: Order 121 Processed Sucessfully
+
+[2025-11-17] Files logged In122
+[2025-11-17] INFO: Order 122 Processed Sucessfully
+
+[2025-11-17] Files logged In123
+[2025-11-17] WARNING: Order Skipped 123 | Reason : Invalid Date
+[2025-11-17] Files logged In124
+[2025-11-17] INFO: Order 124 Processed Sucessfully
+
+[2025-11-17] Files logged In125
+[2025-11-17] INFO: Order 125 Processed Sucessfully
+
+[2025-11-17] Files logged In126
+[2025-11-17] Order Skipped 126: Invalid Quantity
+[2025-11-17] Files logged In127
+[2025-11-17] INFO: Order 127 Processed Sucessfully
+
+[2025-11-17] Files logged In128
+[2025-11-17] INFO: Order 128 Processed Sucessfully
+
+[2025-11-17] Files logged In129
+[2025-11-17] INFO: Order 129 Processed Sucessfully
+
+[2025-11-17] Files logged In130
+[2025-11-17] WARNING: Order Skipped 130 | Reason : Invalid Date
+[2025-11-17] Files logged In131
+[2025-11-17] Order Skipped 131 | Reason : Invalid Unit Price
+[2025-11-17] Files logged In132
+[2025-11-17] INFO: Order 132 Processed Sucessfully
+
+[2025-11-17] Files logged In133
+[2025-11-17] INFO: Order 133 Processed Sucessfully
+
+[2025-11-17] Files logged In134
+[2025-11-17] INFO: Order 134 Processed Sucessfully
+
+[2025-11-17] Files logged In135
+[2025-11-17] INFO: Order 135 Processed Sucessfully
+
+[2025-11-17] Files logged In136
+[2025-11-17] INFO: Order 136 Processed Sucessfully
+
+[2025-11-17] Files logged In137
+[2025-11-17] INFO: Order 137 Processed Sucessfully
+
+[2025-11-17] Files logged In138
+[2025-11-17] INFO: Order 138 Processed Sucessfully
+
+[2025-11-17] Files logged In139
+[2025-11-17] INFO: Order 139 Processed Sucessfully
+
+[2025-11-17] Files logged In140
+[2025-11-17] INFO: Order 140 Processed Sucessfully
+
+[2025-11-17] Files logged In141
+[2025-11-17] Order Skipped 141: Invalid Quantity
+[2025-11-17] Files logged In142
+[2025-11-17] INFO: Order 142 Processed Sucessfully
+
+[2025-11-17] Files logged In143
+[2025-11-17] INFO: Order 143 Processed Sucessfully
+
+[2025-11-17] Files logged In144
+[2025-11-17] INFO: Order 144 Processed Sucessfully
+
+[2025-11-17] Files logged In145
+[2025-11-17] INFO: Order 145 Processed Sucessfully
+
+[2025-11-17] Files logged In146
+[2025-11-17] INFO: Order 146 Processed Sucessfully
+
+[2025-11-17] Files logged In147
+[2025-11-17] Order Skipped 147 | Reason : Order Date in IN future
+[2025-11-17] Files logged In148
+[2025-11-17] INFO: Order 148 Processed Sucessfully
+
+[2025-11-17] Files logged In149
+[2025-11-17] INFO: Order 149 Processed Sucessfully
+
+[2025-11-17] Files logged In150
+[2025-11-17] Order Skipped 150 | Reason : Order Date in IN future
+[2025-11-17] INFO: Finished Order Processing
+[2025-11-17] INFO: Started Order Processing
+[2025-11-17] INFP: Folder check completed
+[2025-11-17] Files logged In101
+[2025-11-17] INFO: Order 101 Processed Sucessfully
+
+[2025-11-17] Files logged In102
+[2025-11-17] INFO: Order 102 Processed Sucessfully
+
+[2025-11-17] Files logged In103
+[2025-11-17] Order Skipped 103: Invalid Quantity
+[2025-11-17] Files logged In104
+[2025-11-17] WARNING: Order Skipped 104 | Reason : Invalid Date
+[2025-11-17] Files logged In105
+[2025-11-17] Order Skipped 105 | Reason : Order Date in IN future
+[2025-11-17] Files logged In106
+[2025-11-17] INFO: Order 106 Processed Sucessfully
+
+[2025-11-17] Files logged In107
+[2025-11-17] INFO: Order 107 Processed Sucessfully
+
+[2025-11-17] Files logged In108
+[2025-11-17] Order Skipped 108 | Reason : Invalid Unit Price
+[2025-11-17] Files logged In109
+[2025-11-17] INFO: Order 109 Processed Sucessfully
+
+[2025-11-17] Files logged In110
+[2025-11-17] INFO: Order 110 Processed Sucessfully
+
+[2025-11-17] Files logged In111
+[2025-11-17] INFO: Order 111 Processed Sucessfully
+
+[2025-11-17] Files logged In112
+[2025-11-17] WARNING: Order Skipped 112 | Reason : Invalid Date
+[2025-11-17] Files logged In113
+[2025-11-17] WARNING: Order Skipped 113 | Reason : Invalid Date
+[2025-11-17] Files logged In114
+[2025-11-17] WARNING: Order Skipped 114 | Reason : Invalid Date
+[2025-11-17] Files logged In115
+[2025-11-17] INFO: Order 115 Processed Sucessfully
+
+[2025-11-17] Files logged In116
+[2025-11-17] Order Skipped 116: Invalid Quantity
+[2025-11-17] Files logged In117
+[2025-11-17] Order Skipped 117 | Reason : Order Date in IN future
+[2025-11-17] Files logged In118
+[2025-11-17] INFO: Order 118 Processed Sucessfully
+
+[2025-11-17] Files logged In119
+[2025-11-17] INFO: Order 119 Processed Sucessfully
+
+[2025-11-17] Files logged In120
+[2025-11-17] INFO: Order 120 Processed Sucessfully
+
+[2025-11-17] Files logged In121
+[2025-11-17] INFO: Order 121 Processed Sucessfully
+
+[2025-11-17] Files logged In122
+[2025-11-17] INFO: Order 122 Processed Sucessfully
+
+[2025-11-17] Files logged In123
+[2025-11-17] WARNING: Order Skipped 123 | Reason : Invalid Date
+[2025-11-17] Files logged In124
+[2025-11-17] INFO: Order 124 Processed Sucessfully
+
+[2025-11-17] Files logged In125
+[2025-11-17] INFO: Order 125 Processed Sucessfully
+
+[2025-11-17] Files logged In126
+[2025-11-17] Order Skipped 126: Invalid Quantity
+[2025-11-17] Files logged In127
+[2025-11-17] INFO: Order 127 Processed Sucessfully
+
+[2025-11-17] Files logged In128
+[2025-11-17] INFO: Order 128 Processed Sucessfully
+
+[2025-11-17] Files logged In129
+[2025-11-17] INFO: Order 129 Processed Sucessfully
+
+[2025-11-17] Files logged In130
+[2025-11-17] WARNING: Order Skipped 130 | Reason : Invalid Date
+[2025-11-17] Files logged In131
+[2025-11-17] Order Skipped 131 | Reason : Invalid Unit Price
+[2025-11-17] Files logged In132
+[2025-11-17] INFO: Order 132 Processed Sucessfully
+
+[2025-11-17] Files logged In133
+[2025-11-17] INFO: Order 133 Processed Sucessfully
+
+[2025-11-17] Files logged In134
+[2025-11-17] INFO: Order 134 Processed Sucessfully
+
+[2025-11-17] Files logged In135
+[2025-11-17] INFO: Order 135 Processed Sucessfully
+
+[2025-11-17] Files logged In136
+[2025-11-17] INFO: Order 136 Processed Sucessfully
+
+[2025-11-17] Files logged In137
+[2025-11-17] INFO: Order 137 Processed Sucessfully
+
+[2025-11-17] Files logged In138
+[2025-11-17] INFO: Order 138 Processed Sucessfully
+
+[2025-11-17] Files logged In139
+[2025-11-17] INFO: Order 139 Processed Sucessfully
+
+[2025-11-17] Files logged In140
+[2025-11-17] INFO: Order 140 Processed Sucessfully
+
+[2025-11-17] Files logged In141
+[2025-11-17] Order Skipped 141: Invalid Quantity
+[2025-11-17] Files logged In142
+[2025-11-17] INFO: Order 142 Processed Sucessfully
+
+[2025-11-17] Files logged In143
+[2025-11-17] INFO: Order 143 Processed Sucessfully
+
+[2025-11-17] Files logged In144
+[2025-11-17] INFO: Order 144 Processed Sucessfully
+
+[2025-11-17] Files logged In145
+[2025-11-17] INFO: Order 145 Processed Sucessfully
+
+[2025-11-17] Files logged In146
+[2025-11-17] INFO: Order 146 Processed Sucessfully
+
+[2025-11-17] Files logged In147
+[2025-11-17] Order Skipped 147 | Reason : Order Date in IN future
+[2025-11-17] Files logged In148
+[2025-11-17] INFO: Order 148 Processed Sucessfully
+
+[2025-11-17] Files logged In149
+[2025-11-17] INFO: Order 149 Processed Sucessfully
+
+[2025-11-17] Files logged In150
+[2025-11-17] Order Skipped 150 | Reason : Order Date in IN future
+[2025-11-17] INFO: Finished Order Processing
+[2025-11-17] INFO: Started Order Processing
+[2025-11-17] INFP: Folder check completed
+[2025-11-17] Files logged In101
+[2025-11-17] INFO: Order 101 Processed Sucessfully
+
+[2025-11-17] Files logged In102
+[2025-11-17] INFO: Order 102 Processed Sucessfully
+
+[2025-11-17] Files logged In103
+[2025-11-17] Order Skipped 103: Invalid Quantity
+[2025-11-17] Files logged In104
+[2025-11-17] WARNING: Order Skipped 104 | Reason : Invalid Date
+[2025-11-17] Files logged In105
+[2025-11-17] Order Skipped 105 | Reason : Order Date in IN future
+[2025-11-17] Files logged In106
+[2025-11-17] INFO: Order 106 Processed Sucessfully
+
+[2025-11-17] Files logged In107
+[2025-11-17] INFO: Order 107 Processed Sucessfully
+
+[2025-11-17] Files logged In108
+[2025-11-17] Order Skipped 108 | Reason : Invalid Unit Price
+[2025-11-17] Files logged In109
+[2025-11-17] INFO: Order 109 Processed Sucessfully
+
+[2025-11-17] Files logged In110
+[2025-11-17] INFO: Order 110 Processed Sucessfully
+
+[2025-11-17] Files logged In111
+[2025-11-17] INFO: Order 111 Processed Sucessfully
+
+[2025-11-17] Files logged In112
+[2025-11-17] WARNING: Order Skipped 112 | Reason : Invalid Date
+[2025-11-17] Files logged In113
+[2025-11-17] WARNING: Order Skipped 113 | Reason : Invalid Date
+[2025-11-17] Files logged In114
+[2025-11-17] WARNING: Order Skipped 114 | Reason : Invalid Date
+[2025-11-17] Files logged In115
+[2025-11-17] INFO: Order 115 Processed Sucessfully
+
+[2025-11-17] Files logged In116
+[2025-11-17] Order Skipped 116: Invalid Quantity
+[2025-11-17] Files logged In117
+[2025-11-17] Order Skipped 117 | Reason : Order Date in IN future
+[2025-11-17] Files logged In118
+[2025-11-17] INFO: Order 118 Processed Sucessfully
+
+[2025-11-17] Files logged In119
+[2025-11-17] INFO: Order 119 Processed Sucessfully
+
+[2025-11-17] Files logged In120
+[2025-11-17] INFO: Order 120 Processed Sucessfully
+
+[2025-11-17] Files logged In121
+[2025-11-17] INFO: Order 121 Processed Sucessfully
+
+[2025-11-17] Files logged In122
+[2025-11-17] INFO: Order 122 Processed Sucessfully
+
+[2025-11-17] Files logged In123
+[2025-11-17] WARNING: Order Skipped 123 | Reason : Invalid Date
+[2025-11-17] Files logged In124
+[2025-11-17] INFO: Order 124 Processed Sucessfully
+
+[2025-11-17] Files logged In125
+[2025-11-17] INFO: Order 125 Processed Sucessfully
+
+[2025-11-17] Files logged In126
+[2025-11-17] Order Skipped 126: Invalid Quantity
+[2025-11-17] Files logged In127
+[2025-11-17] INFO: Order 127 Processed Sucessfully
+
+[2025-11-17] Files logged In128
+[2025-11-17] INFO: Order 128 Processed Sucessfully
+
+[2025-11-17] Files logged In129
+[2025-11-17] INFO: Order 129 Processed Sucessfully
+
+[2025-11-17] Files logged In130
+[2025-11-17] WARNING: Order Skipped 130 | Reason : Invalid Date
+[2025-11-17] Files logged In131
+[2025-11-17] Order Skipped 131 | Reason : Invalid Unit Price
+[2025-11-17] Files logged In132
+[2025-11-17] INFO: Order 132 Processed Sucessfully
+
+[2025-11-17] Files logged In133
+[2025-11-17] INFO: Order 133 Processed Sucessfully
+
+[2025-11-17] Files logged In134
+[2025-11-17] INFO: Order 134 Processed Sucessfully
+
+[2025-11-17] Files logged In135
+[2025-11-17] INFO: Order 135 Processed Sucessfully
+
+[2025-11-17] Files logged In136
+[2025-11-17] INFO: Order 136 Processed Sucessfully
+
+[2025-11-17] Files logged In137
+[2025-11-17] INFO: Order 137 Processed Sucessfully
+
+[2025-11-17] Files logged In138
+[2025-11-17] INFO: Order 138 Processed Sucessfully
+
+[2025-11-17] Files logged In139
+[2025-11-17] INFO: Order 139 Processed Sucessfully
+
+[2025-11-17] Files logged In140
+[2025-11-17] INFO: Order 140 Processed Sucessfully
+
+[2025-11-17] Files logged In141
+[2025-11-17] Order Skipped 141: Invalid Quantity
+[2025-11-17] Files logged In142
+[2025-11-17] INFO: Order 142 Processed Sucessfully
+
+[2025-11-17] Files logged In143
+[2025-11-17] INFO: Order 143 Processed Sucessfully
+
+[2025-11-17] Files logged In144
+[2025-11-17] INFO: Order 144 Processed Sucessfully
+
+[2025-11-17] Files logged In145
+[2025-11-17] INFO: Order 145 Processed Sucessfully
+
+[2025-11-17] Files logged In146
+[2025-11-17] INFO: Order 146 Processed Sucessfully
+
+[2025-11-17] Files logged In147
+[2025-11-17] Order Skipped 147 | Reason : Order Date in IN future
+[2025-11-17] Files logged In148
+[2025-11-17] INFO: Order 148 Processed Sucessfully
+
+[2025-11-17] Files logged In149
+[2025-11-17] INFO: Order 149 Processed Sucessfully
+
+[2025-11-17] Files logged In150
+[2025-11-17] Order Skipped 150 | Reason : Order Date in IN future
+[2025-11-17] INFO: Finished Order Processing

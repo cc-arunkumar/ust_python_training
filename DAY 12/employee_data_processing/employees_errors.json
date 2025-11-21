@@ -1,0 +1,140 @@
+{
+  "errors": [
+    {
+      "employee": "UST003",
+      "error_reason": "Missing Required fields age"
+    },
+    {
+      "employee": "UST003",
+      "error_reason": "Invalid Age"
+    },
+    {
+      "employee": "UST003",
+      "error_reason": "Phone number invalid"
+    },
+    {
+      "employee": "UST004",
+      "error_reason": "Salary must be positive"
+    },
+    {
+      "employee": "UST006",
+      "error_reason": "Missing Required fields department"
+    },
+    {
+      "employee": "UST006",
+      "error_reason": "Department name is not valid"
+    },
+    {
+      "employee": "UST006",
+      "error_reason": "Email Id is not Valid"
+    },
+    {
+      "employee": "UST007",
+      "error_reason": "Salary is not a Number"
+    },
+    {
+      "employee": "UST010",
+      "error_reason": "Phone number invalid"
+    },
+    {
+      "employee": "UST012",
+      "error_reason": "Invalid Age"
+    },
+    {
+      "employee": "UST014",
+      "error_reason": "Phone number invalid"
+    },
+    {
+      "employee": "UST016",
+      "error_reason": "Missing Required fields salary"
+    },
+    {
+      "employee": "UST016",
+      "error_reason": "Salary is not a Number"
+    },
+    {
+      "employee": "UST018",
+      "error_reason": "Phone number invalid"
+    },
+    {
+      "employee": "UST022",
+      "error_reason": "Missing Required fields age"
+    },
+    {
+      "employee": "UST022",
+      "error_reason": "Invalid Age"
+    },
+    {
+      "employee": "UST025",
+      "error_reason": "Invalid Age"
+    },
+    {
+      "employee": "UST026",
+      "error_reason": "Salary must be positive"
+    },
+    {
+      "employee": "UST029",
+      "error_reason": "Missing Required fields department"
+    },
+    {
+      "employee": "UST029",
+      "error_reason": "Department name is not valid"
+    },
+    {
+      "employee": "UST030",
+      "error_reason": "Phone number invalid"
+    },
+    {
+      "employee": "UST032",
+      "error_reason": "Phone number invalid"
+    },
+    {
+      "employee": "UST033",
+      "error_reason": "Email Id is not Valid"
+    },
+    {
+      "employee": "UST035",
+      "error_reason": "Missing Required fields salary"
+    },
+    {
+      "employee": "UST035",
+      "error_reason": "Salary is not a Number"
+    },
+    {
+      "employee": "UST037",
+      "error_reason": "Phone number invalid"
+    },
+    {
+      "employee": "UST040",
+      "error_reason": "Salary must be positive"
+    },
+    {
+      "employee": "UST042",
+      "error_reason": "Phone number invalid"
+    },
+    {
+      "employee": "UST044",
+      "error_reason": "Missing Required fields department"
+    },
+    {
+      "employee": "UST044",
+      "error_reason": "Department name is not valid"
+    },
+    {
+      "employee": "UST046",
+      "error_reason": "Missing Required fields salary"
+    },
+    {
+      "employee": "UST046",
+      "error_reason": "Salary is not a Number"
+    },
+    {
+      "employee": "UST049",
+      "error_reason": "Email Id is not Valid"
+    },
+    {
+      "employee": "UST050",
+      "error_reason": "Phone number invalid"
+    }
+  ]
+}

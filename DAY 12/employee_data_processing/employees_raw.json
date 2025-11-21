@@ -1,0 +1,751 @@
+{
+  "employees": [
+    {
+      "emp_id": "UST001",
+      "name": "Aarav    Sharma",
+      "age": 29,
+      "gender": "male",
+      "city": "Bangalore",
+      "state": "Karnataka",
+      "department": "AI",
+      "salary": 950000,
+      "phone": "9876543210",
+      "email": "aarav.sharma@ust.com",
+      "languages": ["Hindi", "English"],
+      "is_active": true
+    },
+    {
+      "emp_id": "UST002",
+      "name": "Priya   Varma",
+      "age": 31,
+      "gender": "female",
+      "city": "Trivandrum",
+      "state": "Kerala",
+      "department": "Cloud",
+      "salary": "1050000",
+      "phone": "9999988888",
+      "email": "priya.varma@ust.com",
+      "languages": ["Malayalam", "English"],
+      "is_active": true
+    },
+    {
+      "emp_id": "UST003",
+      "name": "Rahul  Singh",
+      "age": null,
+      "gender": "male",
+      "city": "Kochi",
+      "state": "Kerala",
+      "department": "Testing",
+      "salary": 650000,
+      "phone": "12345",
+      "email": "rahul.singh@ust.com",
+      "languages": ["Hindi", "English"],
+      "is_active": true
+    },
+    {
+      "emp_id": "UST004",
+      "name": "Fathima Noor",
+      "age": 26,
+      "gender": "female",
+      "city": "Chennai",
+      "state": "Tamil Nadu",
+      "department": "Cybersecurity",
+      "salary": -50000,
+      "phone": "8888877777",
+      "email": "fathima.noor@ust.com",
+      "languages": ["Tamil", "English"],
+      "is_active": true
+    },
+    {
+      "emp_id": "UST005",
+      "name": "Arjun    Reddy",
+      "age": 34,
+      "gender": "male",
+      "city": "Hyderabad",
+      "state": "Telangana",
+      "department": "DevOps",
+      "salary": 1200000,
+      "phone": "9848012345",
+      "email": "arjun.reddy@ust.com",
+      "languages": ["Telugu", "Hindi", "English"],
+      "is_active": false
+    },
+    {
+      "emp_id": "UST006",
+      "name": "Meera Kapoor",
+      "age": 28,
+      "gender": "female",
+      "city": "Pune",
+      "state": "Maharashtra",
+      "department": "",
+      "salary": 890000,
+      "phone": "9876500000",
+      "email": "meerakapoorust.com",
+      "languages": ["Marathi", "English"],
+      "is_active": true
+    },
+    {
+      "emp_id": "UST007",
+      "name": "Sanjay O'Neil",
+      "age": 41,
+      "gender": "male",
+      "city": "Bangalore",
+      "state": "Karnataka",
+      "department": "HR",
+      "salary": "not available",
+      "phone": "9999000011",
+      "email": "sanjay.oneil@ust.com",
+      "languages": ["English"],
+      "is_active": true
+    },
+    {
+      "emp_id": "UST008",
+      "name": "Lavanya   Menon",
+      "age": 24,
+      "gender": "female",
+      "city": "Kochi",
+      "state": "Kerala",
+      "department": "AI",
+      "salary": 780000,
+      "phone": "9123456780",
+      "email": "lavanya.menon@ust.com",
+      "languages": ["Malayalam", "English"],
+      "is_active": true
+    },
+    {
+      "emp_id": "UST009",
+      "name": "Vikram   Iyer",
+      "age": 22,
+      "gender": "male",
+      "city": "Chennai",
+      "state": "Tamil Nadu",
+      "department": "Support",
+      "salary": "700000",
+      "phone": "9898989898",
+      "email": "vikram.iyer@ust.com",
+      "languages": ["Tamil", "English"],
+      "is_active": true
+    },
+    {
+      "emp_id": "UST010",
+      "name": "Sneha    Patil",
+      "age": 30,
+      "gender": "female",
+      "city": "Pune",
+      "state": "Maharashtra",
+      "department": "Testing",
+      "salary": 800000,
+      "phone": "9876543",
+      "email": "sneha.patil@ust.com",
+      "languages": ["Marathi", "English"],
+      "is_active": true
+    },
+
+    {
+      "emp_id": "UST011",
+      "name": "Mohammed   Arif",
+      "age": 36,
+      "gender": "male",
+      "city": "Hyderabad",
+      "state": "Telangana",
+      "department": "Cloud",
+      "salary": 1400000,
+      "phone": "9000000000",
+      "email": "mohammed.arif@ust.com",
+      "languages": ["Urdu", "Hindi", "English"],
+      "is_active": true
+    },
+    {
+      "emp_id": "UST012",
+      "name": "Rita   Kumari",
+      "age": 17,
+      "gender": "female",
+      "city": "Ranchi",
+      "state": "Jharkhand",
+      "department": "HR",
+      "salary": 550000,
+      "phone": "9123400000",
+      "email": "rita.kumari@ust.com",
+      "languages": ["Hindi"],
+      "is_active": true
+    },
+    {
+      "emp_id": "UST013",
+      "name": "Girish   Kulkarni",
+      "age": 52,
+      "gender": "male",
+      "city": "Pune",
+      "state": "Maharashtra",
+      "department": "AI",
+      "salary": "1320000",
+      "phone": "9999988776",
+      "email": "girish.kulkarni@ust.com",
+      "languages": ["Marathi", "English"],
+      "is_active": true
+    },
+    {
+      "emp_id": "UST014",
+      "name": "Ananya   Basu",
+      "age": 27,
+      "gender": "female",
+      "city": "Kolkata",
+      "state": "West Bengal",
+      "department": "Cloud",
+      "salary": 920000,
+      "phone": "98a7654321",
+      "email": "ananya.basu@ust.com",
+      "languages": ["Bengali", "English"],
+      "is_active": true
+    },
+    {
+      "emp_id": "UST015",
+      "name": "Naveen   Nair",
+      "age": 33,
+      "gender": "male",
+      "city": "Trivandrum",
+      "state": "Kerala",
+      "department": "Cybersecurity",
+      "salary": 1100000,
+      "phone": "9999443322",
+      "email": "naveen.nair@ust.com",
+      "languages": ["Malayalam", "English"],
+      "is_active": true
+    },
+    {
+      "emp_id": "UST016",
+      "name": "Bhavana   Rao",
+      "age": 26,
+      "gender": "female",
+      "city": "Bangalore",
+      "state": "Karnataka",
+      "department": "HR",
+      "salary": "",
+      "phone": "9888877776",
+      "email": "bhavana.rao@ust.com",
+      "languages": ["Kannada", "English"],
+      "is_active": true
+    },
+    {
+      "emp_id": "UST017",
+      "name": "Imran  Siddiqui",
+      "age": 45,
+      "gender": "male",
+      "city": "Lucknow",
+      "state": "Uttar Pradesh",
+      "department": "Testing",
+      "salary": 990000,
+      "phone": "9000011111",
+      "email": "imran.siddiqui@ust.com",
+      "languages": ["Urdu", "Hindi", "English"],
+      "is_active": true
+    },
+    {
+      "emp_id": "UST018",
+      "name": "Divya    Shetty",
+      "age": 38,
+      "gender": "female",
+      "city": "Mangalore",
+      "state": "Karnataka",
+      "department": "Cloud",
+      "salary": 1000000,
+      "phone": "abc1234567",
+      "email": "divya.shetty@ust.com",
+      "languages": ["Konkani", "English"],
+      "is_active": true
+    },
+    {
+      "emp_id": "UST019",
+      "name": "Harish   Gupta",
+      "age": 56,
+      "gender": "male",
+      "city": "Delhi",
+      "state": "Delhi",
+      "department": "AI",
+      "salary": 1500000,
+      "phone": "9876512341",
+      "email": "harish.gupta@ust.com",
+      "languages": ["Hindi", "English"],
+      "is_active": true
+    },
+
+    
+    {
+      "emp_id": "UST020",
+      "name": "Sony    Mathew",
+      "age": 28,
+      "gender": "female",
+      "city": "Kottayam",
+      "state": "Kerala",
+      "department": "Finance",
+      "salary": 870000,
+      "phone": "9933445566",
+      "email": "sony.mathew@ust.com",
+      "languages": ["Malayalam", "English"],
+      "is_active": true
+    },
+
+    {
+      "emp_id": "UST021",
+      "name": "Karan  Thakur",
+      "age": 42,
+      "gender": "male",
+      "city": "Shimla",
+      "state": "Himachal Pradesh",
+      "department": "Cloud",
+      "salary": 880000,
+      "phone": "9999000022",
+      "email": "karan.thakur@ust.com",
+      "languages": ["Hindi", "English"],
+      "is_active": true
+    },
+
+    {
+      "emp_id": "UST022",
+      "name": "Latha    Pillai",
+      "age": "",
+      "gender": "female",
+      "city": "Trivandrum",
+      "state": "Kerala",
+      "department": "AI",
+      "salary": 960000,
+      "phone": "9888888888",
+      "email": "latha.pillai@ust.com",
+      "languages": ["Malayalam", "English"],
+      "is_active": true
+    },
+
+    {
+      "emp_id": "UST023",
+      "name": "Rohit   Jain",
+      "age": 25,
+      "gender": "male",
+      "city": "Jaipur",
+      "state": "Rajasthan",
+      "department": "DevOps",
+      "salary": 700000,
+      "phone": "9900990099",
+      "email": "rohit.jain@ust.com",
+      "languages": ["Hindi", "English"],
+      "is_active": true
+    },
+
+
+    {
+      "emp_id": "UST024",
+      "name": "Neha   Arora",
+      "age": 35,
+      "gender": "female",
+      "city": "Delhi",
+      "state": "Delhi",
+      "department": "Support",
+      "salary": "820000",
+      "phone": "9991112223",
+      "email": "neha.arora@ust.com",
+      "languages": ["Hindi", "English"],
+      "is_active": true
+    },
+
+    {
+      "emp_id": "UST025",
+      "name": "Tarun    Joshi",
+      "age": 66,
+      "gender": "male",
+      "city": "Dehradun",
+      "state": "Uttarakhand",
+      "department": "Finance",
+      "salary": 600000,
+      "phone": "9887766554",
+      "email": "tarun.joshi@ust.com",
+      "languages": ["Hindi"],
+      "is_active": true
+    },
+
+    {
+      "emp_id": "UST026",
+      "name": "Shalini   Verma",
+      "age": 40,
+      "gender": "female",
+      "city": "Indore",
+      "state": "Madhya Pradesh",
+      "department": "Cloud",
+      "salary": -700000,
+      "phone": "9000090000",
+      "email": "shalini.verma@ust.com",
+      "languages": ["Hindi", "English"],
+      "is_active": true
+    },
+
+    {
+      "emp_id": "UST027",
+      "name": "Manish   Soni",
+      "age": 19,
+      "gender": "male",
+      "city": "Udaipur",
+      "state": "Rajasthan",
+      "department": "AI",
+      "salary": 510000,
+      "phone": "9876543211",
+      "email": "manish.soni@ust.com",
+      "languages": ["Hindi"],
+      "is_active": true
+    },
+
+    {
+      "emp_id": "UST028",
+      "name": "Farah    Ali",
+      "age": 32,
+      "gender": "female",
+      "city": "Mumbai",
+      "state": "Maharashtra",
+      "department": "HR",
+      "salary": "900000",
+      "phone": "9812345678",
+      "email": "farah.ali@ust.com",
+      "languages": ["Urdu", "Hindi", "English"],
+      "is_active": true
+    },
+
+    {
+      "emp_id": "UST029",
+      "name": "Tejas   Kulkarni",
+      "age": 37,
+      "gender": "male",
+      "city": "Pune",
+      "state": "Maharashtra",
+      "department": "",
+      "salary": 790000,
+      "phone": "9876000000",
+      "email": "tejas.kulkarni@ust.com",
+      "languages": ["Marathi"],
+      "is_active": true
+    },
+
+    {
+      "emp_id": "UST030",
+      "name": "Harini    Krishnan",
+      "age": 45,
+      "gender": "female",
+      "city": "Chennai",
+      "state": "Tamil Nadu",
+      "department": "Support",
+      "salary": 1180000,
+      "phone": "abcd987654",
+      "email": "harini.krishnan@ust.com",
+      "languages": ["Tamil", "English"],
+      "is_active": true
+    },
+
+
+    {
+      "emp_id": "UST031",
+      "name": "Abhinav   Mishra",
+      "age": 29,
+      "gender": "male",
+      "city": "Kanpur",
+      "state": "Uttar Pradesh",
+      "department": "Cybersecurity",
+      "salary": 1000000,
+      "phone": "9000012345",
+      "email": "abhinav.mishra@ust.com",
+      "languages": ["Hindi", "English"],
+      "is_active": true
+    },
+
+
+    {
+      "emp_id": "UST032",
+      "name": "Swathi    Mohan",
+      "age": 33,
+      "gender": "female",
+      "city": "Kochi",
+      "state": "Kerala",
+      "department": "HR",
+      "salary": "880000",
+      "phone": "91 23456780",
+      "email": "swathi.mohan@ust.com",
+      "languages": ["Malayalam", "English"],
+      "is_active": true
+    },
+
+
+    {
+      "emp_id": "UST033",
+      "name": "Kavya   Shekar",
+      "age": 21,
+      "gender": "female",
+      "city": "Mysore",
+      "state": "Karnataka",
+      "department": "Testing",
+      "salary": 760000,
+      "phone": "9998876655",
+      "email": "kavya.shekarust.com",
+      "languages": ["Kannada"],
+      "is_active": true
+    },
+
+
+    {
+      "emp_id": "UST034",
+      "name": "Rohan   Desai",
+      "age": 59,
+      "gender": "male",
+      "city": "Ahmedabad",
+      "state": "Gujarat",
+      "department": "Finance",
+      "salary": 1450000,
+      "phone": "9977665544",
+      "email": "rohan.desai@ust.com",
+      "languages": ["Gujarati", "English"],
+      "is_active": true
+    },
+
+    {
+      "emp_id": "UST035",
+      "name": "Zoya   Khan",
+      "age": 27,
+      "gender": "female",
+      "city": "Bhopal",
+      "state": "Madhya Pradesh",
+      "department": "Cloud",
+      "salary": "",
+      "phone": "9000091111",
+      "email": "zoya.khan@ust.com",
+      "languages": ["Urdu", "Hindi"],
+      "is_active": true
+    },
+
+    {
+      "emp_id": "UST036",
+      "name": "Ashwin   Rao",
+      "age": 31,
+      "gender": "male",
+      "city": "Hubli",
+      "state": "Karnataka",
+      "department": "Support",
+      "salary": 690000,
+      "phone": "8833445566",
+      "email": "ashwin.rao@ust.com",
+      "languages": ["Kannada", "English"],
+      "is_active": true
+    },
+
+    {
+      "emp_id": "UST037",
+      "name": "Ritika   Jain",
+      "age": 30,
+      "gender": "female",
+      "city": "Delhi",
+      "state": "Delhi",
+      "department": "AI",
+      "salary": "920000",
+      "phone": "abc123",
+      "email": "ritika.jain@ust.com",
+      "languages": ["Hindi", "English"],
+      "is_active": true
+    },
+
+    {
+      "emp_id": "UST038",
+      "name": "Amit   Chawla",
+      "age": 63,
+      "gender": "male",
+      "city": "Chandigarh",
+      "state": "Punjab",
+      "department": "DevOps",
+      "salary": 1180000,
+      "phone": "9900991188",
+      "email": "amit.chawla@ust.com",
+      "languages": ["Punjabi", "English"],
+      "is_active": true
+    },
+
+    {
+      "emp_id": "UST039",
+      "name": "Deepa    Nair",
+      "age": 25,
+      "gender": "female",
+      "city": "Trivandrum",
+      "state": "Kerala",
+      "department": "Testing",
+      "salary": 720000,
+      "phone": "9876543219",
+      "email": "deepa.nair@ust.com",
+      "languages": ["Malayalam", "English"],
+      "is_active": true
+    },
+
+    {
+      "emp_id": "UST040",
+      "name": "Santosh   Patel",
+      "age": 20,
+      "gender": "male",
+      "city": "Surat",
+      "state": "Gujarat",
+      "department": "HR",
+      "salary": -80000,
+      "phone": "9000011223",
+      "email": "santosh.patel@ust.com",
+      "languages": ["Gujarati", "Hindi"],
+      "is_active": true
+    },
+
+
+    {
+      "emp_id": "UST041",
+      "name": "Nisha   Kaur",
+      "age": 29,
+      "gender": "female",
+      "city": "Amritsar",
+      "state": "Punjab",
+      "department": "AI",
+      "salary": 880000,
+      "phone": "9988776655",
+      "email": "nisha.kaur@ust.com",
+      "languages": ["Punjabi", "English"],
+      "is_active": true
+    },
+
+    {
+      "emp_id": "UST042",
+      "name": "Suraj   Kumar",
+      "age": 18,
+      "gender": "male",
+      "city": "Patna",
+      "state": "Bihar",
+      "department": "Cloud",
+      "salary": "650000",
+      "phone": "123456789",
+      "email": "suraj.kumar@ust.com",
+      "languages": ["Hindi"],
+      "is_active": true
+    },
+
+    {
+      "emp_id": "UST043",
+      "name": "Ayesha   Siddiqui",
+      "age": 44,
+      "gender": "female",
+      "city": "Lucknow",
+      "state": "Uttar Pradesh",
+      "department": "Support",
+      "salary": 1020000,
+      "phone": "9998887776",
+      "email": "ayesha.siddiqui@ust.com",
+      "languages": ["Urdu", "Hindi", "English"],
+      "is_active": true
+    },
+
+    {
+      "emp_id": "UST044",
+      "name": "Venkatesh   Iyer",
+      "age": 50,
+      "gender": "male",
+      "city": "Chennai",
+      "state": "Tamil Nadu",
+      "department": "",
+      "salary": 1030000,
+      "phone": "9990009990",
+      "email": "venkatesh.iyer@ust.com",
+      "languages": ["Tamil", "English"],
+      "is_active": true
+    },
+
+
+    {
+      "emp_id": "UST045",
+      "name": "Simran   Gill",
+      "age": 46,
+      "gender": "female",
+      "city": "Ludhiana",
+      "state": "Punjab",
+      "department": "Cybersecurity",
+      "salary": 1300000,
+      "phone": "9988779900",
+      "email": "simran.gill@ust.com",
+      "languages": ["Punjabi", "English"],
+      "is_active": true
+    },
+
+
+    {
+      "emp_id": "UST046",
+      "name": "Karthik   Raj",
+      "age": 23,
+      "gender": "male",
+      "city": "Coimbatore",
+      "state": "Tamil Nadu",
+      "department": "Testing",
+      "salary": "",
+      "phone": "9080765432",
+      "email": "karthik.raj@ust.com",
+      "languages": ["Tamil"],
+      "is_active": true
+    },
+
+
+    {
+      "emp_id": "UST047",
+      "name": "Gayathri   Natarajan",
+      "age": 39,
+      "gender": "female",
+      "city": "Chennai",
+      "state": "Tamil Nadu",
+      "department": "Cloud",
+      "salary": 930000,
+      "phone": "9876501234",
+      "email": "gayathri.natarajan@ust.com",
+      "languages": ["Tamil", "English"],
+      "is_active": true
+    },
+
+
+    {
+      "emp_id": "UST048",
+      "name": "Ramesh   Prasad",
+      "age": 62,
+      "gender": "male",
+      "city": "Patna",
+      "state": "Bihar",
+      "department": "Finance",
+      "salary": 1250000,
+      "phone": "9000088888",
+      "email": "ramesh.prasad@ust.com",
+      "languages": ["Hindi"],
+      "is_active": true
+    },
+
+
+    {
+      "emp_id": "UST049",
+      "name": "Anjali   Sharma",
+      "age": 27,
+      "gender": "female",
+      "city": "Delhi",
+      "state": "Delhi",
+      "department": "AI",
+      "salary": "850000",
+      "phone": "9988776600",
+      "email": "anjali.sharmagmail.com",
+      "languages": ["Hindi", "English"],
+      "is_active": true
+    },
+
+
+    {
+      "emp_id": "UST050",
+      "name": "Raghu   Shetty",
+      "age": 19,
+      "gender": "male",
+      "city": "Mangalore",
+      "state": "Karnataka",
+      "department": "Support",
+      "salary": 600000,
+      "phone": "998877665544",
+      "email": "raghu.shetty@ust.com",
+      "languages": ["Tulu", "Kannada"],
+      "is_active": true
+    }
+
+
+  ]
+}

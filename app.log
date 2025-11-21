@@ -1,0 +1,6 @@
+2025-11-19 11:52:25,865 | WARNING | This is a WARNING message
+2025-11-19 11:52:25,865 | ERROR | This is a ERROR message
+2025-11-19 11:52:25,865 | CRITICAL | This is a CRITICAL message
+2025-11-19 11:54:18,207 | WARNING | This is a WARNING message
+2025-11-19 11:54:18,207 | ERROR | This is a ERROR message
+2025-11-19 11:54:18,207 | CRITICAL | This is a CRITICAL message

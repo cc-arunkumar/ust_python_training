@@ -1,0 +1,16 @@
+Order ID: 103 | Reason : Invalid quantity
+Order ID :104 | Reason : Invalid Date
+Order ID :105 | Reason : Order Date is in Future
+Order ID :108 | Reason : Unit Price is below 0
+Order ID :112 | Reason : Invalid Date
+Order ID :113 | Reason : Invalid Date
+Order ID :114 | Reason : Invalid Date
+Order ID: 116 | Reason : Invalid quantity
+Order ID :117 | Reason : Order Date is in Future
+Order ID :123 | Reason : Invalid Date
+Order ID: 126 | Reason : Invalid quantity
+Order ID :130 | Reason : Invalid Date
+Order ID :131 | Reason : Unit Price is below 0
+Order ID: 141 | Reason : Invalid quantity
+Order ID :147 | Reason : Order Date is in Future
+Order ID :150 | Reason : Order Date is in Future
