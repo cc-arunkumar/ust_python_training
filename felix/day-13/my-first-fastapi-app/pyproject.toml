@@ -8,3 +8,8 @@ dependencies = [
     "fastapi>=0.121.2",
     "uvicorn>=0.38.0",
 ]
+
+[tool.uv.workspace]
+members = [
+    "day-14",
+]
