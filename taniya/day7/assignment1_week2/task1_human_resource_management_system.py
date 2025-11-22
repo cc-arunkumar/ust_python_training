@@ -60,9 +60,9 @@ tm1=TechManager(105,'Tanu',2934875.25,['Java',"Python",'C','C++','.Net','React',
 tm2=TechManager(101,"Taniya",50000,["Java","python"],20,"IT")
 tm3=TechManager(102,"Amit",60000,["Java"],15,"IT")             
 tm4=TechManager(103,"Riya",40000,[],10,"HR")             
-# emp2=Employee(104,"Sonia",70000)
+emp1=Employee(104,"Sonia",70000)
 
-# emp1.get_details()
+emp1.get_details()
 # emp2.get_details()
 # dev2.show_skills()
 
