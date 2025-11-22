@@ -1,46 +1,57 @@
-from datetime import date,timedelta
+from datetime import date,timedelta,datetime
 
-print(date.today().day)
+print(datetime.now().time())
+print(date.today())
 
-print(date.today().weekday())
+# print(date.today().weekday())
 
-custom = date(2003,3,11)
-print(custom.weekday())
+# custom = date(2003,3,11)
+# print(custom.weekday())
 
 
-print(date.today() + timedelta(days=10))
-print(date.today() - timedelta(days=5))
-print(date(2025,12,25) - date.today())
-print(date(2003,3,1))
-last = date(2025,12,25)
-today = date.today()
-count = 0
-start = today.weekday()
-for i in range((last- today).days//7):
-    if start==6:
-        start=0
-    else:
-        count+=1
-        start+=1
+# print(date.today() + timedelta(days=10))
+# print(date.today() - timedelta(days=5))
+# print(date(2025,12,25) - date.today())
+# print(date(2003,3,1))
+ # last = date(2025,12,25)
+# today = date.today()
+# count = 0
+# start = today.weekday()
+# for i in range((last- today).days//7):
+#     if start==6:
+#         start=0
+#     else:
+#         count+=1
+#         start+=1
         
-print(count)
-print((last - today).days-count)
+# print(count)
+# print((last - today).days-count)
 
-print(today.strftime("%A"))
-l = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"]
-for i in range(11):
-    print(f"{today.strftime("%d/%m/%y")}:{l[today.weekday()]}:{today.weekday()}")
-    today += timedelta(days=1)
+# print(today.strftime("%A"))
+# l = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"]
+# for i in range(11):
+#     print(f"{today.strftime("%d/%m/%y")}:{l[today.weekday()]}:{today.weekday()}")
+#     today += timedelta(days=1)
     
-dates = "2025-12-03"
-if  date.fromisoformat(dates):
-    print(True)
- 
-if date.strptime(dates,"%Y-%m-%d")<date.today():    
-    print(True)
-# if dates<date.today():
+# dates = "2025-12-03"
+# if  date.fromisoformat(dates):
 #     print(True)
-# if dates.weekday():
-#     print(True) 
-# else:
-#     print(False)
+ 
+# if date.strptime(dates,"%Y-%m-%d")<date.today():    
+#     print(True)
+# # if dates<date.today():
+# #     print(True)
+# # if dates.weekday():
+# #     print(True) 
+# # else:
+# #     print(False)
+
+date1 = "2025-11-12"
+date2 = "2025-11-12"
+
+date1 = date.strptime(date1,"%Y-%m-%d")
+
+date2 = date.strptime(date2,"%Y-%m-%d")
+print(type(date1))
+if date1==date2:
+    print("lfdandva")

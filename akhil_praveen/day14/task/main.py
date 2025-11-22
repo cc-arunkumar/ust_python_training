@@ -1,7 +1,7 @@
 from typing import List
 from fastapi import FastAPI,HTTPException
 from pydantic import BaseModel
-from datetime import date
+from datetime import date,datetime,time
 
 app = FastAPI(title="UST Employee API ")
 
@@ -28,24 +28,30 @@ class UpdateModel(BaseModel):
 
 class AttendanceRecord(BaseModel):
     employee_id: int
-    date: str
-    check_in: str = None
-    check_out: str = None
+    date: date
+    check_in: time = None
+    check_out: time = None
     
 class CheckIn(BaseModel):
-    date: str
-    check_in: str = None
+    date: date
+    check_in: time
     
 class CheckOut(BaseModel):
-    check_out: str = None
+    check_out: time = None
     
 class LeaveRequest(BaseModel):
     leave_id: int
     employee_id: int
-    from_date: str
-    to_date: str
+    from_date: date
+    to_date: date
     reason: str
-    status: str
+    status: str = "Pending"
+    
+class CreateLeave(BaseModel):
+    from_date: date
+    to_date: date
+    reason: str
+    
     
 emp_list =  [{ "id": 1, "name": "Asha Rao",   "email": "asha.rao@ust.com",  "department": "Engineering", "role": "Engineer", "status": "active" },{ "id": 2, "name": "Vikram S",  "email": "vikram.s@ust.com",  "department": "Delivery",    "role": "Manager",  "status": "active" },
  { "id": 3, "name": "Meera N",   "email": "meera.n@ust.com",   "department": "HR",          "role": "HR",       "status": "active" }
@@ -77,7 +83,7 @@ def get_all_details():
 def get_details_byid(id:str):
     
     for emp in emp_list:
-        if emp[id]==id:
+        if emp["id"]==id:
             return emp
     raise HTTPException(status_code=404,detail="Id not found")
 
@@ -105,15 +111,15 @@ def delete_student(id:int):
     raise HTTPException(status_code=404,detail="Employee not found")
 
 @app.post("/employee/{id}/checkin")
-def check_in(id:int,attend:CheckIn):
+def check_in(id:int):
     for i in range(len(emp_list)):
         if emp_list[i]["id"]==id:
             if id in attendance_id_list:
                 raise HTTPException(status_code=409,detail="already exists")
             new_attend = AttendanceRecord(
                 employee_id=id,
-                date=attend.date,
-                check_in=attend.check_in
+                date=date.today(),
+                check_in=datetime.now().time()
             )
             attendance.append(new_attend)
             attendance_id_list.append(id)
@@ -121,7 +127,7 @@ def check_in(id:int,attend:CheckIn):
     raise HTTPException(status_code=404,detail="Employee not found")
 
 @app.post("/employee/{id}/checkout")
-def check_out(id:int,attend:CheckOut):
+def check_out(id:int):
     for i in range(len(emp_list)):
         if emp_list[i]["id"]==id:
             if id not in attendance_id_list:
@@ -137,9 +143,36 @@ def check_out(id:int,attend:CheckOut):
                 employee_id=id,
                 date=temp_attend.date,
                 check_in=temp_attend.check_in,
-                check_out=attend.check_out
+                check_out=datetime.now().time()
             )
             attendance.append(new_attend)
             return new_attend
     raise HTTPException(status_code=404,detail="Employee not found")
 
+@app.post("/employee/{id}/leave-request")
+def leave_req(id:int,leave:CreateLeave):
+    global next_leave_id
+    if get_details_byid(id):
+        if leave.from_date>leave.to_date:
+            raise HTTPException(status_code=400 , detail="from_date must be on or before to_date")
+        new_leave = LeaveRequest(
+            leave_id= next_leave_id,
+            employee_id=id,
+            from_date=leave.from_date,
+            to_date=leave.to_date,
+            reason=leave.reason
+        )
+        leaves.append(new_leave)
+        next_leave_id+=1
+        return new_leave
+    
+@app.get("/employee/{id}/leave-request")
+def leave_req(id:int): 
+    temp_req = []
+    if get_details_byid(id):
+        for i in leaves:
+            if id == i.employee_id:
+                temp_req.append(i)
+        return temp_req
+    
+    
