@@ -113,7 +113,7 @@ def check_in(id: int, attend: AttendenceRecord):
     return {"detail": "Check-in successful", "record": attend}
 
 #checkout for the employee
-@app.post("/employees/{id}/checkout")
+@app.put("/employees/{id}/checkout")
 def checkout(id: int, attend: AttendenceRecord):
     # Verify employee exists
     if not any(emp.id == id for emp in employees):
