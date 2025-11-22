@@ -26,10 +26,10 @@ class Doctor(Person):
     def __init__(self, name, age, gender, specialization, consultationfee):
         self.specialization = specialization
         self.consultationfee = consultationfee
-        super().__init__(name, age, gender)
+        Person.__init__(self, name, age, gender)
     
     def display_info(self):
-        super().display_info()
+        Person.display_info(self)
         print(f"Specialization: {self.specialization}")
         print(f"Consultation Fee: {self.consultationfee}")
 
@@ -39,7 +39,7 @@ class Patient(Person):
     def __init__(self, name, age, gender, disease, room_no):
         self.disease = disease
         self.room_no = room_no
-        super().__init__(name, age, gender)
+        Person.__init__(self, name, age, gender)
     
     def display_info(self):
         super().display_info()
@@ -50,7 +50,7 @@ class Patient(Person):
 class Surgeon(Doctor):
     def __init__(self, name, age, gender, specialization, consultationfee, surgery_type):
         self.surgery_type = surgery_type
-        super().__init__(name, age, gender, specialization, consultationfee)
+        Doctor.__init__(self, name, age, gender, specialization, consultationfee)
 
     def perform_surgery(self):
             print(f"Performing {self.surgery_type} surgery.")

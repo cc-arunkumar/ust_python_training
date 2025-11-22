@@ -1,18 +1,3 @@
-# Task 2 — Autonomous Vehicle System
-# Domain: Automotive / AI
-# Business Requirement:
-# UST Mobility is building an AI vehicle platform.
-# 1. Every Vehicle must have:
-# make , model , year
-# Method: show_info()
-# 2. Every ElectricVehicle should have:
-# battery_capacity , charge_status
-# Method: charge_battery()
-# 3. Every AutonomousVehicle should have:
-# ai_version , run_autopilot()
-# 4. The company wants to create a class SmartEV — a self-driving electric
-# vehicle.
-
 #Creating a Vehicle class adding the attributes to it.
 class Vehicle:
     def __init__(self, make, model, year):
@@ -28,7 +13,7 @@ class Vehicle:
 #Inheriting the class Vehicle to Electric_Vehicle
 class Electric_Vehicle(Vehicle):
     def __init__(self, make, model, year, battery_capacity, charger_status):
-        super().__init__(make, model, year)
+        Vehicle.__init__(self, make, model, year)
         self.battery_capacity = battery_capacity
         self.charger_status = charger_status
 
@@ -38,7 +23,7 @@ class Electric_Vehicle(Vehicle):
 #Inheriting Electric_Vehicle to AutonomusVehicle class.
 class AutonomusVehicle(Electric_Vehicle):
     def __init__(self, make, model, year,battery_capacity, charger_status, ai_version):
-        super().__init__(make, model, year, battery_capacity, charger_status)
+        Electric_Vehicle.__init__(self, make, model, year, battery_capacity, charger_status)
         self.ai_version = ai_version
 
     def show_ai_version(self):
@@ -50,7 +35,7 @@ class AutonomusVehicle(Electric_Vehicle):
 #Inheriting the final class SmartEV from AutonomusVehicle.
 class  SmartEV(AutonomusVehicle):
     def __init__(self, make, model, year, battery_capacity, charger_status, ai_version):
-        super().__init__(make, model, year, battery_capacity, charger_status, ai_version)
+        AutonomusVehicle.__init__(self, make, model, year, battery_capacity, charger_status, ai_version)
     
     def is_veicle_smart(self):
         print("This vehicle is a Smart Electric Vehicle with Autonomous capabilities.")

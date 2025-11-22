@@ -33,8 +33,8 @@ class Employee:
         print("Name is : ", self.name)
         print("Department is :", self._department)
     
-    def update_salary(self, amount):
-        self.amount = amount
+    def update_salary(self, __amount):
+        self.amount = __amount
         if self.amount > 0:
             self.__salary = self.amount
             
