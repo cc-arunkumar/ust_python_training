@@ -13,7 +13,7 @@
 # team_size , department
 # Method: show_team_info()
 # 4. Some managers are also developers (they code in emergencies).
-# ⚙️ Task: Model this system so that “Manager who codes” can reuse both
+# Task: Model this system so that “Manager who codes” can reuse both
 # developer and manager features without rewriting logic.
 
 

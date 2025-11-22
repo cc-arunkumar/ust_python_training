@@ -38,9 +38,6 @@ def avgEffy(*scores):
         print("Team needs improvement.")
     
 
-
-
-
 Welcome()
 res=efficiencystore(25,10)
 report("Asha","Finance",res)

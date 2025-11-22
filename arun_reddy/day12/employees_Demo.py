@@ -9,4 +9,3 @@ with open("D:/ust_python_training/arun_reddy/day12/employees_data.json","r") as 
     print(emp)
 with open("updated.json","w") as employee_updated_file:
     writes=json.dump(emp,employee_updated_file,indent=2)
-        

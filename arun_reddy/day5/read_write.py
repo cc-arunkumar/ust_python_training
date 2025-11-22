@@ -39,10 +39,6 @@ with open("example.txt","r") as file:
 
 
 
-
-
-
-
 str="handling file ops"
 
 with open("example.txt","r") as file:
