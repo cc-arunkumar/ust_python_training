@@ -2,7 +2,7 @@
 # Function to perform binary search
 def binary_search(a, search):
     left, right = 0, len(a) - 1  # Initialize the left and right pointers
-
+    
     # Loop until the left pointer crosses the right pointer
     while left <= right:
         mid = left + (right - left) // 2  # Find the middle index

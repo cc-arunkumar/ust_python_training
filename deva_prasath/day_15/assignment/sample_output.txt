@@ -1,0 +1,481 @@
+-------------------------
+1. Profile Creation
+
+Request
+{
+  "employee": {
+    "emp_id": 12345,
+    "name": "Asha",
+    "official_email": "asha@ust.com",
+    "department": "Engineering",
+    "location": "Pune"
+  },
+  "sim": {
+    "sim_number": "9876543210",
+    "provider": "Airtel",
+    "is_esim": true,
+    "activation_year": 2023
+  },
+  "data_plan": {
+    "name": "Standard 50GB",
+    "monthly_gb": 50,
+    "speed_mbps": 100,
+    "is_roaming_included": true
+  },
+  "voice_plan": {
+    "name": "Office Calls Pack",
+    "monthly_minutes": 1000,
+    "has_isd": false,
+    "per_minute_charge_paise": 0
+  },
+  "emergency_contact": {
+    "name": "Ravi",
+    "relation": "Friend",
+    "phone": "9876543210"
+  }
+}
+
+Response body
+{
+  "employee": {
+    "emp_id": 89808,
+    "name": "Deva",
+    "official_email": "deva@ust.com",
+    "department": "Engineering",
+    "location": "Salem"
+  },
+  "sim": {
+    "sim_number": "9876543210",
+    "provider": "Airtel",
+    "is_esim": true,
+    "activation_year": 2023
+  },
+  "data_plan": {
+    "name": "Standard 50GB",
+    "monthly_gb": 50,
+    "speed_mbps": 100,
+    "is_roaming_included": true
+  },
+  "voice_plan": {
+    "name": "Office Calls Pack",
+    "monthly_minutes": 1000,
+    "has_isd": false,
+    "per_minute_charge_paise": 0
+  },
+  "emergency_contact": {
+    "name": "Ravi",
+    "relation": "Friend",
+    "phone": "9876543210"
+  }
+}
+
+----------------------------------------------
+
+2.Get by id
+http://127.0.0.1:8000/telecom/profiles/89808
+
+{
+  "employee": {
+    "emp_id": 89808,
+    "name": "Deva",
+    "official_email": "deva@ust.com",
+    "department": "Engineering",
+    "location": "Salem"
+  },
+  "sim": {
+    "sim_number": "9876543210",
+    "provider": "Airtel",
+    "is_esim": true,
+    "activation_year": 2023
+  },
+  "data_plan": {
+    "name": "Standard 50GB",
+    "monthly_gb": 50,
+    "speed_mbps": 100,
+    "is_roaming_included": true
+  },
+  "voice_plan": {
+    "name": "Office Calls Pack",
+    "monthly_minutes": 1000,
+    "has_isd": false,
+    "per_minute_charge_paise": 0
+  },
+  "emergency_contact": {
+    "name": "Ravi",
+    "relation": "Friend",
+    "phone": "9876543210"
+  }
+}
+
+-------------------------------------------------
+
+3. Update by id
+
+curl -X 'PUT' \
+  'http://127.0.0.1:8000/telecom/profile/89808' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "employee": {
+    "emp_id": 89808,
+    "name": "Varun",
+    "official_email": "varun@ust.com",
+    "department": "Arts",
+    "location": "Karur"
+  },
+  "sim": {
+    "sim_number": "9876543210",
+    "provider": "Airtel",
+    "is_esim": true,
+    "activation_year": 2023
+  },
+  "data_plan": {
+    "name": "Standard 50GB",
+    "monthly_gb": 50,
+    "speed_mbps": 100,
+    "is_roaming_included": true
+  },
+  "voice_plan": {
+    "name": "Office Calls Pack",
+    "monthly_minutes": 1000,
+    "has_isd": false,
+    "per_minute_charge_paise": 0
+  },
+  "emergency_contact": {
+    "name": "Ravi",
+    "relation": "Friend",
+    "phone": "9876543210"
+  }
+}'
+
+
+
+-------------------------------------------------
+
+4. Delete by id
+
+curl -X 'DELETE' \
+  'http://127.0.0.1:8000/telecom/profiles/89808' \
+  -H 'accept: application/json'
+
+
+"Profile deleted successfully"
+
+
+-------------------------------------------------
+
+
+5. Validation checks
+-----------------------------
+1. emp_id > 1000 or < 999999
+
+{
+  "employee": {
+    "emp_id": 999,
+    "name": "Asha",
+    "official_email": "asha@ust.com"
+  },
+  "sim": {
+    "sim_number": "9876543210",
+    "activation_year": 2023
+  }
+}
+
+
+{
+  "detail": [
+    {
+      "type": "greater_than_equal",
+      "loc": [
+        "body",
+        "employee",
+        "emp_id"
+      ],
+      "msg": "Input should be greater than or equal to 1000",
+      "input": 999,
+      "ctx": {
+        "ge": 1000
+      }
+    }
+  ]
+}
+
+-------------------------------------------------
+
+
+2.name length=2
+
+{
+  "employee": {
+    "emp_id": 12345,
+    "name": "A",
+    "official_email": "asha@ust.com"
+  },
+  "sim": {
+    "sim_number": "9876543210",
+    "activation_year": 2023
+  }
+}
+
+{
+  "detail": [
+    {
+      "type": "string_too_short",
+      "loc": [
+        "body",
+        "employee",
+        "name"
+      ],
+      "msg": "String should have at least 2 characters",
+      "input": "A",
+      "ctx": {
+        "min_length": 2
+      }
+    }
+  ]
+}
+
+-------------------------------------------------
+
+3.official_email not ending with @ust.com
+
+{
+  "detail": [
+    {
+      "type": "string_pattern_mismatch",
+      "loc": [
+        "body",
+        "employee",
+        "official_email"
+      ],
+      "msg": "String should match pattern '^[a-zA-Z0-9._%+-]+@ust\\.com$'",
+      "input": "asha@gmail.com",
+      "ctx": {
+        "pattern": "^[a-zA-Z0-9._%+-]+@ust\\.com$"
+      }
+    }
+  ]
+}
+-------------------------------------------------
+
+
+4.sim_number not 10 digits
+
+{
+  "employee": {
+    "emp_id": 12345,
+    "name": "Asha",
+    "official_email": "asha@ust.com"
+  },
+  "sim": {
+    "sim_number": "98765432",
+    "activation_year": 2023
+  }
+}
+
+{
+  "detail": [
+    {
+      "type": "string_pattern_mismatch",
+      "loc": [
+        "body",
+        "sim",
+        "sim_number"
+      ],
+      "msg": "String should match pattern '^\\d{10}$'",
+      "input": "98765432",
+      "ctx": {
+        "pattern": "^\\d{10}$"
+      }
+    }
+  ]
+
+-------------------------------------------------
+
+
+5.activation_year > 2020 or < 2025
+	
+Error: Unprocessable Content
+
+
+{
+  "detail": [
+    {
+      "type": "greater_than_equal",
+      "loc": [
+        "body",
+        "sim",
+        "activation_year"
+      ],
+      "msg": "Input should be greater than or equal to 2020",
+      "input": 2019,
+      "ctx": {
+        "ge": 2020
+      }
+    }
+  ]
+}
+
+-------------------------------------------------
+
+6.monthly_gb >0 or <1000
+
+{
+  "employee": {
+    "emp_id": 12345,
+    "name": "Asha",
+    "official_email": "asha@ust.com"
+  },
+  "sim": {
+    "sim_number": "9876543210",
+    "activation_year": 2023
+  },
+  "data_plan": {
+    "name": "Standard 50GB",
+    "monthly_gb": 0,
+    "speed_mbps": 100,
+    "is_roaming_included": true
+  }
+}
+
+{
+  "detail": [
+    {
+      "type": "greater_than",
+      "loc": [
+        "body",
+        "data_plan",
+        "monthly_gb"
+      ],
+      "msg": "Input should be greater than 0",
+      "input": 0,
+      "ctx": {
+        "gt": 0
+      }
+    }
+  ]
+}
+
+-------------------------------------------------
+
+7.monthly_minutes negative
+
+{
+  "employee": {
+    "emp_id": 12345,
+    "name": "Asha",
+    "official_email": "asha@ust.com"
+  },
+  "sim": {
+    "sim_number": "9876543210",
+    "activation_year": 2023
+  },
+  "voice_plan": {
+    "name": "Office Calls Pack",
+    "monthly_minutes": -100,
+    "has_isd": false,
+    "per_minute_charge_paise": 0
+  }
+}
+
+
+
+{
+  "detail": [
+    {
+      "type": "greater_than_equal",
+      "loc": [
+        "body",
+        "voice_plan",
+        "monthly_minutes"
+      ],
+      "msg": "Input should be greater than or equal to 0",
+      "input": -100,
+      "ctx": {
+        "ge": 0
+      }
+    }
+  ]
+}
+
+-------------------------------------------------
+
+8.per_minute_charge_paise negative or >1000
+
+{
+  "employee": {
+    "emp_id": 12345,
+    "name": "Asha",
+    "official_email": "asha@ust.com"
+  },
+  "sim": {
+    "sim_number": "9876543210",
+    "activation_year": 2023
+  },
+  "voice_plan": {
+    "name": "Office Calls Pack",
+    "monthly_minutes": 500,
+    "has_isd": false,
+    "per_minute_charge_paise": -10
+  }
+}
+
+
+{
+  "detail": [
+    {
+      "type": "greater_than_equal",
+      "loc": [
+        "body",
+        "voice_plan",
+        "per_minute_charge_paise"
+      ],
+      "msg": "Input should be greater than or equal to 0",
+      "input": -10,
+      "ctx": {
+        "ge": 0
+      }
+    }
+  ]
+}
+
+-------------------------------------------------
+
+9. phone in EmergencyContact not matching pattern
+
+{
+  "employee": {
+    "emp_id": 12345,
+    "name": "Asha",
+    "official_email": "asha@ust.com"
+  },
+  "sim": {
+    "sim_number": "9876543210",
+    "activation_year": 2023
+  },
+  "emergency_contact": {
+    "name": "Ravi",
+    "relation": "Friend",
+    "phone": "1234567890"
+  }
+}
+
+{
+  "detail": [
+    {
+      "type": "string_pattern_mismatch",
+      "loc": [
+        "body",
+        "emergency_contact",
+        "phone"
+      ],
+      "msg": "String should match pattern '^[6-9]\\d{9}$'",
+      "input": "1234567890",
+      "ctx": {
+        "pattern": "^[6-9]\\d{9}$"
+      }
+    }
+  ]
+}
+
+-------------------------------------------------
