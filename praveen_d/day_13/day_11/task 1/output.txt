@@ -1,0 +1,65 @@
+  skipped_file="task 1\data\orders_skipped.csv",
+Skipping order 1002: Invalid quantity format: 'two'
+Skipping order 1004: Quantity must be positive
+Skipping order 1005: Missing price_per_unit
+Skipping order 1006: Customer name is empty
+Skipping order 1007: Invalid quantity format: ''
+Skipping order 1009: Invalid quantity format: 'three'
+Skipping order 1010: Invalid state: Andhra Pradesh
+Skipping order 1013: Invalid quantity format: 'abc'
+Skipping order 1017: Quantity must be positive
+Skipping order 1019: Invalid quantity format: ''
+Skipping order 1021: Invalid state: Sikkim
+Skipping order 1024: Customer name is empty
+Skipping order 1026: Quantity must be positive
+Skipping order 1027: Invalid state: Andhra Pradesh
+Skipping order 1029: Invalid quantity format: 'three'
+Skipping order 1032: Missing price_per_unit
+Skipping order 1035: Invalid quantity format: ''
+Skipping order 1038: Invalid state: Jammu & Kashmir
+Skipping order 1039: Quantity must be positive
+Skipping order 1043: Invalid state: InvalidState
+Skipping order 1045: Invalid quantity format: 'one'
+Skipping order 1048: Quantity must be positive
+Skipping order 1054: Invalid quantity format: 'three'
+Skipping order 1057: Missing price_per_unit
+Skipping order 1059: Quantity must be positive
+Skipping order 1062: Invalid state: Jammu & Kashmir
+Skipping order 1063: Invalid quantity format: 'one'
+Skipping order 1068: Invalid quantity format: ''
+Skipping order 1071: Quantity must be positive
+Skipping order 1073: Invalid quantity format: 'two'
+Skipping order 1075: Missing price_per_unit
+Skipping order 1078: Invalid quantity format: 'three'
+Skipping order 1081: Quantity must be positive
+Skipping order 1083: Invalid state: Andhra Pradesh
+Skipping order 1085: Invalid state: Jammu & Kashmir
+Skipping order 1087: Invalid quantity format: ''
+Skipping order 1089: Invalid quantity format: 'one'
+Skipping order 1091: Missing price_per_unit
+Skipping order 1094: Customer name is empty
+Skipping order 1095: Invalid quantity format: 'three'
+Skipping order 1098: Invalid state: Andhra Pradesh
+Skipping order 1106: Missing price_per_unit
+Skipping order 1107: Invalid quantity format: 'abc'
+Skipping order 1109: Quantity must be positive
+Skipping order 1110: Invalid state: Sikkim
+Skipping order 1111: Invalid quantity format: 'one'
+Skipping order 1114: Invalid state: Jammu & Kashmir
+Skipping order 1116: Invalid state: Andhra Pradesh
+Skipping order 1117: Invalid quantity format: ''
+Skipping order 1121: Quantity must be positive
+Skipping order 1122: Invalid state: Tripura
+Skipping order 1123: Invalid quantity format: 'one'
+Skipping order 1128: Invalid quantity format: ''
+Skipping order 1129: Invalid state: Vizag
+Skipping order 1130: Customer name is empty
+Skipping order 1132: Quantity must be positive
+Skipping order 1134: Invalid quantity format: 'three'
+Skipping order 1139: Quantity must be positive
+Skipping order 1142: Invalid quantity format: 'one'
+Skipping order 1144: Missing price_per_unit
+Skipping order 1150: Invalid state: Andhra Pradesh
+Processing complete.
+Valid records   : 89
+Skipped records : 61

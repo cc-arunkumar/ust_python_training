@@ -1,0 +1,4 @@
+Started the file handling with with
+ok done
+Writting completes here
+Append the first lineAppend the second lineAppend the first lineAppend the second lineAppend the first lineAppend the second line
