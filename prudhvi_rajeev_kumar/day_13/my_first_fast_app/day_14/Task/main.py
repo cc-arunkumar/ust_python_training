@@ -1,7 +1,7 @@
 from fastapi import FastAPI,HTTPException
 from pydantic import BaseModel
 from typing import List, Optional
-from datetime import datetime
+# from datetime import datetime
 
 
 app = FastAPI(title=" UST Employee API")
@@ -80,7 +80,7 @@ def list_employees(department: Optional[str] = None):
         result=[]
         for e in employees:
             if e["department"]==department:
-                result.append(e)
+                result.append(e["name"])
         return result
     return employees
 
