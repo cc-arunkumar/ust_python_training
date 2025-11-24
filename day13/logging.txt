@@ -1,0 +1,20 @@
+DEBUG:
+Level 10 to trace variable values or program flow
+eg: connecting to db
+
+INFO:
+level 20 to show progress or actions performed
+ex: logger.INFO("user login")
+
+WARNING:
+level 30 Something unexpected happened (might become a problem but prgram executes)
+ex: logger.WARNING("low disc space")
+
+ERROR:
+level 40 serious issue occured a part of program failed , program continue running
+ex: logger.ERROR("failed to read the file")
+
+CRITICAL:
+level 50 program crashed, immediate action required since system is unusable
+logger.CRITICAL("server down")
+
