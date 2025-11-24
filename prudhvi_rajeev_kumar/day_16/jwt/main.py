@@ -1,6 +1,4 @@
-
 # Minimal JWT Authentication Demo using FastAPI
-# ---------------------------------------------
 # This example demonstrates how to implement JWT-based authentication
 # with FastAPI. It includes:
 # - Login endpoint to issue JWT tokens
