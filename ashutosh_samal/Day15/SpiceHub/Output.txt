@@ -1,0 +1,194 @@
+************************** GET : Menu List *******************************
+================ Input ==================
+is_available : True
+
+================ Output =================
+[
+  {
+    "id": 1,
+    "name": "Tomato Soup",
+    "category": "starter",
+    "price": 99,
+    "is_available": true
+  },
+  {
+    "id": 2,
+    "name": "Paneer Butter Masala",
+    "category": "main_course",
+    "price": 249,
+    "is_available": true
+  },
+  {
+    "id": 3,
+    "name": "Butter Naan",
+    "category": "main_course",
+    "price": 49,
+    "is_available": true
+  }
+]
+
+
+************************** GET : Menu by ID *******************************
+============== Input =================
+id : 1
+
+============== Output ================
+{
+  "id": 1,
+  "name": "Tomato Soup",
+  "category": "starter",
+  "price": 99,
+  "is_available": true
+}
+
+
+************************* POST : Add item to Menu **************************
+============== Input ==============
+{
+  "id": 0,
+  "name": "Chicken Butter Masala",
+  "category": "Main-Course",
+  "price": 300,
+  "is_available": true
+}
+
+=============== Output ============
+{
+    "id": 6,
+    "name": "Chicken Butter Masala",
+    "category": "Main-Course",
+    "price": 300,
+    "is_available": true
+}
+
+
+**************************** PUT : Update Menu ***************************
+================== Input ==============
+id : 1
+{
+  "id": 1,
+  "name": "Manchao Soup",
+  "category": "Starter",
+  "price": 99,
+  "is_available": true
+}
+
+================== Output ==============
+{
+  "id": 1,
+  "name": "Manchao Soup",
+  "category": "Starter",
+  "price": 99,
+  "is_available": true
+}
+
+**************************** Delete : Menu item ************************
+========= Input ========
+id : 1
+
+========= Output ========
+{
+  "detail": "Item deleted"
+}
+
+**************************** POST : Create Order **************************
+========= Input ==========
+{
+  "id": 0,
+  "order_type": "dine_in",
+  "table_number": 3,
+  "items": [
+    {
+      "menu_item_id": 6,
+      "quantity": 2
+    }
+  ],
+  "status": "Pending",
+  "special_instructions": "string"
+}
+=========== Output =========
+{
+  "id": 1,
+  "order_type": "dine_in",
+  "table_number": 3,
+  "items": [
+    {
+      "menu_item_id": 6,
+      "quantity": 2
+    }
+  ],
+  "status": "Pending",
+  "special_instructions": "string"
+}
+
+
+********************** GET : List of Orders ***********************
+========= Output ========
+[
+  {
+    "id": 1,
+    "order_type": "dine_in",
+    "table_number": 3,
+    "items": [
+      {
+        "menu_item_id": 6,
+        "quantity": 2
+      }
+    ],
+    "status": "Pending",
+    "special_instructions": "string"
+  }
+]
+
+
+
+********************** GET : Order by id ***********************
+======= Input =======
+id : 1
+
+======= Output =======
+{
+  "id": 1,
+  "order_type": "dine_in",
+  "table_number": 3,
+  "items": [
+    {
+      "menu_item_id": 6,
+      "quantity": 2
+    }
+  ],
+  "status": "Pending",
+  "special_instructions": "string"
+}
+
+
+
+********************************* PATCH : update_order_status *************************
+============ Input ============
+{
+  "status": "in_progress"
+}
+============ output ===========
+{
+  "id": 1,
+  "order_type": "dine_in",
+  "table_number": 2,
+  "items": [
+    {
+      "menu_item_id": 3,
+      "quantity": 2
+    }
+  ],
+  "status": "in_progress",
+  "special_instructions": "string"
+}
+
+********************** GET : get total amount
+======= Input =======
+id : 1
+
+======= Output ======
+{
+  "order_id": 1,
+  "total_amount": 98
+}

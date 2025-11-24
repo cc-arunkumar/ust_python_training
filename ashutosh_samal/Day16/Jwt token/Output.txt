@@ -1,0 +1,22 @@
+=============== POST : login ================
+********** Input ***********
+{
+  "username": "Ashutosh",
+  "password": "Password1234"
+}
+
+********** Output **********
+{
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJBc2h1dG9zaCIsImV4cCI6MTc2Mzk3MjEwNn0.XBWzS3td4ZVW7ty_fjR_vla3F_5R2T54-HBV3Gbexjg",
+  "token_type": "bearer"
+}
+
+
+
+=============== GET : Read me ================
+{
+  "message": "This is a protected endpoint using JWT TOKEN",
+  "user": {
+    "username": "Ashutosh"
+  }
+}

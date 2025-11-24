@@ -1,0 +1,177 @@
+1. Create an Employee (POST /Employee)
+
+Input :
+{
+  "name": "Niel",
+  "email": "Niel.kumar@ust.com",
+  "department": "Engineering",
+  "role": "Developer"
+}
+
+Output:
+{
+  "Employee Created": {
+    "id": 4,
+    "name": "Niel",
+    "email": "Niel.kumar@ust.com",
+    "department": "Engineering",
+    "role": "Developer",
+    "status": "Active"
+  }
+}
+
+
+2. Get All Employees (GET /Employee)
+
+Input Example:
+department : Engineering
+
+Output:
+[
+  {
+    "id": 1,
+    "name": "Asha Rao",
+    "email": "asha.rao@ust.com",
+    "department": "Engineering",
+    "role": "Engineer",
+    "status": "Active"
+  },
+  {
+    "id": 4,
+    "name": "Niel",
+    "email": "Niel.kumar@ust.com",
+    "department": "Engineering",
+    "role": "Developer",
+    "status": "Active"
+  }
+]
+
+
+3. Get Employee by ID (GET /Employee/{id})
+
+Input Example:
+GET /Employee/2
+
+Output:
+
+{
+  "id": 2,
+  "name": "Vikram S",
+  "email": "vikram.s@ust.com",
+  "department": "Delivery",
+  "role": "Manager",
+  "status": "Active"
+}
+
+
+4. Update Employee (PUT /employee/{id})
+
+Input Example:
+{
+  "name": "Vikram S Updated",
+  "email": "vikram.s.updated@ust.com",
+  "department": "Delivery",
+  "role": "Senior Manager",
+  "status": "Active"
+}
+
+
+Output:
+{
+  "id": 2,
+  "name": "Vikram S Updated",
+  "email": "vikram.s.updated@ust.com",
+  "department": "Delivery",
+  "role": "Senior Manager",
+  "status": "Active"
+}
+
+
+
+5. Delete Employee (DELETE /Employee/{id})
+
+Input Example:
+DELETE /Employee/3
+Output:
+
+{
+  "detail": "Employee deleted"
+}
+
+
+
+6. Employee Check-in (POST /Employee/{id}/checkin)
+
+Input Example:
+{
+  "employee_id": 2,
+  "date": "2025-11-24",
+  "check_in": "09:00"
+}
+
+Output:
+{
+  "employee_id": 2,
+  "date": "2025-11-24",
+  "check_in": "09:00",
+  "check_out": null
+}
+
+
+
+7. Employee Check-out (POST /employee/{id}/checkout)
+
+Input Example:
+{
+  "date": "2025-11-24",
+  "time": "18:00"
+}
+
+Output:
+{
+  "employee_id": 2,
+  "date": "2025-11-24",
+  "check_in": "09:00",
+  "check_out": "18:00"
+}
+
+
+
+8. Create Leave Request (POST /employees/{id}/leave-requests)
+
+Input Example:
+{
+  "from_date": "2025-12-01",
+  "to_date": "2025-12-05",
+  "reason": "Vacation"
+}
+
+Output:
+{
+  "leave_id": 1,
+  "employee_id": 2,
+  "from_date": "2025-12-01",
+  "to_date": "2025-12-05",
+  "reason": "Vacation",
+  "status": "pending"
+}
+
+
+
+9. Get Leave Requests (GET /employees/{id}/leave-requests)
+
+Input Example:
+GET /employees/2/leave-requests
+
+Output:
+
+[
+  {
+    "leave_id": 1,
+    "employee_id": 2,
+    "from_date": "2025-12-01",
+    "to_date": "2025-12-05",
+    "reason": "Vacation",
+    "status": "pending"
+  }
+]

@@ -1,0 +1,81 @@
+******************* POST : Add Student **************
+-------> Request <--------
+{
+  "name": "Deva",
+  "age": 22,
+  "grade": "A+"
+}
+{
+  "name": "Ashutosh",
+  "age": 23,
+  "grade": "A"
+}
+
+-------> Response <-------
+{
+    "name": "Ashutosh",
+    "age": 23,
+    "grade": "A"
+  },
+  {
+    "name": "Deva",
+    "age": 22,
+    "grade": "A+"
+}
+
+
+******************* GET : Student List *****************
+-------> Response <-----
+[
+  {
+    "name": "Ashutosh",
+    "age": 23,
+    "grade": "A"
+  },
+  {
+    "name": "Deva",
+    "age": 22,
+    "grade": "A+"
+  }
+]
+
+
+******************* GET : Student by ID *****************
+----------> Request <----------
+index : 1
+
+----------> Response <----------
+{
+  "name": "Deva",
+  "age": 22,
+  "grade": "A+"
+}
+
+
+******************* DELETE : Student by ID *****************
+----------> Request <----------
+index : 1
+
+----------> Response <----------
+{
+  "name": "Deva",
+  "age": 22,
+  "grade": "A+"
+}
+
+
+******************* PUT : Update Student by ID *****************
+----------> Request <----------
+index : 0
+{
+  "name": "Ashutosh",
+  "age": 22,
+  "grade": "A+"
+}
+
+----------> Response <----------
+{
+  "name": "Ashutosh",
+  "age": 22,
+  "grade": "A+"
+}

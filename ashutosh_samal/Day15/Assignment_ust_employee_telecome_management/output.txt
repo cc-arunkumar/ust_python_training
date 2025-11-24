@@ -1,0 +1,334 @@
++++++++++++++++++++++++++++++++++ POST : Create profile +++++++++++++++++++++++++++++++++++++
+========== Input =========
+{
+  "employee": {
+    "emp_id": 1000,
+    "name": "string",
+    "official_email": "TS7MlYgJZEVyeF-z+1zE2C2zsCP4FP5e+.gj4n@ust.com",
+    "department": "Telecom",
+    "location": "Bengaluru"
+  },
+  "sim": {
+    "sim_number": "1725940201",
+    "provider": "Jio",
+    "is_esim": false,
+    "activation_year": 2020
+  },
+  "data_plan": {
+    "name": "string",
+    "monthly_gb": 1,
+    "speed_mbps": 50,
+    "is_roaming_included": false
+  },
+  "voice_plan": {
+    "name": "string",
+    "monthly_minutes": 10000,
+    "has_isd": false,
+    "per_minute_charge_paise": 0
+  },
+  "emergency_contact": {
+    "name": "string",
+    "relation": "Family",
+    "phone": "9712743730"
+  }
+}
+============== Output ====================
+{
+  "employee": {
+    "emp_id": 1000,
+    "name": "string",
+    "official_email": "TS7MlYgJZEVyeF-z+1zE2C2zsCP4FP5e+.gj4n@ust.com",
+    "department": "Telecom",
+    "location": "Bengaluru"
+  },
+  "sim": {
+    "sim_number": "1725940201",
+    "provider": "Jio",
+    "is_esim": false,
+    "activation_year": 2020
+  },
+  "data_plan": {
+    "name": "string",
+    "monthly_gb": 1,
+    "speed_mbps": 50,
+    "is_roaming_included": false
+  },
+  "voice_plan": {
+    "name": "string",
+    "monthly_minutes": 10000,
+    "has_isd": false,
+    "per_minute_charge_paise": 0
+  },
+  "emergency_contact": {
+    "name": "string",
+    "relation": "Family",
+    "phone": "9712743730"
+  }
+}
+
+
+++++++++++++++++++++++++++++++++ GET : List all profiles ++++++++++++++++++++++++++++++
+======= Output ========
+[
+  {
+    "employee": {
+      "emp_id": 1000,
+      "name": "string",
+      "official_email": "TS7MlYgJZEVyeF-z+1zE2C2zsCP4FP5e+.gj4n@ust.com",
+      "department": "Telecom",
+      "location": "Bengaluru"
+    },
+    "sim": {
+      "sim_number": "1725940201",
+      "provider": "Jio",
+      "is_esim": false,
+      "activation_year": 2020
+    },
+    "data_plan": {
+      "name": "string",
+      "monthly_gb": 1,
+      "speed_mbps": 50,
+      "is_roaming_included": false
+    },
+    "voice_plan": {
+      "name": "string",
+      "monthly_minutes": 10000,
+      "has_isd": false,
+      "per_minute_charge_paise": 0
+    },
+    "emergency_contact": {
+      "name": "string",
+      "relation": "Family",
+      "phone": "9712743730"
+    }
+  },
+  {
+    "employee": {
+      "emp_id": 1001,
+      "name": "Amit",
+      "official_email": "amit@ust.com",
+      "department": "Telecom",
+      "location": "Bengaluru"
+    },
+    "sim": {
+      "sim_number": "3938717832",
+      "provider": "Airtel",
+      "is_esim": false,
+      "activation_year": 2020
+    },
+    "data_plan": {
+      "name": "string",
+      "monthly_gb": 1,
+      "speed_mbps": 50,
+      "is_roaming_included": false
+    },
+    "voice_plan": {
+      "name": "string",
+      "monthly_minutes": 10000,
+      "has_isd": false,
+      "per_minute_charge_paise": 0
+    },
+    "emergency_contact": {
+      "name": "Anita",
+      "relation": "Family",
+      "phone": "6151816566"
+    }
+  }
+  {
+  "employee": {
+    "emp_id": 1002,
+    "name": "Mukesh",
+    "official_email": "mukesh@ust.com",
+    "department": "IT",
+    "location": "Bengaluru"
+  },
+  "sim": {
+    "sim_number": "3938719832",
+    "provider": "Vodafone",
+    "is_esim": false,
+    "activation_year": 2020
+  },
+  "data_plan": {
+    "name": "string",
+    "monthly_gb": 1,
+    "speed_mbps": 50,
+    "is_roaming_included": false
+  },
+  "voice_plan": {
+    "name": "string",
+    "monthly_minutes": 10000,
+    "has_isd": false,
+    "per_minute_charge_paise": 0
+  },
+  "emergency_contact": {
+    "name": "Nita",
+    "relation": "Family",
+    "phone": "6151816566"
+  }
+}
+]
+
+
+
+++++++++++++++++++++++++++ GET : Search profiles by department/provider +++++++++++++++++++++++++
+========== Input ========
+department : Telecom
+provider : Airtel
+
+========== Output ========
+[
+  {
+    "employee": {
+      "emp_id": 1001,
+      "name": "Amit",
+      "official_email": "amit@ust.com",
+      "department": "Telecom",
+      "location": "Bengaluru"
+    },
+    "sim": {
+      "sim_number": "3938717832",
+      "provider": "Airtel",
+      "is_esim": false,
+      "activation_year": 2020
+    },
+    "data_plan": {
+      "name": "string",
+      "monthly_gb": 1,
+      "speed_mbps": 50,
+      "is_roaming_included": false
+    },
+    "voice_plan": {
+      "name": "string",
+      "monthly_minutes": 10000,
+      "has_isd": false,
+      "per_minute_charge_paise": 0
+    },
+    "emergency_contact": {
+      "name": "Anita",
+      "relation": "Family",
+      "phone": "6151816566"
+    }
+  }
+]
+
+
++++++++++++++++++++++++++++++++++++++ GET : profile by emp_id +++++++++++++++++++++++++++++++++++++
+========= Input =======
+emp_id : 1002
+
+========= Output =======
+{
+  "employee": {
+    "emp_id": 1002,
+    "name": "Mukesh",
+    "official_email": "mukesh@ust.com",
+    "department": "IT",
+    "location": "Bengaluru"
+  },
+  "sim": {
+    "sim_number": "3938719832",
+    "provider": "Vodafone",
+    "is_esim": false,
+    "activation_year": 2020
+  },
+  "data_plan": {
+    "name": "string",
+    "monthly_gb": 1,
+    "speed_mbps": 50,
+    "is_roaming_included": false
+  },
+  "voice_plan": {
+    "name": "string",
+    "monthly_minutes": 10000,
+    "has_isd": false,
+    "per_minute_charge_paise": 0
+  },
+  "emergency_contact": {
+    "name": "Nita",
+    "relation": "Family",
+    "phone": "6151816566"
+  }
+}
+
+
++++++++++++++++++++++++++++++++++++++ PUT : Update profile +++++++++++++++++++++++++++++++++++++
+============ Input =============
+emp_id : 1001
+
+Edit Value:
+{
+  "employee": {
+    "emp_id": 1001,
+    "name": "Amit",
+    "official_email": "amit@ust.com",
+    "department": "HR",
+    "location": "Bengaluru"
+  },
+  "sim": {
+    "sim_number": "3120545148",
+    "provider": "Jio",
+    "is_esim": false,
+    "activation_year": 2020
+  },
+  "data_plan": {
+    "name": "string",
+    "monthly_gb": 1,
+    "speed_mbps": 50,
+    "is_roaming_included": false
+  },
+  "voice_plan": {
+    "name": "string",
+    "monthly_minutes": 10000,
+    "has_isd": false,
+    "per_minute_charge_paise": 0
+  },
+  "emergency_contact": {
+    "name": "string",
+    "relation": "Family",
+    "phone": "9738006485"
+  }
+}
+
+============== Output ============
+{
+  "employee": {
+    "emp_id": 1001,
+    "name": "Amit",
+    "official_email": "amit@ust.com",
+    "department": "HR",
+    "location": "Bengaluru"
+  },
+  "sim": {
+    "sim_number": "3120545148",
+    "provider": "Jio",
+    "is_esim": false,
+    "activation_year": 2020
+  },
+  "data_plan": {
+    "name": "string",
+    "monthly_gb": 1,
+    "speed_mbps": 50,
+    "is_roaming_included": false
+  },
+  "voice_plan": {
+    "name": "string",
+    "monthly_minutes": 10000,
+    "has_isd": false,
+    "per_minute_charge_paise": 0
+  },
+  "emergency_contact": {
+    "name": "string",
+    "relation": "Family",
+    "phone": "9738006485"
+  }
+}
+
+
+++++++++++++++++++++++++++ DELETE : Delete profile +++++++++++++++++++++++++++++++
+============ Input ==============
+emp_id : 1000
+
+============ Output =============
+{
+  "detail": "Profile deleted"
+}

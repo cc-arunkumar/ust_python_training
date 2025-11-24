@@ -1,0 +1,104 @@
+Sample output
+ 
+ 
+1. Post laptop
+ 
+Request
+ 
+ {
+ "asset_id": 2,
+ "serial_number": "XYZ98765",
+ "model_name": "HP EliteBook 840",
+ "assigned_to_emp_id" 54321,
+ "status": "assigned",
+ "purchase_year": 2021,
+ "location": "Chennai"
+}
+ 
+Response # 200
+ 
+{
+  "asset_id": 2,
+  "serial_number": "XYZ98765",
+  "model_name": "HP EliteBook 840",
+  "assigned_to_emp_id": 54321,
+  "status": "assigned",
+  "purchase_year": 2021,
+  "location": "Chennai"
+}
+ 
+ 
+2. Get all
+   
+Response body
+
+[
+  {
+    "asset_id": 2,
+    "serial_number": "XYZ98765",
+    "model_name": "HP EliteBook 840",
+    "assigned_to_emp_id": 54321,
+    "status": "assigned",
+    "purchase_year": 2021,
+    "location": "Chennai"
+  }
+]
+
+ 
+3. Get by id
+ 
+curl -X 'GET' \
+  'http://127.0.0.1:8000/laptops/2' \
+  -H 'accept: application/json'
+ 
+ 
+Response body
+200  
+{
+  "asset_id": 2,
+  "serial_number": "XYZ98765",
+  "model_name": "HP EliteBook 840",
+  "assigned_to_emp_id": 54321,
+  "status": "assigned",
+  "purchase_year": 2021,
+  "location": "Chennai"
+}
+ 
+ 
+4. Put command
+ 
+Request
+ 
+  {
+    "asset_id": 2,
+    "serial_number": "XYZ98765",
+    "model_name": "Macbook m1pro",
+    "assigned_to_emp_id": 12345,
+    "status": "assigned",
+    "purchase_year": 2020,
+    "location": "Ranchi"
+  }'
+ 
+ 
+Response
+   
+200
+{
+  "asset_id": 2,
+  "serial_number": "XYZ98765",
+  "model_name": "Macbook m1pro",
+  "assigned_to_emp_id": 12345,
+  "status": "assigned",
+  "purchase_year": 2020,
+  "location": "Ranchi"
+}
+ 
+5. Delete api by emp_id
+ 
+id : 2
+ 
+Response
+200
+{
+  "detail": "Laptop deleted successfully"
+}
