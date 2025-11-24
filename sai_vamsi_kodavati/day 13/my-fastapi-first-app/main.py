@@ -122,4 +122,163 @@ def eligible(age: int):
     return {"eligible": age >= 18}
 
 
+# --------------------------------------------------------------------------------------
+
+# Sample Output
+# 1. Greet user with optional name (query param default)
+
+# Request:
+
+# GET /
+
+# Response:
+
+# {
+#   "message": "Python FastAPI Training session"
+# }
+
+# Request:
+
+# GET /greet/John
+
+# Response:
+
+# {
+#   "message": "Good Morning John"
+# }
+
+# 2. Get square of a number (path param)
+
+# Request:
+
+# GET /square?num=4
+
+# Response:
+
+# {
+#   "square": 16
+# }
+
+# 3. Check if number is even or odd (path)
+
+# Request:
+
+# GET /even/10
+
+# Response:
+
+# {
+#   "Even": 10
+# }
+# Request:
+
+# GET /even/7
+
+# Response:
+
+# {
+#   "odd": 7
+# }
+
+# 4. Simple addition using query params
+
+# Request:
+
+# GET /add?num1=2&num2=3&num3=4
+
+# Response:
+
+# {
+#   "sum": 9
+# }
+
+# 5. User info with optional city (path + optional query)
+
+# Request:
+
+# GET /city/1?name=New York
+
+# Response:
+
+# {
+#   "num": 1,
+#   "City": "New York"
+# }
+
+# Request:
+
+# GET /city/2
+
+# Response:
+
+# {
+#   "num": 2,
+#   "City": "Trivandrum"
+# }
+
+# 6. Repeat a message n times
+
+# Request:
+
+# GET /repeat?msg=Hello&times=3
+
+# Response:
+
+# {
+#   "Msg n times": "HelloHelloHello"
+# }
+# 7. Full name using two query parameters
+
+# Request:
+
+# GET /fullname?first=John&last=Doe
+
+# Response:
+
+# {
+#   "fullname": "JohnDoe"
+# }
+
+# 8. Convert string to uppercase
+
+# Request:
+
+# GET /uppercase?text=hello
+
+# Response:
+
+# {
+#   "Uppercase of text:": "HELLO"
+# }
+
+# 9. Calculate area of rectangle
+
+# Request:
+
+# GET /area?l=5&b=4
+
+# Response:
+
+# {
+#   "Area of rectangle:": 20
+# }
+
+# 10. Age next year
+
+# Request:
+
+# GET /next_age/25
+
+# Response:
+
+# {
+#   "age next year:": 26
+# }
+
+# Request:
     
+# GET /eligible?age=17
+# Response:
+# {
+#   "eligible": false
+# }
