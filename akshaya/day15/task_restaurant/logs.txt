@@ -1,0 +1,38 @@
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     Started reloader process [10104] using WatchFiles
+INFO:     Started server process [2368]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     127.0.0.1:64272 - "GET / HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:64272 - "GET /favicon.ico HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:64273 - "GET /docs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64273 - "GET /openapi.json HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64301 - "GET /menu?only_available=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64313 - "POST /menu HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64315 - "POST /menu HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64324 - "POST /menu HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64327 - "GET /menu/4 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64328 - "GET /menu/5 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64329 - "GET /menu/7 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64330 - "GET /menu/8 HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:64340 - "PUT /menu/2 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64341 - "PUT /menu/8 HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:64344 - "DELETE /menu/6 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64345 - "DELETE /menu/8 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64347 - "DELETE /menu/8 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64364 - "POST /orders HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64371 - "POST /orders HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64377 - "GET /orders?status=pending HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64378 - "GET /orders?status=status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64384 - "GET /orders/3 HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:64386 - "GET /orders/1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64398 - "PATCH /orders/1/status?status=pending HTTP/1.1" 400 Bad Request
+INFO:     127.0.0.1:64402 - "PATCH /orders/2/status?status=pending HTTP/1.1" 400 Bad Request
+INFO:     127.0.0.1:64406 - "PATCH /orders/1/status?status=in_progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64408 - "PATCH /orders/3/status?status=in_progress HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:64448 - "DELETE /menu/8 HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:64449 - "DELETE /menu/5 HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:64450 - "DELETE /menu/6 HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:64454 - "DELETE /menu/3 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64891 - "POST /orders HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64892 - "GET /orders/1/total-amount HTTP/1.1" 200 OK
