@@ -84,3 +84,66 @@ def read_me(current_user: User = Depends(get_current_user)):
         "message": "This is a protected endpoint using JWT TOKEN",
         "user": current_user
     }
+
+
+
+
+
+# Login Request (POST /login)
+# Request:
+
+# http
+# POST /login
+# Content-Type: application/json
+
+# {
+#   "username": "demo_user",
+#   "password": "demo_pass"
+# }
+# Successful Response (200 OK):
+
+# json
+# {
+#   "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+#   "token_type": "bearer"
+# }
+# The access_token will be a long JWT string.
+
+# token_type is always "bearer".
+
+# Failure Response (401 Unauthorized):
+
+# json
+# {
+#   "detail": "Incorrect username or password"
+# }
+
+#  Protected Endpoint (GET /me)
+# You must include the JWT token from the login response in the Authorization header.
+
+# Request:
+
+# http
+# GET /me
+# Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+# Successful Response (200 OK):
+
+# json
+# {
+#   "message": "This is a protected endpoint using JWT TOKEN",
+#   "user": {
+#     "username": "demo_user"
+#   }
+# }
+# Failure Response (401 Unauthorized): If the token is invalid or expired:
+
+# json
+# {
+#   "detail": "Invalid or expired token"
+# }
+# If the token’s sub claim doesn’t match the demo username:
+
+# json
+# {
+#   "detail": "User not found"
+# }
