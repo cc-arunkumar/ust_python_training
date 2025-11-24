@@ -11,16 +11,24 @@ class Employee(BaseModel):
     name: str = Field(..., min_length=2, description="Name must be at least 2 characters long")
     department: str = Field("General", description="Defaults to 'General' if not provided")
 
+    # NOTE: In production, ensure that emp_id is unique across the system (e.g., use a database constraint)
+    #       Additionally, employee data might be fetched from an external HR system.
+
 # SIM Model
 class Sim(BaseModel):
     number: str = Field(..., pattern=r"^\d{10}$", description="SIM number must be exactly 10 digits")
     provider: str = Field("Jio", description="Defaults to 'Jio' if not provided")
     activation_year: int = Field(..., ge=2020, le=2025, description="Activation year must be between 2020 and 2025")
 
+    # NOTE: Ensure that the SIM number is validated against real-time databases for correctness (e.g., no duplicates).
+    #       Provider might need validation against a list of authorized providers.
+
 # Registration Model (nested)
 class Registration(BaseModel):
-    employee: Employee
-    sim: Sim
+    employee: Employee  # Employee information
+    sim: Sim  # SIM card details
+
+    # NOTE: The Registration model ties together employee and SIM data and will require proper error handling and validations.
 
 #  Success Case
 data_valid = {
@@ -43,6 +51,7 @@ def try_registration(data, label):
     try:
         Registration(**data)
     except ValidationError as e:
+        # NOTE: Production should log these errors to a centralized logging service for better traceability and troubleshooting.
         print(f"\n {label}:\n", e)
 
 # emp_id too small

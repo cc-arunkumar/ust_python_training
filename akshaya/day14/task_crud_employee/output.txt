@@ -1,0 +1,167 @@
+
+UST Employee API - Example Outputs
+
+
+1.  Get All Employees
+
+Request:
+GET /employees
+
+Response:
+[
+  {"id": 1, "name": "Asha Rao", "email": "asha.rao@ust.com", "department": "Engineering", "role": "Engineer", "status": "active"},
+  {"id": 2, "name": "Vikram S", "email": "vikram.s@ust.com", "department": "Delivery", "role": "Manager", "status": "active"},
+  {"id": 3, "name": "Meera N", "email": "meera.n@ust.com", "department": "HR", "role": "HR", "status": "active"}
+]
+
+2.  Create Employee
+
+Request:
+POST /employees
+Body:
+{
+  "id": 0,
+  "name": "Ravi Kumar",
+  "email": "ravi.kumar@ust.com",
+  "department": "Finance",
+  "role": "Analyst",
+  "status": "active"
+}
+
+Response:
+{
+  "id": 4,
+  "name": "Ravi Kumar",
+  "email": "ravi.kumar@ust.com",
+  "department": "Finance",
+  "role": "Analyst",
+  "status": "active"
+}
+
+3.  Get Employee by ID
+
+Request:
+GET /employees/2
+
+Response:
+{
+  "id": 2,
+  "name": "Vikram S",
+  "email": "vikram.s@ust.com",
+  "department": "Delivery",
+  "role": "Manager",
+  "status": "active"
+}
+
+4.  Update Employee
+
+Request:
+PUT /employees/3
+Body:
+{
+  "id": 3,
+  "name": "Meera N",
+  "email": "meera.n@ust.com",
+  "department": "HR",
+  "role": "Senior HR",
+  "status": "active"
+}
+
+Response:
+{
+  "id": 3,
+  "name": "Meera N",
+  "email": "meera.n@ust.com",
+  "department": "HR",
+  "role": "Senior HR",
+  "status": "active"
+}
+
+5.  Delete Employee
+
+Request:
+DELETE /employees/1
+
+Response:
+{
+  "id": 1,
+  "name": "Asha Rao",
+  "email": "asha.rao@ust.com",
+  "department": "Engineering",
+  "role": "Engineer",
+  "status": "active"
+}
+
+6.  Check-in Attendance
+
+Request:
+POST /employees/2/checkin
+Body:
+{
+  "date": "2025-11-24",
+  "time": "09:00:00"
+}
+
+Response:
+{
+  "employee_id": 2,
+  "date": "2025-11-24",
+  "check_in": "09:00:00",
+  "check_out": null
+}
+
+7.  Check-out Attendance
+
+Request:
+POST /employees/2/checkout
+Body:
+{
+  "date": "2025-11-24",
+  "time": "17:00:00"
+}
+
+Response:
+{
+  "employee_id": 2,
+  "date": "2025-11-24",
+  "check_in": "09:00:00",
+  "check_out": "17:00:00"
+}
+
+8.  Create Leave Request
+
+Request:
+POST /employees/3/leave-requests
+Body:
+{
+  "from_date": "2025-12-01",
+  "to_date": "2025-12-05",
+  "reason": "Family function"
+}
+
+Response:
+{
+  "leave_id": 1,
+  "employee_id": 3,
+  "from_date": "2025-12-01",
+  "to_date": "2025-12-05",
+  "reason": "Family function",
+  "status": "pending"
+}
+
+9.  List Leave Requests
+
+Request:
+GET /employees/3/leave-requests
+
+Response:
+[
+  {
+    "leave_id": 1,
+    "employee_id": 3,
+    "from_date": "2025-12-01",
+    "to_date": "2025-12-05",
+    "reason": "Family function",
+    "status": "pending"
+  }
+]

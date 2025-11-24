@@ -1,0 +1,103 @@
+
+UST Employee Telecom Device Registration API
+
+
+1. Success Case
+
+Request Body:
+{
+  "employee": {"emp_id": 12345, "name": "Asha", "department": "Engineering"},
+  "sim": {"number": "9876543210", "provider": "Airtel", "activation_year": 2023}
+}
+
+Response:
+employee=Employee(emp_id=12345, name='Asha', department='Engineering') 
+sim=Sim(number='9876543210', provider='Airtel', activation_year=2023)
+
+
+2.  Defaults Case (provider + department missing)
+
+Request Body:
+{
+  "employee": {"emp_id": 12345, "name": "Asha"},
+  "sim": {"number": "9876543210", "activation_year": 2023}
+}
+
+Response:
+employee=Employee(emp_id=12345, name='Asha', department='General') 
+sim=Sim(number='9876543210', provider='Jio', activation_year=2023)
+
+
+3.  emp_id error
+
+Request Body:
+{
+  "employee": {"emp_id": 999, "name": "Asha"},
+  "sim": {"number": "9876543210", "activation_year": 2023}
+}
+
+Response:
+1 validation error for Registration
+employee.emp_id
+  Input should be greater than or equal to 1000 [type=greater_than_equal, input_value=999, input_type=int]
+    For further information visit https://errors.pydantic.dev/2.12/v/greater_than_equal
+
+
+4.  name error
+
+Request Body:
+{
+  "employee": {"emp_id": 12345, "name": "A"},
+  "sim": {"number": "9876543210", "activation_year": 2023}
+}
+
+Response:
+1 validation error for Registration
+employee.name
+  String should have at least 2 characters [type=string_too_short, input_value='A', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_too_short
+
+
+5.  SIM number error
+
+Request Body:
+{
+  "employee": {"emp_id": 12345, "name": "Asha"},
+  "sim": {"number": "12345", "activation_year": 2023}
+}
+
+Response:
+1 validation error for Registration
+sim.number
+  String should match pattern '^\d{10}$' [type=string_pattern_mismatch, input_value='12345', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_pattern_mismatch
+
+
+6.  activation_year too low
+
+Request Body:
+{
+  "employee": {"emp_id": 12345, "name": "Asha"},
+  "sim": {"number": "9876543210", "activation_year": 2019}
+}
+
+Response:
+1 validation error for Registration
+sim.activation_year
+  Input should be greater than or equal to 2020 [type=greater_than_equal, input_value=2019, input_type=int]
+    For further information visit https://errors.pydantic.dev/2.12/v/greater_than_equal
+
+
+7.  activation_year too high
+
+Request Body:
+{
+  "employee": {"emp_id": 12345, "name": "Asha"},
+  "sim": {"number": "9876543210", "activation_year": 2030}
+}
+
+Response:
+1 validation error for Registration
+sim.activation_year
+  Input should be less than or equal to 2025 [type=less_than_equal, input_value=2030, input_type=int]
+    For further information visit https://errors.pydantic.dev/2.12/v/less_than_equal

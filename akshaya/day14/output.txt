@@ -1,0 +1,115 @@
+
+Students CRUD (In-memory) - Output
+
+
+1.  Create Student
+
+Request:
+POST /students
+Body:
+{
+  "name": "Asha",
+  "age": 20,
+  "grade": "A"
+}
+
+Response:
+{
+  "Student Created": {
+    "name": "Asha",
+    "age": 20,
+    "grade": "A"
+  }
+}
+
+2.  Create Another Student (with default grade)
+
+Request:
+POST /students
+Body:
+{
+  "name": "Vikram",
+  "age": 22
+}
+
+Response:
+{
+  "Student Created": {
+    "name": "Vikram",
+    "age": 22,
+    "grade": "unknown"
+  }
+}
+
+3.  Get All Students
+
+Request:
+GET /students
+
+Response:
+[
+  {"name": "Asha", "age": 20, "grade": "A"},
+  {"name": "Vikram", "age": 22, "grade": "unknown"}
+]
+
+4.  Get Student by Index
+
+Request:
+GET /students/0
+
+Response:
+{
+  "name": "Asha",
+  "age": 20,
+  "grade": "A"
+}
+
+5.  Get Student by Invalid Index
+
+Request:
+GET /students/10
+
+Response:
+{
+  "detail": "Student not found"
+}
+
+6.  Update Student
+
+Request:
+PUT /students/1
+Body:
+{
+  "name": "Vikram S",
+  "age": 23,
+  "grade": "B"
+}
+
+Response:
+{
+  "name": "Vikram S",
+  "age": 23,
+  "grade": "B"
+}
+
+7.  Delete Student
+
+Request:
+DELETE /students/0
+
+Response:
+{
+  "name": "Asha",
+  "age": 20,
+  "grade": "A"
+}
+
+8.  Delete Student by Invalid Index
+
+Request:
+DELETE /students/5
+
+Response:
+{
+  "detail": "Student not found"
+}

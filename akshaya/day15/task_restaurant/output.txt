@@ -1,0 +1,131 @@
+
+SpiceHub Restaurant API Demo
+
+
+1. GET /menu
+
+Request:
+GET /menu
+
+Response:
+[
+  {"id": 1, "name": "Tomato Soup", "category": "starter", "price": 99.0, "is_available": true},
+  {"id": 2, "name": "Paneer Butter Masala", "category": "main_course", "price": 249.0, "is_available": true},
+  {"id": 3, "name": "Butter Naan", "category": "main_course", "price": 49.0, "is_available": true},
+  {"id": 4, "name": "Gulab Jamun", "category": "dessert", "price": 79.0, "is_available": false}
+]
+
+2. GET /menu?only_available=true
+
+Request:
+GET /menu?only_available=true
+
+Response:
+[
+  {"id": 1, "name": "Tomato Soup", "category": "starter", "price": 99.0, "is_available": true},
+  {"id": 2, "name": "Paneer Butter Masala", "category": "main_course", "price": 249.0, "is_available": true},
+  {"id": 3, "name": "Butter Naan", "category": "main_course", "price": 49.0, "is_available": true}
+]
+
+3. GET /menu/2
+
+Request:
+GET /menu/2
+
+Response:
+{"id": 2, "name": "Paneer Butter Masala", "category": "main_course", "price": 249.0, "is_available": true}
+
+4. POST /menu
+
+Request:
+POST /menu
+Body:
+{
+  "id": 0,
+  "name": "Veg Biryani",
+  "category": "main_course",
+  "price": 199.0,
+  "is_available": true
+}
+
+Response:
+{"id": 5, "name": "Veg Biryani", "category": "main_course", "price": 199.0, "is_available": true}
+
+5. POST /orders
+
+Request:
+POST /orders
+Body:
+{
+  "id": 0,
+  "order_type": "dine_in",
+  "table_number": 12,
+  "items": [
+    {"menu_item_id": 2, "quantity": 2},
+    {"menu_item_id": 3, "quantity": 4}
+  ],
+  "special_instructions": "Less spicy"
+}
+
+Response:
+{
+  "id": 1,
+  "order_type": "dine_in",
+  "table_number": 12,
+  "items": [
+    {"menu_item_id": 2, "quantity": 2},
+    {"menu_item_id": 3, "quantity": 4}
+  ],
+  "status": "pending",
+  "special_instructions": "Less spicy"
+}
+
+6. GET /orders
+
+Request:
+GET /orders
+
+Response:
+[
+  {
+    "id": 1,
+    "order_type": "dine_in",
+    "table_number": 12,
+    "items": [
+      {"menu_item_id": 2, "quantity": 2},
+      {"menu_item_id": 3, "quantity": 4}
+    ],
+    "status": "pending",
+    "special_instructions": "Less spicy"
+  }
+]
+
+7. PATCH /orders/1/status?status=in_progress
+
+Request:
+PATCH /orders/1/status?status=in_progress
+
+Response:
+{
+  "id": 1,
+  "order_type": "dine_in",
+  "table_number": 12,
+  "items": [
+    {"menu_item_id": 2, "quantity": 2},
+    {"menu_item_id": 3, "quantity": 4}
+  ],
+  "status": "in_progress",
+  "special_instructions": "Less spicy"
+}
+
+8. GET /orders/1/total-amount
+
+Request:
+GET /orders/1/total-amount
+
+Response:
+{
+  "order_id": 1,
+  "total_amount": 694.0
+}
+(Explanation: 2 × 249 = 498, plus 4 × 49 = 196, total = 694)

@@ -1,0 +1,179 @@
+
+FastAPI Utility Endpoints - Example Output
+
+
+1.  Home
+
+Request:
+GET /
+
+Response:
+{"message": "Hyyyyyyy"}
+
+2.  Greet
+
+Request:
+GET /greet/Asha
+
+Response:
+{"message": "Asha"}
+
+3.  Addition
+
+Request:
+GET /add?a=2&b=3&c=4
+
+Response:
+{"sum=": 9}
+
+4.  Square (with path parameter)
+
+Request:
+GET /square/5
+
+Response:
+{"sq": 25}
+
+5.  Square (with default value)
+
+Request:
+GET /square
+
+Response:
+{"sq": 64}
+
+6.  Even/Odd Check
+
+Request:
+GET /check?n=7
+
+Response:
+{"result": "Odd"}
+
+7.  Uppercase Conversion
+
+Request:
+GET /upper?text=hello
+
+Response:
+{"text": "HELLO"}
+
+8.  Full Name
+
+Request:
+GET /fullname?first=Asha&last=Rao
+
+Response:
+{"first": "Asha", "last": "Rao"}
+
+9.  Rectangle Area (length & width)
+
+Request:
+GET /area?length=10&width=5
+
+Response:
+{"length": "10", "width": "5"}
+
+10.  User Details
+
+Request:
+GET /user/101?city=Chennai
+
+Response:
+{"user_id": 101, "city": "Chennai"}
+
+11.  Repeat Message
+
+Request:
+GET /repeat?msg=Hi&n=3
+
+Response:
+{"message": "HiHiHi"}
+
+12.  Age Next Year
+
+Request:
+GET /age/25
+
+Response:
+{"age_next_year": 26}
+
+13.  Contains Character
+
+Request:
+GET /contains?word=hello&char=e
+
+Response:
+{"contains": true}
+
+14. Movie Details
+
+Request:
+GET /movie/Inception?year=2010&rating=8
+
+Response:
+{"title": "Inception", "year": 2010, "rating": 8}
+
+15.  List of Numbers
+
+Request:
+GET /nums?n=1&n=2&n=3&n=4
+
+Response:
+{"numbers": [1, 2, 3, 4]}
+
+16.  Substring
+
+Request:
+GET /substring?text=HelloWorld&start=0&end=5
+
+Response:
+{"substring": "Hello"}
+
+17.  Password Check
+
+Request:
+GET /checkpass?pwd=secret123
+
+Response:
+{"valid": true}
+
+18.  Temperature Conversion
+
+Request:
+GET /temp?c=37
+
+Response:
+{"C": 37.0, "F": 98.6}
+
+19.  Task Details
+
+Request:
+GET /task/Coding?priority=high
+
+Response:
+{"task": "Coding", "priority": "high"}
+
+20.  Reverse String
+
+Request:
+GET /reverse?text=hello
+
+Response:
+{"reversed": "olleh"}
+
+21.  Multiply Numbers
+
+Request:
+GET /mul/6?b=7
+
+Response:
+{"product": 42}
+
+22.  Eligibility Check
+
+Request:
+GET /eligible?age=16
+
+Response:
+{"eligible": false}

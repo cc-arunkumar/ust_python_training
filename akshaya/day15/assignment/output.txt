@@ -1,0 +1,307 @@
+# sample output 
+1. POST /telecom/profiles
+
+Request Body:
+    {
+  "employee": {
+    "emp_id": 12345,
+    "name": "Asha",
+    "official_email": "asha@ust.com",
+    "department": "Engineering",
+    "location": "Bengaluru"
+  },
+  "sim": {
+    "sim_number": "9876543210",
+    "provider": "Airtel",
+    "is_esim": false,
+    "activation_year": 2023
+  },
+  "data_plan": {
+    "name": "Unlimited Plan",
+    "monthly_gb": 50,
+    "speed_mbps": 100,
+    "is_roaming_included": true
+  },
+  "voice_plan": {
+    "name": "Voice 1000",
+    "monthly_minutes": 1000,
+    "has_isd": true,
+    "per_minute_charge_paise": 50
+  },
+  "emergency_contact": {
+    "name": "John Doe",
+    "relation": "Family",
+    "phone": "9876543210"
+  }
+}
+
+Response Body:
+    {
+  "employee": {
+    "emp_id": 12345,
+    "name": "Asha",
+    "official_email": "asha@ust.com",
+    "department": "Engineering",
+    "location": "Bengaluru"
+  },
+  "sim": {
+    "sim_number": "9876543210",
+    "provider": "Airtel",
+    "is_esim": false,
+    "activation_year": 2023
+  },
+  "data_plan": {
+    "name": "Unlimited Plan",
+    "monthly_gb": 50,
+    "speed_mbps": 100,
+    "is_roaming_included": true
+  },
+  "voice_plan": {
+    "name": "Voice 1000",
+    "monthly_minutes": 1000,
+    "has_isd": true,
+    "per_minute_charge_paise": 50
+  },
+  "emergency_contact": {
+    "name": "John Doe",
+    "relation": "Family",
+    "phone": "9876543210"
+  }
+}
+2. POST /telecom/profiles/minimal
+{
+  "employee": {
+    "emp_id": 12345,
+    "name": "Asha",
+    "official_email": "asha@ust.com"
+  },
+  "sim": {
+    "sim_number": "9876543210",
+    "activation_year": 2023
+  }
+}
+Response Body:
+    {
+  "employee": {
+    "emp_id": 12345,
+    "name": "Asha",
+    "official_email": "asha@ust.com",
+    "department": "Telecom",
+    "location": "Bengaluru"
+  },
+  "sim": {
+    "sim_number": "9876543210",
+    "provider": "Jio",
+    "is_esim": false,
+    "activation_year": 2023
+  },
+  "data_plan": null,
+  "voice_plan": null,
+  "emergency_contact": null
+}
+3. GET /telecom/profiles
+Request Body: None (this is a GET request).
+Response Body
+[
+  {
+    "employee": {
+      "emp_id": 12345,
+      "name": "Asha",
+      "official_email": "asha@ust.com",
+      "department": "Engineering",
+      "location": "Bengaluru"
+    },
+    "sim": {
+      "sim_number": "9876543210",
+      "provider": "Airtel",
+      "is_esim": false,
+      "activation_year": 2023
+    },
+    "data_plan": {
+      "name": "Unlimited Plan",
+      "monthly_gb": 50,
+      "speed_mbps": 100,
+      "is_roaming_included": true
+    },
+    "voice_plan": {
+      "name": "Voice 1000",
+      "monthly_minutes": 1000,
+      "has_isd": true,
+      "per_minute_charge_paise": 50
+    },
+    "emergency_contact": {
+      "name": "John Doe",
+      "relation": "Family",
+      "phone": "9876543210"
+    }
+  }
+]
+4. GET /telecom/profiles/{emp_id}
+Request Body: None (this is a GET request).
+Response Body (if emp_id is found):
+    {
+  "employee": {
+    "emp_id": 12345,
+    "name": "Asha",
+    "official_email": "asha@ust.com",
+    "department": "Engineering",
+    "location": "Bengaluru"
+  },
+  "sim": {
+    "sim_number": "9876543210",
+    "provider": "Airtel",
+    "is_esim": false,
+    "activation_year": 2023
+  },
+  "data_plan": {
+    "name": "Unlimited Plan",
+    "monthly_gb": 50,
+    "speed_mbps": 100,
+    "is_roaming_included": true
+  },
+  "voice_plan": {
+    "name": "Voice 1000",
+    "monthly_minutes": 1000,
+    "has_isd": true,
+    "per_minute_charge_paise": 50
+  },
+  "emergency_contact": {
+    "name": "John Doe",
+    "relation": "Family",
+    "phone": "9876543210"
+  }
+}
+Response Body (if emp_id is not found):
+    {
+  "detail": "Profile not found"
+}
+5. PUT /telecom/profiles/{emp_id}
+{
+  "employee": {
+    "emp_id": 12345,
+    "name": "Asha Updated",
+    "official_email": "asha_updated@ust.com",
+    "department": "Sales",
+    "location": "Mumbai"
+  },
+  "sim": {
+    "sim_number": "9876543210",
+    "provider": "Airtel",
+    "is_esim": true,
+    "activation_year": 2024
+  },
+  "data_plan": {
+    "name": "Premium Plan",
+    "monthly_gb": 100,
+    "speed_mbps": 200,
+    "is_roaming_included": true
+  },
+  "voice_plan": {
+    "name": "Voice 2000",
+    "monthly_minutes": 2000,
+    "has_isd": true,
+    "per_minute_charge_paise": 25
+  },
+  "emergency_contact": {
+    "name": "Jane Doe",
+    "relation": "Family",
+    "phone": "9876543210"
+  }
+}
+
+Response Body:
+    {
+  "employee": {
+    "emp_id": 12345,
+    "name": "Asha Updated",
+    "official_email": "asha_updated@ust.com",
+    "department": "Sales",
+    "location": "Mumbai"
+  },
+  "sim": {
+    "sim_number": "9876543210",
+    "provider": "Airtel",
+    "is_esim": true,
+    "activation_year": 2024
+  },
+  "data_plan": {
+    "name": "Premium Plan",
+    "monthly_gb": 100,
+    "speed_mbps": 200,
+    "is_roaming_included": true
+  },
+  "voice_plan": {
+    "name": "Voice 2000",
+    "monthly_minutes": 2000,
+    "has_isd": true,
+    "per_minute_charge_paise": 25
+  },
+  "emergency_contact": {
+    "name": "Jane Doe",
+    "relation": "Family",
+    "phone": "9876543210"
+  }
+}
+6. DELETE /telecom/profiles/{emp_id}
+{
+  "detail": "Profile deleted"
+}
+
+7. GET /telecom/profiles/search
+Request Body: None (this is a GET request with query parameters).
+[
+  {
+    "employee": {
+      "emp_id": 12345,
+      "name": "Asha",
+      "official_email": "asha@ust.com",
+      "department": "Engineering",
+      "location": "Bengaluru"
+    },
+    "sim": {
+      "sim_number": "9876543210",
+      "provider": "Airtel",
+      "is_esim": false,
+      "activation_year": 2023
+    },
+    "data_plan": {
+      "name": "Unlimited Plan",
+      "monthly_gb": 50,
+      "speed_mbps": 100,
+      "is_roaming_included": true
+    },
+    "voice_plan": {
+      "name": "Voice 1000",
+      "monthly_minutes": 1000,
+      "has_isd": true,
+      "per_minute_charge_paise": 50
+    },
+    "emergency_contact": {
+      "name": "John Doe",
+      "relation": "Family",
+      "phone": "9876543210"
+    }
+  }
+]
+Validation Endpoints:
+    GET /validate/emp_id
+    {
+  "emp_id": 12345
+}
+GET /validate/name
+{
+  "name": "Asha"
+}
+
+GET /validate/sim_number
+{
+  "sim_number": "9876543210"
+}
+GET /validate/activation_year
+{
+  "activation_year": 2023
+}
+GET /validate/phone
+{
+  "phone": "9876543210"
+}
