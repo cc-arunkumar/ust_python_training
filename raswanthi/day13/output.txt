@@ -1,0 +1,149 @@
+from fastapi import FastAPI
+app = FastAPI()
+
+@app.get("/")
+def home():
+    return {"message": "helloooo"}
+# Example:
+# Request: GET /
+# Response: {"message": "helloooo"}
+
+@app.get("/greet/{name}")
+def greet(name:str):
+    return {"message": f"welcome {name}"}
+# Example:
+# Request: GET /greet/Alice
+# Response: {"message": "welcome Alice"}
+
+@app.get("/add")
+def add(a:int,b:int):
+    return {"sum": a + b}
+# Example:
+# Request: GET /add?a=5&b=7
+# Response: {"sum": 12}
+
+@app.get("/square/{num}")
+def square(num:int):
+    return {"square": num * num}
+# Example:
+# Request: GET /square/6
+# Response: {"square": 36}
+
+@app.get("/check/{num}")
+def check(num:int):
+    return {"result": "even" if num % 2 == 0 else "odd"}
+# Example:
+# Request: GET /check/9
+# Response: {"result": "odd"}
+
+@app.get("/user/{id}")
+def user(id:int, city:str="Coimbatore"):
+    return {"user_id": id, "city": city}
+# Example:
+# Request: GET /user/101?city=Delhi
+# Response: {"user_id": 101, "city": "Delhi"}
+
+@app.get("/repeat")
+def repeat(msg:str,n:int):
+    return {"message": msg * n}
+# Example:
+# Request: GET /repeat?msg=Hi&n=3
+# Response: {"message": "HiHiHi"}
+
+@app.get("/fullname")
+def fullname(first:str,last:str):
+    return {"full_name": f"{first} {last}"}
+# Example:
+# Request: GET /fullname?first=John&last=Doe
+# Response: {"full_name": "John Doe"}
+
+@app.get("/upper")
+def uppercase(text:str):
+    return {"upper_case": text.upper()}
+# Example:
+# Request: GET /upper?text=hello
+# Response: {"upper_case": "HELLO"}
+
+@app.get("/area")
+def area(length:int, width:int):
+    return {"area": length * width}
+# Example:
+# Request: GET /area?length=10&width=4
+# Response: {"area": 40}
+
+@app.get("/age/{current_age}")
+def age(current_age:int):
+    return {"age_next_year": current_age + 1}
+# Example:
+# Request: GET /age/25
+# Response: {"age_next_year": 26}
+
+@app.get("/contains")
+def contains(word:str,char:str):
+    return {"contains": char in word}
+# Example:
+# Request: GET /contains?word=banana&char=a
+# Response: {"contains": true}
+
+@app.get("/movie/{title}")
+def movie(title:str,year:int=2009,rating:int=9):
+    return {"title": title, "year": year, "rating": rating}
+# Example:
+# Request: GET /movie/Inception?year=2010&rating=8
+# Response: {"title": "Inception", "year": 2010, "rating": 8}
+
+@app.get("/nums")
+def nums(n: list[int]):
+    return {"numbers": n}
+# Example:
+# Request: GET /nums?n=1&n=2&n=3&n=4
+# Response: {"numbers": [1,2,3,4]}
+
+@app.get("/substring")
+def substring(text:str,start:int,end:int):
+    return {"substring": text[start:end]}
+# Example:
+# Request: GET /substring?text=HelloWorld&start=0&end=5
+# Response: {"substring": "Hello"}
+
+@app.get("/checkpass")
+def checkpass(pwd:str):
+    return {"valid": len(pwd) >= 8}
+# Example:
+# Request: GET /checkpass?pwd=secret123
+# Response: {"valid": true}
+
+@app.get("/temp")
+def temp(c:float):
+    return {"C": c, "F": (c * 9/5) + 32}
+# Example:
+# Request: GET /temp?c=37
+# Response: {"C": 37, "F": 98.6}
+
+@app.get("/task/{name}")
+def task(name:str,priority:str="low"):
+    return {"task": name, "priority": priority}
+# Example:
+# Request: GET /task/cleaning?priority=high
+# Response: {"task": "cleaning", "priority": "high"}
+
+@app.get("/reverse")
+def reverse(text:str):
+    return {"reversed": text[::-1]}
+# Example:
+# Request: GET /reverse?text=Python
+# Response: {"reversed": "nohtyP"}
+
+@app.get("/mul/{a}")
+def mul(a:int,b:int):
+    return {"product": a * b}
+# Example:
+# Request: GET /mul/5?b=4
+# Response: {"product": 20}
+
+@app.get("/eligible")
+def eligible(age:int):
+    return {"eligible": age >= 18}
+# Example:
+# Request: GET /eligible?age=16
+# Response: {"eligible": false}
