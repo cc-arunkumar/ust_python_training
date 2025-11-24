@@ -1,3 +1,21 @@
+# UST Employee Telecom
+# Management
+# API Specification and Validation Assignment
+# 1. Context
+# UST manages telecom services for its employees. For each employee, the system
+# must store:
+# Employee identity and contact information
+# Company SIM details
+# Optional data and voice plan information
+# Optional emergency contact information
+# You are required to design:
+# 1. Pydantic models that validate the structure and constraints of this data.
+# 2. FastAPI endpoints that use these models for request parsing and validation,
+# with in-memory storage (lists) only.
+# The focus is on correct modelling, validation behaviour, and clear API contracts.
+# No database or authentication is required.
+
+
 # Import required libraries
 from fastapi import FastAPI,HTTPException
 from pydantic import validator,Field,BaseModel
@@ -124,3 +142,277 @@ def delete_profile(emp_id:int):
             Profiles.pop(i)
             return {"detail":"Profile deleted"}
     return {"detail":"Profile Not Found"}
+
+
+# sample output:
+# 1. Add a New Telecom Profile (CREATE)
+# Request:
+# POST /telecom/profiles
+# Body:
+# {
+#     "employee": {
+#         "emp_id": 12345,
+#         "name": "John Doe",
+#         "official_email": "john.doe@ust.com",
+#         "department": "Engineering",
+#         "location": "Bengaluru"
+#     },
+#     "sim": {
+#         "sim_number": "9876543210",
+#         "provider": "Jio",
+#         "is_esim": false,
+#         "activation_year": 2023
+#     },
+#     "data_plan": {
+#         "name": "Unlimited Plan",
+#         "monthly_gb": 50,
+#         "speed_mbps": 100,
+#         "is_roaming_included": true
+#     },
+#     "voice_plan": {
+#         "name": "Voice Plus",
+#         "monthly_minutes": 500,
+#         "has_isd": true,
+#         "per_minute_charge_paise": 60
+#     },
+#     "emergency_contact": {
+#         "name": "Jane Doe",
+#         "relation": "Spouse",
+#         "phone": "9876543210"
+#     }
+# }
+# Response:
+# {
+#     "employee": {
+#         "emp_id": 12345,
+#         "name": "John Doe",
+#         "official_email": "john.doe@ust.com",
+#         "department": "Engineering",
+#         "location": "Bengaluru"
+#     },
+#     "sim": {
+#         "sim_number": "9876543210",
+#         "provider": "Jio",
+#         "is_esim": false,
+#         "activation_year": 2023
+#     },
+#     "data_plan": {
+#         "name": "Unlimited Plan",
+#         "monthly_gb": 50,
+#         "speed_mbps": 100,
+#         "is_roaming_included": true
+#     },
+#     "voice_plan": {
+#         "name": "Voice Plus",
+#         "monthly_minutes": 500,
+#         "has_isd": true,
+#         "per_minute_charge_paise": 60
+#     },
+#     "emergency_contact": {
+#         "name": "Jane Doe",
+#         "relation": "Spouse",
+#         "phone": "9876543210"
+#     }
+# }
+
+# 2. Get All Telecom Profiles (READ)
+# Request:
+# GET /telecom/profiles
+# Response:
+# [
+#     {
+#         "employee": {
+#             "emp_id": 12345,
+#             "name": "John Doe",
+#             "official_email": "john.doe@ust.com",
+#             "department": "Engineering",
+#             "location": "Bengaluru"
+#         },
+#         "sim": {
+#             "sim_number": "9876543210",
+#             "provider": "Jio",
+#             "is_esim": false,
+#             "activation_year": 2023
+#         },
+#         "data_plan": {
+#             "name": "Unlimited Plan",
+#             "monthly_gb": 50,
+#             "speed_mbps": 100,
+#             "is_roaming_included": true
+#         },
+#         "voice_plan": {
+#             "name": "Voice Plus",
+#             "monthly_minutes": 500,
+#             "has_isd": true,
+#             "per_minute_charge_paise": 60
+#         },
+#         "emergency_contact": {
+#             "name": "Jane Doe",
+#             "relation": "Spouse",
+#             "phone": "9876543210"
+#         }
+#     }
+# ]
+
+# 3. Search Telecom Profiles by Department and/or Provider (SEARCH)
+# Request:
+# GET /telecom/profiles/search?department=Engineering&provider=Jio
+# Response:
+# [
+#     {
+#         "employee": {
+#             "emp_id": 12345,
+#             "name": "John Doe",
+#             "official_email": "john.doe@ust.com",
+#             "department": "Engineering",
+#             "location": "Bengaluru"
+#         },
+#         "sim": {
+#             "sim_number": "9876543210",
+#             "provider": "Jio",
+#             "is_esim": false,
+#             "activation_year": 2023
+#         },
+#         "data_plan": {
+#             "name": "Unlimited Plan",
+#             "monthly_gb": 50,
+#             "speed_mbps": 100,
+#             "is_roaming_included": true
+#         },
+#         "voice_plan": {
+#             "name": "Voice Plus",
+#             "monthly_minutes": 500,
+#             "has_isd": true,
+#             "per_minute_charge_paise": 60
+#         },
+#         "emergency_contact": {
+#             "name": "Jane Doe",
+#             "relation": "Spouse",
+#             "phone": "9876543210"
+#         }
+#     }
+# ]
+
+# 4. Get Profile by Employee ID (READ)
+# Request:
+# GET /telecom/profiles/12345
+# Response:
+# {
+#     "employee": {
+#         "emp_id": 12345,
+#         "name": "John Doe",
+#         "official_email": "john.doe@ust.com",
+#         "department": "Engineering",
+#         "location": "Bengaluru"
+#     },
+#     "sim": {
+#         "sim_number": "9876543210",
+#         "provider": "Jio",
+#         "is_esim": false,
+#         "activation_year": 2023
+#     },
+#     "data_plan": {
+#         "name": "Unlimited Plan",
+#         "monthly_gb": 50,
+#         "speed_mbps": 100,
+#         "is_roaming_included": true
+#     },
+#     "voice_plan": {
+#         "name": "Voice Plus",
+#         "monthly_minutes": 500,
+#         "has_isd": true,
+#         "per_minute_charge_paise": 60
+#     },
+#     "emergency_contact": {
+#         "name": "Jane Doe",
+#         "relation": "Spouse",
+#         "phone": "9876543210"
+#     }
+# }
+
+# 5. Update Telecom Profile by Employee ID (UPDATE)
+# Request:
+# PUT /telecom/profiles/12345
+# Body:
+# {
+#     "employee": {
+#         "emp_id": 12345,
+#         "name": "John Doe Updated",
+#         "official_email": "john.doe.updated@ust.com",
+#         "department": "Engineering",
+#         "location": "Mumbai"
+#     },
+#     "sim": {
+#         "sim_number": "9876543210",
+#         "provider": "Jio",
+#         "is_esim": true,
+#         "activation_year": 2023
+#     },
+#     "data_plan": {
+#         "name": "Updated Plan",
+#         "monthly_gb": 100,
+#         "speed_mbps": 200,
+#         "is_roaming_included": true
+#     },
+#     "voice_plan": {
+#         "name": "Updated Voice Plan",
+#         "monthly_minutes": 1000,
+#         "has_isd": true,
+#         "per_minute_charge_paise": 40
+#     },
+#     "emergency_contact": {
+#         "name": "Jane Doe Updated",
+#         "relation": "Spouse",
+#         "phone": "9876543210"
+#     }
+# }
+# Response:
+# {
+#     "employee": {
+#         "emp_id": 12345,
+#         "name": "John Doe Updated",
+#         "official_email": "john.doe.updated@ust.com",
+#         "department": "Engineering",
+#         "location": "Mumbai"
+#     },
+#     "sim": {
+#         "sim_number": "9876543210",
+#         "provider": "Jio",
+#         "is_esim": true,
+#         "activation_year": 2023
+#     },
+#     "data_plan": {
+#         "name": "Updated Plan",
+#         "monthly_gb": 100,
+#         "speed_mbps": 200,
+#         "is_roaming_included": true
+#     },
+#     "voice_plan": {
+#         "name": "Updated Voice Plan",
+#         "monthly_minutes": 1000,
+#         "has_isd": true,
+#         "per_minute_charge_paise": 40
+#     },
+#     "emergency_contact": {
+#         "name": "Jane Doe Updated",
+#         "relation": "Spouse",
+#         "phone": "9876543210"
+#     }
+# }
+
+# 6. Delete Telecom Profile by Employee ID (DELETE)
+# Request:
+# DELETE /telecom/profiles/12345
+# Response:
+# {
+#     "detail": "Profile deleted"
+# }
+
+# 7. Profile Not Found (Error Response)
+# Request:
+# GET /telecom/profiles/99999
+# Response:
+# {
+#     "detail": "Profile not found"
+# }
+
