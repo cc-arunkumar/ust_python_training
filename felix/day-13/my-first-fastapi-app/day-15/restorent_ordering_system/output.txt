@@ -1,0 +1,245 @@
+{
+  "openapi": "3.0.2",
+  "info": {
+    "title": "SpiceHub",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/menu-list": {
+      "get": {
+        "summary": "Menu List",
+        "operationId": "menu_list_menu_list_get",
+        "parameters": [
+          {
+            "name": "only_available",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "boolean" },
+            "description": "Return only available menu items"
+          }
+        ],
+        "responses": {
+          "200": { "description": "List of menu items" }
+        }
+      }
+    },
+
+    "/menu/{id}": {
+      "get": {
+        "summary": "Get Menu Item",
+        "operationId": "single_item_menu__id__get",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": { "description": "Menu item found" },
+          "404": { "description": "Menu item not found" }
+        }
+      },
+      "put": {
+        "summary": "Update Menu Item",
+        "operationId": "update_menu_item_menu__id__put",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/MenuItemCreate" } }
+          }
+        },
+        "responses": {
+          "200": { "description": "Menu item updated" },
+          "404": { "description": "Item not found" }
+        }
+      },
+      "delete": {
+        "summary": "Delete Menu Item",
+        "operationId": "delete_item_menu__id__delete",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": { "description": "Item deleted" },
+          "404": { "description": "Item not found" }
+        }
+      }
+    },
+
+    "/menu": {
+      "post": {
+        "summary": "Add New Menu Item",
+        "operationId": "add_new_menu_item_menu_post",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/MenuItemCreate" } }
+          }
+        },
+        "responses": {
+          "200": { "description": "Menu item created" }
+        }
+      }
+    },
+
+    "/orders": {
+      "post": {
+        "summary": "Create New Order",
+        "operationId": "new_order_orders_post",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/OrderCreate" } }
+          }
+        },
+        "responses": {
+          "200": { "description": "Order created" },
+          "400": { "description": "Invalid item or quantity" }
+        }
+      }
+    },
+
+    "/orders-list": {
+      "get": {
+        "summary": "Order List",
+        "operationId": "order_list_orders_list_get",
+        "parameters": [
+          { "name": "status", "in": "query", "schema": { "type": "string" }, "required": false }
+        ],
+        "responses": {
+          "200": { "description": "List of orders" },
+          "404": { "description": "No orders found" }
+        }
+      }
+    },
+
+    "/order/{id}": {
+      "get": {
+        "summary": "Get Single Order",
+        "operationId": "get_an_order_order__id__get",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": { "description": "Order found" },
+          "404": { "description": "Order not found" }
+        }
+      }
+    },
+
+    "/order/{id}/status": {
+      "patch": {
+        "summary": "Update Order Status",
+        "operationId": "status_order__id__status_patch",
+        "parameters": [
+          { "name": "id", "in": "path", "schema": { "type": "integer" }, "required": true }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/Status" } }
+          }
+        },
+        "responses": {
+          "200": { "description": "Order status updated" },
+          "404": { "description": "Order not found" }
+        }
+      }
+    },
+
+    "/order/{id}/total-amount": {
+      "get": {
+        "summary": "Calculate Total Order Amount",
+        "operationId": "total_amount_order__id__total_amount_get",
+        "parameters": [
+          { "name": "id", "in": "path", "schema": { "type": "integer" }, "required": true }
+        ],
+        "responses": {
+          "200": { "description": "Total amount returned" },
+          "404": { "description": "Order not found" }
+        }
+      }
+    }
+  },
+
+  "components": {
+    "schemas": {
+      "MenuItem": {
+        "title": "MenuItem",
+        "required": ["id", "name", "category", "price"],
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "name": { "type": "string" },
+          "category": { "type": "string" },
+          "price": { "type": "number", "format": "float" },
+          "is_available": { "type": "boolean", "default": true }
+        }
+      },
+
+      "MenuItemCreate": {
+        "title": "MenuItemCreate",
+        "required": ["name", "category", "price"],
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "category": { "type": "string" },
+          "price": { "type": "number" },
+          "is_available": { "type": "boolean", "default": true }
+        }
+      },
+
+      "OrderItem": {
+        "title": "OrderItem",
+        "required": ["menu_item_id", "quantity"],
+        "type": "object",
+        "properties": {
+          "menu_item_id": { "type": "integer" },
+          "quantity": { "type": "integer" }
+        }
+      },
+
+      "Order": {
+        "title": "Order",
+        "required": ["id", "order_type", "table_no", "items"],
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "order_type": { "type": "string" },
+          "table_no": { "type": "integer" },
+          "items": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/OrderItem" }
+          },
+          "status": { "type": "string", "default": "pending" },
+          "special_instructions": { "type": "string" }
+        }
+      },
+
+      "OrderCreate": {
+        "title": "OrderCreate",
+        "required": ["order_type", "table_no", "items"],
+        "type": "object",
+        "properties": {
+          "order_type": { "type": "string" },
+          "table_no": { "type": "integer" },
+          "items": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/OrderItem" }
+          },
+          "status": { "type": "string", "default": "pending" },
+          "special_instructions": { "type": "string" }
+        }
+      },
+
+      "Status": {
+        "title": "Status",
+        "required": ["status"],
+        "type": "object",
+        "properties": {
+          "status": { "type": "string" }
+        }
+      }
+    }
+  }
+}

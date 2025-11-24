@@ -1,0 +1,293 @@
+{
+  "openapi": "3.0.2",
+  "info": {
+    "title": "UST Employee Telecom Device Registration",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/telecom/profiles": {
+      "post": {
+        "summary": "Create New Profile",
+        "operationId": "profile_telecom_profiles_post",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/EmployeeTelecomProfile" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Employee added successfully"
+          },
+          "409": {
+            "description": "Employee ID already exists"
+          }
+        }
+      },
+      "get": {
+        "summary": "List All Profiles",
+        "operationId": "list_of_profiles_telecom_profiles_get",
+        "responses": {
+          "200": {
+            "description": "List of profiles"
+          }
+        }
+      }
+    },
+
+    "/telecom/profiles/{id}": {
+      "get": {
+        "summary": "Get Profile By ID",
+        "operationId": "profile_by_id_telecom_profiles__id__get",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Profile found" },
+          "404": { "description": "Profile not found" }
+        }
+      }
+    },
+
+    "/telecom/profiles/{emp_id}": {
+      "put": {
+        "summary": "Update Profile",
+        "operationId": "update_profile_telecom_profiles__emp_id__put",
+        "parameters": [
+          {
+            "name": "emp_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/EmployeeTelecomProfile" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Employee updated" },
+          "404": { "description": "No data found" }
+        }
+      },
+      "delete": {
+        "summary": "Delete Profile",
+        "operationId": "delete_profile_telecom_profiles__emp_id__delete",
+        "parameters": [
+          {
+            "name": "emp_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Profile deleted" },
+          "404": { "description": "No data found" }
+        }
+      }
+    },
+
+    "/telecom/profiles_search": {
+      "get": {
+        "summary": "Filter By Department or Provider",
+        "operationId": "filter_by_department_and_provider_telecom_profiles_search_get",
+        "parameters": [
+          {
+            "name": "department",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "provider",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Filtered results" },
+          "404": { "description": "No data found" }
+        }
+      }
+    }
+  },
+
+  "components": {
+    "schemas": {
+      "EmployeeModel": {
+        "title": "EmployeeModel",
+        "required": ["emp_id", "name", "official_email"],
+        "type": "object",
+        "properties": {
+          "emp_id": {
+            "type": "integer",
+            "description": "ID must be between 1000 and 999999",
+            "minimum": 1000,
+            "maximum": 999999
+          },
+          "name": {
+            "type": "string",
+            "description": "Name length should be minimum 2",
+            "minLength": 2
+          },
+          "official_email": {
+            "type": "string",
+            "description": "Email must belong to ust.com domain"
+          },
+          "department": {
+            "type": "string",
+            "default": "Telecom"
+          },
+          "location": {
+            "type": "string",
+            "default": "Bamgaluru"
+          }
+        }
+      },
+
+      "SimModel": {
+        "title": "SimModel",
+        "required": ["number", "activation_year"],
+        "type": "object",
+        "properties": {
+          "number": {
+            "type": "string",
+            "description": "Invalid phone number",
+            "minLength": 10,
+            "maxLength": 10
+          },
+          "provider": {
+            "type": "string",
+            "default": "Jio"
+          },
+          "is_esim": {
+            "type": "boolean",
+            "default": false
+          },
+          "activation_year": {
+            "type": "integer",
+            "description": "Invalid activation year",
+            "minimum": 2020,
+            "maximum": 2025
+          }
+        }
+      },
+
+      "DataPlan": {
+        "title": "DataPlan",
+        "required": ["name", "monthly_gb"],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name length 3–50",
+            "minLength": 3,
+            "maxLength": 50
+          },
+          "monthly_gb": {
+            "type": "integer",
+            "description": "Monthly GB must be between 1 and 1000",
+            "minimum": 1,
+            "maximum": 1000
+          },
+          "speed_mbps": {
+            "type": "integer",
+            "default": 50,
+            "minimum": 1,
+            "maximum": 1000
+          },
+          "is_roaming_included": {
+            "type": "boolean",
+            "default": false
+          }
+        }
+      },
+
+      "VoicePlan": {
+        "title": "VoicePlan",
+        "required": ["name", "monthly_minutes"],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name length minimum 3",
+            "minLength": 3
+          },
+          "monthly_minutes": {
+            "type": "integer",
+            "description": "Monthly minutes 0–1000",
+            "minimum": 0,
+            "maximum": 1000
+          },
+          "has_isd": {
+            "type": "boolean",
+            "default": false
+          },
+          "per_minute_charge_paise": {
+            "type": "integer",
+            "default": 0,
+            "minimum": 0,
+            "maximum": 1000
+          }
+        }
+      },
+
+      "EmergencyContact": {
+        "title": "EmergencyContact",
+        "required": ["name", "relation", "phone"],
+        "type": "object",
+        "properties": {
+          "name": { "type": "string", "minLength": 2 },
+          "relation": { "type": "string", "default": "Family" },
+          "phone": {
+            "type": "string",
+            "description": "Invalid phone number",
+            "pattern": "^[6-9]\\d{9}$"
+          },
+          "per_minute_charge_paise": {
+            "type": "integer",
+            "default": 0,
+            "minimum": 0,
+            "maximum": 1000
+          }
+        }
+      },
+
+      "EmployeeTelecomProfile": {
+        "title": "EmployeeTelecomProfile",
+        "required": ["employee", "sim"],
+        "type": "object",
+        "properties": {
+          "employee": {
+            "$ref": "#/components/schemas/EmployeeModel"
+          },
+          "sim": {
+            "$ref": "#/components/schemas/SimModel"
+          },
+          "data_plan": {
+            "$ref": "#/components/schemas/DataPlan"
+          },
+          "voice_plan": {
+            "$ref": "#/components/schemas/VoicePlan"
+          },
+          "emergency_contact": {
+            "$ref": "#/components/schemas/EmergencyContact"
+          }
+        }
+      }
+    }
+  }
+}

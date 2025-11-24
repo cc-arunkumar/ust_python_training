@@ -35,7 +35,6 @@ with open("employees_raw.json", "r") as employee_data:
         name = ""
         for i in item[required_fields[1]].split(" "):
             if i != "":
-<<<<<<< HEAD
                 name += i
                 name += " "
                 
@@ -43,18 +42,6 @@ with open("employees_raw.json", "r") as employee_data:
             
         if int(item[required_fields[2]]) <18 or item[required_fields[2]]>65:
             errors.append({"id":item[required_fields[0]],"error_reason":"age is not valid"})
-=======
-                name += i + " "
-        
-        item[required_fields[1]] = name.strip()
-        
-        # Validate age
-        if int(item[required_fields[2]]) < 18 or item[required_fields[2]] > 65:
-            errors.append({
-                "id": item[required_fields[0]],
-                "error_reason": "Age is not valid"
-            })
->>>>>>> 6fb471c4c5653f65825da2d2eea8fb31b61b8f50
             continue
         
         # Validate email format (simple @ check)

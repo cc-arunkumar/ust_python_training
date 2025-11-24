@@ -1,0 +1,192 @@
+{
+  "openapi": "3.0.2",
+  "info": {
+    "title": "UST Employee API",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/employees": {
+      "post": {
+        "summary": "Create Employee",
+        "operationId": "create_employee_employees_post",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Employee" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Employee created successfully" },
+          "409": { "description": "Email already exists" }
+        }
+      },
+      "get": {
+        "summary": "List Employees",
+        "operationId": "list_employee_employees_get",
+        "parameters": [
+          {
+            "name": "department",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string" },
+            "description": "Filter by employee department"
+          }
+        ],
+        "responses": {
+          "200": { "description": "List of employees" }
+        }
+      }
+    },
+
+    "/employees/{id}": {
+      "get": {
+        "summary": "Get Employee",
+        "operationId": "get_employee_employees__id__get",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": { "description": "Employee found" },
+          "404": { "description": "Employee not found" }
+        }
+      },
+
+      "put": {
+        "summary": "Update Employee",
+        "operationId": "update_employee_employees__id__put",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Employee" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Employee updated" },
+          "404": { "description": "Employee not found" },
+          "409": { "description": "Email already exists" }
+        }
+      },
+
+      "delete": {
+        "summary": "Delete Employee",
+        "operationId": "delete_employee_employees__id__delete",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": { "description": "Employee deleted" },
+          "404": { "description": "Employee not found" }
+        }
+      }
+    },
+
+    "/employees/{id}/check_in": {
+      "post": {
+        "summary": "Employee Check-in",
+        "operationId": "check_in_employees__id__check_in_post",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": { "description": "Check-in successful" },
+          "409": { "description": "Already checked in today" }
+        }
+      }
+    },
+
+    "/employee/{id}/checkout": {
+      "post": {
+        "summary": "Employee Checkout",
+        "operationId": "checkout_employee__id__checkout_post",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": { "description": "Checkout updated" },
+          "404": { "description": "Employee not found" },
+          "409": { "description": "Already checked out" },
+          "400": { "description": "Check-in required" }
+        }
+      }
+    },
+
+    "/employees/{id}/leave-requests": {
+      "post": {
+        "summary": "Create Leave Request",
+        "operationId": "leave_request_employees__id__leave_requests_post",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } },
+          { "name": "from_date", "in": "query", "required": true, "schema": { "type": "string", "format": "date" } },
+          { "name": "to_date", "in": "query", "required": true, "schema": { "type": "string", "format": "date" } },
+          { "name": "reason", "in": "query", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "201": { "description": "Leave request created" },
+          "400": { "description": "Invalid date range" }
+        }
+      },
+
+      "get": {
+        "summary": "Get Leave Requests",
+        "operationId": "get_leave_requests_employees__id__leave_requests_get",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": { "description": "Leave request list" },
+          "404": { "description": "Employee not found" }
+        }
+      }
+    }
+  },
+
+  "components": {
+    "schemas": {
+      "Employee": {
+        "title": "Employee",
+        "required": ["id", "name", "email", "department", "role"],
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "name": { "type": "string" },
+          "email": { "type": "string" },
+          "department": { "type": "string" },
+          "role": { "type": "string" },
+          "status": { "type": "string", "default": "active" }
+        }
+      },
+
+      "AttendanceRecord": {
+        "title": "AttendanceRecord",
+        "type": "object",
+        "properties": {
+          "employee_id": { "type": "integer" },
+          "date": { "type": "string", "format": "date" },
+          "check_in": { "type": "string", "format": "time" },
+          "check_out": { "type": "string", "format": "time" }
+        }
+      },
+
+      "LeaveRequest": {
+        "title": "LeaveRequest",
+        "required": ["leave_id", "employee_id", "reason"],
+        "type": "object",
+        "properties": {
+          "leave_id": { "type": "integer" },
+          "employee_id": { "type": "integer" },
+          "from_date": { "type": "string", "format": "date" },
+          "to_date": { "type": "string", "format": "date" },
+          "reason": { "type": "string" },
+          "status": { "type": "string", "default": "pending" }
+        }
+      }
+    }
+  }
+}
