@@ -1,9 +1,13 @@
-
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from typing import List, Optional
 
+# Initialize FastAPI application
 app = FastAPI(title="UST Employee API")
+
+# -----------------------------
+# Data Models
+# -----------------------------
 
 class Employee(BaseModel):
     id: int
@@ -11,7 +15,7 @@ class Employee(BaseModel):
     email: str
     department: str
     role: str
-    status: str = "active"
+    status: str = "active"   # Default status is active
 
 class AttendanceRecord(BaseModel):
     employee_id: int
@@ -25,9 +29,11 @@ class LeaveRequest(BaseModel):
     from_date: str
     to_date: str
     reason: str
-    status: str = "pending"
+    status: str = "pending"  # Default status is pending
 
-# Store as dicts for consistency
+# -----------------------------
+# In-memory storage
+# -----------------------------
 employees: List[Employee] = [
     {"id": 1, "name": "Asha Rao", "email": "asha.rao@ust.com", "department": "Engineering", "role": "Engineer", "status": "active"},
     {"id": 2, "name": "Vikram S", "email": "vikram.s@ust.com", "department": "Delivery", "role": "Manager", "status": "active"},
@@ -40,8 +46,15 @@ leaves: List[LeaveRequest] = []
 next_emp_id = 4
 next_leave_id = 1
 
+# -----------------------------
+# Employee CRUD Endpoints
+# -----------------------------
+
 @app.post("/employees")
 def create_employee(emp: Employee):
+    """
+    Create a new employee.
+    """
     global next_emp_id
     for e in employees:
         if e["email"] == emp.email:
@@ -59,30 +72,40 @@ def create_employee(emp: Employee):
     next_emp_id += 1
     return {"Employee created": new_emp}
 
+
 @app.get("/employee")
 def list_employees(department: Optional[str] = None):
+    """
+    List all employees.
+    - Optional filter by department.
+    """
     if department:
-        result=[]
-        for e in employees:
-            if e["department"]==department:
-                result.append(e)
+        result = [e for e in employees if e["department"] == department]
         return result
     return employees
-   
+
 
 @app.get("/employee/{id}")
 def getById(id: int):
+    """
+    Get employee details by ID.
+    """
     for e in employees:
         if e["id"] == id:
             return e
     raise HTTPException(status_code=404, detail="Employee not found")
 
+
 @app.put("/employee/{id}")
 def update(id: int, emp: Employee):
+    """
+    Update employee details.
+    - Prevents duplicate email usage.
+    """
     for e in employees:
         if e["id"] == id:
             for other in employees:
-                if other["email"] == emp.email:
+                if other["email"] == emp.email and other["id"] != id:
                     raise HTTPException(status_code=409, detail="Email already exists")
             e.update({
                 "name": emp.name,
@@ -94,16 +117,28 @@ def update(id: int, emp: Employee):
             return e
     raise HTTPException(status_code=404, detail="Employee not found")
 
+
 @app.delete("/employee/{id}")
 def delete(id: int):
+    """
+    Delete employee by ID.
+    """
     for e in employees:
         if e["id"] == id:
             employees.remove(e)
             return {"detail": "Employee deleted"}
     raise HTTPException(status_code=404, detail="Employee not found")
 
+# -----------------------------
+# Attendance Endpoints
+# -----------------------------
+
 @app.post("/employee/{id}/checkin")
 def check_in(id: int, data: dict):
+    """
+    Employee check-in.
+    - Prevents multiple check-ins on same date.
+    """
     for e in employees:
         if e["id"] == id:
             for r in attendance:
@@ -122,8 +157,14 @@ def check_in(id: int, data: dict):
             return newrecord
     raise HTTPException(status_code=404, detail="Employee not found")
 
+
 @app.post("/employee/{id}/checkout")
 def check_out(id: int, data: dict):
+    """
+    Employee check-out.
+    - Requires prior check-in.
+    - Prevents multiple check-outs.
+    """
     for e in employees:
         if e["id"] == id:
             for r in attendance:
@@ -136,8 +177,16 @@ def check_out(id: int, data: dict):
                     return r
     raise HTTPException(status_code=404, detail="Employee not found")
 
+# -----------------------------
+# Leave Request Endpoints
+# -----------------------------
+
 @app.post("/employees/{id}/leave-requests")
 def create_leave(id: int, data: dict):
+    """
+    Create a leave request for an employee.
+    - Validates date range.
+    """
     global next_leave_id
     for e in employees:
         if e["id"] == id:
@@ -156,13 +205,77 @@ def create_leave(id: int, data: dict):
             return leave
     raise HTTPException(status_code=404, detail="Employee not found")
 
-@app.get("/employees/{id}/leave-requests")
-def list_leaves(id: int):
-    for e in employees:
-        if e["id"] == id:
-            result = []
-            for l in leaves:
-                if l["employee_id"] == id:
-                    result.append(l)
-            return result
-    raise HTTPException(status_code=404, detail="Employee not found")
+
+# -----------------------------
+# SAMPLE INPUT/OUTPUT SUMMARY
+# -----------------------------
+# 1. Create Employee (POST /employees)
+# Request:
+# {
+#   "id": 0,
+#   "name": "Ravi Kumar",
+#   "email": "ravi.kumar@ust.com",
+#   "department": "Finance",
+#   "role": "Analyst"
+# }
+# Response:
+# {
+#   "Employee created": {
+#     "id": 4,
+#     "name": "Ravi Kumar",
+#     "email": "ravi.kumar@ust.com",
+#     "department": "Finance",
+#     "role": "Analyst",
+#     "status": "active"
+#   }
+# }
+
+# 2. List Employees (GET /employee)
+# Response:
+# [
+#   {"id": 1, "name": "Asha Rao", "email": "asha.rao@ust.com", "department": "Engineering", "role": "Engineer", "status": "active"},
+#   {"id": 2, "name": "Vikram S", "email": "vikram.s@ust.com", "department": "Delivery", "role": "Manager", "status": "active"},
+#   {"id": 3, "name": "Meera N", "email": "meera.n@ust.com", "department": "HR", "role": "HR", "status": "active"},
+#   {"id": 4, "name": "Ravi Kumar", "email": "ravi.kumar@ust.com", "department": "Finance", "role": "Analyst", "status": "active"}
+# ]
+
+# 3. Employee Check-in (POST /employee/1/checkin)
+# Request:
+# {
+#   "date": "2025-11-24",
+#   "time": "09:00"
+# }
+# Response:
+# {
+#   "employee_id": 1,
+#   "date": "2025-11-24",
+#   "check_in": "09:00",
+#   "check_out": null
+# }
+
+# 4. Employee Check-out (POST /employee/1/checkout)
+# Request:
+# {
+#   "date": "2025-11-24",
+#   "time": "17:00"
+# }
+# Response:
+# {
+#   "employee_id": 1,
+#   "date": "2025-11-24",
+#   "check_in": "09:00",
+#   "check_out": "17:00"
+# }
+
+# 5. Leave Request (POST /employees/1/leave-requests)
+# Request:
+# {
+#   "from_date": "2025-12-01",
+#   "to_date": "2025-12-05",
+#   "reason": "Family function"
+# }
+# Response:
+# {
+#   "leave_id": 1,
+#   "employee_id": 1,
+#   "from_date": "
