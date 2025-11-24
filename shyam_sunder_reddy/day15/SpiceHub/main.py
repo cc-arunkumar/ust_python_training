@@ -279,14 +279,34 @@ def update_status(id: int, change: str):
     raise HTTPException(status_code=404, detail="Order Not Found")
 
 @app.get("/orders/{id}/total-amount-compute")
-def get_total_bill(id:int):
+def get_total_bill(id: int):
+    """
+    Compute the total bill for a given order ID.
+    - Iterates through all orders to find the matching order.
+    - For each item in the order, multiplies menu price × quantity.
+    - Returns the total amount for the order.
+    - Raises 404 if order not found.
+
+    Sample Output:
+    GET /orders/1/total-amount-compute
+    {
+      "order_id": 1,
+      "total_amount": 347.0
+    }
+
+    Error Case:
+    GET /orders/99/total-amount-compute
+    Response: 404 {"detail":"Order Not Found"}
+    """
     for order in orders:
-        if order.id==id:
-            sum=0
+        if order.id == id:
+            total = 0
+            # Calculate total by iterating over order items
             for order_item in order.items:
                 for menu_item in menu:
-                    if menu_item["id"]==order_item.menu_item_id:
-                        sum+=(menu_item["price"]*order_item.quantity)
-            return {"order_id":id,"total_amount":sum}
-    
-    raise HTTPException(status_code=404,detail="Order Not Found")
+                    if menu_item["id"] == order_item.menu_item_id:
+                        total += (menu_item["price"] * order_item.quantity)
+            return {"order_id": id, "total_amount": total}
+
+    # If no order matches the given ID
+    raise HTTPException(status_code=404, detail="Order Not Found")
