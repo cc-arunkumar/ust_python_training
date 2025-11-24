@@ -172,3 +172,217 @@ async def search_profiles(
         results = [p for p in results if p.sim.provider == provider]
     
     return results
+
+"""
+===========================
+ Sample Input & Output
+===========================
+
+Create a new telecom profile (POST /telecom/profiles)
+---------------------------------------------------------
+Request Body:
+{
+  "employee": {
+    "emp_id": 12345,
+    "name": "Asha",
+    "official_email": "asha@ust.com",
+    "department": "Engineering",
+    "location": "Pune"
+  },
+  "sim": {
+    "sim_number": "9876543210",
+    "provider": "Airtel",
+    "is_esim": true,
+    "activation_year": 2023
+  },
+  "data_plan": {
+    "name": "Standard 50GB",
+    "monthly_gb": 50,
+    "speed_mbps": 100,
+    "is_roaming_included": true
+  },
+  "voice_plan": {
+    "name": "Office Calls Pack",
+    "monthly_minutes": 1000,
+    "has_isd": false,
+    "per_minute_charge_paise": 0
+  },
+  "emergency_contact": {
+    "name": "Ravi",
+    "relation": "Friend",
+    "phone": "9876543210"
+  }
+}
+
+Response (201 Created):
+{
+  "employee": {
+    "emp_id": 12345,
+    "name": "Asha",
+    "official_email": "asha@ust.com",
+    "department": "Engineering",
+    "location": "Pune"
+  },
+  "sim": {
+    "sim_number": "9876543210",
+    "provider": "Airtel",
+    "is_esim": true,
+    "activation_year": 2023
+  },
+  "data_plan": {
+    "name": "Standard 50GB",
+    "monthly_gb": 50,
+    "speed_mbps": 100,
+    "is_roaming_included": true
+  },
+  "voice_plan": {
+    "name": "Office Calls Pack",
+    "monthly_minutes": 1000,
+    "has_isd": false,
+    "per_minute_charge_paise": 0
+  },
+  "emergency_contact": {
+    "name": "Ravi",
+    "relation": "Friend",
+    "phone": "9876543210"
+  }
+}
+
+ Get all profiles (GET /telecom/profiles)
+--------------------------------------------
+Response:
+[
+  {
+    "employee": {
+      "emp_id": 12345,
+      "name": "Asha",
+      "official_email": "asha@ust.com",
+      "department": "Engineering",
+      "location": "Pune"
+    },
+    "sim": {
+      "sim_number": "9876543210",
+      "provider": "Airtel",
+      "is_esim": true,
+      "activation_year": 2023
+    },
+    "data_plan": {
+      "name": "Standard 50GB",
+      "monthly_gb": 50,
+      "speed_mbps": 100,
+      "is_roaming_included": true
+    },
+    "voice_plan": {
+      "name": "Office Calls Pack",
+      "monthly_minutes": 1000,
+      "has_isd": false,
+      "per_minute_charge_paise": 0
+    },
+    "emergency_contact": {
+      "name": "Ravi",
+      "relation": "Friend",
+      "phone": "9876543210"
+    }
+  }
+]
+
+ Get profile by ID (GET /telecom/profiles/12345)
+---------------------------------------------------
+Response:
+{
+  "employee": {
+    "emp_id": 12345,
+    "name": "Asha",
+    "official_email": "asha@ust.com",
+    "department": "Engineering",
+    "location": "Pune"
+  },
+  "sim": {
+    "sim_number": "9876543210",
+    "provider": "Airtel",
+    "is_esim": true,
+    "activation_year": 2023
+  },
+  "data_plan": {
+    "name": "Standard 50GB",
+    "monthly_gb": 50,
+    "speed_mbps": 100,
+    "is_roaming_included": true
+  },
+  "voice_plan": {
+    "name": "Office Calls Pack",
+    "monthly_minutes": 1000,
+    "has_isd": false,
+    "per_minute_charge_paise": 0
+  },
+  "emergency_contact": {
+    "name": "Ravi",
+    "relation": "Friend",
+    "phone": "9876543210"
+  }
+}
+
+ Update profile (PUT /telecom/profiles/12345)
+------------------------------------------------
+Request Body:
+{
+  "employee": {
+    "emp_id": 12345,
+    "name": "Asha",
+    "official_email": "asha@ust.com",
+    "department": "Engineering",
+    "location": "Mumbai"
+  },
+  "sim": {
+    "sim_number": "9876543210",
+    "provider": "Airtel",
+    "is_esim": true,
+    "activation_year": 2023
+  }
+}
+
+Response:
+{
+  "employee": {
+    "emp_id": 12345,
+    "name": "Asha",
+    "official_email": "asha@ust.com",
+    "department": "Engineering",
+    "location": "Mumbai"
+  },
+  "sim": {
+    "sim_number": "9876543210",
+    "provider": "Airtel",
+    "is_esim": true,
+    "activation_year": 2023
+  }
+}
+
+ Delete profile (DELETE /telecom/profiles/12345)
+---------------------------------------------------
+Response:
+{
+  "detail": "Profile deleted"
+}
+
+ Search profiles (GET /telecom/profiles/search?department=Engineering&provider=Airtel)
+----------------------------------------------------------------------------------------
+Response:
+[
+  {
+    "employee": {
+      "emp_id": 12345,
+      "name": "Asha",
+      "official_email": "asha@ust.com",
+      "department": "Engineering",
+      "location": "Pune"
+    },
+    "sim": {
+      "sim_number": "9876543210",
+      "provider": "Airtel",
+      "is_esim": true,
+      "activation_year": 2023
+    }
+  }
+]
+"""

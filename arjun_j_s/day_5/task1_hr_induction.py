@@ -1,6 +1,7 @@
 import os
-ch='Y'
-while(ch=='Y' or ch=='y'):
+
+ch = 'Y'
+while ch == 'Y' or ch == 'y':
     print("==== Employee Record Management ====")
     print("1. Add New Employee")
     print("2. Display All Employees")
@@ -9,25 +10,36 @@ while(ch=='Y' or ch=='y'):
     print("5. Generate Department Report")
     print("6. Delete Employee")
     print("7. Exit")
-    n=int(input("Choose choice:"))
-    if(n==1):
+
+    n = int(input("Choose choice:"))
+
+    # ------------------------------------------------------------
+    # 1. Add New Employee
+    # ------------------------------------------------------------
+    if n == 1:
         emp_name = input("Enter Name : ")
         emp_dep = input("Enter Department : ")
         emp_sal = int(input("Enter Salary : "))
         emp_join_date = input("Enter Joining Date (YYYY-MM-DD) : ")
-        test = open("emp.txt","r")
-        count=len(test.readlines())
+
+        # Count existing records to generate new employee ID
+        test = open("emp.txt", "r")
+        count = len(test.readlines())
         test.close()
-        with open("emp.txt","a") as file:
+
+        # Append new employee record to file
+        with open("emp.txt", "a") as file:
             file.write(f"E0{count+1} {emp_name} {emp_dep} {emp_sal} {emp_join_date}\n")
-            count+=1
-        file.close()
         print("Added Successfully")
-    elif(n==2):
-        if(os.path.isfile("emp.txt")):
-            with open("emp.txt","r") as file:
-                d=file.readlines()
-                if(len(d)>0):
+
+    # ------------------------------------------------------------
+    # 2. Display All Employees
+    # ------------------------------------------------------------
+    elif n == 2:
+        if os.path.isfile("emp.txt"):
+            with open("emp.txt", "r") as file:
+                d = file.readlines()
+                if len(d) > 0:
                     for i in d:
                         data = i.strip().split(" ")
                         try:
@@ -36,91 +48,114 @@ while(ch=='Y' or ch=='y'):
                             pass
                 else:
                     print("No employees!!")
-            file.close()
         else:
-            print("File not found!!")                  
-    elif(n==3):
+            print("File not found!!")
+
+    # ------------------------------------------------------------
+    # 3. Search Employee by ID
+    # ------------------------------------------------------------
+    elif n == 3:
         emp_id = input("Enter the employee id : ")
-        if(os.path.isfile("emp.txt")):
-            with open("emp.txt","r") as file:
-                flag=0
-                d=file.readlines()
-                if(len(d)>0):
+        if os.path.isfile("emp.txt"):
+            with open("emp.txt", "r") as file:
+                flag = 0
+                d = file.readlines()
+                if len(d) > 0:
                     for i in d:
                         data = i.strip().split(" ")
-                        if(len(data)>0 and data[0]==emp_id):
+                        if len(data) > 0 and data[0] == emp_id:
                             print("Employee Record : ")
-                            flag=1
+                            flag = 1
                             print(f"{data[0]} | {data[1]} | {data[2]} | {data[3]} | {data[4]}")
                             break
-                    if(flag==0):
+                    if flag == 0:
                         print("Not found!!")
                 else:
                     print("Not found!!")
         else:
-            print("File not found!!")   
-    elif(n==4):
+            print("File not found!!")
+
+    # ------------------------------------------------------------
+    # 4. Update Employee Salary
+    # ------------------------------------------------------------
+    elif n == 4:
         emp_id = input("Enter the employee id : ")
         sal = int(input("Enter the salary : "))
-        if(os.path.isfile("emp.txt")):
-            with open("emp.txt","r") as file:
-                d=file.readlines()
-                if(len(d)>0):
+        if os.path.isfile("emp.txt"):
+            with open("emp.txt", "r") as file:
+                d = file.readlines()
+                if len(d) > 0:
                     for i in range(len(d)):
                         data = d[i].strip().split(" ")
-                        if(data[0]==emp_id):
-                            d[i]=f"{data[0]} {data[1]} {data[2]} {sal} {data[4]}\n"
+                        if data[0] == emp_id:
+                            d[i] = f"{data[0]} {data[1]} {data[2]} {sal} {data[4]}\n"
                             break
-            with open("emp.txt","w") as file:   
+            with open("emp.txt", "w") as file:
                 file.writelines(d)
-                print("Update Successfull!!")
+                print("Update Successful!!")
         else:
-            print("File not found!!") 
+            print("File not found!!")
 
-    elif(n==5):
-        dic={}
-        file = open("emp.txt","r")
-        d=file.readlines()
+    # ------------------------------------------------------------
+    # 5. Generate Department Report
+    # ------------------------------------------------------------
+    elif n == 5:
+        dic = {}
+        file = open("emp.txt", "r")
+        d = file.readlines()
         for j in d:
             data = j.strip().split(" ")
-            if(data[2] not in dic):
-                dic[data[2]]={"emp":0,"total_sal":0,"avg_sal":0}
-            dic[data[2]]["emp"]+=1
-            dic[data[2]]["total_sal"]+=int(data[3])
-            dic[data[2]]["avg_sal"]=round(dic[data[2]]["total_sal"]/dic[data[2]]["emp"],2)
-        with open("report.txt","w") as new:
+            if data[2] not in dic:
+                dic[data[2]] = {"emp": 0, "total_sal": 0, "avg_sal": 0}
+            dic[data[2]]["emp"] += 1
+            dic[data[2]]["total_sal"] += int(data[3])
+            dic[data[2]]["avg_sal"] = round(dic[data[2]]["total_sal"] / dic[data[2]]["emp"], 2)
+
+        # Write department report to file
+        with open("report.txt", "w") as new:
             for i in dic:
-                new.write(f"{i} Department -> Employees {dic.get(i)["emp"]} | Total {dic.get(i)["total_sal"]} | Average {dic.get(i)["avg_sal"]}\n")
+                new.write(
+                    f"{i} Department -> Employees {dic[i]['emp']} | Total {dic[i]['total_sal']} | Average {dic[i]['avg_sal']}\n"
+                )
         print("Generated!!")
-        new.close()
-        with open("report.txt","r") as new:
-            out=new.read()
+
+        # Display report
+        with open("report.txt", "r") as new:
+            out = new.read()
         print(out)
-        new.close()
         file.close()
-    elif(n==6):
+
+    # ------------------------------------------------------------
+    # 6. Delete Employee
+    # ------------------------------------------------------------
+    elif n == 6:
         emp_id = input("Enter the employee id : ")
-        if(os.path.isfile("emp.txt")):
-            with open("emp.txt","r") as file:
-                d=file.readlines()
-                if(len(d)>0):
+        if os.path.isfile("emp.txt"):
+            with open("emp.txt", "r") as file:
+                d = file.readlines()
+                if len(d) > 0:
                     for i in range(len(d)):
                         data = d[i].strip().split(" ")
-                        if(data[0]==emp_id):
+                        if data[0] == emp_id:
                             d.pop(i)
                             break
-            with open("emp.txt","w") as file:   
+            with open("emp.txt", "w") as file:
                 file.writelines(d)
-                print("Deleted Successfull!!")
+                print("Deleted Successfully!!")
         else:
-            print("File not found!!") 
-    elif(n==7):
+            print("File not found!!")
+
+    # ------------------------------------------------------------
+    # 7. Exit
+    # ------------------------------------------------------------
+    elif n == 7:
         print("Thank you! Have a great day.")
         break
+
     else:
         print("Provide a number within range!!")
-    ch=input("\nDo you wish to continue(Y/N)")
 
+    ch = input("\nDo you wish to continue(Y/N)")
 #Output
 # ==== Employee Record Management ====
 # 1. Add New Employee

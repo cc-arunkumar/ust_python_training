@@ -71,83 +71,78 @@
 import os
 import csv
 
+# Global containers for processed and skipped orders
 orders_processed = {}
 orders_skipped = []
+
+# Predefined list of valid Indian states for validation
 indian_states = [
-    "Andhra Pradesh",
-    "Arunachal Pradesh",
-    "Assam",
-    "Bihar",
-    "Chhattisgarh",
-    "Goa",
-    "Gujarat",
-    "Haryana",
-    "Himachal Pradesh",
-    "Jharkhand",
-    "Karnataka",
-    "Kerala",
-    "Madhya Pradesh",
-    "Maharashtra",
-    "Manipur",
-    "Meghalaya",
-    "Mizoram",
-    "Nagaland",
-    "Odisha",
-    "Punjab",
-    "Rajasthan",
-    "Sikkim",
-    "Tamil Nadu",
-    "Telangana",
-    "Tripura",
-    "Uttar Pradesh",
-    "Uttarakhand",
-    "West Bengal"
+    "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh",
+    "Goa", "Gujarat", "Haryana", "Himachal Pradesh", "Jharkhand", "Karnataka",
+    "Kerala", "Madhya Pradesh", "Maharashtra", "Manipur", "Meghalaya", "Mizoram",
+    "Nagaland", "Odisha", "Punjab", "Rajasthan", "Sikkim", "Tamil Nadu",
+    "Telangana", "Tripura", "Uttar Pradesh", "Uttarakhand", "West Bengal"
 ]
 
-
-#Custom Exceptions
+# ------------------------------------------------------------
+# Custom Exceptions for specific error handling
+# ------------------------------------------------------------
 class MissingColumnError(Exception):
+    """Raised when a required column is missing in the CSV."""
     pass
 
 class ConversionError(Exception):
+    """Raised when a field cannot be converted to the required type."""
     pass
 
 class BlankFieldError(Exception):
+    """Raised when a mandatory field is blank."""
     pass
 
 class InvalidStateNameError(Exception):
+    """Raised when the state name is not in the predefined list."""
     pass
 
+# ------------------------------------------------------------
+# Function: validate_row
+# Purpose: Validate a single order record against business rules
+# ------------------------------------------------------------
 def validate_row(item):
     try:
         for data in item:
-            if item[data]!='':
-                if data=="quantity" and int(item[data])<=0:
-                    return False,"Invalid quantity"
+            if item[data] != '':
+                # Rule 1: Quantity must be positive integer
+                if data == "quantity" and int(item[data]) <= 0:
+                    return False, "Invalid quantity"
 
-                if data=="price_per_unit" and int(item[data]) :
+                # Rule 2: Price per unit must be numeric (negative handled later)
+                if data == "price_per_unit" and int(item[data]):
                     pass
-                
-                if data=="customer_name" and len(item[data].strip())==0:
-                    return False,"No customer name"
-                
 
-                if data=="state" and item[data] not in indian_states:
-                    return False,"Not valid state"
+                # Rule 3: Customer name must not be empty
+                if data == "customer_name" and len(item[data].strip()) == 0:
+                    return False, "No customer name"
+
+                # Rule 4: State must be valid
+                if data == "state" and item[data] not in indian_states:
+                    return False, "Not valid state"
             else:
-                return False,"Field Missing"
+                # Rule 7: Skip empty fields
+                return False, "Field Missing"
 
     except Exception as e:
-        return False,str(e)
+        # Catch conversion errors (e.g., quantity = "two")
+        return False, str(e)
     else:
-        return True,"Success"
+        return True, "Success"
 
-
-
-
+# ------------------------------------------------------------
+# Class: OrderRecord
+# Represents a single order record
+# ------------------------------------------------------------
 class OrderRecord:
-
-    def __init__(self,order_id='',customer_name='',state='',product='',quantity='',price_per_unit='',status=''):
+    def __init__(self, order_id='', customer_name='', state='', product='',
+                 quantity='', price_per_unit='', status=''):
         self.order_id = order_id
         self.customer_name = customer_name
         self.state = state
@@ -157,91 +152,114 @@ class OrderRecord:
         self.status = status
 
     def validate(self):
-        
+        """Validate the order record using business rules."""
         return validate_row(self.__dict__)
-    
 
+# ------------------------------------------------------------
+# Class: OrderProcessor
+# Handles reading, validating, and writing CSV files
+# ------------------------------------------------------------
 class OrderProcessor:
     def __init__(self, data_dir="data"):
         BASE_DIR = os.path.dirname(os.path.abspath(__file__))
         self.data_dir = os.path.join(BASE_DIR, data_dir)
         self.orders_file = os.path.join(self.data_dir, "orders_raw.csv")
-        self.orders_processed = os.path.join(self.data_dir,"orders_processed.csv")
-        self.orders_skipped = os.path.join(self.data_dir,"orders_skipped.csv")
+        self.orders_processed = os.path.join(self.data_dir, "orders_processed.csv")
+        self.orders_skipped = os.path.join(self.data_dir, "orders_skipped.csv")
 
     def read_csv(self):
-        with open(self.orders_file,"r") as file:
-            dict_read = csv.DictReader(file)
-            header = dict_read.fieldnames
+        """Read orders from raw CSV, validate, and classify into processed/skipped."""
+        try:
+            with open(self.orders_file, "r") as file:
+                dict_read = csv.DictReader(file)
+                header = dict_read.fieldnames
 
-            for data in dict_read:
-                obj = OrderRecord(
-                    data["order_id"],
-                    data["customer_name"],
-                    data["state"],
-                    data["product"],
-                    data["quantity"],
-                    data["price_per_unit"],
-                    data["status"]
-                )
-                con,stmt=obj.validate()
-                if(con):
-                    orders_processed[obj.order_id]={
-                        "customer_name": obj.customer_name,
-                        "state": obj.state,
-                        "product": obj.product,
-                        "quantity": obj.quantity,
-                        "price_per_unit": abs(int(obj.price_per_unit)),
-                        "status": obj.status.upper(),
-                        "total_amount" : int(obj.quantity) * abs(int(obj.price_per_unit))
-                    }
-                else:
-                    orders_skipped.append({
-                        "order_id":obj.order_id,
-                        "customer_name": obj.customer_name,
-                        "state": obj.state,
-                        "product": obj.product,
-                        "quantity": obj.quantity,
-                        "price_per_unit": obj.price_per_unit,
-                        "status": obj.status,
-                        "reason":stmt
-                    })
-    
+                # Check for missing columns
+                required_columns = ["order_id", "customer_name", "state", "product",
+                                    "quantity", "price_per_unit", "status"]
+                for col in required_columns:
+                    if col not in header:
+                        raise MissingColumnError(f"Missing column: {col}")
+
+                # Process each row
+                for data in dict_read:
+                    obj = OrderRecord(
+                        data["order_id"],
+                        data["customer_name"],
+                        data["state"],
+                        data["product"],
+                        data["quantity"],
+                        data["price_per_unit"],
+                        data["status"]
+                    )
+                    con, stmt = obj.validate()
+                    if con:
+                        # Valid record → apply transformations
+                        orders_processed[obj.order_id] = {
+                            "customer_name": obj.customer_name,
+                            "state": obj.state,
+                            "product": obj.product,
+                            "quantity": obj.quantity,
+                            "price_per_unit": abs(int(obj.price_per_unit)),  # Rule 2: convert negative to positive
+                            "status": obj.status.upper(),                   # Rule 6: normalize status
+                            "total_amount": int(obj.quantity) * abs(int(obj.price_per_unit))  # Rule 5: computed column
+                        }
+                    else:
+                        # Invalid record → log reason
+                        orders_skipped.append({
+                            "order_id": obj.order_id,
+                            "customer_name": obj.customer_name,
+                            "state": obj.state,
+                            "product": obj.product,
+                            "quantity": obj.quantity,
+                            "price_per_unit": obj.price_per_unit,
+                            "status": obj.status,
+                            "reason": stmt
+                        })
+        except FileNotFoundError:
+            print("Error: orders_raw.csv not found.")
+        except MissingColumnError as e:
+            print(f"Error: {e}")
+
     def write_csv(self):
-        with open(self.orders_processed,"w",newline="") as file1:
-            orders =[]
-            header = ["order_id","customer_name", "state","product","quantity","price_per_unit","status","total_amount"]
-            processed = csv.DictWriter(file1,header)
+        """Write processed and skipped orders to separate CSV files."""
+        # Write processed orders
+        with open(self.orders_processed, "w", newline="") as file1:
+            orders = []
+            header = ["order_id", "customer_name", "state", "product",
+                      "quantity", "price_per_unit", "status", "total_amount"]
+            processed = csv.DictWriter(file1, header)
             for i in orders_processed:
                 orders.append({
-                    "order_id":i,
+                    "order_id": i,
                     "customer_name": orders_processed[i]["customer_name"],
                     "state": orders_processed[i]["state"],
                     "product": orders_processed[i]["product"],
                     "quantity": orders_processed[i]["quantity"],
                     "price_per_unit": orders_processed[i]["price_per_unit"],
                     "status": orders_processed[i]["status"],
-                    "total_amount" : orders_processed[i]["total_amount"]
+                    "total_amount": orders_processed[i]["total_amount"]
                 })
             processed.writeheader()
             processed.writerows(orders)
-        
-        with open(self.orders_skipped,"w",newline="") as file2:
-            header = ["order_id","customer_name", "state","product","quantity","price_per_unit","status","reason"]
-            skipped = csv.DictWriter(file2,header)
+
+        # Write skipped orders
+        with open(self.orders_skipped, "w", newline="") as file2:
+            header = ["order_id", "customer_name", "state", "product",
+                      "quantity", "price_per_unit", "status", "reason"]
+            skipped = csv.DictWriter(file2, header)
             skipped.writeheader()
             skipped.writerows(orders_skipped)
-            
 
-
-
-a=OrderProcessor()
+# ------------------------------------------------------------
+# Program Execution
+# ------------------------------------------------------------
+a = OrderProcessor()
 a.read_csv()
 a.write_csv()
 
 print(f"Total processed orders : {len(orders_processed)}")
 print(f"Total skipped orders : {len(orders_skipped)}")
-
 
             
 #Output
