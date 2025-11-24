@@ -1,27 +1,36 @@
 from fastapi import FastAPI, HTTPException, Body
 from pydantic import BaseModel
 from typing import List, Optional
-#importing essential modules from Fastapi, pydantic and typing
+
+# Initialize FastAPI application with a title
 app = FastAPI(title="SpiceHub")
 
-# Models
+# -----------------------------
+# Models (Data Schemas)
+# -----------------------------
+
+# Represents a menu item in the restaurant
 class MenuItem(BaseModel):
     name: str
     category: str
     price: float
     is_available: bool
 
+# Represents an item inside an order (links to a menu item)
 class OrderItem(BaseModel):
     menu_item_id: int
     quantity: int
 
+# Represents a full order (dine-in or takeaway)
 class Order(BaseModel):
-    order_type: str
-    table_number: Optional[int] = None
-    items: List[OrderItem]
+    order_type: str                      # "dine_in" or "takeaway"
+    table_number: Optional[int] = None   # Required for dine-in, ignored for takeaway
+    items: List[OrderItem]               # List of ordered items
     special_instructions: Optional[str] = None
 
-# In-memory storage
+# -----------------------------
+# In-memory storage (mock DB)
+# -----------------------------
 menu = [
     {"id": 1, "name": "Tomato Soup", "category": "starter", "price": 99.0, "is_available": True},
     {"id": 2, "name": "Paneer Butter Masala", "category": "main_course", "price": 249.0, "is_available": True},
@@ -29,17 +38,28 @@ menu = [
     {"id": 4, "name": "Gulab Jamun", "category": "dessert", "price": 79.0, "is_available": False},
 ]
 
-orders = []
+orders = []  # Stores all orders created
 
+# -----------------------------
+# Menu Endpoints
+# -----------------------------
 
 @app.get("/menu")
 def menu_items(available: bool = False):
+    """
+    Get all menu items.
+    If 'available' query param is True, return only items that are available.
+    """
     if available:
         return [item for item in menu if item["is_available"]]
     return menu
 
 @app.get("/menu/{id}")
 def get_menu_item(id: int):
+    """
+    Get a specific menu item by its ID.
+    Raises 404 if not found.
+    """
     for item in menu:
         if item["id"] == id:
             return item
@@ -47,6 +67,10 @@ def get_menu_item(id: int):
 
 @app.post("/menu", status_code=201)
 def add_menu(item: MenuItem):
+    """
+    Add a new menu item.
+    Automatically assigns a new ID.
+    """
     new_id = len(menu) + 1
     new_item = {
         "id": new_id,
@@ -60,6 +84,10 @@ def add_menu(item: MenuItem):
 
 @app.put("/menu/{id}")
 def update_item(id: int, item: MenuItem):
+    """
+    Update an existing menu item by ID.
+    Raises 404 if not found.
+    """
     for menu_item in menu:
         if menu_item["id"] == id:
             menu_item["name"] = item.name
@@ -71,15 +99,31 @@ def update_item(id: int, item: MenuItem):
 
 @app.delete("/menu/{id}")
 def delete_item(id: int):
+    """
+    Delete a menu item by ID.
+    Raises 404 if not found.
+    """
     for menu_item in menu:
         if menu_item["id"] == id:
             menu.remove(menu_item)
             return {"detail": "Menu item deleted"}
     raise HTTPException(status_code=404, detail="Item not found")
 
+# -----------------------------
+# Order Endpoints
+# -----------------------------
 
 @app.post("/orders", status_code=201)
 def create_order(order: Order):
+    """
+    Create a new order.
+    Validates:
+    - order_type must be 'dine_in' or 'takeaway'
+    - dine_in requires a positive table_number
+    - takeaway must have table_number as None or 0
+    - quantity must be positive
+    - menu items must exist and be available
+    """
     if order.order_type not in ["dine_in", "takeaway"]:
         raise HTTPException(status_code=400, detail="Invalid order_type")
 
@@ -89,6 +133,7 @@ def create_order(order: Order):
     if order.order_type == "takeaway" and order.table_number not in [None, 0]:
         raise HTTPException(status_code=400, detail="Table number must be null or 0 for takeaway")
 
+    # Validate each item in the order
     for li in order.items:
         if li.quantity <= 0:
             raise HTTPException(status_code=400, detail="Quantity must be positive")
@@ -100,6 +145,7 @@ def create_order(order: Order):
         if not menu_item or not menu_item["is_available"]:
             raise HTTPException(status_code=400, detail=f"Menu item {li.menu_item_id} not available")
 
+    # Create new order
     new_id = len(orders) + 1
     new_order = {
         "id": new_id,
@@ -107,27 +153,41 @@ def create_order(order: Order):
         "table_number": order.table_number,
         "items": [{"menu_item_id": li.menu_item_id, "quantity": li.quantity} for li in order.items],
         "special_instructions": order.special_instructions,
-        "status": "pending",
+        "status": "pending",  # Default status
     }
     orders.append(new_order)
     return new_order
 
 @app.get("/orders")
 def list_orders(status: Optional[str] = None):
+    """
+    List all orders.
+    If 'status' query param is provided, filter by status.
+    """
     if status:
         return [ord for ord in orders if ord["status"] == status]
     return orders
 
 @app.get("/orders/{id}")
 def get_order(id: int):
+    """
+    Get a specific order by ID.
+    Raises 404 if not found.
+    """
     for o in orders:
         if o["id"] == id:
             return o
     raise HTTPException(status_code=404, detail="Order not found")
 
-
 @app.patch("/orders/{id}/status")
 def update_order_status(id: int, body: dict = Body(...)):
+    """
+    Update the status of an order.
+    Allowed transitions:
+    - pending → in_progress or cancelled
+    - in_progress → completed or cancelled
+    - completed/cancelled → no further changes allowed
+    """
     new_status = body.get("status")
     allowed_statuses = ["pending", "in_progress", "completed", "cancelled"]
 
@@ -151,9 +211,13 @@ def update_order_status(id: int, body: dict = Body(...)):
 
     raise HTTPException(status_code=404, detail="Order not found")
 
-
 @app.get("/orders/{id}/total-amount")
 def get_total_amount(id: int):
+    """
+    Calculate the total amount for an order.
+    Multiplies item price by quantity for each menu item.
+    Raises 404 if order or menu item not found.
+    """
     for order in orders:
         if order["id"] == id:
             total = 0.0

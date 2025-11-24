@@ -1,0 +1,194 @@
+# UST Employee Telecom Management - API Test Cases
+
+====================================================
+1. Create Full Telecom Profile
+====================================================
+Request (POST /telecom/profiles)
+----------------------------------------------------
+{
+  "employee": {
+    "emp_id": 12345,
+    "name": "Asha",
+    "official_email": "asha@ust.com",
+    "department": "Engineering",
+    "location": "Pune"
+  },
+  "sim": {
+    "sim_number": "9876543210",
+    "provider": "Airtel",
+    "is_esim": true,
+    "activation_year": 2023
+  },
+  "data_plan": {
+    "name": "Standard 50GB",
+    "monthly_gb": 50,
+    "speed_mbps": 100,
+    "is_roaming_included": true
+  },
+  "voice_plan": {
+    "name": "Office Calls Pack",
+    "monthly_minutes": 1000,
+    "has_isd": false,
+    "per_minute_charge_paise": 0
+  },
+  "emergency_contact": {
+    "name": "Ravi",
+    "relation": "Friend",
+    "phone": "9876543210"
+  }
+}
+
+Response (201 Created)
+----------------------------------------------------
+{
+  "employee": {
+    "emp_id": 12345,
+    "name": "Asha",
+    "official_email": "asha@ust.com",
+    "department": "Engineering",
+    "location": "Pune"
+  },
+  "sim": {
+    "sim_number": "9876543210",
+    "provider": "Airtel",
+    "is_esim": true,
+    "activation_year": 2023
+  },
+  "data_plan": {
+    "name": "Standard 50GB",
+    "monthly_gb": 50,
+    "speed_mbps": 100,
+    "is_roaming_included": true
+  },
+  "voice_plan": {
+    "name": "Office Calls Pack",
+    "monthly_minutes": 1000,
+    "has_isd": false,
+    "per_minute_charge_paise": 0
+  },
+  "emergency_contact": {
+    "name": "Ravi",
+    "relation": "Friend",
+    "phone": "9876543210"
+  }
+}
+
+====================================================
+2. Create Minimal Telecom Profile
+====================================================
+Request (POST /telecom/profiles/minimal)
+----------------------------------------------------
+{
+  "employee": {
+    "emp_id": 11111,
+    "name": "Arun",
+    "official_email": "arun@ust.com"
+  },
+  "sim": {
+    "sim_number": "9123456789",
+    "activation_year": 2023
+  }
+}
+
+Response (201 Created)
+----------------------------------------------------
+{
+  "employee": {
+    "emp_id": 11111,
+    "name": "Arun",
+    "official_email": "arun@ust.com",
+    "department": "Telecom",
+    "location": "Bengaluru"
+  },
+  "sim": {
+    "sim_number": "9123456789",
+    "provider": "Jio",
+    "is_esim": false,
+    "activation_year": 2023
+  },
+  "data_plan": null,
+  "voice_plan": null,
+  "emergency_contact": null
+}
+
+====================================================
+3. List All Profiles
+====================================================
+Request (GET /telecom/profiles)
+----------------------------------------------------
+GET /telecom/profiles
+
+Response (200 OK)
+----------------------------------------------------
+[
+  { ...Asha’s profile... },
+  { ...Arun’s profile... }
+]
+
+====================================================
+4. Get Profile by Employee ID
+====================================================
+Request (GET /telecom/profiles/12345)
+----------------------------------------------------
+GET /telecom/profiles/12345
+
+Response (200 OK)
+----------------------------------------------------
+{ ...Asha’s profile... }
+
+Request (GET /telecom/profiles/99999)
+----------------------------------------------------
+GET /telecom/profiles/99999
+
+Response (404 Not Found)
+----------------------------------------------------
+{ "detail": "Profile not found" }
+
+====================================================
+5. Update Full Telecom Profile
+====================================================
+Request (PUT /telecom/profiles/12345)
+----------------------------------------------------
+{
+  "employee": {
+    "emp_id": 12345,
+    "name": "Asha R",
+    "official_email": "asha@ust.com",
+    "department": "Engineering",
+    "location": "Pune"
+  },
+  "sim": {
+    "sim_number": "9876543210",
+    "provider": "Airtel",
+    "is_esim": true,
+    "activation_year": 2023
+  }
+}
+
+Response (200 OK)
+----------------------------------------------------
+{ ...updated Asha’s profile... }
+
+====================================================
+6. Delete Profile
+====================================================
+Request (DELETE /telecom/profiles/11111)
+----------------------------------------------------
+DELETE /telecom/profiles/11111
+
+Response (200 OK)
+----------------------------------------------------
+{ "detail": "Profile deleted" }
+
+====================================================
+7. Search Profiles
+====================================================
+Request (GET /telecom/profiles/search?department=Engineering&provider=Airtel)
+----------------------------------------------------
+GET /telecom/profiles/search?department=Engineering&provider=Airtel
+
+Response (200 OK)
+----------------------------------------------------
+[
+  { ...Asha’s profile... }
+]

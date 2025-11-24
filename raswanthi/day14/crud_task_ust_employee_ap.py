@@ -2,7 +2,12 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from datetime import datetime
 
+# Initialize FastAPI app
 app = FastAPI(title="UST Employee API")
+
+# -----------------------------
+# Pydantic Models (Schemas)
+# -----------------------------
 
 class Employee(BaseModel):
     id: int
@@ -45,21 +50,29 @@ class LeaveCreation(BaseModel):
     to_date: str
     leave_reason: str
 
+# -----------------------------
+# In-memory "Database"
+# -----------------------------
+
 employees = [
     { "id": 1, "name": "Asha Rao", "email": "asha.rao@ust.com", "department": "Engineering", "role": "Engineer", "status": "active" },
     { "id": 2, "name": "Vikram S", "email": "vikram.s@ust.com", "department": "Delivery", "role": "Manager", "status": "active" },
     { "id": 3, "name": "Meera N", "email": "meera.n@ust.com", "department": "HR", "role": "HR", "status": "active" }
 ]
 
-attendance = []
-leaves = []
+attendance = []   # list of attendance records
+leaves = []       # list of leave requests
 
-next_emp_id = 4
-next_leave_id = 1
+next_emp_id = 4   # auto-increment employee ID
+next_leave_id = 1 # auto-increment leave ID
 
+# -----------------------------
+# Employee Endpoints
+# -----------------------------
 
 @app.post("/employees", response_model=Employee, status_code=201)
 def post_employee(emp: EmployeeCreate):
+    """Create a new employee"""
     global next_emp_id
     if any(e["email"] == emp.email for e in employees):
         raise HTTPException(status_code=409, detail="Email already exists")
@@ -76,13 +89,15 @@ def post_employee(emp: EmployeeCreate):
     return new_emp
 
 @app.get("/employees")
-def list_of_employees(department: str):
+def list_of_employees(department: str | None = None):
+    """List employees, optionally filtered by department"""
     if department:
         return [e for e in employees if e["department"] == department]
     return employees
 
 @app.get("/employees/{id}")
 def get_by_id(id: int):
+    """Get employee by ID"""
     for em in employees:
         if em["id"] == id:
             return em
@@ -90,27 +105,31 @@ def get_by_id(id: int):
 
 @app.put("/employees/{id}")
 def update_by_id(id: int, emp: Employee):
+    """Update employee details by ID"""
     for i, e in enumerate(employees):
         if e["id"] == id:
-            for em in employees:
-                if em["id"] != id and em["email"] == emp.email:
-                    raise HTTPException(status_code=409, detail="Email already exists")
-
-            employees[i] = emp
+            if any(em["id"] != id and em["email"] == emp.email for em in employees):
+                raise HTTPException(status_code=409, detail="Email already exists")
+            employees[i] = emp.dict()   # ensure consistency (dicts only)
             return employees[i]
     raise HTTPException(status_code=404, detail="Employee not found")
 
-
 @app.delete("/employees/{id}")
 def delete_employee(id: int):
+    """Delete employee by ID"""
     for i, e in enumerate(employees):
         if e["id"] == id:
             employees.pop(i)
             return {"detail": "Employee deleted"}
     raise HTTPException(status_code=404, detail="Employee not found")
 
+# -----------------------------
+# Attendance Endpoints
+# -----------------------------
+
 @app.post("/employees/{id}/checkin", status_code=201)
 def check_in(id: int, req: CheckinRequest):
+    """Check-in an employee for a given date"""
     for e in employees:
         if e["id"] == id:
             try:
@@ -133,6 +152,7 @@ def check_in(id: int, req: CheckinRequest):
 
 @app.post("/employees/{id}/checkout")
 def check_out(id: int, req: CheckoutRequest):
+    """Check-out an employee for a given date"""
     for e in employees:
         if e["id"] == id:
             try:
@@ -152,8 +172,13 @@ def check_out(id: int, req: CheckoutRequest):
             raise HTTPException(status_code=400, detail="Check-in required before checkout")
     raise HTTPException(status_code=404, detail="Employee not found")
 
+# -----------------------------
+# Leave Endpoints
+# -----------------------------
+
 @app.post("/employees/{id}/leave-requests", status_code=201)
 def create_leave(id: int, req: LeaveCreation):
+    """Create a leave request for an employee"""
     global next_leave_id
     for e in employees:
         if e["id"] == id:
@@ -177,9 +202,7 @@ def create_leave(id: int, req: LeaveCreation):
 
 @app.get("/employees/{id}/leave-requests")
 def list_leaves(id: int):
-    for e in employees:
-        if e["id"] == id:
-            for l in leaves:
-                if l['employee_id']==id:
-                    return l
-    raise HTTPException(status_code=404, detail="Employee not found")
+    """List all leave requests for an employee"""
+    if not any(e["id"] == id for e in employees):
+        raise HTTPException(status_code=404, detail="Employee not found")
+    return [l for l in leaves if l["employee_id"] == id]
