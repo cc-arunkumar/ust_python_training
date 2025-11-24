@@ -1,52 +1,6 @@
-# def main():
-#     print("Hello from my-first-fastapi-app!")
-
-
-# if __name__ == "__main__":
-#     main()
-
-
 from fastapi import FastAPI
 
 app=FastAPI()
-
-# @app.get("/")
-
-# def home():
-#     return {"Pluribusss"}
-
-# #http://127.0.0.1:8000/greet/Deva
-# @app.get("/greet/{name}")
-
-# def greet(name:str):
-#     return {f"Welcome:{name}"}
-
-
-# #http://127.0.0.1:8000/add?num1=10&num2=10&num3=10
-# @app.get("/add")
-
-# def add(num1:int,num2:int,num3:int):
-#     return {"sum=":num1+num2+num3}
-
-# #path getting -->http://127.0.0.1:8000/square/5
-# @app.get("/square")
-
-# def square(num):
-#     return {f"Square is": {num*num}}
-
-
-# #query params -->http://127.0.0.1:8000/square?num=6
-# @app.get("/square/{num11}")
-
-# def square(num11:int):
-#     return {f"Square is": {num11*num11}}
-
-# @app.get("/square")
-
-# def square(num:int=10):#--->http://127.0.0.1:8000/square
-#     return {f"Square is": {num*num}}
-
-
 
 # 1. Greet user with an optional name (query param default)
 @app.get("/greet")
@@ -160,3 +114,29 @@ def eligible(age:int):
 
     
     
+
+
+
+#Sample output
+ 
+#Sample Output
+# {"message":"Hello Deva"}
+# {"Square ":49}
+# ["4 is even"]
+# {"sum =":5}
+# {"User ID":12,"City":"Mumbai"}
+# "hellohellohello"
+# {"Full Name ":"Deva Prasath"}
+# "HELLO"
+# {"Area Rectangle":6}
+# {"Age next year =":19}
+# ["hello contains o"]
+# ["Name of Movie:Avatar  Year:2009  Rating:9"]
+# {"List of Numbers":[2,3,4]}
+# "ell"
+# ["password is ok"]
+# ["F =98.0"]
+# ["room has priority high"]
+# "olleh"
+# ["Product is:30"]
+# ["18 is valid age"]

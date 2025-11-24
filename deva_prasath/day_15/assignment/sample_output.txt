@@ -169,6 +169,8 @@ curl -X 'DELETE' \
 -----------------------------
 1. emp_id > 1000 or < 999999
 
+Request
+
 {
   "employee": {
     "emp_id": 999,
@@ -181,6 +183,8 @@ curl -X 'DELETE' \
   }
 }
 
+
+Response
 
 {
   "detail": [
@@ -205,6 +209,8 @@ curl -X 'DELETE' \
 
 2.name length=2
 
+Request
+
 {
   "employee": {
     "emp_id": 12345,
@@ -216,6 +222,8 @@ curl -X 'DELETE' \
     "activation_year": 2023
   }
 }
+
+Response
 
 {
   "detail": [
@@ -239,6 +247,22 @@ curl -X 'DELETE' \
 
 3.official_email not ending with @ust.com
 
+Request
+{
+  "employee": {
+    "emp_id": 12345,
+    "name": "Asha",
+    "official_email": "asha@gmail.com"
+  },
+  "sim": {
+    "sim_number": "9876543210",
+    "activation_year": 2023
+  }
+}
+
+
+Response
+
 {
   "detail": [
     {
@@ -261,6 +285,9 @@ curl -X 'DELETE' \
 
 4.sim_number not 10 digits
 
+
+Request
+
 {
   "employee": {
     "emp_id": 12345,
@@ -272,6 +299,8 @@ curl -X 'DELETE' \
     "activation_year": 2023
   }
 }
+
+Response
 
 {
   "detail": [
@@ -295,8 +324,22 @@ curl -X 'DELETE' \
 
 5.activation_year > 2020 or < 2025
 	
-Error: Unprocessable Content
+Request
 
+{
+  "employee": {
+    "emp_id": 12345,
+    "name": "Asha",
+    "official_email": "asha@ust.com"
+  },
+  "sim": {
+    "sim_number": "9876543210",
+    "activation_year": 2019
+  }
+}
+
+
+Response
 
 {
   "detail": [
@@ -320,6 +363,8 @@ Error: Unprocessable Content
 
 6.monthly_gb >0 or <1000
 
+Request
+
 {
   "employee": {
     "emp_id": 12345,
@@ -337,6 +382,8 @@ Error: Unprocessable Content
     "is_roaming_included": true
   }
 }
+
+Response
 
 {
   "detail": [
@@ -360,6 +407,8 @@ Error: Unprocessable Content
 
 7.monthly_minutes negative
 
+Request
+
 {
   "employee": {
     "emp_id": 12345,
@@ -378,7 +427,7 @@ Error: Unprocessable Content
   }
 }
 
-
+Response
 
 {
   "detail": [
@@ -402,6 +451,8 @@ Error: Unprocessable Content
 
 8.per_minute_charge_paise negative or >1000
 
+Request
+
 {
   "employee": {
     "emp_id": 12345,
@@ -420,6 +471,7 @@ Error: Unprocessable Content
   }
 }
 
+Response
 
 {
   "detail": [
@@ -443,6 +495,9 @@ Error: Unprocessable Content
 
 9. phone in EmergencyContact not matching pattern
 
+
+Request
+
 {
   "employee": {
     "emp_id": 12345,
@@ -459,6 +514,9 @@ Error: Unprocessable Content
     "phone": "1234567890"
   }
 }
+
+
+Response
 
 {
   "detail": [

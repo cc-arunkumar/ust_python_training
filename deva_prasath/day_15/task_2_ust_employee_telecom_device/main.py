@@ -1,5 +1,9 @@
-
-
+# UST Employee Telecom Device 
+# Registration
+#  Scenario
+#  UST provides company SIM cards to employees for official communication.
+#  When a SIM is issued, an employee must register their details and SIM details.
+#  You will create Pydantic models to validate the registration input.
 
 from pydantic import BaseModel,Field
 from typing import List
@@ -42,3 +46,13 @@ data ={
 # Example of creating an Employee and SimModel instance
 employee=Employee(emp_id=1, name='Asha', department='Engineering')  # Create Employee instance
 sim=SimModel(number='9876543210', provider='Airtel', activation_year=2023)  # Create SimModel instance
+
+
+
+
+#Sample output
+
+# ValidationError: 1 validation error for Employee
+# emp_id
+#   Input should be greater than or equal to 100 [type=greater_than_equal, input_value=1, input_type=int]    
+#     For further information visit https://errors.pydantic.dev/2.12/v/greater_than_equal
