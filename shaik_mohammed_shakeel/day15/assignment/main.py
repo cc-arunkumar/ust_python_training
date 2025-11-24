@@ -217,39 +217,39 @@ def search_profiles(department: Optional[str] = None, provider: Optional[str] = 
 #   }
 # }
 
-Sample Output (Response)
-{
-  "employee": {
-    "emp_id": 12346,
-    "name": "John Doe",
-    "official_email": "john.doe@ust.com",
-    "department": "HR",
-    "location": "Hyderabad"
-  },
-  "sim": {
-    "sim_number": "9876543211",
-    "provider": "Vodafone",
-    "is_esim": true,
-    "activation_year": 2024
-  },
-  "data_plan": {
-    "name": "Unlimited 100GB",
-    "monthly_gb": 100,
-    "speed_mbps": 200,
-    "is_roaming_included": true
-  },
-  "voice_plan": {
-    "name": "Office Calls Pack",
-    "monthly_minutes": 1500,
-    "has_isd": false,
-    "per_minute_charge_paise": 0
-  },
-  "emergency_contact": {
-    "name": "Jane Doe",
-    "relation": "Spouse",
-    "phone": "9876543212"
-  }
-}
+# Sample Output (Response)
+# {
+#   "employee": {
+#     "emp_id": 12346,
+#     "name": "John Doe",
+#     "official_email": "john.doe@ust.com",
+#     "department": "HR",
+#     "location": "Hyderabad"
+#   },
+#   "sim": {
+#     "sim_number": "9876543211",
+#     "provider": "Vodafone",
+#     "is_esim": true,
+#     "activation_year": 2024
+#   },
+#   "data_plan": {
+#     "name": "Unlimited 100GB",
+#     "monthly_gb": 100,
+#     "speed_mbps": 200,
+#     "is_roaming_included": true
+#   },
+#   "voice_plan": {
+#     "name": "Office Calls Pack",
+#     "monthly_minutes": 1500,
+#     "has_isd": false,
+#     "per_minute_charge_paise": 0
+#   },
+#   "emergency_contact": {
+#     "name": "Jane Doe",
+#     "relation": "Spouse",
+#     "phone": "9876543212"
+#   }
+# }
 
 #GET
 # Sample Output (Response)
