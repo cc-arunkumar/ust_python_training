@@ -1,4 +1,4 @@
-import csv
+import csv   # Import CSV module for reading/writing CSV files
 
 # Custom exception classes
 class ConversionError(Exception):
@@ -13,9 +13,10 @@ class InvalidStateNames(Exception):
 class OrderRecord:
     
     def __init__(self, data):
-        self.data = data
+        self.data = data   # Store row data
     
     def validate(self, count):
+        # List of valid Indian states
         valid_states = {
             "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh", 
             "Goa", "Gujarat", "Haryana", "Himachal Pradesh", "Jharkhand", "Karnataka", 
@@ -24,7 +25,7 @@ class OrderRecord:
             "Tripura", "Uttar Pradesh", "Uttarakhand", "West Bengal"
         }
 
-        # Check if all required fields are present and valid
+        # Validate row fields
         try:
             # Skip empty rows
             if not any(self.data.values()):
@@ -33,26 +34,27 @@ class OrderRecord:
             for col in self.data:
                 value = self.data[col].strip()
                 
-                # Validate quantity
+                # Validate quantity (must be positive integer)
                 if col == "quantity":
                     if not value.isdigit() or int(value) <= 0:
                         raise ConversionError(f"Invalid quantity: {value}")
                 
-                # Validate price_per_unit
+                # Validate price_per_unit (must be numeric)
                 elif col == "price_per_unit":
                     try:
                         price = abs(float(value))
                     except ValueError:
                         raise ConversionError(f"Invalid price_per_unit (non-numeric): {value}")
                 
-                # Validate customer_name
+                # Validate customer_name (cannot be blank)
                 elif col == "customer_name" and not value:
                     raise BlankFields("Customer name is blank")
                 
-                # Validate state
+                # Validate state (must be in valid_states list)
                 elif col == "state" and value not in valid_states:
                     raise InvalidStateNames(f"Invalid state: {value}")
 
+        # Handle specific exceptions
         except BlankFields as e:
             return False, str(e)
         except ConversionError as e:
@@ -62,7 +64,7 @@ class OrderRecord:
         except Exception as e:
             return False, f"Unknown error: {e}"
         
-        return True, None
+        return True, None   # Validation successful
 
 class OrderProcessor:
     
@@ -70,14 +72,15 @@ class OrderProcessor:
         self.input_file = input_file
         self.processed_file = processed_file
         self.skipped_file = skipped_file
-        self.processed_list = []
-        self.skipped_list = []
+        self.processed_list = []   # Valid records
+        self.skipped_list = []     # Invalid records
     
     def process_orders(self):
         try:
+            # Read input CSV file
             with open(self.input_file, "r") as file:
                 csv_reader = csv.DictReader(file)
-                header = csv_reader.fieldnames + ['error_reason']  # Add error_reason to skipped file
+                header = csv_reader.fieldnames + ['error_reason']  # Add error_reason for skipped records
 
                 for row in csv_reader:
                     order = OrderRecord(row)
@@ -89,9 +92,11 @@ class OrderProcessor:
                         row['status'] = row['status'].upper()  # Normalize status to uppercase
                         self.processed_list.append(row)
                     else:
+                        # Add error reason for invalid records
                         row['error_reason'] = error_reason
                         self.skipped_list.append(row)
 
+            # Write processed and skipped records to separate CSV files
             self._write_csv(self.processed_file, self.processed_list)
             self._write_csv(self.skipped_file, self.skipped_list)
         
@@ -99,6 +104,8 @@ class OrderProcessor:
             print(f"Error: The file {self.input_file} was not found.")
         except Exception as e:
             print(f"An error occurred while processing orders: {e}")
+        
+        # Print summary
         print(f"Total data: {len(self.processed_list)+len(self.skipped_list)}")
         print(f"Total Processed data: {len(self.processed_list)}")
         print(f"Total Skipped data: {len(self.skipped_list)}")
@@ -118,3 +125,10 @@ skipped_file = "C:/Users/Administrator/Desktop/ust_python_training/akhil_praveen
 
 processor = OrderProcessor(input_file, processed_file, skipped_file)
 processor.process_orders()
+
+# ===========================
+# Expected Output (example):
+# ===========================
+# Total data:  10
+# Total Processed data:  7
+# Total Skipped data:  3
