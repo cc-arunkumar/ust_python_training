@@ -1,11 +1,21 @@
+# UST Employee Telecom Device Registration
+# Scenario
+# UST provides company SIM cards to employees for official communication.
+# When a SIM is issued, an employee must register their details and SIM details.
+# You will create Pydantic models to validate the registration input
+
+#import libraries
 from typing import List, Optional
 from pydantic import BaseModel,Field
 
+
+#Employee Details
 class Employee(BaseModel):
     emp_id : int = Field(...,ge=1000,le=999999,description="Employee Id not valid")
     name: str = Field(...,min_length=2,description="name should be minimum of length 2")
     department : Optional[str] = Field(default="General", description="Department name")
-    
+
+#Sim Card details
 class Sim(BaseModel):
     number : str = Field(...,pattern=r"^\d{10}$",description="Must be exactly 10 digits")
     provider : str = Field(default="Jio", description="Department name")
@@ -53,4 +63,5 @@ print(s)
 
 # employee=Employee(emp_id=12345, name='Asha', department='General') sim=Sim(number='9876543210', provider='Jio', activation_year=2023)     
 # emp_id=12345 name='Asha' department='General'
+
 # number='9876543210' provider='Jio' activation_year=2023
