@@ -1,123 +1,133 @@
 import json
 
-required_fields_list = ["emp_id","name","age","salary","department","phone","email"]
-error_list=[]
+# List of required fields that should be present in each employee dictionary
+required_fields_list = ["emp_id", "name", "age", "salary", "department", "phone", "email"]
+error_list = []  # List to store invalid employee data
 
-
+# Function to check if all required fields are present and non-empty
 def required_fields(emp_dict):
     for field in required_fields_list:
-        # print(field)
+        # Check if the field is missing in the dictionary
         if field not in emp_dict:
             return False
 
         value = emp_dict[field]
-        # print(value)
 
+        # Check if the field is None or an empty string
         if value is None or str(value).strip() == "":
             return False
     return True
 
+# Function to clean the 'name' field by removing extra spaces
 def name_cleaning(emp_dict):
-    # print(emp_dict)
-    # print(type(emp_dict))
-        emp_name=emp_dict['name']
-        clean_name=" ".join(emp_name.split())
-        emp_dict['name']=clean_name
+    emp_name = emp_dict['name']
+    clean_name = " ".join(emp_name.split())  # Split by spaces and join again to remove extra spaces
+    emp_dict['name'] = clean_name
 
+# Function to validate the 'age' field to ensure it's an integer within a valid range (18-65)
 def age_validation(emp_dict):
-     try:
-        emp_age=int(emp_dict['age'])
-        emp_dict['age']=emp_age
-        if emp_dict['age']>18 and emp_dict['age']<65:
+    try:
+        emp_age = int(emp_dict['age'])  # Convert age to integer
+        emp_dict['age'] = emp_age
+        # Check if age is between 18 and 65
+        if emp_dict['age'] > 18 and emp_dict['age'] < 65:
             return True
-     except TypeError:
-        print(f"The value should be in int formate:{emp_dict['age']}")
+    except TypeError:
+        print(f"The value should be in int format: {emp_dict['age']}")
         return False
-     except ValueError:
-        print(f"The value should be in int formate{emp_dict['age']}")
+    except ValueError:
+        print(f"The value should be in int format: {emp_dict['age']}")
         return False
 
-
-# SALARY VALIDATION
+# Function to validate the 'salary' field to ensure it's a positive integer
 def salary_validation(emp_dict):
     try:
-        emp_salary=int(emp_dict['salary'])
-        if emp_salary>0:
+        emp_salary = int(emp_dict['salary'])  # Convert salary to integer
+        # Check if salary is greater than 0
+        if emp_salary > 0:
             return True
         else:
             return False
     except ValueError:
-        print(f"not in a perfect formate{emp_dict['salary']}")
+        print(f"Not in a proper format: {emp_dict['salary']}")
         return False
 
+# Function to validate the 'phone' field to ensure it's a 10-digit number
 def phone_number_validation(emp_dict):
     try:
-        emp_phone_number=int(emp_dict['phone'])
-        temp=emp_phone_number
-        flag=0
-        while(temp>0):
-            flag+=1
-            temp=temp//10
+        emp_phone_number = int(emp_dict['phone'])  # Convert phone to integer
+        temp = emp_phone_number
+        flag = 0
+        while(temp > 0):  # Count the digits in the phone number
+            flag += 1
+            temp = temp // 10
 
-        if flag==10:
+        # Check if the phone number has exactly 10 digits
+        if flag == 10:
             return True
         else:
-            # print(f"Invalid data------------------------->{emp['phone']}")
             return False
     except ValueError:
-        print(f"The formate is not proper-->{emp_dict['phone']}")
+        print(f"The format is not proper: {emp_dict['phone']}")
+        return False
 
-# EMAIL VALIDATION
+# Function to validate the 'email' field to ensure it has an "@" symbol and proper format
 def email_validation(emp_dict):
-    email=emp_dict['email']
+    email = emp_dict['email']
+    # Check if email contains "@" symbol
     if "@" not in email:
         return False
-    
-    username,domain= email.split("@",1) #even if we have multiple @ only 1st @ will be considerd
-    if username.strip()=="" or domain.strip=="":
+
+    username, domain = email.split("@", 1)  # Split the email at the first "@"
+    # Ensure both username and domain are non-empty
+    if username.strip() == "" or domain.strip() == "":
         return False
     return True
 
-
-with open("task_2_ust_india_employee_data_processing/employee.json","r") as emp_file:
+# Load employee data from a JSON file
+with open("task_2_ust_india_employee_data_processing/employee.json", "r") as emp_file:
     employee_file_json = json.load(emp_file)
 
+# Extract employee list from the loaded JSON data
 employees_list = employee_file_json["employees"]
-# print(employees_list)
-# print(type(employees_list))
 
+# Print the total number of employees found
 print(f"Total employees found: {len(employees_list)}")
 
-count=0
-validated_list=[]
-error_list=[]
+count = 0  # Counter for valid employees
+validated_list = []  # List to store valid employee data
+error_list = []  # List to store employees with errors
+
+# Iterate over each employee to validate their data
 for emp in employees_list:
-    # print(emp)
-    # print(type(emp))
+    # Check each validation function
     is_valid = required_fields(emp)
-    is_age_valid=age_validation(emp)
-    is_salary_valid=salary_validation(emp)
-    is_phone_valid=phone_number_validation(emp)
-    is_email_valid=email_validation(emp)
-    name_cleaning(emp)
+    is_age_valid = age_validation(emp)
+    is_salary_valid = salary_validation(emp)
+    is_phone_valid = phone_number_validation(emp)
+    is_email_valid = email_validation(emp)
+    name_cleaning(emp)  # Clean the name field by removing extra spaces
     
-    if is_valid==True and is_age_valid==True and is_salary_valid==True and is_phone_valid==True and is_email_valid==True:
+    # If all validations pass, append the employee to validated_list
+    if is_valid and is_age_valid and is_salary_valid and is_phone_valid and is_email_valid:
         validated_list.append(emp)
-        count+=1
+        count += 1
     else:
+        # If validation fails, add the employee to error_list
         error_list.append(emp)
-        
-print(f"Total no of valid employee:{count}")
+
+# Print the total number of valid employees
+print(f"Total number of valid employees: {count}")
 print(validated_list)
-output_data={"employees":validated_list}
-error_data={"employess":error_list}
 
-with open("employee_cleaned.json","w") as f:
-    json.dump(output_data,f,indent=4)
+# Prepare the output data with valid and invalid employee records
+output_data = {"employees": validated_list}
+error_data = {"employees": error_list}
 
-with open("employees_errors.json","w") as f:
-    json.dump(error_data,f,indent=4)
+# Write the validated data to a new JSON file
+with open("employee_cleaned.json", "w") as f:
+    json.dump(output_data, f, indent=4)
 
-
-
-   
+# Write the errors to a separate JSON file
+with open("employees_errors.json", "w") as f:
+    json.dump(error_data, f, indent=4)

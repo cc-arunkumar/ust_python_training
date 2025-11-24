@@ -1,0 +1,108 @@
+1. POST /students (Create a New Student)
+
+Input:
+
+{
+  "name": "David",
+  "age": 22,
+  "grade": "A"
+}
+
+
+Response:
+
+{
+  "Student Created": {
+    "name": "David",
+    "age": 22,
+    "grade": "A"
+  }
+}
+
+2. GET /student (Get All Students)
+
+Input:
+No body required.
+Response:
+
+[
+  {
+    "name": "David",
+    "age": 22,
+    "grade": "A"
+  },
+  {
+    "name": "Naveen",
+    "age": 20,
+    "grade": "B"
+  }
+]
+
+3. GET /student/{index} (Get a Particular Student by Index)
+
+Input:
+index as a URL parameter, e.g., /student/0
+Response:
+
+{
+  "name": "David",
+  "age": 22,
+  "grade": "A"
+}
+
+
+If the index does not exist:
+Response:
+
+{
+  "detail": "Student not found"
+}
+
+4. PUT /student/{index} (Update a Student's Information)
+
+Input:
+
+{
+  "name": "David",
+  "age": 23,
+  "grade": "A+"
+}
+
+
+index as a URL parameter, e.g., /student/0
+
+Response:
+
+{
+  "name": "David",
+  "age": 23,
+  "grade": "A+"
+}
+
+
+If the index does not exist:
+Response:
+
+{
+  "detail": "Student detail was not found"
+}
+
+5. DELETE /students/{index} (Delete a Student by Index)
+
+Input:
+index as a URL parameter, e.g., /students/0
+Response:
+
+{
+  "name": "David",
+  "age": 22,
+  "grade": "A"
+}
+
+
+If the index does not exist:
+Response:
+
+{
+  "detail": "The student is not present"
+}

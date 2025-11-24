@@ -1,0 +1,163 @@
+1. Valid Input Data
+
+Input:
+
+{
+  "employee": {
+    "emp_id": 12345,
+    "name": "Asha",
+    "department": "Engineering"
+  },
+  "sim": {
+    "number": "9876543210",
+    "provider": "Airtel",
+    "activation_year": 2023
+  }
+}
+
+
+Response:
+
+{
+  "employee": {
+    "emp_id": 12345,
+    "name": "Asha",
+    "department": "Engineering"
+  },
+  "sim": {
+    "number": "9876543210",
+    "provider": "Airtel",
+    "activation_year": 2023
+  }
+}
+
+2. Default Field Assignment (Department Missing, Provider Missing)
+
+Input:
+
+{
+  "employee": {
+    "emp_id": 12345,
+    "name": "Asha"
+  },
+  "sim": {
+    "number": "9876543210",
+    "activation_year": 2023
+  }
+}
+
+
+Response:
+
+{
+  "employee": {
+    "emp_id": 12345,
+    "name": "Asha",
+    "department": "General"
+  },
+  "sim": {
+    "number": "9876543210",
+    "provider": "Jio",
+    "activation_year": 2023
+  }
+}
+
+3. Validation Error Cases
+Case 1: emp_id violation (too low)
+
+Input:
+
+{
+  "emp_id": 999,
+  "name": "Asha",
+  "sim": {
+    "number": "9876543210",
+    "activation_year": 2023
+  }
+}
+
+
+Response:
+
+{
+  "detail": "Validation Error: emp_id must be between 1000 and 999999"
+}
+
+Case 2: name violation (too short)
+
+Input:
+
+{
+  "emp_id": 12345,
+  "name": "A",
+  "sim": {
+    "number": "9876543210",
+    "activation_year": 2023
+  }
+}
+
+
+Response:
+
+{
+  "detail": "Validation Error: name must have at least 2 characters"
+}
+
+Case 3: number violation (incorrect format)
+
+Input:
+
+{
+  "emp_id": 12345,
+  "name": "Asha",
+  "sim": {
+    "number": "12345",
+    "activation_year": 2023
+  }
+}
+
+
+Response:
+
+{
+  "detail": "Validation Error: number must be a 10-digit number"
+}
+
+Case 4: activation_year violation (too low)
+
+Input:
+
+{
+  "emp_id": 12345,
+  "name": "Asha",
+  "sim": {
+    "number": "9876543210",
+    "activation_year": 2019
+  }
+}
+
+
+Response:
+
+{
+  "detail": "Validation Error: activation_year must be between 2020 and 2025"
+}
+
+Case 5: activation_year violation (too high)
+
+Input:
+
+{
+  "emp_id": 12345,
+  "name": "Asha",
+  "sim": {
+    "number": "9876543210",
+    "activation_year": 2030
+  }
+}
+
+Response:
+
+{
+  "detail": "Validation Error: activation_year must be between 2020 and 2025"
+}

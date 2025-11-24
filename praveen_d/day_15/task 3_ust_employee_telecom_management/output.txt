@@ -1,0 +1,332 @@
+1. POST /telecom/profiles
+
+Input:
+
+{
+  "employee": {
+    "emp_id": 12345,
+    "name": "David",
+    "official_email": "david@ust.com",
+    "department": "Engineering",
+    "location": "Bengaluru"
+  },
+  "sim": {
+    "sim_number": "9876543210",
+    "provider": "Airtel",
+    "is_esim": false,
+    "activation_year": 2023
+  },
+  "data_plan": {
+    "name": "Basic Plan",
+    "monthly_gb": 30,
+    "speed_mbps": 50,
+    "is_roaming_included": false
+  },
+  "voice_plan": {
+    "name": "Basic Voice",
+    "monthly_minutes": 500,
+    "has_isd": false,
+    "per_minute_charge_paise": 50
+  },
+  "emergency_contact": {
+    "name": "Naveen",
+    "relation": "Friend",
+    "phone": "9876543210"
+  }
+}
+
+
+Response:
+
+{
+  "employee": {
+    "emp_id": 12345,
+    "name": "David",
+    "official_email": "david@ust.com",
+    "department": "Engineering",
+    "location": "Bengaluru"
+  },
+  "sim": {
+    "sim_number": "9876543210",
+    "provider": "Airtel",
+    "is_esim": false,
+    "activation_year": 2023
+  },
+  "data_plan": {
+    "name": "Basic Plan",
+    "monthly_gb": 30,
+    "speed_mbps": 50,
+    "is_roaming_included": false
+  },
+  "voice_plan": {
+    "name": "Basic Voice",
+    "monthly_minutes": 500,
+    "has_isd": false,
+    "per_minute_charge_paise": 50
+  },
+  "emergency_contact": {
+    "name": "Naveen",
+    "relation": "Friend",
+    "phone": "9876543210"
+  }
+}
+
+2. POST /telecom/profiles/minimal
+
+Input:
+
+{
+  "employee": {
+    "emp_id": 12346,
+    "name": "Aadhi",
+    "official_email": "aadhi@ust.com"
+  },
+  "sim": {
+    "sim_number": "9876543211",
+    "activation_year": 2023
+  }
+}
+
+
+Response:
+
+{
+  "employee": {
+    "emp_id": 12346,
+    "name": "Aadhi",
+    "official_email": "aadhi@ust.com",
+    "department": "Telecom",
+    "location": "Bengaluru"
+  },
+  "sim": {
+    "sim_number": "9876543211",
+    "provider": "Jio",
+    "is_esim": false,
+    "activation_year": 2023
+  },
+  "data_plan": null,
+  "voice_plan": null,
+  "emergency_contact": null
+}
+
+3. GET /telecom/profiles
+
+Input:
+No body required.
+Response:
+
+[
+  {
+    "employee": {
+      "emp_id": 12345,
+      "name": "David",
+      "official_email": "david@ust.com",
+      "department": "Engineering",
+      "location": "Bengaluru"
+    },
+    "sim": {
+      "sim_number": "9876543210",
+      "provider": "Airtel",
+      "is_esim": false,
+      "activation_year": 2023
+    },
+    "data_plan": {
+      "name": "Basic Plan",
+      "monthly_gb": 30,
+      "speed_mbps": 50,
+      "is_roaming_included": false
+    },
+    "voice_plan": {
+      "name": "Basic Voice",
+      "monthly_minutes": 500,
+      "has_isd": false,
+      "per_minute_charge_paise": 50
+    },
+    "emergency_contact": {
+      "name": "Naveen",
+      "relation": "Friend",
+      "phone": "9876543210"
+    }
+  },
+  {
+    "employee": {
+      "emp_id": 12346,
+      "name": "Aadhi",
+      "official_email": "aadhi@ust.com",
+      "department": "Telecom",
+      "location": "Bengaluru"
+    },
+    "sim": {
+      "sim_number": "9876543211",
+      "provider": "Jio",
+      "is_esim": false,
+      "activation_year": 2023
+    },
+    "data_plan": null,
+    "voice_plan": null,
+    "emergency_contact": null
+  }
+]
+
+4. GET /telecom/profiles/{emp_id}
+
+Input:
+emp_id as a URL parameter (e.g., /telecom/profiles/12345)
+Response:
+
+{
+  "employee": {
+    "emp_id": 12345,
+    "name": "David",
+    "official_email": "david@ust.com",
+    "department": "Engineering",
+    "location": "Bengaluru"
+  },
+  "sim": {
+    "sim_number": "9876543210",
+    "provider": "Airtel",
+    "is_esim": false,
+    "activation_year": 2023
+  },
+  "data_plan": {
+    "name": "Basic Plan",
+    "monthly_gb": 30,
+    "speed_mbps": 50,
+    "is_roaming_included": false
+  },
+  "voice_plan": {
+    "name": "Basic Voice",
+    "monthly_minutes": 500,
+    "has_isd": false,
+    "per_minute_charge_paise": 50
+  },
+  "emergency_contact": {
+    "name": "Naveen",
+    "relation": "Friend",
+    "phone": "9876543210"
+  }
+}
+
+5. PUT /telecom/profiles/{emp_id}
+
+Input:
+
+{
+  "employee": {
+    "emp_id": 12345,
+    "name": "David",
+    "official_email": "david@ust.com",
+    "department": "Sales",
+    "location": "Chennai"
+  },
+  "sim": {
+    "sim_number": "9876543210",
+    "provider": "Airtel",
+    "is_esim": false,
+    "activation_year": 2023
+  },
+  "data_plan": {
+    "name": "Advanced Plan",
+    "monthly_gb": 50,
+    "speed_mbps": 100,
+    "is_roaming_included": true
+  },
+  "voice_plan": {
+    "name": "Premium Voice",
+    "monthly_minutes": 1000,
+    "has_isd": true,
+    "per_minute_charge_paise": 25
+  },
+  "emergency_contact": {
+    "name": "Siyed",
+    "relation": "Family",
+    "phone": "9876543210"
+  }
+}
+
+
+Response:
+
+{
+  "employee": {
+    "emp_id": 12345,
+    "name": "David",
+    "official_email": "david@ust.com",
+    "department": "Sales",
+    "location": "Chennai"
+  },
+  "sim": {
+    "sim_number": "9876543210",
+    "provider": "Airtel",
+    "is_esim": false,
+    "activation_year": 2023
+  },
+  "data_plan": {
+    "name": "Advanced Plan",
+    "monthly_gb": 50,
+    "speed_mbps": 100,
+    "is_roaming_included": true
+  },
+  "voice_plan": {
+    "name": "Premium Voice",
+    "monthly_minutes": 1000,
+    "has_isd": true,
+    "per_minute_charge_paise": 25
+  },
+  "emergency_contact": {
+    "name": "Siyed",
+    "relation": "Family",
+    "phone": "9876543210"
+  }
+}
+
+6. DELETE /telecom/profiles/{emp_id}
+
+Input:
+emp_id as a URL parameter (e.g., /telecom/profiles/12345)
+Response:
+
+{
+  "detail": "Profile deleted"
+}
+
+7. GET /telecom/profiles/search
+
+Input:
+department and provider as optional query parameters, e.g., /telecom/profiles/search?department=Sales&provider=Airtel
+Response:
+
+[
+  {
+    "employee": {
+      "emp_id": 12345,
+      "name": "David",
+      "official_email": "david@ust.com",
+      "department": "Sales",
+      "location": "Chennai"
+    },
+    "sim": {
+      "sim_number": "9876543210",
+      "provider": "Airtel",
+      "is_esim": false,
+      "activation_year": 2023
+    },
+    "data_plan": {
+      "name": "Advanced Plan",
+      "monthly_gb": 50,
+      "speed_mbps": 100,
+      "is_roaming_included": true
+    },
+    "voice_plan": {
+      "name": "Premium Voice",
+      "monthly_minutes": 1000,
+      "has_isd": true,
+      "per_minute_charge_paise": 25
+    },
+    "emergency_contact": {
+      "name": "Siyed",
+      "relation": "Family",
+      "phone": "9876543210"
+    }
+  }
+]

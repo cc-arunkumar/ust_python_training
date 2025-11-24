@@ -1,0 +1,247 @@
+1. POST /employee (Create a New Employee)
+
+Input:
+
+{
+  "name": "David",
+  "email": "david@ust.com",
+  "department": "Engineering",
+  "role": "Engineer"
+}
+
+
+Response:
+
+{
+  "Employee Created": {
+    "id": 4,
+    "name": "David",
+    "email": "david@ust.com",
+    "department": "Engineering",
+    "role": "Engineer",
+    "status": "active"
+  }
+}
+
+2. GET /employee (Get All Employees)
+
+Input:
+No body required.
+Response:
+
+{
+  "All employees": [
+    {
+      "id": 1,
+      "name": "Asha Rao",
+      "email": "asha.rao@ust.com",
+      "department": "Engineering",
+      "role": "Engineer",
+      "status": "active"
+    },
+    {
+      "id": 2,
+      "name": "Vikram S",
+      "email": "vikram.s@ust.com",
+      "department": "Delivery",
+      "role": "Manager",
+      "status": "active"
+    },
+    {
+      "id": 3,
+      "name": "Meera N",
+      "email": "meera.n@ust.com",
+      "department": "HR",
+      "role": "HR",
+      "status": "active"
+    }
+  ]
+}
+
+3. GET /employee/{id} (Get an Employee by ID)
+
+Input:
+id as a URL parameter,  /employee/1
+Response:
+
+{
+  "id": 1,
+  "name": "Asha Rao",
+  "email": "asha.rao@ust.com",
+  "department": "Engineering",
+  "role": "Engineer",
+  "status": "active"
+}
+
+
+If the employee is not found:
+Response:
+
+{
+  "detail": "Employee not found"
+}
+
+4. PUT /employee/{id} (Update an Employee's Information)
+
+Input:
+
+{
+  "name": "David",
+  "email": "david@ust.com",
+  "department": "Engineering",
+  "role": "Engineer",
+  "status": "active"
+}
+
+
+id as a URL parameter,  /employee/4
+
+Response:
+
+{
+  "id": 4,
+  "name": "David",
+  "email": "david@ust.com",
+  "department": "Engineering",
+  "role": "Engineer",
+  "status": "active"
+}
+
+
+If the employee is not found:
+Response:
+
+{
+  "detail": "Employee not found"
+}
+
+5. DELETE /employee/{id} (Delete an Employee by ID)
+
+Input:
+id as a URL parameter,  /employee/1
+Response:
+
+{
+  "id": 1,
+  "name": "Asha Rao",
+  "email": "asha.rao@ust.com",
+  "department": "Engineering",
+  "role": "Engineer",
+  "status": "active"
+}
+
+
+If the employee is not found:
+Response:
+
+{
+  "detail": "Employee not found"
+}
+
+6. POST /employee/check-in/{id} (Employee Check-in)
+
+Input:
+id as a URL parameter,  /employee/check-in/1
+Response:
+
+{
+  "employee_id": 1,
+  "date": "25-11-2025",
+  "check_in": "09:00:00",
+  "check_out": "null"
+}
+
+
+If the employee has already checked in:
+Response:
+
+{
+  "detail": "Already checked-in"
+}
+
+
+If the employee is not found:
+Response:
+
+{
+  "detail": "Employee not found"
+}
+
+7. POST /employee/check-out/{id} (Employee Check-out)
+
+Input:
+id as a URL parameter,  /employee/check-out/1
+Response:
+
+{
+  "employee_id": 1,
+  "date": "25-11-2025",
+  "check_in": "09:00:00",
+  "check_out": "17:00:00"
+}
+
+
+If no check-in is found:
+Response:
+
+{
+  "detail": "Check-in required before checkout"
+}
+
+
+If the employee is not found:
+Response:
+
+{
+  "detail": "Employee not found"
+}
+
+8. POST /employee/{id}/leave-requests (Create a Leave Request)
+
+Input:
+
+{
+  "employee_id": 1,
+  "from_date": "2025-11-25",
+  "to_date": "2025-11-27",
+  "reason": "Personal Leave"
+}
+
+
+id as a URL parameter,  /employee/1/leave-requests
+
+Response:
+
+{
+  "leave_id": 1,
+  "employee_id": 1,
+  "from_date": "2025-11-25",
+  "to_date": "2025-11-27",
+  "reason": "Personal Leave",
+  "status": "pending"
+}
+
+9. GET /employee/{id}/leave-requests (Get Leave Requests for an Employee)
+
+Input:
+id as a URL parameter,  /employee/1/leave-requests
+Response:
+
+[
+  {
+    "leave_id": 1,
+    "employee_id": 1,
+    "from_date": "2025-11-25",
+    "to_date": "2025-11-27",
+    "reason": "Personal Leave",
+    "status": "pending"
+  }
+]
+
+
+If no leave requests are found for the employee:
+Response:
+
+{
+  "detail": "Employee not found"
+}

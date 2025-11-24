@@ -1,0 +1,192 @@
+GET /menu
+Input: No body required. Optionally, pass a query parameter only_available.
+Response:
+
+[
+  {
+    "id": 1,
+    "name": "Tomato Soup",
+    "category": "starter",
+    "price": 99.0,
+    "is_available": true
+  },
+  {
+    "id": 2,
+    "name": "Paneer Butter Masala",
+    "category": "main_course",
+    "price": 249.0,
+    "is_available": true
+  },
+  {
+    "id": 3,
+    "name": "Butter Naan",
+    "category": "main_course",
+    "price": 49.0,
+    "is_available": true
+  }
+]
+
+
+GET /menu/{id}
+Input: id as a URL parameter (e.g., /menu/1)
+Response :
+
+{
+  "id": 1,
+  "name": "Tomato Soup",
+  "category": "starter",
+  "price": 99.0,
+  "is_available": true
+}
+
+
+POST /menu
+Input :
+
+{
+  "name": "Garlic Bread",
+  "category": "starter",
+  "price": 59.0,
+  "is_available": true
+}
+
+
+Response :
+
+{
+  "id": 5,
+  "name": "Garlic Bread",
+  "category": "starter",
+  "price": 59.0,
+  "is_available": true
+}
+
+
+PUT /menu/{id}
+Input :
+
+{
+  "name": "Garlic Bread with Cheese",
+  "category": "starter",
+  "price": 79.0,
+  "is_available": true
+}
+
+
+Response :
+
+{
+  "id": 5,
+  "name": "Garlic Bread with Cheese",
+  "category": "starter",
+  "price": 79.0,
+  "is_available": true
+}
+
+
+DELETE /menu/{id}
+Input: id as a URL parameter (e.g., /menu/5)
+Response :
+
+{
+  "detail": "Menu item deleted"
+}
+
+
+POST /orders
+Input :
+
+{
+  "order_type": "dine_in",
+  "table_number": 5,
+  "items": [
+    { "menu_item_id": 1, "quantity": 2 },
+    { "menu_item_id": 2, "quantity": 1 }
+  ],
+  "status": "pending",
+  "special_instructions": "No onions in the soup"
+}
+
+
+Response :
+
+{
+  "id": 1,
+  "order_type": "dine_in",
+  "table_number": 5,
+  "items": [
+    { "menu_item_id": 1, "quantity": 2 },
+    { "menu_item_id": 2, "quantity": 1 }
+  ],
+  "status": "pending",
+  "special_instructions": "No onions in the soup"
+}
+
+
+GET /orders
+Input: No body required. Optionally, pass a query parameter status to filter orders by their status.
+Response :
+
+[
+  {
+    "id": 1,
+    "order_type": "dine_in",
+    "table_number": 5,
+    "items": [
+      { "menu_item_id": 1, "quantity": 2 },
+      { "menu_item_id": 2, "quantity": 1 }
+    ],
+    "status": "pending",
+    "special_instructions": "No onions in the soup"
+  }
+]
+
+
+GET /orders/{id}
+Input: id as a URL parameter (e.g., /orders/1)
+Response :
+
+{
+  "id": 1,
+  "order_type": "dine_in",
+  "table_number": 5,
+  "items": [
+    { "menu_item_id": 1, "quantity": 2 },
+    { "menu_item_id": 2, "quantity": 1 }
+  ],
+  "status": "pending",
+  "special_instructions": "No onions in the soup"
+}
+
+
+PATCH /orders/{id}/status
+Input :
+
+{
+  "status": "in_progress"
+}
+
+
+Response :
+
+{
+  "id": 1,
+  "order_type": "dine_in",
+  "table_number": 5,
+  "items": [
+    { "menu_item_id": 1, "quantity": 2 },
+    { "menu_item_id": 2, "quantity": 1 }
+  ],
+  "status": "in_progress",
+  "special_instructions": "No onions in the soup"
+}
+
+
+GET /orders/{id}/total-amount
+Input: id as a URL parameter (e.g., /orders/1)
+Response :
+
+{
+  "order_id": 1,
+  "total_amount": 497.0
+}

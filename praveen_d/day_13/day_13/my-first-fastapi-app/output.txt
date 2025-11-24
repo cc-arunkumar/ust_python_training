@@ -1,0 +1,241 @@
+1. GET / (Hello Message)
+
+Input:
+No body required.
+Response:
+
+{
+  "message": "Hello Praveen from praveen !"
+}
+
+2. GET /greet/{name} (Greet User with Optional Name)
+
+Input:
+name as a path parameter,  /greet/rahul
+Response:
+
+{
+  "msg": "GBrahul"
+}
+
+3. GET /square/{num1} (Get Square of a Number)
+
+Input:
+num1 as a path parameter,  /square/7
+Response:
+
+{
+  "square": 49
+}
+
+4. GET /evenorodd/{value} (Check if a Number is Even or Odd)
+
+Input:
+value as a path parameter,  /evenorodd/12
+Response:
+
+{
+  "Even": "even"
+}
+
+
+If the number is odd:
+
+{
+  "Odd": "odd"
+}
+
+5. GET /add (Simple Addition Using Query Parameters)
+
+Input:
+Query parameters: /add?a=10&b=5
+Response:
+
+{
+  "sum": 15
+}
+
+6. GET /user/{user_id} (User Info with Optional City)
+
+Input:
+user_id as a path parameter,  /user/24
+Response:
+
+"David\nChennai,\n121212121212"
+
+7. GET /user/{user_id}?city=Mumbai (User Info with Optional Query Parameter for City)
+
+Input:
+user_id as a path parameter and city as a query parameter,  /user/24?city=Mumbai
+Response:
+
+{
+  "name": "David",
+  "location": "Mumbai",
+  "number": 121212121212
+}
+
+8. GET /repeat (Repeat a Message n Times)
+
+Input:
+Query parameters: /repeat?msg=hi&times=3
+Response:
+
+["hi", "hi", "hi"]
+
+9. GET /fullname (Full Name Using Two Query Parameters)
+
+Input:
+Query parameters: /fullname?first=rahul&last=sharma
+Response:
+
+"rahulsharma"
+
+10. GET /upper (Convert String to Uppercase)
+
+Input:
+Query parameter: /upper?text=hello
+Response:
+
+"HELLO"
+
+11. GET /area (Calculate Area of Rectangle)
+
+Input:
+Query parameters: /area?length=5&width=3
+Response:
+
+{
+  "area": 15
+}
+
+12. GET /age/{age} (Age Next Year)
+
+Input:
+age as a path parameter,  /age/24
+Response:
+
+{
+  "area": 25
+}
+
+13. GET /contains (Check if a Word Contains a Character)
+
+Input:
+Query parameters: /contains?word=hello&char=l
+Response:
+
+"contains"
+
+
+If the character is not found:
+
+"Not contains"
+
+14. GET /movie (Combine Path + Query Parameters)
+
+Input:
+Query parameters: /movie?year=2009&rating=7
+Response:
+
+{
+  "Avatar",
+  2009,
+  7
+}
+
+15. GET /movie/Avatar (Multiple Query Params for Movie)
+
+Input:
+Query parameters: /movie/Avatar?year=2009&rating=7
+Response:
+
+{
+  "Avatar",
+  2009,
+  7
+}
+
+16. GET /nums (Return List of Numbers Sent as Query Repeats)
+
+Input:
+Query parameters: /nums?n=1&n=2&n=3
+Response:
+
+{
+  "numbers": [1, 2, 3]
+}
+
+17. GET /substring (Show Substring of a String)
+
+Input:
+Query parameters: /substring?text=hello&start=1&end=4
+Response:
+
+{
+  "str:": "ell"
+}
+
+18. GET /checkpass (Validate Password Length)
+
+Input:
+Query parameter: /checkpass?pwd=abcd1234
+Response:
+
+{
+  "valid:": true
+}
+
+
+If invalid:
+
+false
+
+19. GET /temp (Get Temperature in C and F)
+
+Input:
+Query parameter: /temp?c=30
+Response:
+
+86.0
+
+20. GET /task/clean-room (Task with Priority)
+
+Input:
+Query parameter: /task/clean-room?priority=high
+Response:
+
+{
+  "Immideate action required"
+}
+
+21. GET /reverse/{text} (Reverse Text)
+
+Input:
+text as a path parameter,  /reverse/hello
+Response:
+
+"olleh"
+
+22. GET /mul (Multiply Two Numbers)
+
+Input:
+Query parameters: /mul?num1=10&num2=5
+Response:
+
+{
+  "Multiplication": 50
+}
+
+23. GET /eligible (Check Age Eligibility)
+
+Input:
+Query parameter: /eligible?age=17
+Response:
+
+"not Eligible"
+
+
+If age >= 18:
+
+"Eligible"
