@@ -50,6 +50,33 @@
 # Task CRUD 
 # Simpler use-case: UST Employee API
 
+# CRUD Task
+# Simpler use-case: UST Employee API
+# Data models
+# Employee
+# id: int — auto-increment (1, 2, 3, ...)
+# name: str
+# email: str
+# department: str
+# role: str
+# status: str — "active" or "resigned" (default "active" )
+
+# AttendanceRecord
+# employee_id: int
+# date: "YYYY-MM-DD"
+# check_in: "HH:MM:SS" | null
+# check_out: "HH:MM:SS" | null
+
+# LeaveRequest
+# leave_id: int — auto-increment
+# employee_id: int
+# from_date: "YYYY-MM-DD"
+# to_date: "YYYY-MM-DD"
+# reason: str
+# CRUD Task 1
+# status: "pending" | "approved" | "denied" (defaults to "pending" )
+
+
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from typing import List
@@ -245,3 +272,189 @@ def get_leave_requests(id: int):
         return lis
     # Raise an exception if employee not found
     raise HTTPException(status_code=404, detail="Employee Not Found")
+
+
+
+# 1. Add a New Employee (POST /employees)
+# Request:
+# POST /employees
+# Body:
+# {
+#     "name": "John Doe",
+#     "email": "john.doe@ust.com",
+#     "department": "Engineering",
+#     "role": "Engineer"
+# }
+# Response:
+# {
+#     "id": 4,
+#     "name": "John Doe",
+#     "email": "john.doe@ust.com",
+#     "department": "Engineering",
+#     "role": "Engineer",
+#     "status": "active"
+# }
+
+# 2. Get All Employees (GET /employees)
+# Request:
+# GET /employees
+# Response:
+# [
+#     {
+#         "id": 1,
+#         "name": "Asha Rao",
+#         "email": "asha.rao@ust.com",
+#         "department": "Engineering",
+#         "role": "Engineer",
+#         "status": "active"
+#     },
+#     {
+#         "id": 2,
+#         "name": "Vikram S",
+#         "email": "vikram.s@ust.com",
+#         "department": "Delivery",
+#         "role": "Manager",
+#         "status": "active"
+#     },
+#     {
+#         "id": 3,
+#         "name": "Meera N",
+#         "email": "meera.n@ust.com",
+#         "department": "HR",
+#         "role": "HR",
+#         "status": "active"
+#     },
+#     {
+#         "id": 4,
+#         "name": "John Doe",
+#         "email": "john.doe@ust.com",
+#         "department": "Engineering",
+#         "role": "Engineer",
+#         "status": "active"
+#     }
+# ]
+
+# 3. Get Employee by ID (GET /employees/{id})
+# Request:
+# GET /employees/1
+# Response:
+# {
+#     "id": 1,
+#     "name": "Asha Rao",
+#     "email": "asha.rao@ust.com",
+#     "department": "Engineering",
+#     "role": "Engineer",
+#     "status": "active"
+# }
+
+# 4. Update Employee Details (PUT /employees/{id})
+# Request:
+# PUT /employees/1
+# Body:
+# {
+#     "name": "Asha Rao Updated",
+#     "email": "asha.updated@ust.com",
+#     "department": "Engineering",
+#     "role": "Senior Engineer",
+#     "status": "active"
+# }
+# Response:
+# {
+#     "id": 1,
+#     "name": "Asha Rao Updated",
+#     "email": "asha.updated@ust.com",
+#     "department": "Engineering",
+#     "role": "Senior Engineer",
+#     "status": "active"
+# }
+
+# 5. Delete Employee (DELETE /employees/{id})
+# Request:
+# DELETE /employees/1
+# Response:
+# {
+#     "id": 1,
+#     "name": "Asha Rao Updated",
+#     "email": "asha.updated@ust.com",
+#     "department": "Engineering",
+#     "role": "Senior Engineer",
+#     "status": "active"
+# }
+
+# 6. Employee Check-in (POST /employees/{id}/checkin)
+# Request:
+# POST /employees/2/checkin
+# Response:
+# {
+#     "employee_id": 2,
+#     "date": "2025-11-24",
+#     "check_in": "15:30:10"
+# }
+
+# 7. Employee Check-out (POST /employees/{id}/checkout)
+# Request:
+# POST /employees/2/checkout
+# Response:
+# {
+#     "employee_id": 2,
+#     "date": "2025-11-24",
+#     "check_in": "15:30:10",
+#     "check_out": "17:30:00"
+# }
+
+# 8. Submit a Leave Request (POST /employees/{id}/leave-requests)
+# Request:
+# POST /employees/3/leave-requests
+# Body:
+# {
+#     "from_date": "2025-11-25",
+#     "to_date": "2025-11-27",
+#     "reason": "Medical Leave"
+# }
+# Response:
+# {
+#     "leave_id": 1,
+#     "employee_id": 3,
+#     "from_date": "2025-11-25",
+#     "to_date": "2025-11-27",
+#     "reason": "Medical Leave",
+#     "status": "pending"
+# }
+
+# 9. Get Leave Requests by Employee ID (GET /employees/{id}/leave-requests)
+# Request:
+# GET /employees/3/leave-requests
+# Response:
+# [
+#     {
+#         "leave_id": 1,
+#         "employee_id": 3,
+#         "from_date": "2025-11-25",
+#         "to_date": "2025-11-27",
+#         "reason": "Medical Leave",
+#         "status": "pending"
+#     }
+# ]
+
+# 10. Error: Employee Not Found (GET /employees/{id})
+# Request:
+# GET /employees/99999
+# Response:
+# {
+#     "detail": "Employee Not Found"
+# }
+
+# 11. Error: Email Already Exists (POST /employees)
+# Request:
+# POST /employees
+# Body:
+# {
+#     "name": "Vikram S",
+#     "email": "vikram.s@ust.com",
+#     "department": "Engineering",
+#     "role": "Engineer"
+# }
+# Response:
+# {
+#     "detail": "Email already exists"
+# }
