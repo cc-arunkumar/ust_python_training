@@ -1,0 +1,90 @@
+1. GET all laptops
+Response Body :
+[
+  {
+    "asset_id": 1,
+    "serial_number": "78Rd6Da44dC",
+    "model_name": "Lenovo 134",
+    "assigned_to_emp_id": 1000,
+    "status": "assigned",
+    "purchase_year": 2015,
+    "location": "Bengaluru"
+  },
+  {
+    "asset_id": 2,
+    "serial_number": "YXlS0tdSw4CNQVLBaBr",
+    "model_name": "Lenovo 360",
+    "assigned_to_emp_id": 1002,
+    "status": "assigned",
+    "purchase_year": 2023,
+    "location": "Bengaluru"
+  },
+  {
+    "asset_id": 3,
+    "serial_number": "0dF3lslSBkx4",
+    "model_name": "HP 603",
+    "assigned_to_emp_id": 1003,
+    "status": "retired",
+    "purchase_year": 2022,
+    "location": "Bengaluru"
+  }
+]
+
+2. POST : Create a new laptop
+Request Body :
+{
+  "asset_id": 3,
+  "serial_number": "0dF3lslSBkx4",
+  "model_name": "HP 603",
+  "assigned_to_emp_id": 1003,
+  "status": "retired",
+  "purchase_year": 2022,
+  "location": "Bengaluru"
+}
+
+Response Body :
+{
+  "asset_id": 3,
+  "serial_number": "0dF3lslSBkx4",
+  "model_name": "HP 603",
+  "assigned_to_emp_id": 1003,
+  "status": "retired",
+  "purchase_year": 2022,
+  "location": "Bengaluru"
+}
+
+3. GET by laptop ID 
+asset_id:2
+
+Response Body :
+{
+  "asset_id": 2,
+  "serial_number": "YXlS0tdSw4CNQVLBaBr",
+  "model_name": "Lenovo 360",
+  "assigned_to_emp_id": 1002,
+  "status": "assigned",
+  "purchase_year": 2023,
+  "location": "Bengaluru"
+}
+
+4. PUT - Update a laptop 
+
+asset_id : 1
+Response body :
+{
+  "asset_id": 1,
+  "serial_number": "m678H4aZYuyeW",
+  "model_name": "HP 320",
+  "assigned_to_emp_id": 1000,
+  "status": "in_stock",
+  "purchase_year": 2023,
+  "location": "Bengaluru"
+}
+
+
+5. DELETE a laptop
+asset_id = 3
+Response body :
+{
+  "detail": "Laptop removed"
+}

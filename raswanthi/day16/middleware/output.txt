@@ -1,0 +1,21 @@
+===============================================================
+Incoming request:GET /docs
+Time taken: 0.0008
+Response status: 200
+Time taken: 0.0013                               200 OK
+Response status: 200
+INFO:     127.0.0.1:55059 - "GET /openapi.json HTTP/1.1" 200 OK
+Incoming request:GET /hello                      TP/1.1" 200 OK
+Time taken: 0.0006
+Response status: 200
+INFO:     127.0.0.1:55065 - "GET /hello HTTP/1.1" 200 OK
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [6728]
+INFO:     Stopping reloader process [14132]
+===============================================================
+Response Body :
+{
+  "message": "Hello from FastAPI with middleware!"
+}

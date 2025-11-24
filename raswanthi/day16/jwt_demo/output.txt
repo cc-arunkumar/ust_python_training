@@ -1,0 +1,13 @@
+Request body: (POST)
+{
+  "username": "rashi",
+  "password": "rashi123"
+}
+
+Response body: (GET)
+{
+  "message": "This is a protected endpoint using JWT TOKEN",
+  "user": {
+    "username": "rashi"
+  }
+}
