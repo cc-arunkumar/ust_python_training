@@ -1,0 +1,133 @@
+1. GET /laptops
+If no laptops are added yet:
+
+json
+[]
+After adding some laptops:
+
+json
+[
+  {
+    "asset_id": 101,
+    "serial_number": "ABC12345XY",
+    "model_name": "Dell Latitude 5420",
+    "assigned_to_emp_id": 2001,
+    "status": "assigned",
+    "purchase_year": 2022,
+    "location": "Bengaluru"
+  },
+  {
+    "asset_id": 102,
+    "serial_number": "XYZ98765PQ",
+    "model_name": "HP EliteBook 840",
+    "assigned_to_emp_id": null,
+    "status": "in_stock",
+    "purchase_year": 2023,
+    "location": "Bengaluru"
+  }
+]
+2. GET /laptops/{asset_id}
+Request:
+
+Code
+GET /laptops/101
+Response:
+
+json
+{
+  "asset_id": 101,
+  "serial_number": "ABC12345XY",
+  "model_name": "Dell Latitude 5420",
+  "assigned_to_emp_id": 2001,
+  "status": "assigned",
+  "purchase_year": 2022,
+  "location": "Bengaluru"
+}
+If not found:
+
+json
+{
+  "detail": "Laptop not found"
+}
+3. POST /laptops
+Request body:
+
+json
+{
+  "asset_id": 103,
+  "serial_number": "LMN45678RS",
+  "model_name": "Lenovo ThinkPad T14",
+  "assigned_to_emp_id": 3002,
+  "status": "assigned",
+  "purchase_year": 2021,
+  "location": "Hyderabad"
+}
+Response:
+
+json
+{
+  "asset_id": 103,
+  "serial_number": "LMN45678RS",
+  "model_name": "Lenovo ThinkPad T14",
+  "assigned_to_emp_id": 3002,
+  "status": "assigned",
+  "purchase_year": 2021,
+  "location": "Hyderabad"
+}
+If duplicate asset_id:
+
+json
+{
+  "detail": "asset_id already exists"
+}
+4. PUT /laptops/{asset_id}
+Request:
+
+Code
+PUT /laptops/103
+Body:
+
+json
+{
+  "asset_id": 103,
+  "serial_number": "LMN45678RS",
+  "model_name": "Lenovo ThinkPad T14 Gen2",
+  "assigned_to_emp_id": 3002,
+  "status": "retired",
+  "purchase_year": 2021,
+  "location": "Mumbai"
+}
+Response:
+
+json
+{
+  "asset_id": 103,
+  "serial_number": "LMN45678RS",
+  "model_name": "Lenovo ThinkPad T14 Gen2",
+  "assigned_to_emp_id": 3002,
+  "status": "retired",
+  "purchase_year": 2021,
+  "location": "Mumbai"
+}
+If not found:
+
+json
+{
+  "detail": "id does not exits"
+}
+5. DELETE /laptops/{asset_id}
+Request:
+
+Code
+DELETE /laptops/103
+Response:
+
+json
+{
+  "detail": "Laptop deleted"
+}
+If not found:
+
+json
+{
+  "detail": "Laptop not found"
