@@ -73,3 +73,39 @@ try:
     Registration(employee={"emp_id": 12345, "name": "Asha"}, sim={"number": "9876543210", "activation_year": 2030})
 except ValidationError as e:
     print("activation_year=2030 error:\n", e)
+    
+
+# --------------------------------------------------------------------------------------
+
+# Sample output
+
+# --- Success Case ---
+# employee=EmployeeModel(emp_id=12345, name='Asha', department='Engineering') sim=SimModel(number='9876543210', provider='Airtel', activation_year=2023)
+
+# --- Default Assignment Case ---
+# employee=EmployeeModel(emp_id=12345, name='Asha', department='General') sim=SimModel(number='9876543210', provider='Jio', activation_year=2023)
+
+# emp_id=999 error:
+#  1 validation error for Registration
+#  employee -> emp_id
+#    ensure this value is greater than or equal to 1000 (type=value_error.number.not_ge; limit_value=1000)
+
+# name='A' error:
+#  1 validation error for Registration
+#  employee -> name
+#    ensure this value has at least 2 characters (type=value_error.str.min_length; limit_value=2)
+
+# number='12345' error:
+#  1 validation error for Registration
+#  sim -> number
+#    string does not match regex "^\\d{10}$" (type=value_error.str.regex; pattern='^\\d{10}$')
+
+# activation_year=2019 error:
+#  1 validation error for Registration
+#  sim -> activation_year
+#    ensure this value is greater than or equal to 2020 (type=value_error.number.not_ge; limit_value=2020)
+
+# activation_year=2030 error:
+#  1 validation error for Registration
+#  sim -> activation_year
+#    ensure this value is less than or equal to 2025 (type=value_error.number.not_le; limit_value=2025)
