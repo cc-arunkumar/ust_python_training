@@ -1,0 +1,81 @@
+{
+  "laptops": [
+    {
+      "asset_id": 101,
+      "serial_number": "ABC12345XY",
+      "model_name": "Dell Latitude",
+      "assigned_to_emp_id": 1001,
+      "status": "assigned",
+      "purchase_year": 2021,
+      "location": "Bangaluru"
+    },
+    {
+      "asset_id": 102,
+      "serial_number": "XYZ98765AB",
+      "model_name": "HP ProBook",
+      "assigned_to_emp_id": null,
+      "status": "in_stock",
+      "purchase_year": 2022,
+      "location": "Bangaluru"
+    },
+    {
+      "asset_id": 103,
+      "serial_number": "LMN45678CD",
+      "model_name": "Lenovo ThinkPad",
+      "assigned_to_emp_id": 1002,
+      "status": "assigned",
+      "purchase_year": 2020,
+      "location": "Bangaluru"
+    }
+  ],
+  "get_laptop_by_id": {
+    "101": {
+      "asset_id": 101,
+      "serial_number": "ABC12345XY",
+      "model_name": "Dell Latitude",
+      "assigned_to_emp_id": 1001,
+      "status": "assigned",
+      "purchase_year": 2021,
+      "location": "Bangaluru"
+    },
+    "999": {
+      "detail": "No laptop found"
+    }
+  },
+  "post_laptop_example": {
+    "Laptop added": {
+      "asset_id": 104,
+      "serial_number": "QWE12345RT",
+      "model_name": "Acer Aspire",
+      "assigned_to_emp_id": null,
+      "status": "in_stock",
+      "purchase_year": 2023,
+      "location": "Bangaluru"
+    }
+  },
+  "put_laptop_example": {
+    "laptop updated": {
+      "asset_id": 102,
+      "serial_number": "XYZ98765AB",
+      "model_name": "HP ProBook Updated",
+      "assigned_to_emp_id": null,
+      "status": "in_stock",
+      "purchase_year": 2022,
+      "location": "Bangaluru"
+    }
+  },
+  "delete_laptop_example": {
+    "laptop data deleted": {
+      "asset_id": 103,
+      "serial_number": "LMN45678CD",
+      "model_name": "Lenovo ThinkPad",
+      "assigned_to_emp_id": 1002,
+      "status": "assigned",
+      "purchase_year": 2020,
+      "location": "Bangaluru"
+    },
+    "not_found_example": {
+      "detail": "No laptop found"
+    }
+  }
+}
