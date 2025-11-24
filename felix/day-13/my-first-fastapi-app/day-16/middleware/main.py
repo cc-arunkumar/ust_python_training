@@ -23,7 +23,7 @@ async def log_request(request: Request, call_next):
     print(f"Response status : {response.status_code} processing time {time_frame}")
     
     # Return the final response to the client.
-    return response 
+    return response
 
 # Basic GET endpoint to return a welcome message.
 @app.get("/hello")
