@@ -1,0 +1,12 @@
+Incoming request:GET /
+Response status:404
+INFO:     127.0.0.1:63312 - "GET / HTTP/1.1" 404 Not Found
+Incoming request:GET /docs
+Response status:200
+INFO:     127.0.0.1:63313 - "GET /docs HTTP/1.1" 200 OK
+Incoming request:GET /openapi.json
+Response status:200
+INFO:     127.0.0.1:63313 - "GET /openapi.json HTTP/1.1" 200 OK
+Incoming request:GET /hello
+Response status:200
+INFO:     127.0.0.1:63314 - "GET /hello HTTP/1.1" 200 OK

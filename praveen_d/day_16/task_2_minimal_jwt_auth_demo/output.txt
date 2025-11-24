@@ -1,0 +1,53 @@
+1. POST /login
+
+Request:
+
+{
+  "username": "praveen",
+  "password": "code"
+}
+
+
+Response:
+
+{
+  "access_token": "<generated_token>",
+  "token_type": "bearer"
+}
+
+
+If Invalid Credentials:
+
+{
+  "detail": "Incorrect username or password"
+}
+
+2. GET /me
+
+Request:
+
+Authorization: Bearer <generated_token>
+
+
+Response (valid token):
+
+{
+  "message": "This is a protected endpoint using JWT TOKEN",
+  "user": {
+    "username": "praveen"
+  }
+}
+
+
+If Invalid Token:
+
+{
+  "detail": "Invalid or expired token"
+}
+
+
+If User Not Found:
+
+{
+  "detail": "User not found"
+}

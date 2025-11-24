@@ -1,0 +1,99 @@
+1. GET /laptops
+
+Response Body:
+
+[
+  {
+    "asset_id": 1,
+    "serial_number": "ABC12345",
+    "model_name": "Dell Latitude 5420",
+    "assigned_to_emp_id": 12345,
+    "status": "assigned",
+    "purchase_year": 2022,
+    "location": "Bengaluru"
+  }
+]
+
+2. GET /laptops/{asset_id}
+
+Response Body:
+
+{
+  "asset_id": 1,
+  "serial_number": "ABC12345",
+  "model_name": "Dell Latitude 5420",
+  "assigned_to_emp_id": 12345,
+  "status": "assigned",
+  "purchase_year": 2022,
+  "location": "Bengaluru"
+}
+
+
+If Laptop Not Found:
+
+{
+  "detail": "Laptop not found"
+}
+
+3. POST /laptops
+
+Response Body:
+
+{
+  "asset_id": 2,
+  "serial_number": "XYZ67890",
+  "model_name": "HP ProBook 450",
+  "assigned_to_emp_id": 67890,
+  "status": "in_stock",
+  "purchase_year": 2021,
+  "location": "Chennai"
+}
+
+
+If Asset ID Already Exists:
+
+{
+  "detail": "Asset ID already exists"
+}
+
+4. PUT /laptops/{asset_id}
+
+Response Body:
+
+{
+  "asset_id": 1,
+  "serial_number": "XYZ98765",
+  "model_name": "Dell XPS 15",
+  "assigned_to_emp_id": 67890,
+  "status": "assigned",
+  "purchase_year": 2023,
+  "location": "Mumbai"
+}
+
+
+If Laptop Not Found:
+
+{
+  "detail": "Laptop not found"
+}
+
+5. DELETE /laptops/{asset_id}
+
+Response Body:
+
+{
+  "asset_id": 1,
+  "serial_number": "ABC12345",
+  "model_name": "Dell Latitude 5420",
+  "assigned_to_emp_id": 12345,
+  "status": "assigned",
+  "purchase_year": 2022,
+  "location": "Bengaluru"
+}
+
+
+If Laptop Not Found:
+
+{
+  "detail": "Laptop not found"
+}

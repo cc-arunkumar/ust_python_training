@@ -1,0 +1,16 @@
+Request:
+
+Make a GET request to http://127.0.0.1:8000/hello.
+
+Middleware Logs:
+
+Before the response is sent back, the middleware will print something like:
+
+Response status: 200
+Time taken: 0.00012 seconds
+Response:
+The server will respond with:
+
+{
+  "Greet": "Hi, welcome to the middleware"
+}
