@@ -153,5 +153,123 @@ def search_profiles(department: Optional[str] = None, provider: Optional[str] = 
 
 # Step 6: Run the FastAPI app (use uvicorn command in terminal)
 
+
+# Sample output
+# Get Details:
+
+# Code	
+# 200	
+# Response body
+
+# [
+#   {
+#     "employee": {
+#       "emp_id": 12345,
+#       "name": "Asha",
+#       "official_email": "asha@ust.com",
+#       "department": "Engineering",
+#       "location": "Pune"
+#     },
+#     "sim": {
+#       "sim_number": "9876543210",
+#       "provider": "Airtel",
+#       "is_esim": true,
+#       "activation_year": 2023
+#     },
+#     "data_plan": {
+#       "name": "Standard 50GB",
+#       "monthly_gb": 50,
+#       "speed_mbps": 100,
+#       "is_roaming_included": true
+#     },
+#     "voice_plan": {
+#       "name": "Office Calls Pack",
+#       "monthly_minutes": 1000,
+#       "has_isd": false,
+#       "per_minute_charge_paise": 0
+#     },
+#     "emergency_contact": {
+#       "name": "Ravi",
+#       "relation": "Friend",
+#       "phone": "9876543210"
+#     }
+#   }
+# ]
+
+# Put method:
+# input:
+
+# Edit Value
+# Schema
+# {
+#   "employee": {
+#     "emp_id": 1000,
+#     "name": "string",
+#     "official_email": "o4Uu_Y2WeR4lvGlDPXCOsqFxAGnDg-PJEpy3xURG.H%7h_t%gtKFemvnaOVPaSNkr_9aSId-RlM@ust.com",
+#     "department": "Telecom",
+#     "location": "Bengaluru"
+#   },
+#   "sim": {
+#     "sim_number": "9700760957",
+#     "provider": "Jio",
+#     "is_esim": false,
+#     "activation_year": 2020
+#   },
+#   "data_plan": {
+#     "name": "string",
+#     "monthly_gb": 1,
+#     "speed_mbps": 50,
+#     "is_roaming_included": false
+#   },
+#   "voice_plan": {
+#     "name": "string",
+#     "monthly_minutes": 10000,
+#     "has_isd": false,
+#     "per_minute_charge_paise": 0
+#   },
+#   "emergency_contact": {
+#     "name": "string",
+#     "relation": "Family",
+#     "phone": "7112876333"
+#   }
+# }
+
+# Ouput:
+# Code	Details
+# 200	
+# Response body
+# Download
+# {
+#   "employee": {
+#     "emp_id": 1000,
+#     "name": "string",
+#     "official_email": "o4Uu_Y2WeR4lvGlDPXCOsqFxAGnDg-PJEpy3xURG.H%7h_t%gtKFemvnaOVPaSNkr_9aSId-RlM@ust.com",
+#     "department": "Telecom",
+#     "location": "Bengaluru"
+#   },
+#   "sim": {
+#     "sim_number": "9700760957",
+#     "provider": "Jio",
+#     "is_esim": false,
+#     "activation_year": 2020
+#   },
+#   "data_plan": {
+#     "name": "string",
+#     "monthly_gb": 1,
+#     "speed_mbps": 50,
+#     "is_roaming_included": false
+#   },
+#   "voice_plan": {
+#     "name": "string",
+#     "monthly_minutes": 10000,
+#     "has_isd": false,
+#     "per_minute_charge_paise": 0
+#   },
+#   "emergency_contact": {
+#     "name": "string",
+#     "relation": "Family",
+#     "phone": "7112876333"
+#   }
+# }
  
  
