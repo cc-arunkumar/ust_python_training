@@ -1,0 +1,13 @@
+[project]
+name = "day-15"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = []
+
+[tool.uv.workspace]
+members = [
+    "ust_employee_telecom_device_registration",
+    "ust_employee_telecom_device_registration/assignment_ust_employee_telecom_device_registration",
+]
