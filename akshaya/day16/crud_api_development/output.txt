@@ -1,0 +1,111 @@
+# UST Employee Laptop Inventory API
+# CRUD Operations output
+
+
+1. CREATE Laptop (POST /laptops)
+
+Request Body (JSON):
+{
+  "asset_id": 1,
+  "serial_number": "ABC12345",
+  "model_name": "Dell Latitude 5420",
+  "assigned_to_emp_id": 12345,
+  "status": "assigned",
+  "purchase_year": 2022,
+  "location": "Bengaluru"
+}
+
+Response Body (201 Created):
+{
+  "asset_id": 1,
+  "serial_number": "ABC12345",
+  "model_name": "Dell Latitude 5420",
+  "assigned_to_emp_id": 12345,
+  "status": "assigned",
+  "purchase_year": 2022,
+  "location": "Bengaluru"
+}
+
+2. GET All Laptops (GET /laptops)
+
+Response Body (200 OK):
+[
+  {
+    "asset_id": 1,
+    "serial_number": "ABC12345",
+    "model_name": "Dell Latitude 5420",
+    "assigned_to_emp_id": 12345,
+    "status": "assigned",
+    "purchase_year": 2022,
+    "location": "Bengaluru"
+  }
+]
+
+3. GET Laptop by ID (GET /laptops/{asset_id})
+
+Example: GET /laptops/1
+
+Response Body (200 OK):
+{
+  "asset_id": 1,
+  "serial_number": "ABC12345",
+  "model_name": "Dell Latitude 5420",
+  "assigned_to_emp_id": 12345,
+  "status": "assigned",
+  "purchase_year": 2022,
+  "location": "Bengaluru"
+}
+
+Error Example (404 Not Found):
+{
+  "detail": "Laptop not found"
+}
+
+4. UPDATE Laptop (PUT /laptops/{asset_id})
+
+Request Body (JSON):
+{
+  "asset_id": 1,
+  "serial_number": "XYZ98765",
+  "model_name": "HP EliteBook 840",
+  "assigned_to_emp_id": 54321,
+  "status": "in_stock",
+  "purchase_year": 2023,
+  "location": "Chennai"
+}
+
+Response Body (200 OK):
+{
+  "asset_id": 1,
+  "serial_number": "XYZ98765",
+  "model_name": "HP EliteBook 840",
+  "assigned_to_emp_id": 54321,
+  "status": "in_stock",
+  "purchase_year": 2023,
+  "location": "Chennai"
+}
+
+Error Example (400 Bad Request):
+{
+  "detail": "Asset ID in path and body must match"
+}
+
+Error Example (404 Not Found):
+{
+  "detail": "Laptop not found"
+}
+
+
+5. DELETE Laptop (DELETE /laptops/{asset_id})
+
+Example: DELETE /laptops/1
+
+Response Body (200 OK):
+{
+  "detail": "Laptop deleted"
+}
+
+Error Example (404 Not Found):
+{
+  "detail": "Laptop not found"
+}
