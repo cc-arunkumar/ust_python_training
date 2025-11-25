@@ -8,24 +8,29 @@
 # HR document requests
 # Facility issues
 # UST wants to build a Service Request Processing System where
-from abc import ABC, abstractmethod
+from abc import ABC, abstractmethod   # Import Abstract Base Class utilities
 
+# Abstract base class for service requests
 class Service_request(ABC):
     def __init__(self, request_id, requested_by, priority):
+        # Initialize common attributes for all requests
         self.request_id = request_id
         self.requested_by = requested_by
         self.priority = priority
 
     @abstractmethod
     def process_request(self):
+        # Abstract method that must be implemented by subclasses
         pass
 
     def show_basic_details(self):
+        # Print basic details of the request
         print(f"Request ID: {self.request_id}")
         print(f"Requested By: {self.requested_by}")
         print(f"Priority: {self.priority}")
 
 
+# Subclass for IT support requests
 class It_support_request(Service_request):
     def process_request(self):
         print("Processing IT Support Request:")
@@ -34,6 +39,7 @@ class It_support_request(Service_request):
         print("Issue resolved!")
 
 
+# Subclass for HR document requests
 class Hr_document_request(Service_request):
     def process_request(self):
         print("Processing HR Document Request:")
@@ -41,6 +47,7 @@ class Hr_document_request(Service_request):
         print("Sending via email.")
 
 
+# Subclass for Facility requests
 class Faqulty_request(Service_request):
     def process_request(self):
         print("Processing Facility Request:")
@@ -49,12 +56,15 @@ class Faqulty_request(Service_request):
         print("Job completed!")
 
 
+# Subclass for Software access requests
 class Software_access_request(Service_request):
     def process_request(self):
         print("Processing Software Access Request:")
         print("Verifying approval...")
         print("Granting software access.")
 
+
+# Create a list of different service requests
 service_list = [
     It_support_request(101, "Arun", "High"),
     Hr_document_request(102, "Priya", "Medium"),
@@ -62,9 +72,10 @@ service_list = [
     Software_access_request(104, "Sneha", "High")
 ]
 
+# Loop through each request and process it
 for request in service_list:
-    request.show_basic_details()
-    request.process_request()
+    request.show_basic_details()   # Show common details
+    request.process_request()      # Call subclass-specific implementation
     print("--------------------------------------")
 
 

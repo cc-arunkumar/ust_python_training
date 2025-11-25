@@ -1,9 +1,11 @@
-from fastapi import FastAPI, HTTPException,Response
+from fastapi import FastAPI, HTTPException, Response
 from pydantic import BaseModel
 from typing import List, Optional
 import uvicorn
 
 app = FastAPI()
+
+# ------------------ Data Models ------------------
 
 class MenuItem(BaseModel):
     id: int = 0
@@ -18,11 +20,13 @@ class OrderItem(BaseModel):
 
 class Order(BaseModel):   
     id: int = 0
-    order_type: str
+    order_type: str                 # "dine_in" or "takeaway"
     table_number: Optional[int] = None
-    items: List[OrderItem]
-    status: str
+    items: List[OrderItem]          # List of ordered items
+    status: str                     # "pending", "in_progress", etc.
     special_instructions: Optional[str] = None
+
+# ------------------ In-memory Data ------------------
 
 menu = [
     {"id": 1, "name": "Tomato Soup", "category": "starter", "price": 99.0, "is_available": True},
@@ -35,9 +39,11 @@ orders: List[Order] = []
 next_menu_id = 5
 next_order_id = 0
 
+# ------------------ Menu Endpoints ------------------
+
 @app.get("")
 def justtest():
-    return "hello form the server side"
+    return "hello from the server side"
 
 @app.get("/menu")
 def get_menu_items(is_available: Optional[bool] = None):
@@ -54,15 +60,10 @@ def get_menu_item(id: int):
 
 @app.post("/menu")
 def post_menu_item(menu_item: MenuItem):
-    # global next_menu_id
     menu_item.id = next_menu_id
     next_menu_id += 1
     menu.append(menu_item.model_dump())
-    return Response(
-        content='{"detail":"Data has been pushed"}',
-        media_type="application/json",
-        status_code=200
-    )
+    return Response(content='{"detail":"Data has been pushed"}', media_type="application/json", status_code=200)
 
 @app.put("/menu/{id}", response_model=MenuItem)
 def update_menu_item(id: int, updated_item: MenuItem):
@@ -81,57 +82,52 @@ def delete_menu_item(id: int):
             return {"detail": "Menu item deleted"}
     raise HTTPException(status_code=404, detail="Menu item not found")
 
+# ------------------ Order Endpoints ------------------
 
 @app.post("/orders", response_model=Order)
 def create_order(order: Order):
-
+    # Validate order type
     if order.order_type not in ["dine_in", "takeaway"]:
         raise HTTPException(status_code=400, detail="order_type must be 'dine_in' or 'takeaway'")
 
+    # Validate table number rules
     if order.order_type == "dine_in":
         if not order.table_number or order.table_number <= 0:
-            raise HTTPException(status_code=400, detail="table_number must be a positive integer for dine_in")
+            raise HTTPException(status_code=400, detail="table_number must be positive for dine_in")
     elif order.order_type == "takeaway":
         if order.table_number not in [None, 0]:
             raise HTTPException(status_code=400, detail="table_number must be null or 0 for takeaway")
+
+    # Validate items
     for item in order.items:
         if item.quantity <= 0:
             raise HTTPException(status_code=400, detail="Item quantity must be greater than 0")
         menu_item = next((m for m in menu if m["id"] == item.menu_item_id), None)
         if not menu_item:
             raise HTTPException(status_code=400, detail=f"Menu item {item.menu_item_id} does not exist")
-
         if not menu_item["is_available"]:
             raise HTTPException(status_code=400, detail=f"Menu item {menu_item['name']} is not available")
 
+    # Assign ID and status
     order.id = next_order_id
     order.status = "pending"
     next_order_id += 1
 
     orders.append(order)
-
     return order
-        
-@app.get("/orders")
-def get_orders(status:str):
-    list_orders = []
-    if status:
-        for index,row in enumerate(orders):
-                list_orders.append(row)
-        return list_orders
-    else:
-        return orders
 
+@app.get("/orders")
+def get_orders(status: str):
+    if status:
+        return [row for row in orders]
+    return orders
 
 @app.get("/orders/{id}")
-def get_orders_by_id(id :int):
-    flag = False
-    for index,row in enumerate(orders):
-        if index==id:
-            Flag =True
+def get_orders_by_id(id: int):
+    for row in orders:
+        if row.id == id:
             return row
-    if not flag:
-        HTTPException(status_code=404,detail="id not exist")
+    raise HTTPException(status_code=404, detail="Order not found")
 
 @app.patch("/orders/{id}/status", response_model=Order)
 def update_order_status(id: int, status_update: dict):
@@ -171,5 +167,65 @@ def get_order_total(id: int):
 
     return {"order_id": order.id, "total_amount": total}
 
-# if __name__ == "__main__":
-#     uvicorn.run("main:app", host="127.0.0.1", port=5000, reload=True)
+# ===================sample output========================
+# {
+#   "menu": [
+#     {
+#       "id": 1,
+#       "name": "Tomato Soup",
+#       "category": "starter",
+#       "price": 99.0,
+#       "is_available": true
+#     },
+#     {
+#       "id": 2,
+#       "name": "Paneer Butter Masala",
+#       "category": "main_course",
+#       "price": 249.0,
+#       "is_available": true
+#     },
+#     {
+#       "id": 3,
+#       "name": "Butter Naan",
+#       "category": "main_course",
+#       "price": 49.0,
+#       "is_available": true
+#     },
+#     {
+#       "id": 4,
+#       "name": "Gulab Jamun",
+#       "category": "dessert",
+#       "price": 79.0,
+#       "is_available": false
+#     }
+#   ],
+#   "new_order": {
+#     "id": 0,
+#     "order_type": "dine_in",
+#     "table_number": 5,
+#     "items": [
+#       { "menu_item_id": 2, "quantity": 2 },
+#       { "menu_item_id": 3, "quantity": 4 }
+#     ],
+#     "status": "pending",
+#     "special_instructions": "Less spicy please"
+#   },
+#   "order_status_update": {
+#     "id": 0,
+#     "order_type": "dine_in",
+#     "table_number": 5,
+#     "items": [
+#       { "menu_item_id": 2, "quantity": 2 },
+#       { "menu_item_id": 3, "quantity": 4 }
+#     ],
+#     "status": "in_progress",
+#     "special_instructions": "Less spicy please"
+#   },
+#   "order_total": {
+#     "order_id": 0,
+#     "total_amount": 794.0
+#   },
+#   "delete_menu_item": {
+#     "detail": "Menu item deleted"
+#   }
+# }

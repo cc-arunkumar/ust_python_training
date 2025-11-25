@@ -1,22 +1,18 @@
-from csv_utils import read_csv, write_csv
+from csv_utils import read_csv, write_csv   # Import helper functions for reading/writing CSV
 
-def to_int(value:str)->int|None:
+# Utility function to safely convert a string to integer
+def to_int(value: str) -> int | None:
     try:
-        return int(value)
-    except (TypeError,ValueError):
-        return None
-    
-    
+        return int(value)   # Try converting to integer
+    except (TypeError, ValueError):
+        return None         # Return None if conversion fails
+        
 
-# data = read_csv(r"C:\Users\Administrator\Desktop\ust_python_training\Rohit\day12\data\order.csv")
-def required_fileds(data: list[dict[str,str]], required_fields: list[str]) -> bool:
-    for row in data:
-        to_int(row.get("available_stock",""))
-        for field in required_fields:
+# Function to check if required fields exist and are non-empty in each row
+def required_fileds(data: list[dict[str, str]], required_fields: list[str]) -> bool:
+    for row in data:   # Iterate through each row (dict) in the CSV data
+        to_int(row.get("available_stock", ""))   # Attempt conversion (not used further here)
+        for field in required_fields:   # Check each required field
             if field not in row or row[field] == '':
-                return False
-    return True
-
-
-# ans = required_fileds(data=data, required_fields=['item_id','available_stock'])
-# print(ans)
+                return False   # Fail immediately if field missing or empty
+    return True   # Return True if all rows contain required fields

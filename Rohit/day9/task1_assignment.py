@@ -37,14 +37,21 @@
 
 
 
+# Import custom exception classes (defined separately in their own modules)
 import missing_field_error
 import invalid_type_exception_error
-
 import duplicate_claim_error
 
+# Dictionary to store successfully processed claims
 process_rows = {}
+
+# List to store skipped claims due to validation errors
 skipped_rows = []
+
+# List to store claims that raised unexpected errors
 error_rows = []
+
+# Sample claims data (each claim is a dictionary)
 claims = [
     {"claim_id": "C1001", "employee": "Arun", "type": "Travel", "amount": "1500", "days": "3"},
     {"claim_id": "C1002", "employee": "Riya", "type": "Meals", "amount": "abc", "days": "1"},
@@ -57,16 +64,22 @@ claims = [
     {"claim_id": "C1006", "employee": "Sona", "type": "Accommodation", "amount": "3000", "days": "2"}
 ]
 
+# Loop through each claim in the list
 for claim in claims:
     try:
-
+        # Define required fields
         required = ["claim_id", "employee", "type", "amount", "days"]
+        # Check if any required field is missing or empty
         for field in required:
             if field not in claim or claim[field] in [None, ""]:
                 raise missing_field_error.MissingFieldError()
+
+        # Validate claim type
         valid_types = ["Travel", "Meals", "Accommodation"]
         if claim["type"] not in valid_types:
             raise invalid_type_exception_error.InvalidTypeExceptionError()
+
+        # Validate amount (must be a float > 0)
         try:
             claim["amount"] = float(claim["amount"])
         except ValueError:
@@ -75,6 +88,8 @@ for claim in claims:
         if claim["amount"] <= 0:
             skipped_rows.append(f"{claim['claim_id']} - Invalid Amount Error")
             continue
+
+        # Validate days (must be integer ≥ 1)
         try:
             claim["days"] = int(claim["days"])
         except ValueError:
@@ -83,24 +98,37 @@ for claim in claims:
         if claim["days"] < 1:
             skipped_rows.append(f"{claim['claim_id']} - Invalid Days Error")
             continue
+
+        # Check for duplicate claim_id
         if claim["claim_id"] in process_rows:
             raise duplicate_claim_error.Duplicate_claim_error()
-        
+
+        # If all validations pass, add claim to processed rows
         process_rows[claim["claim_id"]] = {
             "employee": claim["employee"],
             "type": claim["type"],
             "amount": claim["amount"],
             "days": claim["days"],
-            "per_day_amount": claim["amount"] / claim["days"]
+            "per_day_amount": claim["amount"] / claim["days"]  # calculate per-day amount
         }
+
+    # Handle missing field error
     except missing_field_error.MissingFieldError:
         skipped_rows.append(f"{claim.get('claim_id')} - Missing Field Error")
+
+    # Handle invalid type error
     except invalid_type_exception_error.InvalidTypeExceptionError:
         skipped_rows.append(f"{claim.get('claim_id')} - Invalid Type Exception Error")
+
+    # Handle duplicate claim error
     except duplicate_claim_error.Duplicate_claim_error:
         skipped_rows.append(f"{claim.get('claim_id')} - Duplicate Claim Error")
+
+    # Handle any other unexpected errors
     except Exception:
         error_rows.append(f"{claim.get('claim_id')} - General Exception Error")
+
+# Print results
 print("Processed Rows:", process_rows)
 print("Skipped Rows:", skipped_rows)
 print("Error Rows:", error_rows)

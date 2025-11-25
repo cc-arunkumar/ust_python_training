@@ -1,22 +1,11 @@
-import json
+import json   # Import JSON module
 
-
+# Example dictionary (commented out)
 # data = {"name": "Rohit", "age": 25, "city": "New York"}
+# json_str = json.dumps(data)   # Convert Python dict → JSON string
+# pytho_obj = json.loads(json_str)   # Convert JSON string → Python dict
 
-# print(type(data))
-
-
-# json_str = json.dumps(data)
-# print("JSON String:", json_str)
-# # print("JSON String:", json_str.get("name","No Name"))
-# print("json type:", type(json_str))
-
-
-# pytho_obj = json.loads(json_str)
-# print("Python Object:", pytho_obj)  
-# print("python type:", type(pytho_obj))
-
-
+# JSON string with employees data
 data1 = '''
 {
         "employees":[
@@ -25,43 +14,31 @@ data1 = '''
             {"id":103, "name":"XYZ","age":48}
         ]
 }
-
 '''
 
+# Deserialize JSON string → Python dict
 final_data = json.loads(data1)
-print(final_data)
-# print(type(employees))
+print(final_data)   # Prints the whole dictionary
 
+# Extract "employees" list
 employees = final_data["employees"]
-print(employees)
-print(type(employees))
+print(employees)          # Prints list of employee dicts
+print(type(employees))    # Shows it's a Python list
 
+# Iterate through employees and print details
 for emp in employees:
     print(f"ID: {emp['id']}, Name: {emp['name']}, Age: {emp['age']}")
 
-
-
-# json_data = json.dumps(employees)
-# print(json_data)
-# print(type(json_data))
-
-
-# import json
-
-# data1 = """
-# {
-#     "employees":[
-#         {"id":101, "name":"ABC","age":16},
-#         {"id":102, "name":"DEF","age":32},
-#         {"id":103, "name":"XYZ","age":48}
-#     ]
-# }
-# """
-
-# employees = json.loads(data1)
-# print(employees)
-# print(type(employees))   # dict
-
+# Example of converting Python object back to JSON string (commented out)
 # json_data = json.dumps(employees)
 # print(json_data)
 # print(type(json_data))   # str
+
+
+# ============sample output================
+# {'employees': [{'id': 101, 'name': 'ABC', 'age': 16}, {'id': 102, 'name': 'DEF', 'age': 32}, {'id': 103, 'name': 'XYZ', 'age': 48}]}
+# [{'id': 101, 'name': 'ABC', 'age': 16}, {'id': 102, 'name': 'DEF', 'age': 32}, {'id': 103, 'name': 'XYZ', 'age': 48}]
+# <class 'list'>
+# ID: 101, Name: ABC, Age: 16
+# ID: 102, Name: DEF, Age: 32
+# ID: 103, Name: XYZ, Age: 48

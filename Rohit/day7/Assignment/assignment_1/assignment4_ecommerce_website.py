@@ -1,41 +1,72 @@
 #Task 4: E-Commerce Platform (Inventory System)
-class Product:
-    def __init__(self,product_id,name,price):
-        self.product_id=product_id
-        self.name=name
-        self.price=price
-class Electronics(Product):
-    def __init__(self,product_id,name,price,brand,warranty):
-        Product.__init__(self,product_id,name,price)
-        self.brand=brand
-        self.warranty=warranty
-class Clothing(Product):
-    def __init__(self,product_id,name,price,size,material):
-        Product.__init__(self,product_id,name,price)
-        self.size=size
-        self.material=material
-class Groceries(Product):
-    def __init__(self,product_id,name,price,expiry_date,is_organic):
-        Product.__init__(self,product_id,name,price)
-        self.expiry_date=expiry_date
-        self.is_organic=is_organic
-class OnlineExclusiveProduct(Product):
-    def __init__(self,product_id,name,price,discount_rate):
-        Product.__init__(self,product_id,name,price)
-        self.discount_rate=discount_rate
-    def apply_discount(self):
-        return(self.price-(self.price*self.discount_rate))
-#Object Creation of Online Exclusive Product
-product_id=int(input("Enter product ID: "))
-name=input("Enter the product name: ")
-price=float(input("Enter price: Rs"))
-discount_rate=float(input("Enter the discount rate: "))
-oep=OnlineExclusiveProduct(product_id,name,price,discount_rate)
-print("Discount price: Rs",oep.apply_discount())
+# Base class representing a generic Vehicle
+class Vehicle:
+    def __init__(self, make, model, year):
+        # Initialize vehicle attributes: make, model, and year
+        self.make = make
+        self.model = model
+        self.year = year 
+    
+    def show_info(self):
+        # Print basic vehicle information
+        print(self.make, " ", self.model, " ", self.year)
+        
 
-#================Sample output=================
-# Enter product ID: 101
-# Enter the product name: water bottle
-# Enter price: Rs78
-# Enter the discount rate: 0.10
-# Discount price: Rs 70.2
+# Subclass representing Electric Vehicles (inherits from Vehicle)
+class Electric_vehichle(Vehicle):
+    def __init__(self, make, model, year, battery_capacity, charge_status):
+        # Call parent class (Vehicle) constructor to initialize common attributes
+        Vehicle.__init__(self, make, model, year)
+        # Initialize electric vehicle-specific attributes
+        self.battery_capacity = battery_capacity
+        self.charge_status = charge_status
+        
+    def charge_battery(self):
+        # Print confirmation that battery is charging
+        print("Yes")
+    
+
+# Subclass representing Autonomous Vehicles (inherits from Electric_vehichle)
+class AutonomousVehicle(Electric_vehichle):
+    def __init__(self, make, model, year, battery_capacity, charge_status, ai_version):
+        # Call parent class (Electric_vehichle) constructor
+        Electric_vehichle.__init__(self, make, model, year, battery_capacity, charge_status) 
+        # Initialize autonomous vehicle-specific attribute
+        self.ai_version = ai_version
+    
+    def runPilot(self):
+        # Check if AI version is enabled for autopilot
+        if self.ai_version.lower() == "yes":
+            print("yes")
+        else:
+            print("NOt i autopilot mode")
+
+
+# Subclass representing Smart Electric Vehicles (inherits from AutonomousVehicle)
+class SmartEV(AutonomousVehicle):
+    def __init__(self, make, model, year, battery_capacity, charge_status, ai_version):
+        # Call parent class (AutonomousVehicle) constructor
+        AutonomousVehicle.__init__(self, make, model, year, battery_capacity, charge_status, ai_version)
+    
+    # Example of extending functionality (commented out)
+    # def show_value(self):
+    #     print(self.make, " ", )
+
+
+# Create an instance of SmartEV with attributes
+vechicle = SmartEV("SUV", "Seltos", "2025", "good", "fine", "Yes")
+
+# Call method from AutonomousVehicle to check autopilot mode
+vechicle.runPilot()
+
+# Call method from Vehicle to show basic vehicle info
+vechicle.show_info()   
+
+# Call method from Electric_vehichle to simulate charging battery
+vechicle.charge_battery() 
+
+
+# ===========sample output===============
+# yes
+# SUV   Seltos   2025
+# Yes
