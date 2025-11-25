@@ -12,6 +12,7 @@ class TokenResponse(BaseModel):
     access_token: str
     token_type: str = "bearer"
 
+#-----------Tasks------------
 class Task(BaseModel):
     id: int
     title: str
