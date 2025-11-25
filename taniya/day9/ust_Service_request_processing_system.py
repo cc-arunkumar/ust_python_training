@@ -87,75 +87,118 @@
 #  Abstraction Task
 
 
-from abc import ABC,abstractmethod
+# Import ABC (Abstract Base Class) and abstractmethod to define abstract classes
+from abc import ABC, abstractmethod
 
+# Define an abstract base class ServiceRequest
 class ServiceRequest(ABC):
-    def __init__(self,request_id,requested_by,priority):
-        self.request_id=request_id
-        self.requested_by=requested_by
-        self.priority=priority
-        
+    # Constructor to initialize request details
+    def __init__(self, request_id, requested_by, priority):
+        self.request_id = request_id      # Unique request ID
+        self.requested_by = requested_by  # Employee who raised the request
+        self.priority = priority          # Priority level (High/Medium/Low)
+
+    # Abstract method that must be implemented by subclasses
     @abstractmethod
     def process_request(self):
         pass
+
+    # Method to show basic request details
     def show_basic_details(self):
         print(f"Request ID : {self.request_id}")
         print(f"Request By : {self.requested_by}")
         print(f"Priroty : {self.priority}")
-        
+
+
+# Define ITSupportRequest class inheriting from ServiceRequest
 class ITSupportRequest(ServiceRequest):
+    # Implement process_request method
     def process_request(self):
         print("Assigning IT engineer")
         print("Checking laptop")
         print("Issue resolved")
+
+
+# Define HRDocumentRequest class inheriting from ServiceRequest
 class HRDocumentRequest(ServiceRequest):
+    # Implement process_request method
     def process_request(self):
         print("Preparing HR document")
         print("Sending via email")
+
+
+# Define FacilityRequest class inheriting from ServiceRequest
 class FacilityRequest(ServiceRequest):
+    # Implement process_request method
     def process_request(self):
         print("Assigning facility staff")
         print("Checking issue")
         print("Job completed")
+
+
+# Define SoftwareAccessRequest class inheriting from ServiceRequest
 class SoftwareAccessRequest(ServiceRequest):
+    # Implement process_request method
     def process_request(self):
         print("Verifying approval")
         print("Granting software access")
-        
-emp1=ITSupportRequest(101,"Taniya","High")
-emp2=HRDocumentRequest(102,"Prithvi","Medium")
-emp3=FacilityRequest(103,"Rohit","High")
-emp4=SoftwareAccessRequest(104,"Harsh","Medium")
 
-show =[emp1,emp2,emp3,emp4]
+
+# -------------------------------
+# Object Creation
+# -------------------------------
+
+# Create IT support request
+emp1 = ITSupportRequest(101, "Taniya", "High")
+
+# Create HR document request
+emp2 = HRDocumentRequest(102, "Prithvi", "Medium")
+
+# Create Facility request
+emp3 = FacilityRequest(103, "Rohit", "High")
+
+# Create Software access request
+emp4 = SoftwareAccessRequest(104, "Harsh", "Medium")
+
+
+# -------------------------------
+# Processing Requests
+# -------------------------------
+
+# Store all requests in a list
+show = [emp1, emp2, emp3, emp4]
+
+# Loop through each request and display details + process it
 for showing in show:
     showing.show_basic_details()
     showing.process_request()
-    
-# Output
+
+
+# -------------------------------
+# Expected Output
+# -------------------------------
 # Request ID : 101
 # Request By : Taniya
 # Priroty : High
 # Assigning IT engineer
 # Checking laptop
 # Issue resolved
+#
 # Request ID : 102
 # Request By : Prithvi
 # Priroty : Medium
 # Preparing HR document
 # Sending via email
+#
 # Request ID : 103
 # Request By : Rohit
 # Priroty : High
 # Assigning facility staff
 # Checking issue
 # Job completed
+#
 # Request ID : 104
 # Request By : Harsh
 # Priroty : Medium
 # Verifying approval
 # Granting software access
-        
-        
-            
-        
