@@ -161,7 +161,7 @@ class EmployeeTask(BaseModel):
         return v
 
 
-# ✅ Sample data fixed
+# Sample Data 
 sample_task = {
     "employee_id": 101,
     "employee_name": "Rahul Menon",
@@ -183,7 +183,7 @@ sample_task = {
     ],
 
     "project_code": "FIN123",
-    "cost_center": "FI-202",   # ✅ fixed to start with department abbreviation "FI"
+    "cost_center": "FI-202",   
     "asset_code": "AST9001",
     "supervisor_id": 200,
     "department": "Finance",
