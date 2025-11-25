@@ -1,28 +1,23 @@
-from pydantic import BaseModel, Field
-users = {
-    "rahul": {
-        "username": "rahul",
-        "password": "password123"
-    }
-}
+from pydantic import BaseModel
+from typing import List
+
+class Task(BaseModel):
+    id: int = 0
+    title: str
+    description: str
+    completed: bool = False
+
 class LoginRequest(BaseModel):
     username: str
     password: str
 
 class Token(BaseModel):
     access_token: str
-    token_type: str  
-class Task(BaseModel):
-    id: int
-    title: str
-    description: str
-    completed: bool
+    token_type: str
 
-class TaskCreate(BaseModel):
-    title: str = Field(..., min_length=1)
-    description: str = Field(..., min_length=1)
+class User(BaseModel):
+    username: str
 
-class TaskUpdate(BaseModel):
-    title: str = Field(..., min_length=1)
-    description: str = Field(..., min_length=1)
-    completed: bool
+# In-memory storage
+Tasks: List[Task] = []
+ID_COUNT: int = 1

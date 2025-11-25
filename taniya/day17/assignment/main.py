@@ -1,76 +1,60 @@
-from fastapi import FastAPI, Depends, HTTPException, status
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from typing import List
-from models import LoginRequest, Token, TaskCreate, TaskUpdate, Task, users
-from auth import create_access_token, decode_token
-from utils import get_next_task_id
-from jose import JWTError
+from fastapi import FastAPI, HTTPException, Depends
+from datetime import timedelta
+from models import Task, LoginRequest, Token, User, Tasks, ID_COUNT
+from auth import create_access_web_token, get_current_user, users, ACCESS_TOKEN_EXPIRE_MINUTES
+from utils import find_task_by_id
 
-app = FastAPI(title="UST Task Manager")
+app = FastAPI(title="Task Manager")
 
-tasks: List[Task] = []
-security = HTTPBearer()
-
-def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)) -> str:
-    token = credentials.credentials
-    try:
-        payload = decode_token(token)
-    except JWTError:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Could not validate credentials")
-    username = payload.get("sub")
-    if not username or username not in users:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Could not validate credentials")
-    return username
-
+@app.get("/")
+def check():
+    return "Hello from the server side"
 
 @app.post("/login", response_model=Token)
 def login(data: LoginRequest):
-    user = users.get(data.username)
-    if not user or user["password"] != data.password:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid username or password")
-    token = create_access_token(subject=data.username)
+    if data.username != users["rahul"]["username"] or data.password != users["rahul"]["password"]:
+        raise HTTPException(
+            status_code=401,
+            detail="Incorrect username or password"
+        )
+    expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    token = create_access_web_token(subject=data.username, expires_delta=expires)
     return Token(access_token=token, token_type="bearer")
 
 @app.post("/tasks", response_model=Task)
-def create_task(payload: TaskCreate, current_user: str = Depends(get_current_user)):
-    print(f"User {current_user} is creating a task")
-    new_task = Task(
-        id=get_next_task_id(tasks),
-        title=payload.title,
-        description=payload.description,
-        completed=False
-    )
-    tasks.append(new_task)
-    return new_task
+def post_tasks(task: Task, current_user: User = Depends(get_current_user)):
+    global ID_COUNT
+    task.id = ID_COUNT
+    ID_COUNT += 1
+    Tasks.append(task)
+    return task
 
-@app.get("/tasks", response_model=List[Task])
-def get_all_tasks(current_user: str = Depends(get_current_user)):
-    print(f"User {current_user} accessed /tasks")
-    return tasks
+@app.get("/tasks")
+def get_tasks(current_user: User = Depends(get_current_user)):
+    return Tasks
 
-@app.get("/tasks/{task_id}", response_model=Task)
-def get_task(task_id: int, current_user: str = Depends(get_current_user)):
-    for t in tasks:
-        if t.id == task_id:
-            return t
-    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Task not found")
+@app.get("/tasks/{id}")
+def get_task_by_id(id: int, current_user: User = Depends(get_current_user)):
+    return find_task_by_id(Tasks, id)
+@app.put("/tasks/{id}")
+def update_task(id: int, task: Task, current_user: User = Depends(get_current_user)):
+    for index, row in enumerate(Tasks):
+        if row.id == id:
+            row.title=task.title
+            row.description = task.description
+            row.completed = task.completed
+            
+            
+            # Tasks[index] = updated_task
+            return {"message": "Task updated successfully", "task": task}
+    raise HTTPException(status_code=404, detail="Task not found")
 
-@app.put("/tasks/{task_id}", response_model=Task)
-def update_task(task_id: int, payload: TaskUpdate, current_user: str = Depends(get_current_user)):
-    print(f"User {current_user} is updating task {task_id}")
-    for id, t in enumerate(tasks):
-        if t.id == task_id:
-            updated = Task(id=t.id, title=payload.title, description=payload.description, completed=payload.completed)
-            tasks[id] = updated
-            return updated
-    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Task not found")
 
-@app.delete("/tasks/{task_id}")
-def delete_task(task_id: int, current_user: str = Depends(get_current_user)):
-    print(f"User {current_user} is deleting task {task_id}")
-    for t in tasks:
-        if t.id == task_id:
-            tasks = [x for x in tasks if x.id != task_id]
-            return {"message": "Task deleted successfully"}
 
-    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Task not found")
+@app.delete("/tasks/{id}")
+def delete_task(id: int, current_user: User = Depends(get_current_user)):
+    for index, row in enumerate(Tasks):
+        if row.id == id:
+            deleted_task = Tasks.pop(index)
+            return {"message": "Task deleted successfully", "task": deleted_task}
+    raise HTTPException(status_code=404, detail="Task not found")
