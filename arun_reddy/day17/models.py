@@ -22,7 +22,8 @@ class Taskmodel(BaseModel):
     id:int
     title:str
     description:str
-    completed:bool=False
+    completed:Optional[bool]=False
 class Tasks(BaseModel):
     title:str
     description:str
+    completed:Optional[bool]=False
