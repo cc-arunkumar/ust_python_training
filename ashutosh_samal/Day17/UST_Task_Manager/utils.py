@@ -7,7 +7,7 @@ users = {
 
 SECRET_KEY = "UST-TaskTracker-Secret"
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 50
+ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 username = users["rahul"]["username"]
 password = users["rahul"]["password"]
