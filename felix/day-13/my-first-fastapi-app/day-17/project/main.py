@@ -1,59 +1,11 @@
 from fastapi import FastAPI, HTTPException, status, Depends
-from typing import Optional
-from pydantic import BaseModel, Field
-from jose import JWTError, jwt
-from datetime import datetime, timedelta, timezone
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from datetime import timedelta
+from auth import LoginRequest,create_access_token,ACCESS_TOKEN_EXPIRE_MINUTES,users,Token,User,get_current_user
+from models import TaskModelCreate,TaskModelUpdate,TaskModel,get_current_user
 
 app = FastAPI(title="UST Task Manager")
 
-# -----------------------------
-# JWT CONFIGURATION
-# -----------------------------
-SECRET_KEY = "UST-TaskTracker-Secret"
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30  # Token validity duration
 
-
-# -----------------------------
-# REQUEST/RESPONSE MODELS
-# -----------------------------
-class LoginRequest(BaseModel):
-    """Schema for user login"""
-    username: str = Field(..., description="username is missing")
-    password: str = Field(..., description="password is missing")
-
-
-class Token(BaseModel):
-    """Response model for generated JWT token"""
-    access_token: str
-    token_type: str
-
-
-class User(BaseModel):
-    """Represents authenticated user"""
-    username: str
-
-
-class TaskModel(BaseModel):
-    """Full Task model for storing tasks"""
-    id: int
-    title: str
-    description: str
-    completed: bool
-
-
-class TaskModelCreate(BaseModel):
-    """Model for creating a new task"""
-    title: str = Field(..., description="Field is required")
-    description: str = Field(..., description="Field is required")
-
-
-class TaskModelUpdate(BaseModel):
-    """Model for updating an existing task"""
-    title: str = Field(..., description="Field is required")
-    description: str = Field(..., description="Field is required")
-    completed: bool = Field(..., description="Field is required")
 
 
 # -----------------------------
@@ -61,67 +13,6 @@ class TaskModelUpdate(BaseModel):
 # -----------------------------
 tasks = []  # Stores all tasks
 task_id_counter = 1  # Auto-incrementing task ID
-
-# Hardcoded user for demo purposes
-users = {
-    "felix": {
-        "username": "felix",
-        "password": "password123"
-    }
-}
-
-
-# -----------------------------
-# TOKEN CREATION FUNCTION
-# -----------------------------
-def create_access_token(subject: str, expires_delta: Optional[timedelta] = None) -> str:
-    """
-    Generates a JWT access token.
-    :param subject: Username or user identifier
-    :param expires_delta: Optional token expiry duration
-    """
-    to_encode = {"sub": subject}
-
-    # Set expiration time
-    expire = datetime.now(timezone.utc) + (expires_delta or timedelta(minutes=15))
-    to_encode.update({"exp": expire})
-
-    # Encode JWT token
-    encoded = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-    return encoded
-
-
-# Security scheme for authorization headers
-security = HTTPBearer()
-
-
-# -----------------------------
-# AUTHENTICATION DEPENDENCY
-# -----------------------------
-def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)) -> User:
-    """
-    Validates the JWT token and returns the authenticated user.
-    Raises 401 errors for invalid/expired tokens.
-    """
-    token = credentials.credentials
-    try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-    except JWTError:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid or expired token"
-        )
-
-    username = payload.get("sub")
-
-    # Validate user exists
-    if username != users["felix"]["username"]:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="User not found"
-        )
-
-    return User(username=username)
 
 
 # -----------------------------
