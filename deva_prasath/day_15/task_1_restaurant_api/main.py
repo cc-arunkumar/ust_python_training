@@ -12,7 +12,6 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from typing import List, Optional
 
-
 app = FastAPI(title="Spice Hub")
 
 # MenuItem model for defining menu items
