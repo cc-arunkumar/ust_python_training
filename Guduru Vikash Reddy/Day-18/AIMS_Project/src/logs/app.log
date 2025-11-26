@@ -1,0 +1,59 @@
+2025-11-26 16:21:17 - INFO - Asset Inventory Management System started
+2025-11-26 16:21:17 - INFO - Asset created successfully with ID: 1
+2025-11-26 16:21:17 - INFO - Retrieved 1 assets
+2025-11-26 16:21:17 - INFO - Asset found: 1
+2025-11-26 16:21:17 - INFO - Asset updated successfully with ID: 1
+2025-11-26 16:21:17 - WARNING - Asset not found with ID: 2
+2025-11-26 16:31:04 - INFO - Asset Inventory Management System started
+2025-11-26 16:31:04 - WARNING - Non-unique serial_number: SN-ABC12345
+2025-11-26 16:31:28 - INFO - Asset Inventory Management System started
+2025-11-26 16:31:28 - WARNING - Non-unique serial_number: SN-ABC12345
+2025-11-26 16:33:37 - INFO - Asset Inventory Management System started
+2025-11-26 16:33:37 - INFO - Retrieved 9 assets
+2025-11-26 16:33:37 - INFO - Asset found: 1
+2025-11-26 16:33:37 - INFO - Asset updated successfully with ID: 1
+2025-11-26 16:33:37 - INFO - Asset deleted successfully with ID: 2
+2025-11-26 17:29:26 - INFO - Asset Inventory Management System started
+2025-11-26 17:29:27 - INFO - Retrieved 8 assets
+2025-11-26 17:29:27 - INFO - Asset found: 1
+2025-11-26 17:29:27 - INFO - Asset updated successfully with ID: 1
+2025-11-26 17:29:27 - WARNING - Asset not found with ID: 2
+2025-11-26 19:29:00 - INFO - Asset Inventory Management System started
+2025-11-26 19:29:00 - ERROR - Error creating asset: Asset tag or serial number already exists.
+2025-11-26 19:29:00 - INFO - Retrieved 8 assets
+2025-11-26 19:29:00 - INFO - Asset found: ID: 1
+2025-11-26 19:29:00 - INFO - Asset updated successfully with ID: 1
+2025-11-26 19:29:00 - WARNING - Asset not found with ID: 2
+2025-11-26 19:34:17 - INFO - Asset Inventory Management System started
+2025-11-26 19:34:17 - DEBUG - Attempting to create asset with tag: UST-LTP-1001, serial: SN-ABC12345
+2025-11-26 19:34:17 - ERROR - Error creating asset: Asset tag or serial number already exists.
+2025-11-26 19:34:17 - DEBUG - Fetching assets with status filter: ALL
+2025-11-26 19:34:17 - INFO - Retrieved 8 assets.
+2025-11-26 19:34:17 - DEBUG - Fetching asset with ID: 1
+2025-11-26 19:34:17 - INFO - Asset found: ID: 1
+2025-11-26 19:34:17 - DEBUG - Updating asset with ID: 1
+2025-11-26 19:34:17 - INFO - Asset with ID: 1 updated successfully.
+2025-11-26 19:34:17 - DEBUG - Deleting asset with ID: 2
+2025-11-26 19:34:17 - WARNING - Asset not found with ID: 2
+2025-11-26 21:21:33 - INFO - \U0001f680 Asset Inventory Management System Initialized
+2025-11-26 21:21:33 - DEBUG - \U0001f504 Initiating asset creation with tag: UST-LTP-1001, serial: SN-ABC12345
+2025-11-26 21:21:33 - ERROR - \u274c Error creating asset: Asset tag or serial number already exists.
+2025-11-26 21:21:33 - DEBUG - \U0001f504 Fetching assets with status filter: ALL
+2025-11-26 21:21:33 - INFO - \u2705 Retrieved 8 assets.
+2025-11-26 21:21:33 - DEBUG - \U0001f504 Fetching asset with ID: 1
+2025-11-26 21:21:33 - INFO - \u2705 Asset found: ID: 1
+2025-11-26 21:21:33 - DEBUG - \U0001f504 Updating asset with ID: 1
+2025-11-26 21:21:33 - INFO - \u2705 Asset with ID: 1 updated successfully.
+2025-11-26 21:21:33 - DEBUG - \U0001f504 Deleting asset with ID: 2
+2025-11-26 21:21:33 - WARNING - \u2757 Asset not found with ID: 2
+2025-11-26 21:44:41 - INFO - \U0001f680 Asset Inventory Management System Initialized
+2025-11-26 21:44:41 - DEBUG - \U0001f504 Initiating asset creation with tag: UST-LTP-1001, serial: SN-ABC12345
+2025-11-26 21:44:41 - ERROR - \u274c Error creating asset: Asset tag or serial number already exists.
+2025-11-26 21:44:41 - DEBUG - \U0001f504 Fetching assets with status filter: ALL
+2025-11-26 21:44:41 - INFO - \u2705 Retrieved 8 assets.
+2025-11-26 21:44:41 - DEBUG - \U0001f504 Fetching asset with ID: 1
+2025-11-26 21:44:41 - INFO - \u2705 Asset found: ID: 1
+2025-11-26 21:44:41 - DEBUG - \U0001f504 Updating asset with ID: 1
+2025-11-26 21:44:41 - INFO - \u2705 Asset with ID: 1 updated successfully.
+2025-11-26 21:44:41 - DEBUG - \U0001f504 Deleting asset with ID: 2
+2025-11-26 21:44:41 - WARNING - \u2757 Asset not found with ID: 2
