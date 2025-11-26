@@ -1,0 +1,29 @@
+--- CREATE ASSET ---
+Asset created successfully with asset_id: 1
+
+--- READ ALL ASSETS (ALL) ---
+asset_id: 1, asset_tag: UST-LTP-0100, asset_type: Laptop, serial_number: SN-NEW-0000100, manufacturer: Dell, model: Latitude 5520, purchase_date: 2024-01-10, warranty_years: 3, assigned_to: None, asset_status: Available, last_updated: 2025-11-26 22:59:06
+
+--- READ ALL ASSETS (Assigned only) ---
+No assets found.
+
+--- READ ASSET BY ID ---
+asset_id: 1
+asset_tag: UST-LTP-0100
+asset_type: Laptop
+serial_number: SN-NEW-0000100
+manufacturer: Dell
+model: Latitude 5520
+purchase_date: 2024-01-10
+warranty_years: 3
+assigned_to: None
+asset_status: Available
+last_updated: 2025-11-26 22:59:06
+Asset not found.
+
+--- UPDATE ASSET ---
+Asset 1 updated successfully.
+
+--- DELETE ASSET ---
+Asset 1 deleted successfully.
+Asset not found.
