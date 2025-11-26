@@ -21,3 +21,11 @@ def demo():
 if __name__ == "__main__":
     demo()
 
+#Sample Execution
+# Asset created successfully with ID: 2
+# ID: 1 | TAG: UST-LTP-0001 | TYPE: Laptop | SERIAL: SN-DL-9988123 | MANUFACTURER: Dell | MODEL: Latitude 5520 | PURCHASE_DATE: 2023-01-15 | WARRANTY: 3 | ASSIGNED_TO: NULL | STATUS: Available | LAST_UPDATED: 2025-11-26 17:42:58
+# ID: 2 | TAG: UST-LTP-113 | TYPE: Laptop | SERIAL: SN-TEST-123 | MANUFACTURER: Dell | MODEL: Latitude 5520 | PURCHASE_DATE: 2023-11-01 | WARRANTY: 3 | ASSIGNED_TO: None | STATUS: Available | LAST_UPDATED: 2025-11-26 22:11:43
+# Connection closed successfully !
+# ID: 2 | TAG: UST-LTP-113 | TYPE: Laptop | SERIAL: SN-TEST-123 | MANUFACTURER: Dell | MODEL: Latitude 5520 | PURCHASE_DATE: 2023-11-01 | WARRANTY: 3 | ASSIGNED_TO: None | STATUS: Available | LAST_UPDATED: 2025-11-26 22:11:43
+# Asset has been deleted successfully
+# Connection got closed
