@@ -1,8 +1,10 @@
+from fastapi import FastAPI, HTTPException, Query, Body
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel, EmailStr, Field, field_validator, model_validator
-from enum import Enum
 from typing import List, Optional
 from datetime import date
 import re
+from enum import Enum
 
 # Enums
 class BandEnum(str, Enum):
@@ -16,6 +18,7 @@ class PriorityEnum(str, Enum):
     medium = "medium"
     high = "high"
 
+# Models
 class Attachment(BaseModel):
     file_name: str
     size_kb: int = Field(..., le=5000, description="Each file must be ≤ 5000 KB")
@@ -46,18 +49,14 @@ class EmployeeTask(BaseModel):
     supervisor_id: int = Field(..., gt=0)
     department: str = Field(..., min_length=3, pattern=r"^[A-Za-z]+$")
     location: str = Field(..., pattern=r"^[A-Za-z ]+$")
-
-    # Dates
     start_date: date
     end_date: date
-
-    # Additional Info
     skills: List[str]
     attachments: List[Attachment]
     remarks: Optional[str] = Field(None, max_length=200)
     client_feedback: Optional[str] = Field(None, max_length=500)
 
-    # Validators
+    # Field Validators
     @field_validator("email")
     def validate_email_domain(cls, v):
         if not v.endswith("@ust.com"):
@@ -133,7 +132,8 @@ class EmployeeTask(BaseModel):
         if info.data.get("band") == BandEnum.M1 and v > 10:
             raise ValueError("M1 band cannot have hours_spent > 10")
         return v
-    
+
+    # Model Validators
     @model_validator(mode="after")
     def check_band_priority(self):
         if self.band == BandEnum.B1 and self.priority == PriorityEnum.high:
@@ -154,52 +154,38 @@ class EmployeeTask(BaseModel):
         return v
     
     @field_validator("task_description")
-    def check_taskdescription(cls, v):
+    def check_task_description(cls, v):
         required = ["finance", "guidelines", "report"]
         if not any(word in v.lower() for word in required):
             raise ValueError("It should contain at least one required word")
         return v
 
+# FastAPI app initialization
+app = FastAPI()
 
-# Sample Data 
-sample_task = {
-    "employee_id": 101,
-    "employee_name": "Rahul Menon",
-    "email": "rahul.menon@ust.com",
-    "mobile": "9876543210",
-    "band": "B2",
-    "emergency_contact": "9123456789",
+@app.post("/tasks/")
+async def create_task(task: EmployeeTask):
+    try:
+        return {"message": "Task created successfully", "task": task.dict()}
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
-    "task_id": 501,
-    "task_title": "Prepare monthly report",
-    "task_description": "Complete the monthly finance report with detailed analysis and submit to supervisor.",
-    "priority": "medium",
-    "hours_spent": 8,
-    "completed": False,
+@app.get("/tasks/{task_id}")
+async def get_task(task_id: int):
+    # Placeholder for fetching task by ID (simulating DB lookup)
+    return {"task_id": task_id, "message": "Task details fetched successfully"}
 
-    "subtasks": [
-        {"subtask_id": 1, "title": "Collect data", "hours_spent": 3, "completed": True},
-        {"subtask_id": 2, "title": "Draft report", "hours_spent": 5, "completed": False}
-    ],
+@app.put("/tasks/{task_id}")
+async def update_task(task_id: int, task: EmployeeTask):
+    try:
+        return {"message": "Task updated successfully", "task": task.dict()}
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
-    "project_code": "FIN123",
-    "cost_center": "FI-202",   
-    "asset_code": "AST9001",
-    "supervisor_id": 200,
-    "department": "Finance",
-    "location": "Kochi",
-
-    "start_date": "2025-12-01",
-    "end_date": "2025-12-20",
-
-    "skills": ["python", "excel", "analysis"],
-    "attachments": [
-        {"file_name": "plan.pdf", "size_kb": 2000},
-        {"file_name": "notes.docx", "size_kb": 1500}
-    ],
-    "remarks": "Completed initial draft on time",
-    "client_feedback": "Well done, detailed and clear"
-}
-
-task = EmployeeTask(**sample_task)
-print(task)
+# Custom error handler for Validation Errors
+@app.exception_handler(ValueError)
+async def validation_exception_handler(request, exc: ValueError):
+    return JSONResponse(
+        status_code=400,
+        content={"detail": str(exc)},
+    )

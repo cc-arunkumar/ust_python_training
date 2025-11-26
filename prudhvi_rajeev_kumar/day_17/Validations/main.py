@@ -1,73 +1,191 @@
-from pydantic import BaseModel, EmailStr, Field, ValidationError
+from fastapi import FastAPI, HTTPException, Query, Body
+from fastapi.responses import JSONResponse
+from pydantic import BaseModel, EmailStr, Field, field_validator, model_validator
+from typing import List, Optional
+from datetime import date
+import re
 from enum import Enum
 
+# Enums
 class BandEnum(str, Enum):
     B1 = "B1"
     B2 = "B2"
     B3 = "B3"
     M1 = "M1"
 
+class PriorityEnum(str, Enum):
+    low = "low"
+    medium = "medium"
+    high = "high"
+
+# Models
+class Attachment(BaseModel):
+    file_name: str
+    size_kb: int = Field(..., le=5000, description="Each file must be ≤ 5000 KB")
+
+class SubTask(BaseModel):
+    subtask_id: int
+    title: str = Field(..., min_length=3)
+    hours_spent: int = Field(..., ge=1, le=12)
+    completed: bool = False
+
 class EmployeeTask(BaseModel):
-    # Scenario 1 — employee_id must be positive
-    employee_id: int = Field(..., gt=0, description="employee_id must be positive")
-
-    # Scenario 2 — employee_name min 3 chars
-    employee_name: str = Field(..., min_length=3, pattern=r"^[A-Za-z ]+$", description="employee_name must be at least 3 characters and only letters/spaces")
-
-    # Scenario 3 — email must be valid
+    employee_id: int = Field(..., gt=0, description="Must be positive")
+    employee_name: str = Field(..., min_length=3, max_length=50, pattern=r"^[A-Za-z ]+$")
     email: EmailStr
-
-    # Scenario 4 — mobile must be exactly 10 digits
-    mobile: str = Field(..., pattern=r"^\d{10}$", description="mobile must be exactly 10 digits")
-
+    mobile: str = Field(..., pattern=r"^[6-9]\d{9}$")
     band: BandEnum
+    emergency_contact: str = Field(..., pattern=r"^[6-9]\d{9}$")
+    task_id: int = Field(..., gt=0)
+    task_title: str = Field(..., min_length=3, max_length=50)
+    task_description: str = Field(..., min_length=10, max_length=300)
+    priority: PriorityEnum
+    hours_spent: int = Field(..., ge=1, le=12)
+    completed: bool = False
+    subtasks: Optional[List[SubTask]] = []
+    project_code: str = Field(..., min_length=3, max_length=8, pattern=r"^[A-Z0-9]+$")
+    cost_center: str = Field(..., pattern=r"^[A-Z]{2}-\d{3}$")
+    asset_code: str = Field(..., min_length=5, max_length=10, pattern=r"^[A-Z0-9]+$")
+    supervisor_id: int = Field(..., gt=0)
+    department: str = Field(..., min_length=3, pattern=r"^[A-Za-z]+$")
+    location: str = Field(..., pattern=r"^[A-Za-z ]+$")
+    start_date: date
+    end_date: date
+    skills: List[str]
+    attachments: List[Attachment]
+    remarks: Optional[str] = Field(None, max_length=200)
+    client_feedback: Optional[str] = Field(None, max_length=500)
 
-    # Scenario 6 — task_id positive (cannot equal employee_id → needs validator)
-    task_id: int = Field(..., gt=0, description="task_id must be positive")
+    # Field Validators
+    @field_validator("email")
+    def validate_email_domain(cls, v):
+        if not v.endswith("@ust.com"):
+            raise ValueError("email must end with @ust.com")
+        return v
 
-    # Scenario 7 — task_title min 3 chars
-    task_title: str = Field(..., min_length=3, description="task_title must be at least 3 characters")
+    @field_validator("task_id")
+    def validate_task_id(cls, v, info):
+        if v == info.data.get("employee_id"):
+            raise ValueError("task_id cannot be same as employee_id")
+        return v
 
-    # Scenario 8 — task_description min 10 chars
-    task_description: str = Field(..., min_length=10, description="task_description must be at least 10 characters")
+    @field_validator("supervisor_id")
+    def validate_supervisor_id(cls, v, info):
+        if v == info.data.get("employee_id"):
+            raise ValueError("supervisor_id cannot be same as employee_id")
+        return v
 
-    # Scenario 9 — hours_spent between 1 and 12
-    hours_spent: int = Field(..., ge=1, le=12, description="hours_spent must be between 1 and 12")
+    @field_validator("end_date")
+    def validate_dates(cls, v, info):
+        start_date = info.data.get("start_date")
+        if start_date:
+            if v <= start_date:
+                raise ValueError("end_date must be after start_date")
+            if (v - start_date).days > 30:
+                raise ValueError("end_date must be within 30 days of start_date")
+        return v
 
-    # Scenario 10 — completed must be boolean
-    completed: bool = Field(default=False, description="completed must be a boolean")
+    @field_validator("start_date")
+    def validate_start_date(cls, v):
+        if v < date.today():
+            raise ValueError("start_date cannot be in the past")
+        return v
 
-# Valid
-try:
-    task = EmployeeTask(
-        employee_id=101,
-        employee_name="Rahul Menon",
-        email="rahul.menon@ust.com",
-        mobile="9876543210",
-        band="B1",
-        task_id=501,
-        task_title="Prepare Report",
-        task_description="Complete the monthly report thoroughly",
-        hours_spent=8,
-        completed=False
+    @field_validator("skills")
+    def validate_skills(cls, v):
+        if not v:
+            raise ValueError("skills list must contain at least one skill")
+        if any(len(skill) < 2 for skill in v):
+            raise ValueError("each skill must be at least 2 characters")
+        if len(v) != len(set(v)):
+            raise ValueError("skills cannot contain duplicates")
+        if "hacking" in v:
+            raise ValueError("skills contain forbidden items: hacking")
+        return v
+
+    @field_validator("attachments")
+    def validate_attachments(cls, v):
+        if not any(att.file_name.endswith(".pdf") for att in v):
+            raise ValueError("attachments must include at least one PDF")
+        if not any(att.file_name.endswith(".docx") for att in v):
+            raise ValueError("attachments must include at least one DOCX")
+        total_size = sum(att.size_kb for att in v)
+        if total_size > 10000:
+            raise ValueError("total attachment size exceeds limit")
+        for att in v:
+            if not re.match(r"^[A-Za-z0-9]+\.(pdf|docx)$", att.file_name):
+                raise ValueError("attachment filename invalid")
+        return v
+
+    @field_validator("client_feedback")
+    def validate_client_feedback(cls, v, info):
+        if info.data.get("completed") and not v:
+            raise ValueError("client_feedback required when task is completed")
+        if info.data.get("priority") == PriorityEnum.high and info.data.get("completed") and (not v or len(v) < 10):
+            raise ValueError("client_feedback must be ≥10 chars for high priority completed tasks")
+        return v
+
+    @field_validator("hours_spent")
+    def validate_hours_spent(cls, v, info):
+        if info.data.get("priority") == PriorityEnum.high and v > 8:
+            raise ValueError("hours_spent exceeds daily limit for high priority")
+        if info.data.get("band") == BandEnum.M1 and v > 10:
+            raise ValueError("M1 band cannot have hours_spent > 10")
+        return v
+
+    # Model Validators
+    @model_validator(mode="after")
+    def check_band_priority(self):
+        if self.band == BandEnum.B1 and self.priority == PriorityEnum.high:
+            raise ValueError("B1 band cannot have high priority tasks")
+        return self
+    
+    @model_validator(mode="after")
+    def check_startswith(self):
+        if not self.cost_center.startswith(self.department[:2].upper()):
+            raise ValueError("cost_center must start with department abbreviation")
+        return self
+    
+    @field_validator("task_title")
+    def check_task_title(cls, v):
+        banned = ["urgent", "fix"]
+        if any(word.lower() in v.lower() for word in banned):
+            raise ValueError("Contains critical words.")
+        return v
+    
+    @field_validator("task_description")
+    def check_task_description(cls, v):
+        required = ["finance", "guidelines", "report"]
+        if not any(word in v.lower() for word in required):
+            raise ValueError("It should contain at least one required word")
+        return v
+
+# FastAPI app initialization
+app = FastAPI()
+
+@app.post("/tasks/")
+async def create_task(task: EmployeeTask):
+    try:
+        return {"message": "Task created successfully", "task": task.dict()}
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+@app.get("/tasks/{task_id}")
+async def get_task(task_id: int):
+    # Placeholder for fetching task by ID (simulating DB lookup)
+    return {"task_id": task_id, "message": "Task details fetched successfully"}
+
+@app.put("/tasks/{task_id}")
+async def update_task(task_id: int, task: EmployeeTask):
+    try:
+        return {"message": "Task updated successfully", "task": task.dict()}
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+# Custom error handler for Validation Errors
+@app.exception_handler(ValueError)
+async def validation_exception_handler(request, exc: ValueError):
+    return JSONResponse(
+        status_code=400,
+        content={"detail": str(exc)},
     )
-    print("Valid Task Created:", task)
-except ValidationError as e:
-    print("Validation Error:", e)
-
-# Invalid Example: employee_id negative
-try:
-    EmployeeTask(
-        employee_id=-5,
-        employee_name="Rahul",
-        email="rahul.menon@ust.com",
-        mobile="9876543210",
-        band="B1",
-        task_id=501,
-        task_title="Prepare Report",
-        task_description="Complete the monthly report thoroughly",
-        hours_spent=8,
-        completed=False
-    )
-except ValidationError as e:
-    print("Error (employee_id):", e)
