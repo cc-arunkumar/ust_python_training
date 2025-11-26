@@ -45,9 +45,7 @@ class LaptopAsset(BaseModel):
 # Endpoint 1: Get all laptops
 @app.get("/laptops")
 def display_laptops():
-    """
-    Returns a list of all laptops in the inventory.
-    """
+
     return laptops_list
 
 
