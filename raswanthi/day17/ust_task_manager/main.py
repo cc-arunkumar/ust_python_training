@@ -2,9 +2,9 @@ from fastapi import FastAPI, HTTPException, Depends
 from datetime import timedelta
 from typing import List
 
-from models import LoginRequest, TokenResponse, Task, CreateTask, UpdateTask
-from auth import create_access_token, get_current_user, ACCESS_TOKEN_EXPIRE_MINUTES, users
-from utils import next_id
+from raswanthi.day17.ust_task_manager.models import LoginRequest, TokenResponse, Task, CreateTask, UpdateTask
+from raswanthi.day17.ust_task_manager.auth import create_access_token, get_current_user, ACCESS_TOKEN_EXPIRE_MINUTES, users
+from raswanthi.day17.ust_task_manager.utils import next_id
 
 # Initialize FastAPI app
 app = FastAPI(title="UST Task Manager")

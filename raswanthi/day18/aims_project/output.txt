@@ -1,0 +1,30 @@
+Terminal OUTPUT:
+---- Read all the assets ----
+No assets found
+
+---- Read all the assets ----
+No assets found
+
+---- Create new assets ----
+Asset created successfully.
+
+---- Create new assets ----
+Asset created successfully.
+
+---- Read asset by ID ----
+ASSET ID:1 | ASSET TAG:UST-KEY-0100 | ASSET TYPE:Keyboard | SERIAL NUMBER:SN-NEW-KEY-0100 | MANUFACTURER:HP | MODEL:HP Wired 160 | PURCHASE DATE:2024-02-10 | WARRANTY YEARS:2 | ASSIGNED TO:None | ASSET STATUS:Available | LAST UPDATED:2025-11-26 21:02:55   
+
+---- Update asset ----
+Asset 1 updated successfully.
+
+---- Update asset ----
+Asset 1 updated successfully.
+
+---- Update asset ----
+Error updating asset: assigned_to MUST be null when status is 'Available' or 'Retired'
+
+---- Delete asset ----
+Asset 1 deleted successfully.
+
+--- Read all finally ---
+ASSET ID:2 | ASSET TAG:UST-LTP-0101 | ASSET TYPE:Laptop | SERIAL NUMBER:SN-NEW-LTP-0101 | MANUFACTURER:Dell | MODEL:Latitude 5540 | PURCHASE DATE:2024-06-01 | WARRANTY YEARS:3 | ASSIGNED TO:Priya Verma (UST Pune) | ASSET STATUS:Assigned | LAST UPDATED:2025-11-26 21:02:55
