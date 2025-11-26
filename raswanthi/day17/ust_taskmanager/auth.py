@@ -4,7 +4,7 @@ from typing import Optional
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from jose import JWTError, jwt
-from raswanthi.day17.ust_task_manager.models import User
+from raswanthi.day17.ust_task_manager.ust_taskmanager.models import User
 
 # -------------------------
 # JWT Configuration
