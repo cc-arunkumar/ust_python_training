@@ -1,0 +1,86 @@
+from pydantic import BaseModel, EmailStr, field_validator,model_validator
+from enum import Enum
+from typing import List, Optional
+from datetime import date
+from fastapi import FastAPI, HTTPException
+class BandEnum(str, Enum):
+    B1 = "B1"
+    B2 = "B2"
+    B3 = "B3"
+    M1 = "M1"
+class PriorityEnum(str, Enum):
+    low = "low"
+    medium = "medium"
+    high = "high"
+class Attachment(BaseModel):
+    file_name: str
+    size_kb: int
+class SubTask(BaseModel):
+    subtask_id: int
+    title: str
+    hours_spent: int
+    completed: bool = False
+class EmployeeTask(BaseModel):
+ # Employee Info
+    employee_id: int
+    employee_name: str
+    email: EmailStr
+    mobile: str
+    band: BandEnum
+    emergency_contact: str
+    
+ # Task Info
+    task_id: int
+    task_title: str
+    task_description: str
+    priority: PriorityEnum
+    hours_spent: int
+    completed: bool = False
+    subtasks: Optional[List[SubTask]] = []
+    
+ # Project Info
+    project_code: str
+    cost_center: str
+    asset_code: str
+    supervisor_id: int
+    department: str
+    location: str
+    # Dates
+    start_date: date
+    end_date: date
+    # Additional Info
+    skills: List[str]
+    attachments: List[Attachment]
+    remarks: Optional[str]
+    client_feedback: Optional[str]
+    @model_validator(mode="after")
+    def check_if_unique(self):
+        if self.emergency_contact==self.supervisor_id:
+            raise HTTPException(status_code=401,detail="confilct")
+        return self
+    
+    @model_validator(mode="after")
+    def band_center(self):
+        pattern=r"^HR"
+        
+        if self.band=="B3" and re.match(pattern,self.cost_center):
+            raise HTTPException(status_code=409,detail="not allowed")
+        return self
+        
+    
+    @model_validator(mode="after")
+    def date_val(self):
+        fy_start=date(self.start_date.year,4,1)
+        fy_end=date(self.start_date,4,1)
+        if self.start_date<self.end_date:
+            if self.start_date>fy_start and self.end_date<fy_end:
+                return self
+        raise ValueError("date not valid ")
+    @model_validator(mode="after")
+    def val_hour(self):
+        if self.hours_spent>8:
+            if len(self.client_feedback!)>10:
+                raise ValueError("not enpoiug h feedback")
+        return self
+    @field_validator 
+            

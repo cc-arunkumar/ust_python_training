@@ -66,3 +66,4 @@ def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(securit
 # app = FastAPI(title="Task Manager")
 
 
+

@@ -1,0 +1,1 @@
+SELECT * FROM ust_asset_db.asset_inventory;

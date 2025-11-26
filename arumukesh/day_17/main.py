@@ -8,8 +8,13 @@ from datetime import datetime, timedelta, timezone
 
 app = FastAPI(title="Task Manager API")
 
-tasks = []
-task_id_counter = 1
+tasks = [
+ { "id": 1, "title": "Buy Milk", "description": "Buy Nandini milk from nearby shop", "completed": False },
+ { "id": 2, "title": "Apply PAN Card", "description": "Visit NSDL center in Bangalore and submit documents", "completed": False },
+ { "id": 3, "title": "", "description": "", "completed": False }
+]
+
+task_id_counter = len(tasks)
 
 
 @app.post("/login", response_model=Token)
@@ -28,7 +33,7 @@ def login(data: LoginRequest):
 @app.post("/tasks")
 def create_task(task: TaskModel, current_user: User = Depends(get_current_user)):
     global task_id_counter
-
+    task_id_counter += 1
     new_task = {
         "id": task_id_counter,
         "title": task.title,
@@ -37,7 +42,7 @@ def create_task(task: TaskModel, current_user: User = Depends(get_current_user))
     }
 
     tasks.append(new_task)
-    task_id_counter += 1
+    
 
     return new_task
 
