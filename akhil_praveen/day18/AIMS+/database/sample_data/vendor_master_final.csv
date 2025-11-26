@@ -1,0 +1,11 @@
+vendor_id,vendor_name,contact_person,contact_phone,gst_number,email,address,city,active_status
+| Field            | Validation Rule               | Example of Violation                                    | Count of Violations                                              |,,,,,,,,
+| ---------------- | ----------------------------- | ------------------------------------------------------- | ---------------------------------------------------------------- |,,,,,,,,
+| `vendor_name`    | Alphabets only, max 100 chars | `Alpha123 Corp`                                         | 3                                                                |,,,,,,,
+| `contact_person` | Alphabets only, max 100 chars | `Ramesh5 Kumar`                                         | 2                                                                |,,,,,,,
+| `gst_number`     | Exactly 15 alphanumeric       | `29AAAPL1234C1` (14 chars), `29JJJMM1234M3Y` (14 chars) | 4                                                                |,,,,,,,
+| `email`          | Valid email format            | `rajesh@falconcorp` (missing `.com`)                    | 0 (minor format deviations exist but all include `@` and domain) |,,,,,,,,
+| `address`        | Max 200 chars                 | None in generated data                                  | 0                                                                |,,,,,,,,
+| `city`           | Must be valid Indian city     | `Chennaai` (typo)                                       | 1                                                                |,,,,,,,,
+| `active_status`  | Only `Active` / `Inactive`    | `Actve` (typo)                                          | 0                                                                |,,,,,,,,
+Total Records with Any Violation: 12 (some records violate more than one rule, but total distinct records with violations = 12),,,,,,,
