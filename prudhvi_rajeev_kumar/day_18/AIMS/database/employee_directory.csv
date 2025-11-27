@@ -100,15 +100,3 @@ USTEMP-1098,Anjali Reddy,anjali.reddy@ust.com,9876562345,IT,Bangalore,2020-09-07
 USTEMP-1099,Vivek Sharma,vivek.sharma@ust.com,9876573456,Support,Chennai,2021-10-19,Active
 USTEMP-1100,Sneha Kumar,sneha.kumar@ust.com,9876584567,IT,Hyderabad,2020-11-23,Active
 
-
-
-|Field Validation Rule|Records (emp_code) Example / Count                                           |
-| -------------------| -------------------------------------------------------------------------- |
-| emp_code format    | 1003 (`EMP-1003`) → 1 record                                                 |
-| full_name          | None with visible impurity in current dataset (all names valid)              |
-| email format       | 1002, 1011, 1019, 1079, 1062 → 5 records                                     |
-| phone number length| 1003 → 1 record                                                              |
-| department         | None invalid in current dataset                                              |
-| location           | None invalid in current dataset                                              |
-| join_date          | 1027 (`2022-13-12`) → 1 record, 1062 (`future date`) → 1 record (if present) |
-| status             | 1007 (`Activ`) → 1 record                                                    |
