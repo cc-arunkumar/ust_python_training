@@ -1,0 +1,60 @@
+CREATE TABLE employee_directory (
+    emp_id INT PRIMARY KEY AUTO_INCREMENT,
+    emp_code VARCHAR(20) NOT NULL,
+    full_name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    phone VARCHAR(15) NOT NULL,
+    department VARCHAR(50) NOT NULL,
+    location VARCHAR(100) NOT NULL,
+    join_date DATE NOT NULL,
+    status VARCHAR(20) NOT NULL,
+
+    -- Constraints
+    CHECK (emp_code LIKE 'USTEMP-%'),
+    CHECK (email LIKE '%@ust.com'),
+    CHECK (phone REGEXP '^[6-9][0-9]{9}$'),
+    CHECK (status IN ('Active', 'Inactive', 'Resigned'))
+);
+
+
+
+CREATE TABLE vendor_master (
+    vendor_id INT PRIMARY KEY AUTO_INCREMENT,
+    vendor_name VARCHAR(100) NOT NULL,
+    contact_person VARCHAR(100) NOT NULL,
+    contact_phone VARCHAR(15) NOT NULL,
+    gst_number VARCHAR(20) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    address VARCHAR(200) NOT NULL,
+    city VARCHAR(100) NOT NULL,
+    active_status VARCHAR(20) NOT NULL,
+
+    -- Constraints
+    CHECK (vendor_name REGEXP '^[A-Za-z ]+$'),
+    CHECK (contact_person REGEXP '^[A-Za-z ]+$'),
+    CHECK (contact_phone REGEXP '^[6-9][0-9]{9}$'),
+    CHECK (LENGTH(gst_number) = 15),
+    CHECK (active_status IN ('Active', 'Inactive'))
+);
+
+
+CREATE TABLE maintenance_log (
+    log_id INT PRIMARY KEY AUTO_INCREMENT,
+    asset_tag VARCHAR(50) NOT NULL,
+    maintenance_type VARCHAR(50) NOT NULL,
+    vendor_name VARCHAR(100) NOT NULL,
+    description VARCHAR(300) NOT NULL,
+    cost DECIMAL(10,2) NOT NULL,
+    maintenance_date DATE NOT NULL,
+    technician_name VARCHAR(100) NOT NULL,
+    status VARCHAR(20) NOT NULL,
+
+    -- Constraints
+    CHECK (asset_tag LIKE 'UST-%'),
+    CHECK (maintenance_type IN ('Repair', 'Service', 'Upgrade')),
+    CHECK (vendor_name REGEXP '^[A-Za-z ]+$'),
+    CHECK (technician_name REGEXP '^[A-Za-z ]+$'),
+    CHECK (LENGTH(description) >= 10),
+    CHECK (cost > 0),
+    CHECK (status IN ('Completed', 'Pending'))
+);
