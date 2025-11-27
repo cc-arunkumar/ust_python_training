@@ -1,80 +1,80 @@
 from fastapi import APIRouter,HTTPException
-from ..models.asset_model import AssetInventory
-from ..crud.asset_crud import Asset
+from ..models.vendor_model import VendorMaster
+from ..crud.vendor_crud import Vendor
 from typing import List,Optional
 
-asset_service = Asset()
+vendor_service = Vendor()
 
-asset_router = APIRouter(prefix="/assets")
+vendor_router = APIRouter(prefix="/vendor")
 
 
-@asset_router.get("/list")
+@vendor_router.get("/list")
 def get_all(status:Optional[str]="all"):
     try:
-        return asset_service.get_all_asset(status)
+        return vendor_service.get_all_vendor(status)
     except Exception as e:
         raise HTTPException(status_code=404,detail =str(e))
     
-@asset_router.get("/{asset_id}")
-def get_by_id(asset_id:int):
+@vendor_router.get("/{vendor_id}")
+def get_by_id(vendor_id:int):
     try:
-        return asset_service.get_asset_by_id(asset_id)
+        return vendor_service.get_vendor_by_id(vendor_id)
     except Exception as e:
         raise HTTPException(status_code=404,detail =str(e))
     
-@asset_router.put("/{asset_id}")
-def update_asset(asset_id:int,asset:AssetInventory):
+@vendor_router.put("/{vendor_id}")
+def update_vendor(vendor_id:int,vendor:VendorMaster):
     try:
-        if asset_service.update_asset(asset_id,asset):
+        if vendor_service.update_vendor(vendor_id,vendor):
             return {"message" : "Update Successfull"}
         else:
-            return {"message" : "Asset Not Found"}
+            return {"message" : "Vendor Not Found"}
     except Exception as e:
         raise HTTPException(status_code=404,detail =str(e))
     
-@asset_router.patch("/{asset_id}/")
-def update_asset(asset_id:int,status:str):
+@vendor_router.patch("/{vendor_id}/")
+def update_vendor(vendor_id:int,status:str):
     try:
-        if asset_service.update_asset_status(asset_id,status):
+        if vendor_service.update_vendor_status(vendor_id,status):
             return {"message" : "Update Successfull"}
         else:
-            return {"message" : "Asset Not Found"}
+            return {"message" : "Vendor Not Found"}
     except Exception as e:
         print(str(e))
         raise HTTPException(status_code=404,detail=str(e))
     
-@asset_router.post("/create")
-def create_asset(asset:AssetInventory):
+@vendor_router.post("/create")
+def create_vendor(vendor:VendorMaster):
     try:
-        if asset_service.create_asset(asset):
+        if vendor_service.create_vendor(vendor):
             return {"message" : "Added Successfull"}
     except Exception as e:
         print(str(e))
         raise HTTPException(status_code=404,detail=str(e))
     
-@asset_router.delete("/{asset_id}")
-def create_asset(asset_id:int):
+@vendor_router.delete("/{vendor_id}")
+def delete_vendor(vendor_id:int):
     try:
-        if asset_service.delete_asset(asset_id):
+        if vendor_service.delete_vendor(vendor_id):
             return {"message" : "Deleted Successfull"}
         else:
-            return {"message" : "Asset Not Found"}
+            return {"message" : "Log Not Found"}
     except Exception as e:
         print(str(e))
         raise HTTPException(status_code=404,detail=str(e))
     
-@asset_router.get("/search/keyword/")
+@vendor_router.get("/search/keyword/")
 def get_by_keyword(keyword:str,value:str):
     try:
-        return asset_service.get_asset_keyword(keyword,value)
+        return vendor_service.get_vendor_keyword(keyword,value)
     except Exception as e:
         print(str(e))
         raise HTTPException(status_code=404,detail =str(e))
     
-@asset_router.get("/all/count/")
+@vendor_router.get("/all/count/")
 def get_count():
     try:
-        return asset_service.get_asset_count()
+        return vendor_service.get_vendor_count()
     except Exception as e:
         print(str(e))
         raise HTTPException(status_code=404,detail =str(e))

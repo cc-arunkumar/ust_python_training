@@ -2,6 +2,8 @@ from pydantic import BaseModel,Field,model_validator
 from datetime import date
 from typing import Literal
 
+class StatusValidator(BaseModel):
+    status: Literal['Completed', 'Pending']
 
 class MaintenanceLog(BaseModel):
     asset_tag: str = Field(..., pattern=r"^UST-[A-Za-z0-9-]+$")

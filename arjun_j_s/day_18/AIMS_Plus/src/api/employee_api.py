@@ -1,80 +1,80 @@
 from fastapi import APIRouter,HTTPException
-from ..models.asset_model import AssetInventory
-from ..crud.asset_crud import Asset
+from ..models.employee_model import EmployeeDirectory
+from ..crud.employee_crud import Employee
 from typing import List,Optional
 
-asset_service = Asset()
+emp_service = Employee()
 
-asset_router = APIRouter(prefix="/assets")
+emp_router = APIRouter(prefix="/employees")
 
 
-@asset_router.get("/list")
+@emp_router.get("/list")
 def get_all(status:Optional[str]="all"):
     try:
-        return asset_service.get_all_asset(status)
+        return emp_service.get_all_emp(status)
     except Exception as e:
         raise HTTPException(status_code=404,detail =str(e))
     
-@asset_router.get("/{asset_id}")
-def get_by_id(asset_id:int):
+@emp_router.get("/{emp_id}")
+def get_by_id(emp_id:int):
     try:
-        return asset_service.get_asset_by_id(asset_id)
+        return emp_service.get_emp_by_id(emp_id)
     except Exception as e:
         raise HTTPException(status_code=404,detail =str(e))
     
-@asset_router.put("/{asset_id}")
-def update_asset(asset_id:int,asset:AssetInventory):
+@emp_router.put("/{emp_id}")
+def update_emp(emp_id:int,emp:EmployeeDirectory):
     try:
-        if asset_service.update_asset(asset_id,asset):
+        if emp_service.update_emp(emp_id,emp):
             return {"message" : "Update Successfull"}
         else:
-            return {"message" : "Asset Not Found"}
+            return {"message" : "Employee Not Found"}
     except Exception as e:
         raise HTTPException(status_code=404,detail =str(e))
     
-@asset_router.patch("/{asset_id}/")
-def update_asset(asset_id:int,status:str):
+@emp_router.patch("/{emp_id}/")
+def update_emp(emp_id:int,status:str):
     try:
-        if asset_service.update_asset_status(asset_id,status):
+        if emp_service.update_emp_status(emp_id,status):
             return {"message" : "Update Successfull"}
         else:
-            return {"message" : "Asset Not Found"}
+            return {"message" : "Employee Not Found"}
     except Exception as e:
         print(str(e))
         raise HTTPException(status_code=404,detail=str(e))
     
-@asset_router.post("/create")
-def create_asset(asset:AssetInventory):
+@emp_router.post("/create")
+def create_emp(emp:EmployeeDirectory):
     try:
-        if asset_service.create_asset(asset):
+        if emp_service.create_emp(emp):
             return {"message" : "Added Successfull"}
     except Exception as e:
         print(str(e))
         raise HTTPException(status_code=404,detail=str(e))
     
-@asset_router.delete("/{asset_id}")
-def create_asset(asset_id:int):
+@emp_router.delete("/{emp_id}")
+def delete_emp(emp_id:int):
     try:
-        if asset_service.delete_asset(asset_id):
+        if emp_service.delete_emp(emp_id):
             return {"message" : "Deleted Successfull"}
         else:
-            return {"message" : "Asset Not Found"}
+            return {"message" : "Employee Not Found"}
     except Exception as e:
         print(str(e))
         raise HTTPException(status_code=404,detail=str(e))
     
-@asset_router.get("/search/keyword/")
+@emp_router.get("/search/keyword/")
 def get_by_keyword(keyword:str,value:str):
     try:
-        return asset_service.get_asset_keyword(keyword,value)
+        return emp_service.get_employee_keyword(keyword,value)
     except Exception as e:
         print(str(e))
         raise HTTPException(status_code=404,detail =str(e))
     
-@asset_router.get("/all/count/")
+@emp_router.get("/all/count/")
 def get_count():
     try:
-        return asset_service.get_asset_count()
+        return emp_service.get_emp_count()
     except Exception as e:
         print(str(e))
         raise HTTPException(status_code=404,detail =str(e))

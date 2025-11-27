@@ -1,5 +1,5 @@
 import csv
-from ..models.asset_model import AssetInventory
+from ..models.asset_model import AssetInventory,StatusValidate
 from src.config.db_connection import get_connection
 from datetime import datetime
 from typing import Optional
@@ -7,7 +7,8 @@ from typing import Optional
 path = "D:/ust_python_training-1/arjun_j_s/day_18/AIMS_Plus/database/sample_data/final/asset_inventory.csv"
 
 class Asset:
-    def create_asset(asset:AssetInventory):
+            
+    def create_asset(self,asset:AssetInventory):
         try:
             conn = get_connection()
             cursor = conn.cursor()
@@ -15,63 +16,74 @@ class Asset:
     Insert into ust_aims_plus.asset_inventory (asset_tag,asset_type,serial_number,manufacturer,model,purchase_date,warranty_years,condition_status,assigned_to,location,asset_status,last_updated)
     VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s,%s,%s)
             """
-            values = tuple(asset.values()) + (datetime.now(),)
+            values = tuple(asset.__dict__.values()) + (datetime.now(),)
             cursor.execute(query,values)
             conn.commit()
             print("Data added successfully")
             return True
         except Exception as e:
-            raise
+            raise e
         finally:
             if conn.open:
                 cursor.close()
                 conn.close()
             print("Connection Closed")
 
-    def get_all_asset(status="all"):
+    def get_all_asset(self,status="all"):
         try:
             conn = get_connection()
             cursor = conn.cursor()
-            cursor.execute("select column_name from information")
+            cursor.execute("""SELECT column_name
+FROM information_schema.columns
+WHERE table_schema = 'ust_aims_plus'
+  AND table_name = 'asset_inventory' order by ordinal_position;""")
+            head=cursor.fetchall()
+            header = [col[0] for col in head]
             cursor.execute("select * from ust_aims_plus.asset_inventory")
             rows = cursor.fetchall()
             if status!="all":
                 cursor.execute("select * from ust_aims_plus.asset_inventory where asset_status=%s",(status,))
                 rows = cursor.fetchall()
             if rows:
-                response=[]
+                response = []
                 for data in rows:
-                    response.append(data)
+                    response.append(dict(zip(header, data)))
                 return response
             else:
                 return None
         except Exception as e:
-            raise
+            raise e
         finally:
             if conn.open:
                 cursor.close()
                 conn.close()
                 print("Connection Closed")
 
-    def get_asset_by_id(asset_id:int):
+    def get_asset_by_id(self,asset_id:int):
         try:
             conn = get_connection()
             cursor = conn.cursor()
+            cursor.execute("""SELECT column_name
+FROM information_schema.columns
+WHERE table_schema = 'ust_aims_plus'
+  AND table_name = 'asset_inventory' order by ordinal_position;""")
+            head=cursor.fetchall()
+            header = [col[0] for col in head]
             cursor.execute("select * from ust_aims_plus.asset_inventory where asset_id=%s",(asset_id,))
             row = cursor.fetchone()
             if row:
-                return row
+                return dict(zip(header,row))
             else:
                 return None
         except Exception as e:
-            raise
+            raise e
         finally:
             if conn.open:
                 cursor.close()
                 conn.close()
             print("Connection Closed")
 
-    def get_asset_count():
+    def get_asset_count(self):
         try:
             conn = get_connection()
             cursor = conn.cursor()
@@ -82,25 +94,34 @@ class Asset:
             else:
                 return None
         except Exception as e:
-            raise
+            raise e
         finally:
             if conn.open:
                 cursor.close()
                 conn.close()
             print("Connection Closed")
 
-    def get_asset_keyword(keyword:str):
+    def get_asset_keyword(self,keyword,value):
         try:
             conn = get_connection()
             cursor = conn.cursor()
-            cursor.execute("select %s from ust_aims_plus.asset_inventory",(keyword,))
-            row = cursor.fetchall()
-            if row:
-                return row
+            cursor.execute("""SELECT column_name
+FROM information_schema.columns
+WHERE table_schema = 'ust_aims_plus'
+  AND table_name = 'asset_inventory' order by ordinal_position;""")
+            head=cursor.fetchall()
+            header = [col[0] for col in head]
+            cursor.execute(f"select * from ust_aims_plus.asset_inventory where {keyword}=%s",(value,))
+            rows = cursor.fetchall()
+            if rows:
+                response=[]
+                for row in rows:
+                    response.append(dict(zip(header,row)))
+                return response
             else:
                 return None
         except Exception as e:
-            raise
+            raise e
         finally:
             if conn.open:
                 cursor.close()
@@ -115,20 +136,21 @@ class Asset:
             try:
                 self.create_asset(data)
             except Exception as e:
-                raise
+                raise e
         return True
 
 
-    def update_asset_status(asset_id:int,status:str):
+    def update_asset_status(self,asset_id,status):
         try:
             conn = get_connection()
             cursor = conn.cursor()
+            StatusValidate(asset_status=status)
             cursor.execute("update ust_aims_plus.asset_inventory set asset_status=%s where asset_id=%s",(status,asset_id))
             conn.commit()
             print("Status Updated")
             return True
         except Exception as e:
-            raise
+            raise e
         finally:
             if conn.open:
                 cursor.close()
@@ -136,7 +158,7 @@ class Asset:
             print("Connection Closed")
 
 
-    def update_asset(asset_id:int,asset:AssetInventory):
+    def update_asset(self,asset_id:int,asset:AssetInventory):
         try:
             conn = get_connection()
             cursor = conn.cursor()
@@ -146,13 +168,14 @@ class Asset:
     warranty_years=%s,condition_status=%s,assigned_to=%s,location=%s,asset_status=%s,last_updated=%s
     where asset_id=%s
             """
-            values = tuple(asset.values()) + (datetime.now(),asset_id)
+            values = tuple(asset.__dict__.values()) + (datetime.now(),asset_id)
             cursor.execute(query,values)
             conn.commit()
             print("Data updated successfully")
             return True
         except Exception as e:
-            raise
+            print(str(e))
+            raise e
         finally:
             if conn.open:
                 cursor.close()
@@ -172,7 +195,7 @@ class Asset:
             else:
                 return None
         except Exception as e:
-            raise
+            raise e
         finally:
             if conn.open:
                 cursor.close()

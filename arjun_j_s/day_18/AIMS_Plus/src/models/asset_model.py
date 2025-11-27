@@ -2,6 +2,9 @@ from pydantic import BaseModel,Field,model_validator
 from datetime import date
 from typing import Optional,Literal
 
+class StatusValidate(BaseModel):
+    asset_status: Literal['Available', 'Assigned', 'Repair', 'Retired']
+
 class AssetInventory(BaseModel):
     asset_tag: str = Field(..., pattern=r"^UST-[A-Za-z0-9-]+$")
     asset_type: Literal['Laptop', 'Monitor', 'Keyboard', 'Mouse']

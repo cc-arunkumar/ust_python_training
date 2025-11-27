@@ -2,6 +2,9 @@ from pydantic import BaseModel,Field,EmailStr,model_validator
 from datetime import date
 from typing import Literal
 
+class StatusValidator(BaseModel):
+    status: Literal['Active', 'Inactive', 'Resigned']
+
 class EmployeeDirectory(BaseModel):
     emp_code: str = Field(..., pattern=r"^USTEMP[A-Za-z0-9-]+$")
     full_name: str = Field(..., pattern=r"^[A-Za-z ]+$")

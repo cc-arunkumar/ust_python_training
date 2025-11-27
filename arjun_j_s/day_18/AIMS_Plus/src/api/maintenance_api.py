@@ -1,80 +1,80 @@
 from fastapi import APIRouter,HTTPException
-from ..models.asset_model import AssetInventory
-from ..crud.asset_crud import Asset
+from ..models.maintenance_model import MaintenanceLog
+from ..crud.maintenance_crud import Maintain
 from typing import List,Optional
 
-asset_service = Asset()
+log_service = Maintain()
 
-asset_router = APIRouter(prefix="/assets")
+log_router = APIRouter(prefix="/maintenance")
 
 
-@asset_router.get("/list")
+@log_router.get("/list")
 def get_all(status:Optional[str]="all"):
     try:
-        return asset_service.get_all_asset(status)
+        return log_service.get_all_log(status)
     except Exception as e:
         raise HTTPException(status_code=404,detail =str(e))
     
-@asset_router.get("/{asset_id}")
-def get_by_id(asset_id:int):
+@log_router.get("/{log_id}")
+def get_by_id(log_id:int):
     try:
-        return asset_service.get_asset_by_id(asset_id)
+        return log_service.get_log_by_id(log_id)
     except Exception as e:
         raise HTTPException(status_code=404,detail =str(e))
     
-@asset_router.put("/{asset_id}")
-def update_asset(asset_id:int,asset:AssetInventory):
+@log_router.put("/{log_id}")
+def update_emp(log_id:int,log:MaintenanceLog):
     try:
-        if asset_service.update_asset(asset_id,asset):
+        if log_service.update_log(log_id,log):
             return {"message" : "Update Successfull"}
         else:
-            return {"message" : "Asset Not Found"}
+            return {"message" : "Log Not Found"}
     except Exception as e:
         raise HTTPException(status_code=404,detail =str(e))
     
-@asset_router.patch("/{asset_id}/")
-def update_asset(asset_id:int,status:str):
+@log_router.patch("/{log_id}/")
+def update_log(log_id:int,status:str):
     try:
-        if asset_service.update_asset_status(asset_id,status):
+        if log_service.update_log_status(log_id,status):
             return {"message" : "Update Successfull"}
         else:
-            return {"message" : "Asset Not Found"}
+            return {"message" : "Log Not Found"}
     except Exception as e:
         print(str(e))
         raise HTTPException(status_code=404,detail=str(e))
     
-@asset_router.post("/create")
-def create_asset(asset:AssetInventory):
+@log_router.post("/create")
+def create_log(log:MaintenanceLog):
     try:
-        if asset_service.create_asset(asset):
+        if log_service.create_maintenance(log):
             return {"message" : "Added Successfull"}
     except Exception as e:
         print(str(e))
         raise HTTPException(status_code=404,detail=str(e))
     
-@asset_router.delete("/{asset_id}")
-def create_asset(asset_id:int):
+@log_router.delete("/{log_id}")
+def delete_log(log_id:int):
     try:
-        if asset_service.delete_asset(asset_id):
+        if log_service.delete_log(log_id):
             return {"message" : "Deleted Successfull"}
         else:
-            return {"message" : "Asset Not Found"}
+            return {"message" : "Log Not Found"}
     except Exception as e:
         print(str(e))
         raise HTTPException(status_code=404,detail=str(e))
     
-@asset_router.get("/search/keyword/")
+@log_router.get("/search/keyword/")
 def get_by_keyword(keyword:str,value:str):
     try:
-        return asset_service.get_asset_keyword(keyword,value)
+        return log_service.get_log_keyword(keyword,value)
     except Exception as e:
         print(str(e))
         raise HTTPException(status_code=404,detail =str(e))
     
-@asset_router.get("/all/count/")
+@log_router.get("/all/count/")
 def get_count():
     try:
-        return asset_service.get_asset_count()
+        return log_service.get_log_count()
     except Exception as e:
         print(str(e))
         raise HTTPException(status_code=404,detail =str(e))

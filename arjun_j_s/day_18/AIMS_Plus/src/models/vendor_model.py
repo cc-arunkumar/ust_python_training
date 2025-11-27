@@ -1,6 +1,9 @@
 from pydantic import BaseModel,Field,EmailStr
 from typing import Literal
 
+class StatusValidator(BaseModel):
+    active_status: Literal['Active', 'Inactive']
+
 
 class VendorMaster(BaseModel):
     vendor_name: str = Field(..., pattern=r"^[A-Za-z ]+$")
