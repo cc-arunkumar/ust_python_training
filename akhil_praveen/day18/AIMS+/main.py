@@ -5,7 +5,7 @@ from src.models.vendormaster import VendorMaster
  
 import csv
  
-path = "D:/ust_python_training-1/arjun_j_s/day_18/AIMS_Plus/database/sample_data/"
+path = "C:/Users/Administrator/Desktop/ust_python_training/akhil_praveen/day18/AIMS+/database/sample_data/"
  
 with open(path + "asset_inventory.csv", "r") as asset_file:
     with open(path + "final/asset_inventory.csv", "w", newline="") as new_asset_file:
