@@ -112,14 +112,15 @@ def delete_by_id(emp_id):
         print("Error:", e)
     finally:
         if conn.is_connected():
-            cursor.close()  # Close cursor to release resources
-            conn.close()    # Close connection to the database
+            cursor.close()
+            conn.close() 
         print("Connection closed successfully")
 
 
-# read_all_employees()  # Uncomment to fetch all employees
-# # delete_by_id(4)       # Uncomment to delete an employee with ID 4
+# read_all_employees()
+# # delete_by_id(4)    
 
 # # update_employee_by_id(3, "Bhanu", 34555)  # Uncomment to update employee with ID 3
 # # read_by_id(3)                          # Uncomment to fetch employee with ID 3
 # # create_employee("Veera", 2400000)      # Uncomment to create a new employee
+
