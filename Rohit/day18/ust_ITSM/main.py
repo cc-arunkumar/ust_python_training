@@ -2,10 +2,13 @@ import datetime
 import pymysql
 from fastapi import FastAPI, HTTPException
 from pydentic.asset_inventory_pydentic import Asset_inventory
+from pydentic.vendors_pydentic import VendorMaster
+from pydentic.maintainance_pydentic import MaintenanceLog
 from api.asset_inventory import get_task, get_task_by_id,update_asset,update_asset_status,delete_asset, get_assets_by_status,search_assets,count_assets
 from db_connection.db import get_connection
-app = FastAPI()
-@app.post("/assets/create")
+from api.maintenance_invenotry import get_maintenance_by_id,list_maintenance,list_maintenance_by_status,update_maintenance,update_maintenance_status,delete_maintenance,create_maintenance
+from api.vendor_inventory import get_all_data,get_data_by_status,get_data_by_id,create_vendor,update_vendor,count_vendors,get_rows_by_column,delete_vendor,update_vendor_status
+app = FastAPI() 
 @app.post("/assets/create")
 def create_asset(asset: Asset_inventory):
     return create_task(
@@ -120,4 +123,76 @@ def update_asset_status_api(id: int, asset_status: str):
 def delete_asset_api(id: int):
     return delete_asset(id)
 
- 
+
+
+
+# vendor master
+@app.get("/vendors/list")
+def get_data():
+    return get_all_data() 
+
+
+@app.get("/vendors/list/status")
+def get_all_status(active_status: str):
+    return get_data_by_status(active_status)
+
+
+@app.get("/vendors/list/{id}")
+def get_data_id(id:int):
+    return get_data_by_id(id)
+
+
+@app.post("/vendors/create")
+def create_vendor_api(vendor: VendorMaster):
+    return create_vendor(vendor)
+
+
+@app.put("/vendors/{id}")
+def update_vendor_api(id: str, vendor: VendorMaster):
+    return update_vendor(id, vendor)
+
+@app.patch("/vendors/{id}/status")
+def update_vendor_status_api(id: str, status: str):
+    return update_vendor_status(id, status)
+
+@app.delete("/vendors/{id}")
+def delete_vendor_api(id: str):
+    return delete_vendor(id)
+
+@app.get("/vendors/filter")
+def filter_vendors(column: str, keyword: str):
+    return get_rows_by_column(column, keyword)
+@app.get("/vendors/count")
+def count_vendors_api():
+    return {"total_vendors": count_vendors()}
+
+
+
+
+@app.post("/maintenance/create")
+def create_maintenance_api(log: MaintenanceLog):
+    return create_maintenance(log)
+
+@app.get("/maintenance/list")
+def list_maintenance_api():
+    return list_maintenance()
+
+@app.get("/maintenance/list/status")
+def list_maintenance_status_api(status: str):
+    return list_maintenance_by_status(status)
+
+@app.get("/maintenance/{id}")
+def get_maintenance_api(id: int):
+    return get_maintenance_by_id(id)
+
+@app.put("/maintenance/{id}")
+def update_maintenance_api(id: int, row: dict):
+    return update_maintenance(id, row)
+
+@app.patch("/maintenance/{id}/status")
+def update_maintenance_status_api(id: int, status: str):
+    return update_maintenance_status(id, status)
+
+@app.delete("/maintenance/{id}")
+def delete_maintenance_api(id: int):
+    return delete_maintenance(id)

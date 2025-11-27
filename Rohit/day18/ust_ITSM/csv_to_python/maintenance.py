@@ -5,8 +5,12 @@ import re
 errors = []
 final_rows = []
 
-with open(r"C:\Users\Administrator\Desktop\ust_python_training\Rohit\day18\ust_ITSM\data\maintenance_log(in).csv", mode="r", encoding="utf-8") as file1:
+input_file = r"C:\Users\Administrator\Desktop\ust_python_training\Rohit\day18\ust_ITSM\data\maintenance_log(in).csv"
+output_file = r"C:\Users\Administrator\Desktop\ust_python_training\Rohit\day18\ust_ITSM\data\new_maintenance_log(in).csv"
+
+with open(input_file, mode="r", encoding="utf-8") as file1:
     reader = csv.DictReader(file1)
+    fieldnames = reader.fieldnames  # keep original headers
 
     for row in reader:
         asset_tag = row.get("asset_tag")
@@ -35,21 +39,13 @@ with open(r"C:\Users\Administrator\Desktop\ust_python_training\Rohit\day18\ust_I
         if not description or len(description) < 10:
             row_errors.append("Description too short")
 
-    
         try:
+             
             cost_val = float(cost)
             if  not re.match(r'^\d+\.\d{1,2}$', str(cost_val)):
                 row_errors.append(f"Invalid cost format: {cost}")
         except Exception:
             row_errors.append(f"Cost must be a valid decimal number: {cost}")
-
-        # Date check
-        # try:
-        #     date_val = datetime.strptime(maintenance_date, "%Y-%m-%d")
-        #     if date_val > datetime.today():
-        #         row_errors.append("Maintenance date cannot be in the future")
-        # except Exception:
-        #     row_errors.append(f"Invalid maintenance_date format: {maintenance_date}")
 
         # Technician name check
         if not technician_name or not re.match(r"^[A-Za-z ]+$", technician_name):
@@ -65,7 +61,13 @@ with open(r"C:\Users\Administrator\Desktop\ust_python_training\Rohit\day18\ust_I
         else:
             final_rows.append(row)
 
-print(f"Valid rows: {len(final_rows)}")
-print(f"Errors found: {errors}")
-# for e in errors:
-#     print("-", e)
+# Write valid rows into new CSV
+with open(output_file, mode="w", newline="", encoding="utf-8") as file_out:
+    writer = csv.DictWriter(file_out, fieldnames=fieldnames)
+    writer.writeheader()
+    writer.writerows(final_rows)
+
+print(f"Valid rows written: {len(final_rows)}")
+print(f"Errors found: {len(errors)}")
+for e in errors:
+    print("-", e)

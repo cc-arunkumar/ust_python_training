@@ -13,7 +13,7 @@ class Status(str, Enum):
     Pending = "Pending"
 
 class MaintenanceLog(BaseModel):
-    log_id: Optional[int] = None  
+    log_id:int =0
 
     asset_tag: str = Field(..., description="Must start with UST- (e.g., UST-LTP-0001)")
     maintenance_type: MaintenanceType = Field(..., description="Repair, Service, or Upgrade")

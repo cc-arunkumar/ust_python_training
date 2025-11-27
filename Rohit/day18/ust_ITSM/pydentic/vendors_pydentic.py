@@ -17,7 +17,7 @@ class Activity(str, Enum):
     Inactive = "Inactive"
 
 class VendorMaster(BaseModel):
-    vendor_id: UUID = Field(default_factory=uuid4, description="Auto-generated unique ID")
+    vendor_id:int=0
 
     vendor_name: str = Field(
         ..., 

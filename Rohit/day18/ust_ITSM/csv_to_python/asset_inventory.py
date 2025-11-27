@@ -31,8 +31,6 @@ with open(input_file, mode="r", encoding="utf-8") as file1:
         assigned_to = row.get("assigned_to")
         location = row.get("location")
         asset_status = row.get("asset_status")
-        last_updated = row.get("last_updated")
-
         try:
             # Asset tag check
             output = asset_tag.split("-")
