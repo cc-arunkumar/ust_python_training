@@ -40,12 +40,6 @@ def get_task_by_id(id: int, current_user: User = Depends(get_current_user)):
 def update_task(id: int, task: Task, current_user: User = Depends(get_current_user)):
     for index, row in enumerate(Tasks):
         if row.id == id:
-            # updated_task = Task(
-            #     id=row.id, 
-            #     title=task.title,
-            #     description=task.description,
-            #     completed=task.completed
-            # )
             row.title=task.title
             row.description = task.description
             row.completed = task.completed

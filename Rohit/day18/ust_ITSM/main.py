@@ -1,135 +1,123 @@
-# from fastapi import FastAPI
-from pydantic import BaseModel, Field, model_validator
-from datetime import date, datetime
-from enum import Enum
-from typing import Optional,Literal
+import datetime
 import pymysql
-# app = FastAPI()
-def get_connection():
-     return pymysql.connect(
-        host="localhost",
-        user="root",
-        password="pass@word1",
-        database="ust_asset_db"
+from fastapi import FastAPI, HTTPException
+from pydentic.asset_inventory_pydentic import Asset_inventory
+from api.asset_inventory import get_task, get_task_by_id,update_asset,update_asset_status,delete_asset, get_assets_by_status,search_assets,count_assets
+from db_connection.db import get_connection
+app = FastAPI()
+@app.post("/assets/create")
+@app.post("/assets/create")
+def create_asset(asset: Asset_inventory):
+    return create_task(
+        asset.asset_id,
+        asset.asset_tag,
+        asset.asset_type,
+        asset.serial_number,
+        asset.manufacturer,
+        asset.model,
+        asset.purchase_date,
+        asset.warranty_years,
+        asset.condition_status,
+        asset.assigned_to,
+        asset.location,
+        asset.asset_status,
     )
-    
 
-class Status(str, Enum):
-    available = "Available"
-    assigned = "Assigned"
-    repair = "Repair"
-    retired = "Retired"
 
-class AssetType(str, Enum):
-    laptop = "Laptop"
-    monitor = "Monitor"
-    docking_station = "Docking Station"
-    keyboard = "Keyboard"
-    mouse = "Mouse"
 
-class AssetInventory(BaseModel):
-    asset_id: int = 0
-    asset_tag: str = Field(..., min_length=1, max_length=50, pattern=r'^UST.*$')
-    asset_type: AssetType
-    serial_number: str = Field(..., min_length=1, max_length=100)
-    manufacturer: str
-    model: str = Field(..., min_length=1, max_length=100)
-    purchase_date: date
-    waranty_years: int = Field(gt=0)
-    assigned_to: Optional[str]
-    asset_status: Status
-    last_updated: datetime = Field(default_factory=datetime.now)
 
-    @model_validator(mode="after")
-    def validate_business_rules( self):
-        if self.asset_status in [Status.available, Status.retired] and self.assigned_to is not None:
-            raise ValueError("assigned_to must be NULL if asset_status = Available or Retired")
-        if self.asset_status == Status.assigned and self.assigned_to is None:
-            raise ValueError("assigned_to must NOT be NULL if asset_status = Assigned")
-        return self
- 
-
-def create_task(asset_tag, asset_type, serial_number, manufacturer, model,
-                purchase_date, waranty_years, assigned_to, asset_status):
+def create_task(asset_id, asset_tag, asset_type, serial_number, manufacturer, model,
+                purchase_date, warranty_years, condition_status,
+                assigned_to, location, asset_status):
+    conn = None
+    cursor = None
     try:
-
         conn = get_connection()
         cursor = conn.cursor()
-        last_updated = datetime.now()
-        cursor.execute("""
-            INSERT INTO asset_inventory 
-            (asset_tag, asset_type, serial_number, manufacturer, model, purchase_date, 
-             waranty_years, assigned_to, asset_status, last_updated)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-        """, (asset_tag, asset_type, serial_number, manufacturer, model,
-              purchase_date, waranty_years, assigned_to, asset_status, last_updated))
 
+        sql = """
+        INSERT INTO ust_asset_inventory.asset_inventory (
+            asset_id, asset_tag, asset_type, serial_number, manufacturer,
+            model, purchase_date, warranty_years, condition_status,
+            assigned_to, location, asset_status
+        )
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        """
+
+        values = (
+            asset_id,
+            asset_tag,
+            str(asset_type),          
+            serial_number,
+            str(manufacturer),        
+            model,
+            purchase_date.strftime("%Y-%m-%d"),  
+            warranty_years,
+            str(condition_status),   
+            assigned_to,
+            str(location),           
+            str(asset_status), 
+        )
+
+        cursor.execute(sql, values)
         conn.commit()
-        print("Asset record created successfully")
+        return {"message": "Asset inserted successfully", "asset_tag": asset_tag}
 
     except Exception as e:
-        print("Error:", e)
+        if conn: conn.rollback()
+        raise HTTPException(status_code=500, detail=f"Error inserting asset: {str(e)}")
     finally:
-        if conn:
-            cursor.close()
-            conn.close()
-def read_asset_by_id(asset_id):
+        if cursor: cursor.close()
+        if conn: conn.close()
+
+@app.get("/assets")
+def get_all_assets():
     try:
-        conn = get_connection()
-        cursor = conn.cursor()
-        cursor.execute("select * from asset_inventory where asset_id=%s",(asset_id))
-        row = cursor.fetchone()
-        print(row)
+        assets = get_task()
+        return {"assets": assets}
     except Exception as e:
-        print("error is", e)
-    finally:
-        if conn:
-            cursor.close()
-            conn.close()
-        
+        raise HTTPException(status_code=500, detail=f"Error fetching assets: {str(e)}")
+    
+@app.get("/assets/{id}")
+def get_assets_by_id(id: int):
+    return get_task_by_id(id)
 
-def read_all_assets(status_filter="ALL"):
-    try:
-        conn = get_connection()
-        cursor = conn.cursor()
-        if status_filter == "ALL":
-            query = "SELECT * FROM asset_inventory ORDER BY asset_id ASC"
-            cursor.execute(query)
-        else:
-            query = "SELECT * FROM asset_inventory WHERE asset_status = %s ORDER BY asset_id ASC"
-            cursor.execute(query, (status_filter,))
+    
+@app.get("/assets/list")
+def list_assets(status: str):
+    return {"assets": get_assets_by_status(status)}
+@app.get("/assets/search")
+def search_assets_api(keyword: str):
+    return {"assets": search_assets(keyword)}
 
-        rows = cursor.fetchall()
+@app.get("/assets/count")
+def count_assets_api():
+    return {"total_assets": count_assets()}
 
-        if not rows:
-            print("No assets found.")
-        else:
-            for row in rows:
-            
-                print(
-                    f"ID: {row[0]}, Tag: {row[1]}, Type: {row[2]}, Serial: {row[3]}, "
-                    f"Manufacturer: {row[4]}, Model: {row[5]}, Purchase Date: {row[6]}, "
-                    f"Warranty: {row[7]}, Assigned To: {row[8]}, Status: {row[9]}, Last Updated: {row[10]}"
-                )
 
-    except Exception as e:
-        print("Error:", e)
-    finally:
-        if conn:
-            cursor.close()
-            conn.close()
-        
-# create_task(
-#     asset_tag="UST-LTP-000293",
-#     asset_type="Laptop",
-#     serial_number="SN123456789",
-#     manufacturer="Dell",
-#     model="Latitude 5520",
-#     purchase_date="2025-11-26",
-#     waranty_years=3,
-#     assigned_to=None,
-#     asset_status="Available"
-# )
-# read_asset_by_id(1)
+@app.put("/assets/{id}")
+def update_asset_api(id: int, asset: Asset_inventory):
+    return update_asset(
+        id,
+        asset.asset_tag,
+        asset.asset_type,
+        asset.serial_number,
+        asset.manufacturer,
+        asset.model,
+        asset.purchase_date,
+        asset.warranty_years,
+        asset.condition_status,
+        asset.assigned_to,
+        asset.location,
+        asset.asset_status,
+    )
 
-read_all_assets("Available")
+@app.patch("/assets/{id}/status")
+def update_asset_status_api(id: int, asset_status: str):
+    return update_asset_status(id, asset_status)
+
+@app.delete("/assets/{id}")
+def delete_asset_api(id: int):
+    return delete_asset(id)
+
+ 
