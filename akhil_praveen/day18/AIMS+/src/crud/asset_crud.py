@@ -11,7 +11,7 @@ def get_keys():
         cursor = conn.cursor()
         cursor.execute("""SELECT COLUMN_NAME
     FROM INFORMATION_SCHEMA.COLUMNS
-    WHERE TABLE_SCHEMA = 'ust_aims_plus'  -- Database name
+    WHERE TABLE_SCHEMA = 'ust_aims_plus'
     AND TABLE_NAME = 'asset_inventory'
     ORDER BY ORDINAL_POSITION;""")
         col = cursor.fetchall()

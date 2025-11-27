@@ -1,9 +1,12 @@
 from src.models.assetsinventory import AssetInventory
 from src.models.employeedirectory import EmployeeDirectory
-from src.models.maintainancelog import MaintenanceLog
+from src.models.maintenancelog import MaintenanceLog
 from src.models.vendormaster import VendorMaster
 from fastapi import FastAPI,HTTPException
 from src.api.asset_api import asset_router
+from src.api.employee_api import employee_router
+from src.api.maintenance_api import maintenance_router
+from src.api.vendor_api import vendor_router
  
 import csv
  
@@ -11,6 +14,13 @@ import csv
 app = FastAPI(title="UST AIMS+")
 
 app.include_router(asset_router)
+
+app.include_router(employee_router)
+
+app.include_router(maintenance_router)
+
+app.include_router(vendor_router)
+ 
  
 # path = "C:/Users/Administrator/Desktop/ust_python_training/akhil_praveen/day18/AIMS+/database/sample_data/"
  

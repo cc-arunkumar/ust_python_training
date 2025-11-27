@@ -44,7 +44,7 @@ def update_asset_status(id:int,status:StatusValidate):
         raise HTTPException(status_code=404,detail="Not Found")
 
 @asset_router.delete("/{id}")
-def update_asset_status(id:int):
+def delete_asset(id:int):
     try:
         return asset_reader.delete_asset(id)
     except Exception:
@@ -59,7 +59,7 @@ def get_asset_by_keyword(keyword:str,value:str):
         raise HTTPException(status_code=404,detail="Not Found")
 
 @asset_router.get("/list/count")
-def get_asset_by_keyword():
+def get_count():
     try:
         return asset_reader.get_all_asset_count()
     except Exception as e:
