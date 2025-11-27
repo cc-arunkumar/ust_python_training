@@ -77,8 +77,6 @@ def get_task_by_id(asset_id: int):
         if cursor: cursor.close()
         if conn: conn.close()
 
-import pymysql
-from fastapi import HTTPException
 
 def get_assets_by_status(status: str):
     conn = None
@@ -102,23 +100,29 @@ def get_assets_by_status(status: str):
     finally:
         if cursor: cursor.close()
         if conn: conn.close()
-def search_assets(keyword: str):
+def search_assets_by_column(column_name: str, value: str):
     conn = None
     cursor = None
     try:
         conn = get_connection()
         cursor = conn.cursor(pymysql.cursors.DictCursor)
 
-        sql = """
-        SELECT * FROM ust_asset_inventory.asset_inventory
-        WHERE asset_tag LIKE %s OR model LIKE %s OR manufacturer LIKE %s
-        """
-        like_pattern = f"%{keyword}%"
-        cursor.execute(sql, (like_pattern, like_pattern, like_pattern))
+        allowed_columns = [
+            "asset_tag", "asset_type", "serial_number", "manufacturer",
+            "model", "purchase_date", "warranty_years", "condition_status",
+            "assigned_to", "location", "asset_status"
+        ]
+
+        if column_name not in allowed_columns:
+            raise HTTPException(status_code=400, detail=f"Invalid column name: {column_name}")
+
+        # Build query dynamically with safe column name
+        sql = f"SELECT * FROM ust_asset_inventory.asset_inventory WHERE {column_name} = %s"
+        cursor.execute(sql, (value,))
         rows = cursor.fetchall()
 
         if not rows:
-            raise HTTPException(status_code=404, detail=f"No assets found for keyword '{keyword}'")
+            raise HTTPException(status_code=404, detail=f"No assets found where {column_name} = '{value}'")
 
         return rows
 
@@ -128,7 +132,6 @@ def search_assets(keyword: str):
     finally:
         if cursor: cursor.close()
         if conn: conn.close()
-
 
 def count_assets():
     conn = None

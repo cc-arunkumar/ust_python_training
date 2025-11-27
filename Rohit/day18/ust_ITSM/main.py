@@ -2,10 +2,12 @@ import datetime
 import pymysql
 from fastapi import FastAPI, HTTPException
 from pydentic.asset_inventory_pydentic import Asset_inventory
+from pydentic.employee_pydentic import EmployeeDirectory
 from pydentic.vendors_pydentic import VendorMaster
 from pydentic.maintainance_pydentic import MaintenanceLog
-from api.asset_inventory import get_task, get_task_by_id,update_asset,update_asset_status,delete_asset, get_assets_by_status,search_assets,count_assets
+from api.asset_inventory import get_task, get_task_by_id,update_asset,update_asset_status,delete_asset, get_assets_by_status,search_assets_by_column,count_assets
 from db_connection.db import get_connection
+from api.employee_inventory import count_employees,create_employee,delete_employee,update_employee_by_id,update_employee_status,search_employees,get_all_employees,get_employee_by_id
 from api.maintenance_invenotry import get_maintenance_by_id,list_maintenance,list_maintenance_by_status,update_maintenance,update_maintenance_status,delete_maintenance,create_maintenance
 from api.vendor_inventory import get_all_data,get_data_by_status,get_data_by_id,create_vendor,update_vendor,count_vendors,get_rows_by_column,delete_vendor,update_vendor_status
 app = FastAPI() 
@@ -81,7 +83,7 @@ def get_all_assets():
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error fetching assets: {str(e)}")
     
-@app.get("/assets/{id}")
+@app.get("/assets/get{id}")
 def get_assets_by_id(id: int):
     return get_task_by_id(id)
 
@@ -90,8 +92,9 @@ def get_assets_by_id(id: int):
 def list_assets(status: str):
     return {"assets": get_assets_by_status(status)}
 @app.get("/assets/search")
-def search_assets_api(keyword: str):
-    return {"assets": search_assets(keyword)}
+def search_assets_api(column: str, value: str):
+    return search_assets_by_column(column, value)
+
 
 @app.get("/assets/count")
 def count_assets_api():
@@ -196,3 +199,54 @@ def update_maintenance_status_api(id: int, status: str):
 @app.delete("/maintenance/{id}")
 def delete_maintenance_api(id: int):
     return delete_maintenance(id)
+
+
+# employeee
+
+@app.post("/employees/create")
+def add_employee(emp: EmployeeDirectory):
+    try:
+        return create_employee(emp)
+    except Exception as e:
+        print(f"Error in create_employee: {e}")
+        raise HTTPException(status_code=500, detail="Internal Server Error")
+
+@app.get("/employees/list")
+def list_employees(status: str | None = None):
+    return get_all_employees(status)
+
+@app.get("/employees/count")
+def count():
+    return count_employees()
+
+@app.get("/employees/search")
+def search(column_name: str, keyword: str):
+    return search_employees(column_name, keyword)
+
+@app.get("/employees/{id}")
+def read_employee(id: int):
+    result = get_employee_by_id(id)
+    if not result:
+        raise HTTPException(status_code=404, detail="Employee not found")
+    return result
+
+@app.put("/employees/{id}")
+def update_employee(id: int, emp: EmployeeDirectory):
+    result = update_employee_by_id(id, emp)
+    if not result:
+        raise HTTPException(status_code=404, detail="Employee not found")
+    return result
+
+@app.patch("/employees/{id}/status")
+def update_status(id: int, new_status: str):
+    result = update_employee_status(id, new_status)
+    if not result:
+        raise HTTPException(status_code=404, detail="Employee not found")
+    return result
+
+@app.delete("/employees/{id}")
+def remove_employee(id: int):
+    result = delete_employee(id)
+    if not result:
+        raise HTTPException(status_code=404, detail="Employee not found")
+    return result
