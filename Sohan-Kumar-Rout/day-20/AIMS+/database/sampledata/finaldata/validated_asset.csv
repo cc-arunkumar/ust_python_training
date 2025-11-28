@@ -1,0 +1,55 @@
+asset_tag,asset_type,serial_number,manufacturer,model,purchase_date,warranty_years,condition_status,assigned_to,location,asset_status
+UST-LTP-0001,Laptop,SN-DL-10001,Dell,Latitude 5520,1/15/2022,3,Good,Rohit Sharma,Trivandrum,Assigned
+UST-LTP-0002,Laptop,SN-LN-10002,Lenovo,ThinkPad E15,2/10/2023,2,New,Anjali Nair,Bangalore,Assigned
+UST-MNT-0004,Monitor,SN-SAM-10004,Samsung,S24R350,3/12/2023,3,New,,Hyderabad,Available
+UST-LTP-0005,Laptop,SN-DL-10005,Dell,Latitude 5521,12/1/2024,3,Good,Ramesh Kumar,Trivandrum,Assigned
+UST-LTP-0010,Laptop,SN-LN-10010,Lenovo,ThinkPad E17,2/12/2023,2,New,Preeti Singh,Bangalore,Assigned
+UST-MNT-0012,Monitor,SN-SAM-10012,Samsung,S24R352,3/13/2023,3,New,,Hyderabad,Available
+UST-LTP-0014,Laptop,SN-LN-10014,Lenovo,ThinkPad E18,2/15/2023,2,New,Divya Menon,Bangalore,Assigned
+UST-MNT-0016,Monitor,SN-SAM-10016,Samsung,S24R353,3/14/2023,3,New,,Hyderabad,Available
+UST-LTP-0017,Laptop,SN-DL-10017,Dell,Latitude 5524,2/28/2024,3,Good,Deepak Reddy,Trivandrum,Assigned
+UST-LTP-0018,Laptop,SN-LN-10018,Lenovo,ThinkPad E19,6/11/2022,2,New,Neha Gupta,Bangalore,Assigned
+UST-LTP-0021,Laptop,SN-DL-10021,Dell,Latitude 5525,4/10/2022,3,Good,Rohit Sharma,Trivandrum,Assigned
+UST-LTP-0022,Laptop,SN-LN-10022,Lenovo,ThinkPad E20,5/18/2023,2,New,Anjali Nair,Bangalore,Assigned
+UST-MNT-0024,Monitor,SN-SAM-10024,Samsung,S24R355,3/20/2025,3,Good,,Hyderabad,Available
+UST-LTP-0029,Laptop,SN-DL-10029,Dell,Latitude 5527,3/18/2022,3,Good,Vivek Reddy,Trivandrum,Assigned
+UST-LTP-0030,Laptop,SN-LN-10030,Lenovo,ThinkPad E22,6/12/2023,2,New,Preeti Singh,Bangalore,Assigned
+UST-MNT-0032,Monitor,SN-SAM-10032,Samsung,S24R357,7/15/2023,3,Good,,Hyderabad,Available
+UST-LTP-0033,Laptop,SN-DL-10033,Dell,Latitude 5528,9/20/2022,3,Good,Rajesh Patel,Trivandrum,Assigned
+UST-LTP-0034,Laptop,SN-LN-10034,Lenovo,ThinkPad E23,8/15/2023,2,New,Divya Menon,Bangalore,Assigned
+UST-MNT-0036,Monitor,SN-SAM-10036,Samsung,S24R358,11/14/2023,3,Good,,Hyderabad,Available
+UST-LTP-0037,Laptop,SN-DL-10037,Dell,Latitude 5529,2/28/2024,3,Good,Deepak Reddy,Trivandrum,Assigned
+UST-LTP-0038,Laptop,SN-LN-10038,Lenovo,ThinkPad E24,12/11/2022,2,New,Neha Gupta,Bangalore,Assigned
+UST-LTP-0041,Laptop,SN-DL-10041,Dell,Latitude 5530,1/10/2022,3,Good,Rohit Sharma,Trivandrum,Assigned
+UST-LTP-0042,Laptop,SN-LN-10042,Lenovo,ThinkPad E25,2/18/2023,2,New,Anjali Nair,Bangalore,Assigned
+UST-MNT-0044,Monitor,SN-SAM-10044,Samsung,S24R360,1/12/2025,3,Good,,Hyderabad,Available
+UST-LTP-0049,Laptop,SN-DL-10049,Dell,Latitude 5532,8/18/2022,3,Good,Vivek Reddy,Trivandrum,Assigned
+UST-LTP-0050,Laptop,SN-LN-10050,Lenovo,ThinkPad E27,9/12/2023,2,New,Preeti Singh,Bangalore,Assigned
+UST-MNT-0052,Monitor,SN-SAM-10052,Samsung,S24R362,7/15/2023,3,Good,,Hyderabad,Available
+UST-LTP-0053,Laptop,SN-DL-10053,Dell,Latitude 5533,9/20/2022,3,Good,Rajesh Patel,Trivandrum,Assigned
+UST-LTP-0054,Laptop,SN-LN-10054,Lenovo,ThinkPad E28,8/15/2023,2,New,Divya Menon,Bangalore,Assigned
+UST-MNT-0056,Monitor,SN-SAM-10056,Samsung,S24R363,11/14/2023,3,Good,,Hyderabad,Available
+UST-LTP-0057,Laptop,SN-DL-10057,Dell,Latitude 5534,2/28/2024,3,Good,Deepak Reddy,Trivandrum,Assigned
+UST-LTP-0058,Laptop,SN-LN-10058,Lenovo,ThinkPad E29,12/11/2022,2,New,Neha Gupta,Bangalore,Assigned
+UST-LTP-0061,Laptop,SN-DL-10061,Dell,Latitude 5535,4/10/2022,3,Good,Rohit Sharma,Trivandrum,Assigned
+UST-LTP-0062,Laptop,SN-LN-10062,Lenovo,ThinkPad E30,5/18/2023,2,New,Anjali Nair,Bangalore,Assigned
+UST-MNT-0064,Monitor,SN-SAM-10064,Samsung,S24R365,3/20/2025,3,Good,,Hyderabad,Available
+UST-LTP-0069,Laptop,SN-DL-10069,Dell,Latitude 5537,3/18/2022,3,Good,Vivek Reddy,Trivandrum,Assigned
+UST-LTP-0070,Laptop,SN-LN-10070,Lenovo,ThinkPad E32,6/12/2023,2,New,Preeti Singh,Bangalore,Assigned
+UST-MNT-0072,Monitor,SN-SAM-10072,Samsung,S24R367,7/15/2023,3,Good,,Hyderabad,Available
+UST-LTP-0073,Laptop,SN-DL-10073,Dell,Latitude 5538,9/20/2022,3,Good,Rajesh Patel,Trivandrum,Assigned
+UST-LTP-0074,Laptop,SN-LN-10074,Lenovo,ThinkPad E33,8/15/2023,2,New,Divya Menon,Bangalore,Assigned
+UST-MNT-0076,Monitor,SN-SAM-10076,Samsung,S24R368,11/14/2023,3,Good,,Hyderabad,Available
+UST-LTP-0077,Laptop,SN-DL-10077,Dell,Latitude 5539,2/28/2024,3,Good,Deepak Reddy,Trivandrum,Assigned
+UST-LTP-0078,Laptop,SN-LN-10078,Lenovo,ThinkPad E34,12/11/2022,2,New,Neha Gupta,Bangalore,Assigned
+UST-LTP-0081,Laptop,SN-DL-10081,Dell,Latitude 5540,4/10/2022,3,Good,Rohit Sharma,Trivandrum,Assigned
+UST-LTP-0082,Laptop,SN-LN-10082,Lenovo,ThinkPad E35,5/18/2023,2,New,Anjali Nair,Bangalore,Assigned
+UST-MNT-0084,Monitor,SN-SAM-10084,Samsung,S24R370,3/20/2025,3,Good,,Hyderabad,Available
+UST-LTP-0089,Laptop,SN-DL-10089,Dell,Latitude 5542,3/18/2022,3,Good,Vivek Reddy,Trivandrum,Assigned
+UST-LTP-0090,Laptop,SN-LN-10090,Lenovo,ThinkPad E37,6/12/2023,2,New,Preeti Singh,Bangalore,Assigned
+UST-MNT-0092,Monitor,SN-SAM-10092,Samsung,S24R372,7/15/2023,3,Good,,Hyderabad,Available
+UST-LTP-0093,Laptop,SN-DL-10093,Dell,Latitude 5543,9/20/2022,3,Good,Rajesh Patel,Trivandrum,Assigned
+UST-LTP-0094,Laptop,SN-LN-10094,Lenovo,ThinkPad E38,8/15/2023,2,New,Divya Menon,Bangalore,Assigned
+UST-MNT-0096,Monitor,SN-SAM-10096,Samsung,S24R373,11/14/2023,3,Good,,Hyderabad,Available
+UST-LTP-0097,Laptop,SN-DL-10097,Dell,Latitude 5544,2/28/2024,3,Good,Deepak Reddy,Trivandrum,Assigned
+UST-LTP-0098,Laptop,SN-LN-10098,Lenovo,ThinkPad E39,12/11/2022,2,New,Neha Gupta,Bangalore,Assigned
