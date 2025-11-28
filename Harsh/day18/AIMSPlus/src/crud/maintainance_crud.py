@@ -3,7 +3,7 @@ from src.config.db_connection import get_connection
 from src.models.maintainance_model import MaintenanceLog
 from fastapi import HTTPException
 
-# CREATE
+# CREATE a new maintenance log
 def create_maintenance(log: MaintenanceLog):
     try:
         conn = get_connection()
@@ -27,8 +27,7 @@ def create_maintenance(log: MaintenanceLog):
         cursor.close()
         conn.close()
 
-
-# READ ALL (with optional status filter)
+# READ all maintenance logs (optional status filter)
 def get_all_maintenance(status: str | None = None):
     try:
         conn = get_connection()
@@ -45,8 +44,7 @@ def get_all_maintenance(status: str | None = None):
         cursor.close()
         conn.close()
 
-
-# READ BY ID
+# READ maintenance log by ID
 def get_maintenance_by_id(log_id: int):
     try:
         conn = get_connection()
@@ -62,8 +60,7 @@ def get_maintenance_by_id(log_id: int):
         cursor.close()
         conn.close()
 
-
-# UPDATE FULL RECORD
+# UPDATE full maintenance log record
 def update_maintenance_by_id(log_id: int, log: MaintenanceLog):
     try:
         conn = get_connection()
@@ -91,8 +88,7 @@ def update_maintenance_by_id(log_id: int, log: MaintenanceLog):
         cursor.close()
         conn.close()
 
-
-# UPDATE STATUS ONLY
+# UPDATE maintenance status only
 def update_maintenance_status(log_id: int, new_status: str):
     try:
         conn = get_connection()
@@ -108,8 +104,7 @@ def update_maintenance_status(log_id: int, new_status: str):
         cursor.close()
         conn.close()
 
-
-# DELETE
+# DELETE maintenance log by ID
 def delete_maintenance(log_id: int):
     try:
         conn = get_connection()
@@ -125,7 +120,7 @@ def delete_maintenance(log_id: int):
         cursor.close()
         conn.close()
 
-
+# SEARCH maintenance logs by column and keyword
 def search_maintenance(column_name: str, keyword: str):
     try:
         conn = get_connection()
@@ -152,13 +147,21 @@ def search_maintenance(column_name: str, keyword: str):
         if conn:
             conn.close()
 
-
-# COUNT
+# COUNT total maintenance logs
 def count_maintenance():
-    return len(get_all_maintenance())
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+        cursor.execute("SELECT COUNT(*) FROM maintenance_log")
+        result = cursor.fetchone()
+        return result
+    except Exception as err:
+        raise HTTPException(status_code=500, detail=f"Database error: {err}")
+    finally:
+        if cursor: cursor.close()
+        if conn: conn.close()
 
-
-# BULK UPLOAD
+# BULK UPLOAD multiple maintenance logs
 def bulk_upload_maintenance(logs: List[MaintenanceLog]):
     try:
         conn = get_connection()

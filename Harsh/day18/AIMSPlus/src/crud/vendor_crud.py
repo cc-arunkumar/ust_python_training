@@ -110,7 +110,17 @@ def get_all_vendor_by_status(status: str | None = None):
         if conn: conn.close()
         
 def count_vendor():
-    return len(get_all_vendors())
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+        cursor.execute("SELECT COUNT(*) FROM vendor_master")
+        result = cursor.fetchone()
+        return result
+    except Exception as err:
+        raise HTTPException(status_code=500, detail=f"Database error: {err}")
+    finally:
+        if cursor: cursor.close()
+        if conn: conn.close()
 
 def search_vendor(column_name:str,keyword:str):
     try:

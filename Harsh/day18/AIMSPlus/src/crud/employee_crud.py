@@ -3,7 +3,7 @@ from src.config.db_connection import get_connection
 from src.models.employee_model import EmployeeDirectory
 from fastapi import HTTPException
 
-# CREATE
+# CREATE a new employee
 def create_employee(emp: EmployeeDirectory):
     try:
         conn = get_connection()
@@ -26,8 +26,7 @@ def create_employee(emp: EmployeeDirectory):
         cursor.close()
         conn.close()
 
-
-# READ ALL (with optional status filter)
+# READ all employees (optional status filter)
 def get_all_employees(status: str | None = None):
     try:
         conn = get_connection()
@@ -44,8 +43,7 @@ def get_all_employees(status: str | None = None):
         cursor.close()
         conn.close()
 
-
-# READ BY ID
+# READ employee by ID
 def get_employee_by_id(emp_id: int):
     try:
         conn = get_connection()
@@ -61,13 +59,12 @@ def get_employee_by_id(emp_id: int):
         cursor.close()
         conn.close()
 
-
-# UPDATE FULL RECORD
+# UPDATE full employee record
 def update_employee_by_id(emp_id: int, emp: EmployeeDirectory):
     try:
         conn = get_connection()
         cursor = conn.cursor()
-        cursor.execute("SELECT id FROM employee_directory WHERE emp_id=%s", (emp_id,))
+        cursor.execute("SELECT emp_id FROM employee_directory WHERE emp_id=%s", (emp_id,))
         if not cursor.fetchone():
             raise HTTPException(status_code=404, detail="Employee not found")
 
@@ -90,8 +87,7 @@ def update_employee_by_id(emp_id: int, emp: EmployeeDirectory):
         cursor.close()
         conn.close()
 
-
-# UPDATE STATUS ONLY
+# UPDATE employee status only
 def update_employee_status(emp_id: int, new_status: str):
     try:
         conn = get_connection()
@@ -107,8 +103,7 @@ def update_employee_status(emp_id: int, new_status: str):
         cursor.close()
         conn.close()
 
-
-# DELETE
+# DELETE employee by ID
 def delete_employee(emp_id: int):
     try:
         conn = get_connection()
@@ -124,8 +119,7 @@ def delete_employee(emp_id: int):
         cursor.close()
         conn.close()
 
-
-# SEARCH (keyword across allowed columns)
+# SEARCH employees by column and keyword
 def search_employees(column_name: str, keyword: str):
     try:
         conn = get_connection()
@@ -152,13 +146,21 @@ def search_employees(column_name: str, keyword: str):
         if conn:
             conn.close()
 
+# COUNT total employees
+def count_employee():
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+        cursor.execute("SELECT COUNT(*) FROM employee_directory")
+        result = cursor.fetchone()
+        return result
+    except Exception as err:
+        raise HTTPException(status_code=500, detail=f"Database error: {err}")
+    finally:
+        if cursor: cursor.close()
+        if conn: conn.close()
 
-# COUNT
-def count_employees():
-    return len(get_all_employees())
-
-
-# BULK UPLOAD
+# BULK UPLOAD employees
 def bulk_upload_employees(employees: List[EmployeeDirectory]):
     try:
         conn = get_connection()
