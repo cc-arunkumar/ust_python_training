@@ -10,8 +10,8 @@ valid_statuses = {"Active", "Inactive", "Resigned"}  # Allowed employee statuses
 valid_rows = []  # List to store rows that pass validation checks
 
 # File paths for input and output CSV files
-input_file = r"C:\Users\Administrator\Desktop\ust_python_training\Rohit\day20\AIIMS_PLUS\database\employee_directory(in).csv"  # Input file path
-output_file = r"C:\Users\Administrator\Desktop\ust_python_training\Rohit\day20\AIIMS_PLUS\database\new_employee_directory(in).csv"  # Output file path
+input_file = r"C:\Users\Administrator\Desktop\ust_python_training\Rohit\day20\AIIMS_PLUS\database\sample_data\employee_directory(in).csv"  # Input file path
+output_file = r"C:\Users\Administrator\Desktop\ust_python_training\Rohit\day20\AIIMS_PLUS\database\sample_data\final\validated_employee_directory(in).csv"  # Output file path
 
 # Open the input CSV file for reading
 with open(input_file, newline="", encoding="utf-8") as infile:

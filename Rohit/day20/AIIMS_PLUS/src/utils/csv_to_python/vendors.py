@@ -6,8 +6,8 @@ answer_rows = []  # List to store valid rows that pass all checks
 valid_cities = ["Mumbai","Delhi","Bangalore","Chennai","Hyderabad","Pune","Kolkata"]  # Allowed city values
 
 # File paths for input and output CSV files
-input_file = r'C:\Users\Administrator\Desktop\ust_python_training\Rohit\day20\AIIMS_PLUS\database\vendor_master(in).csv'  # Input CSV file path
-output_file = r'C:\Users\Administrator\Desktop\ust_python_training\Rohit\day20\AIIMS_PLUS\database\new_vendor_master(in).csv'  # Output CSV file path
+input_file = r'C:\Users\Administrator\Desktop\ust_python_training\Rohit\day20\AIIMS_PLUS\database\sample_data\vendor_master(in).csv'  # Input CSV file path
+output_file = r'C:\Users\Administrator\Desktop\ust_python_training\Rohit\day20\AIIMS_PLUS\database\sample_data\final\validated_vendor_master(in).csv'  # Output CSV file path
 
 # Open the input CSV file in read mode
 with open(input_file, mode='r', newline='', encoding='utf-8') as file2:

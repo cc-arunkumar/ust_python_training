@@ -6,8 +6,8 @@ errors = []  # List to store all error messages across rows
 final_rows = []  # List to store rows that pass validation
 
 # File paths for input and output CSV files
-input_file = r"C:\Users\Administrator\Desktop\ust_python_training\Rohit\day20\AIIMS_PLUS\database\maintenance_log(in).csv"  # Input file path
-output_file = r"C:\Users\Administrator\Desktop\ust_python_training\Rohit\day20\AIIMS_PLUS\database\new_maintenance_log(in).csv"  # Output file path
+input_file = r"C:\Users\Administrator\Desktop\ust_python_training\Rohit\day20\AIIMS_PLUS\database\sample_data\maintenance_log(in).csv"  # Input file path
+output_file = r"C:\Users\Administrator\Desktop\ust_python_training\Rohit\day20\AIIMS_PLUS\database\sample_data\final\validated_maintenance_log(in).csv"  # Output file path
 
 # Open the input CSV file in read mode
 with open(input_file, mode="r", encoding="utf-8") as file1:

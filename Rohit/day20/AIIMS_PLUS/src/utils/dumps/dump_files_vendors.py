@@ -16,7 +16,7 @@ conn = get_connection()
 cursor = conn.cursor()
 
 # Path to the input CSV file containing vendor data
-input_file = r"C:\Users\Administrator\Desktop\ust_python_training\Rohit\day18\ust_ITSM\data\new_vendor_master(in).csv"
+input_file = r"C:\Users\Administrator\Desktop\ust_python_training\Rohit\day20\AIIMS_PLUS\database\sample_data\final\validated_vendor_master(in).csv"
 
 # Open the input CSV file in read mode
 with open(input_file, mode="r", encoding="utf-8") as file1:

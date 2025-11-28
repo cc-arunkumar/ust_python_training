@@ -29,7 +29,7 @@ INSERT INTO employee_directory (
 """
 
 # Open the input CSV file in read mode
-with open(r"C:\Users\Administrator\Desktop\ust_python_training\Rohit\day18\ust_ITSM\data\employee_directory(in).csv", "r", encoding="utf-8") as file:
+with open(r"C:\Users\Administrator\Desktop\ust_python_training\Rohit\day20\AIIMS_PLUS\database\sample_data\final\validated_employee_directory(in).csv", "r", encoding="utf-8") as file:
     reader = csv.DictReader(file)  # Read CSV rows as dictionaries (keys = column names)
 
     # Iterate through each row in the CSV file
