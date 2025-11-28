@@ -1,7 +1,0 @@
-log_id,asset_tag,maintenance_type,vendor_name,description,cost,maintenance_date,technician_name,status
-1,UST-LTP-0001,Repair,Tech Solutions,Replaced faulty motherboard,12500.5,5/10/2023,Rohit Sharma,Completed
-2,UST-MNT-0003,Service,Global Ventures,Cleaned and calibrated monitor,1500,7/12/2023,Anjali Nair,Pending
-3,UST-LTP-0002,Upgrade,InfoTech Services,Upgraded RAM to 16GB,4500,9/1/2023,Ramesh Kumar,Completed
-4,UST-MNT-0004,Repair,Alpha Corp,Replaced screen panel,5500.75,8/15/2023,Pooja Sharma,Completed
-5,UST-LTP-0005,Service,Delta Solutions,General preventive maintenance,1200,6/25/2023,Rajiv Kumar,Pending
-6,UST-LTP-0006,Upgrade,Echo Technologies,Installed SSD 512GB,4800,7/30/2023,Anita Devi,Completed
