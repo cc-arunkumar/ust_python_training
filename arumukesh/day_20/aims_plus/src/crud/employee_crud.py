@@ -5,7 +5,7 @@
 # )
 from src.model.model_employees import Employee
 import pymysql
-from src.config.get_connection import get_connection
+from src.config.db_connection import get_connection
 
 # ---------- CREATE EMPLOYEE ----------
 def create_employee(emp:Employee):

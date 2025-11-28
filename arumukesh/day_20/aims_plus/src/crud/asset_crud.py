@@ -19,7 +19,7 @@ Author: (Your Name)
 """
 
 from src.model.model_asset_inventory import AssetInventory
-from src.config.get_connection import get_connection
+from src.config.db_connection import get_connection
 import datetime
 
 

@@ -130,4 +130,6 @@ import_csv(asset_file, asset_insert_query)  # No duplicate check (asset_tag can 
 import_csv(employee_file, employee_insert_query)  # No duplicate check
 import_csv(maintenance_file, maintenance_insert_query)  # No duplicate check
 
-print("\n🎉 ALL DATA IMPORT COMPLETED SUCCESSFULLY 🎉")
+print("\n ALL DATA IMPORT COMPLETED SUCCESSFULLY ")
+
+
