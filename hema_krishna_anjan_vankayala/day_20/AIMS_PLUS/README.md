@@ -1,11 +1,11 @@
-# 📘 AIMS Plus
+# AIMS Plus
  
 AIMS Plus is an **Asset & Inventory Management System** built with **FastAPI**.  
 It provides RESTful APIs to manage assets, employees, maintenance logs, and vendors, with validation rules enforced using **Pydantic models**.
  
 ---
  
-## 🚀 Features
+##  Features
 - **Asset Management**: Create, update, search, list, and delete assets.
 - **Employee Directory**: Manage employee records with validation rules.
 - **Maintenance Logs**: Track repairs, services, and upgrades for assets.
@@ -14,7 +14,7 @@ It provides RESTful APIs to manage assets, employees, maintenance logs, and vend
  
 ---
  
-## 🛠️ Tech Stack
+## Tech Stack
 - **Backend Framework**: FastAPI  
 - **Database**: MySQL (via PyMySQL)  
 - **ORM/Validation**: Pydantic  
@@ -23,7 +23,7 @@ It provides RESTful APIs to manage assets, employees, maintenance logs, and vend
  
 ---
  
-## 📂 Project Structure
+## Project Structure
 ```
 AIMS_Plus/
 │
@@ -144,6 +144,7 @@ conn = pymysql.Connect(
 - DELETE /maintenance/{id}
 - GET /maintenance/search?keyword=
 - GET /maintenance/count
+
 
 
 
