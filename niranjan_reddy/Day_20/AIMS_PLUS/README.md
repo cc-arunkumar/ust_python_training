@@ -1,5 +1,5 @@
 Readme
-# 📘 AIMS Plus
+#  AIMS Plus
 
  
 
@@ -13,7 +13,7 @@ It provides RESTful APIs to manage assets, employees, maintenance logs, and vend
 
  
 
-## 🚀 Features
+##  Features
 
 - **Asset Management**: Create, update, search, list, and delete assets.
 
@@ -31,7 +31,7 @@ It provides RESTful APIs to manage assets, employees, maintenance logs, and vend
 
  
 
-## 🛠️ Tech Stack
+##  Tech Stack
 
 - **Backend Framework**: FastAPI  
 
@@ -49,7 +49,7 @@ It provides RESTful APIs to manage assets, employees, maintenance logs, and vend
 
  
 
-## 📂 Project Structure
+##  Project Structure
 
 AIMS_Plus/
 
@@ -284,5 +284,6 @@ conn = pymysql.Connect(
 - GET /maintenance/count
 
  
+
 
 
