@@ -1,0 +1,13 @@
+[project]
+name = "aiims-plus"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = []
+
+[tool.uv.workspace]
+members = [
+    "src/crud/asset_crud",
+    "src",
+]
