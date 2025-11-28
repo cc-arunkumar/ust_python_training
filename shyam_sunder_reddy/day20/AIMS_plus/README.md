@@ -80,6 +80,7 @@ AIMS_Plus/
 **1. Configure Database**
 
 - Update src/config/db_connection.py with your MySQL credentials:
+```
 conn = pymysql.Connect(
     host="localhost",
     user="root",
@@ -87,6 +88,7 @@ conn = pymysql.Connect(
     database="ust_inventory_db",
     cursorclass=pymysql.cursors.DictCursor
 )
+```
 
 
 
