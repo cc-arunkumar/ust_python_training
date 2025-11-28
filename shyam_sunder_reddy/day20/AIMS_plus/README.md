@@ -45,6 +45,7 @@ AIMS_Plus/
 │   ├── api/
 │   │   ├── asset_api.py
 │   │   ├── employee_api.py
+|   |   ├── login_api.py
 │   │   ├── vendor_api.py
 │   │   └── maintenance_api.py
 │   │
@@ -57,6 +58,7 @@ AIMS_Plus/
 │   ├── models/
 │   │   ├── asset_model.py
 │   │   ├── employee_model.py
+|   |   ├── login_model.py
 │   │   ├── vendor_model.py
 │   │   └── maintenance_model.py
 │   │
@@ -71,7 +73,7 @@ AIMS_Plus/
 │   │   └── dump_csv_data_util.py
 │   │
 │   ├── auth/
-│   │   └── auth_jwt_token.py
+│       └── auth_jwt_token.py
 │
 │── main.py
 │
@@ -81,6 +83,7 @@ AIMS_Plus/
 **1. Configure Database**
 
 - Update src/config/db_connection.py with your MySQL credentials:
+```
 conn = pymysql.Connect(
     host="localhost",
     user="root",
@@ -88,7 +91,7 @@ conn = pymysql.Connect(
     database="ust_inventory_db",
     cursorclass=pymysql.cursors.DictCursor
 )
-
+```
 
 
 **2.1 APIs for asset_inventory**
