@@ -7,7 +7,7 @@ from typing import Optional
 from fastapi import HTTPException, status, Depends
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from jose import JWTError, jwt
-from ..models.login_model import User
+from ..models.user_model import User
 import os
 from dotenv import load_dotenv
 
