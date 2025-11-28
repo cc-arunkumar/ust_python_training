@@ -1,0 +1,263 @@
+from fastapi import FastAPI, HTTPException, APIRouter
+from typing import List
+from pydantic import BaseModel
+import pymysql
+import csv
+from io import StringIO
+
+# Initialize FastAPI router with prefix "/assets"
+# This means all endpoints defined here will start with "/assets"
+asset_router = APIRouter(prefix="/assets")
+
+# -----------------------------
+# Database connection function
+# -----------------------------
+def get_connection():
+    """
+    Establish and return a connection to the MySQL database.
+    Update host, user, password, and database as per your environment.
+    """
+    return pymysql.connect(
+        host="localhost",      # MySQL host
+        user="root",           # MySQL username
+        password="pass@word1", # MySQL password
+        database="ust_asset_db" # Database name
+    )
+
+# -----------------------------
+# Pydantic model for Asset
+# -----------------------------
+class Asset(BaseModel):
+    """
+    Defines the structure of an Asset object.
+    Used for validation and serialization of request/response bodies.
+    """
+    asset_tag: str
+    asset_type: str
+    serial_number: str
+    manufacturer: str
+    model: str
+    purchase_date: str
+    warranty_years: int
+    condition_status: str
+    assigned_to: str
+    location: str
+    asset_status: str
+
+# -----------------------------
+# GET endpoint: Fetch all assets
+# -----------------------------
+@asset_router.get("assets/list")
+def get_all_assets():
+    """
+    Fetch all assets from the database.
+    """
+    try:
+        connection = get_connection()
+        cursor = connection.cursor()
+        cursor.execute("SELECT * FROM asset_inventory")
+        assets = cursor.fetchall()  # Returns list of all assets
+        cursor.close()
+        connection.close()
+        return assets
+    except Exception as e:
+        # If something goes wrong, return HTTP 404 with error message
+        raise HTTPException(status_code=404, detail=str(e))
+
+# -----------------------------
+# GET endpoint: Filter assets by status
+# -----------------------------
+@asset_router.get("/list")
+def get_assets_by_status(status: str):
+    """
+    Fetch assets filtered by their status (e.g., 'active', 'retired').
+    """
+    connection = get_connection()
+    cursor = connection.cursor()
+    query = "SELECT * FROM asset_inventory WHERE asset_status = %s"
+    cursor.execute(query, (status,))
+    assets = cursor.fetchall()
+    cursor.close()
+    connection.close()
+    return assets
+
+# -----------------------------
+# GET endpoint: Search assets by column and keyword
+# -----------------------------
+@asset_router.get("/search")
+def search_assets(column: str, keyword: str):
+    """
+    Search assets by keyword in a specific column.
+    Prevents SQL injection by validating column names.
+    """
+    valid_columns = [
+        "asset_tag", "asset_type", "serial_number", "manufacturer", "model",
+        "purchase_date", "warranty_years", "condition_status", "assigned_to",
+        "location", "asset_status"
+    ]
+    
+    # Validate column name
+    if column not in valid_columns:
+        raise HTTPException(status_code=400, detail="Invalid column name")
+
+    connection = get_connection()
+    cursor = connection.cursor()
+
+    # Handle numeric column (exact match)
+    if column == "warranty_years":
+        try:
+            warranty_years = int(keyword)  # Ensure keyword is integer
+            query = f"SELECT * FROM asset_inventory WHERE {column} = %s"
+            cursor.execute(query, (warranty_years,))
+        except ValueError:
+            raise HTTPException(status_code=400, detail="Invalid value for warranty_years. It must be a number.")
+    else:
+        # Handle string columns (partial match using LIKE)
+        query = f"SELECT * FROM asset_inventory WHERE {column} LIKE %s"
+        cursor.execute(query, (f"%{keyword}%",))
+
+    assets = cursor.fetchall()
+    cursor.close()
+    connection.close()
+    return assets
+
+# -----------------------------
+# GET endpoint: Fetch asset by ID
+# -----------------------------
+@asset_router.get("/{id}")
+def get_asset_by_id(id: int):
+    """
+    Fetch a single asset by its unique asset_id.
+    """
+    connection = get_connection()
+    cursor = connection.cursor()
+    cursor.execute("SELECT * FROM asset_inventory WHERE asset_id = %s", (id,))
+    asset = cursor.fetchone()
+    cursor.close()
+    connection.close()
+    
+    if asset is None:
+        raise HTTPException(status_code=404, detail="Asset not found")
+    
+    return asset
+
+# -----------------------------
+# GET endpoint: Count total assets
+# -----------------------------
+@asset_router.get("/assets/count")
+def count_assets():
+    """
+    Count the total number of assets in the database.
+    """
+    connection = get_connection()
+    cursor = connection.cursor()
+    cursor.execute("SELECT COUNT(*) FROM asset_inventory")
+    count = cursor.fetchone()
+    cursor.close()
+    connection.close()
+    return {"total_assets": count[0]}
+
+# -----------------------------
+# POST endpoint: Create new asset
+# -----------------------------
+@asset_router.post("/create")
+def create_asset(asset: Asset):
+    """
+    Insert a new asset record into the database.
+    """
+    try:
+        connection = get_connection()
+        cursor = connection.cursor()
+        query = """INSERT INTO asset_inventory 
+                   (asset_tag, asset_type, serial_number, manufacturer, model, 
+                    purchase_date, warranty_years, condition_status, assigned_to, 
+                    location, asset_status)
+                   VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+        cursor.execute(query, (asset.asset_tag, asset.asset_type, asset.serial_number, asset.manufacturer,
+                               asset.model, asset.purchase_date, asset.warranty_years, asset.condition_status,
+                               asset.assigned_to, asset.location, asset.asset_status))
+        connection.commit()
+        cursor.close()
+        connection.close()
+        return {"message": "Asset created successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+# -----------------------------
+# PUT endpoint: Update full asset record
+# -----------------------------
+@asset_router.put("/{id}")
+def update_asset(id: int, asset: Asset):
+    """
+    Update all fields of an asset by its asset_id.
+    """
+    try:
+        connection = get_connection()
+        cursor = connection.cursor()
+        cursor.execute("SELECT COUNT(*) FROM asset_inventory WHERE asset_id = %s", (id,))
+        count = cursor.fetchone()[0]
+        
+        if count == 0:
+            cursor.close()
+            connection.close()
+            raise HTTPException(status_code=404, detail="Asset not found")
+        
+        query = """UPDATE asset_inventory 
+                   SET asset_tag = %s, asset_type = %s, serial_number = %s, 
+                       manufacturer = %s, model = %s, purchase_date = %s, 
+                       warranty_years = %s, condition_status = %s, 
+                       assigned_to = %s, location = %s, asset_status = %s 
+                   WHERE asset_id = %s"""
+        
+        cursor.execute(query, (asset.asset_tag, asset.asset_type, asset.serial_number, asset.manufacturer,
+                               asset.model, asset.purchase_date, asset.warranty_years, asset.condition_status,
+                               asset.assigned_to, asset.location, asset.asset_status, id))
+        connection.commit()
+        cursor.close()
+        connection.close()
+        return {"message": "Asset updated successfully"}
+    
+    except pymysql.MySQLError as e:
+        raise HTTPException(status_code=500, detail=f"MySQL error: {e}")
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Error: {str(e)}")
+
+# -----------------------------
+# PATCH endpoint: Update only asset status
+# -----------------------------
+@asset_router.patch("/{id}/status")
+def update_asset_status(id: int, asset_status: str):
+    """
+    Update only the asset_status field of an asset.
+    """
+    try:
+        connection = get_connection()
+        cursor = connection.cursor()
+        query = "UPDATE asset_inventory SET asset_status = %s WHERE asset_id = %s"
+        cursor.execute(query, (asset_status, id))
+        connection.commit()
+        cursor.close()
+        connection.close()
+        return {"message": "Asset status updated successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+# -----------------------------
+# DELETE endpoint: Remove asset
+# -----------------------------
+@asset_router.delete("/{id}")
+def delete_asset(id: int):
+    """
+    Delete an asset from the database by its asset_id.
+    """
+    try:
+        connection = get_connection()
+        cursor = connection.cursor()
+        query = "DELETE FROM asset_inventory WHERE asset_id = %s"
+        cursor.execute(query, (id,))
+        connection.commit()
+        cursor.close()
+        connection.close()
+        return {"message": "Asset deleted successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
