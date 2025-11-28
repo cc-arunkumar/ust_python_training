@@ -34,7 +34,7 @@ class AssetStatusEnum(str, Enum):
 # ---------------- MODEL ----------------
 class AssetInventory(BaseModel):
 
-    asset_id: Optional[int] = None
+    # asset_id: Optional[int] = None
     asset_tag: str
     asset_type: AssetTypeEnum
     serial_number: str
@@ -118,43 +118,3 @@ class AssetInventory(BaseModel):
             raise ValueError(f"assigned_to must be empty when asset_status is {self.asset_status}.")
 
         return self
-
-
-# ---------------- CSV PROCESSING ----------------
-valid_rows = []
-error_rows = []
-
-input_file = r"C:\Users\Administrator\Desktop\ust_python_training\arumukesh\day_18\aims_plus\asset_inventory.csv"
-clean_output = r"C:\Users\Administrator\Desktop\ust_python_training\arumukesh\day_18\aims_plus\cleaned_asset_inventory.csv"
-error_output = r"C:\Users\Administrator\Desktop\ust_python_training\arumukesh\day_18\aims_plus\error_data.csv"
-
-
-if not os.path.exists(input_file):
-    print(f" File not found: {input_file}")
-else:
-    with open(input_file, "r") as file:
-        reader = csv.DictReader(file)
-        for row in reader:
-            try:
-                model = AssetInventory(**row)
-                valid_rows.append(model.model_dump())
-            except Exception as e:
-                print("\n ERROR:", row)
-                print("   Reason:", e)
-                error_rows.append(row)
-
-
-# ---------------- SAVE RESULTS ----------------
-if valid_rows:
-    with open(clean_output, "w", newline='') as file:
-        csv.DictWriter(file, fieldnames=valid_rows[0].keys()).writeheader()
-        csv.DictWriter(file, fieldnames=valid_rows[0].keys()).writerows(valid_rows)
-    print(f"\n Cleaned data saved to: {clean_output}")
-
-if error_rows:
-    with open(error_output, "w", newline='') as file:
-        csv.DictWriter(file, fieldnames=error_rows[0].keys()).writeheader()
-        csv.DictWriter(file, fieldnames=error_rows[0].keys()).writerows(error_rows)
-    print(f" Errors saved to: {error_output}")
-
-print(f"\nSummary → Processed: {len(valid_rows)+len(error_rows)}, Valid: {len(valid_rows)}, Errors: {len(error_rows)}")

@@ -1,5 +1,5 @@
 from src.model.model_maintenance_log import MaintenanceLog
-from src.config.get_connection import get_connection
+from src.config.db_connection import get_connection
 
 
 def create(data: MaintenanceLog):

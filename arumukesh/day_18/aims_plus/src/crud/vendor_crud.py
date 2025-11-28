@@ -1,4 +1,4 @@
-from src.config.get_connection import get_connection
+from src.config.db_connection import get_connection
 import pymysql
 import datetime
 from src.model.model_vendor_master import VendorMaster

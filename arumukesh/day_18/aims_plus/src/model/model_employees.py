@@ -88,7 +88,10 @@ class Employee(BaseModel):
             return None
         try:
             return date.fromisoformat(value)
+        
+        
         except:
             raise ValueError("Invalid date format. Expected YYYY-MM-DD.")
 
 
+  
