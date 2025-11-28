@@ -1,0 +1,13 @@
+vendor_id,vendor_name,contact_person,contact_phone,gst_number,email,address,city,active_status
+3,Global Ventures,Ramesh5 Kumar,8123456789,22CCCDE9101F2AB,ramesh@globalventures.com,789 Brigade Road Bangalore,Bangalore,Active
+4,Alpha123 Corp,Pooja Singh,7894561230,19DDDFF1234G5YZ,pooja.singh@alphacorp.com,101 MG Road Chennai,Chennai,Inactive
+6,Echo Technologies,Anita Devi,987654321,29FFFEE1234K9ZX,anita@echotech.in,303 Church Street Bangalore,Bangalore,Active
+7,Falcon Corp,Rajesh Kumar,9876543210,29AAAPL1234C1Z,contact@falconcorp.in,404 Park Avenue Chennai,Chennai,Inactive
+8,Omega Systems,Sunil Patel,1234567890,22GGGHH5678J1ZX,sunil@omegasystems.com,505 MG Road Hyderabad,Hyderabad,Active
+51,Tech Solutions,Rahul5 Kumar,9876543210,29AAAAB1234C1ZX,rahul@techsolutions.in,4848 MG Road Bangalore,Bangalore,Active
+53,Global Ventures,Ramesh Kumar,98765432,22CCCDE9101F2AB,ramesh@globalventures.com,5050 Brigade Road Bangalore,Bangalore,Active
+54,Alpha Corp,Pooja Sharma,9876543210,19DDDFF1234G5YZ,pooja.sharma@alphacorp.com,5151 MG Road Chennai,Chennaai,Inactive
+56,Echo Technologies,Anita Devi,987654321,29FFFEE1234K9ZX,anita@echotech.in,5353 Church Street Bangalore,Bangalore,Active
+57,Falcon Corp,Rajesh Kumar,9876543210,29AAAPL1234C1,contact@falconcorp.in,5454 Park Avenue Chennai,Chennai,Inactive
+58,Omega Systems,Sunil Patel,1234567890,22GGGHH5678J1ZX,sunil@omegasystems.com,5555 MG Road Hyderabad,Hyderabad,Active
+60,TechnoWare,Sunita Sharma,9876543210,27JJJMM1234M3Y,sunita@technoware.com,5757 Park Street Kolkata,Kolkata,Inactive

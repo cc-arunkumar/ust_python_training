@@ -1,0 +1,93 @@
+asset_tag,maintenance_type,vendor_name,description,cost,maintenance_date,technician_name,status
+UST-LTP-0001,Repair,Tech Solutions,Replaced faulty motherboard,12500.5,2023-05-10,Rohit Sharma,Completed
+UST-MNT-0003,Service,Global Ventures,Cleaned and calibrated monitor,1500.0,2023-07-12,Anjali Nair,Pending
+UST-LTP-0002,Upgrade,InfoTech Services,Upgraded RAM to 16GB,4500.0,2023-09-01,Ramesh Kumar,Completed
+UST-MNT-0004,Repair,Alpha Corp,Replaced screen panel,5500.75,2023-08-15,Pooja Sharma,Completed
+UST-LTP-0005,Service,Delta Solutions,General preventive maintenance,1200.0,2023-06-25,Rajiv Kumar,Pending
+UST-LTP-0006,Upgrade,Echo Technologies,Installed SSD 512GB,4800.0,2023-07-30,Anita Devi,Completed
+UST-MNT-0007,Repair,Falcon Corp,Fixed power supply issue,3200.0,2023-04-20,Rajesh Kumar,Completed
+UST-LTP-0008,Service,Omega Systems,Updated BIOS and drivers,800.0,2023-05-18,Sunil Patel,Pending
+UST-MNT-0009,Repair,Prime Solutions,Replaced damaged stand,1500.0,2023-03-28,Suresh Kumar,Completed
+UST-LTP-0010,Upgrade,TechnoWare,Upgraded graphics card,7500.0,2023-06-05,Sunita Sharma,Completed
+UST-LTP-0013,Upgrade,NextGen Solutions,Upgraded RAM to 32GB,5200.5,2023-09-10,Rajesh Kumar,Completed
+UST-LTP-0015,Service,Vector Technologies,General checkup,1100.0,2024-01-01,Anita Kumar,Pending
+UST-LTP-0016,Upgrade,Zeta Industries,Installed new SSD,4800.0,2023-06-12,Rahul Sharma,Completed
+UST-LTP-0018,Service,NextGen Solutions,Software update,900.0,2023-07-25,Ramesh Kumar,Completed
+UST-MNT-0019,Repair,Alpha Corp,Replaced back panel,3500.0,2023-08-10,Rajiv Patel,Pending
+UST-LTP-0020,Upgrade,Beta Enterprises,Upgraded RAM,4500.0,2023-09-05,Pooja Sharma,Completed
+UST-LTP-0021,Repair,Delta Tech,Keyboard replacement,1300.0,2023-06-30,Rahul Kumar,Completed
+UST-MNT-0022,Service,Echo Innovations,Monitor cleaning,800.0,2023-07-18,Sunil Singh,Pending
+UST-LTP-0023,Upgrade,Falcon Solutions,Installed SSD 1TB,5000.0,2023-08-22,Rakesh Patel,Completed
+UST-MNT-0024,Repair,Gamma Corp,Power supply fix,3100.0,2023-05-12,Anjali Devi,Completed
+UST-LTP-0025,Service,Omni Enterprises,General maintenance,1150.0,2023-09-02,Rajesh Singh,Pending
+UST-LTP-0026,Upgrade,Prime Innovations,Installed GPU,7500.0,2023-07-08,Anita Sharma,Completed
+UST-MNT-0027,Repair,Quantum Enterprises,Replaced monitor base,1600.0,2023-06-18,Rakesh Kumar,Completed
+UST-LTP-0028,Service,Vector Solutions,Software patching,950.0,2023-08-15,Sunil Singh,Pending
+UST-MNT-0029,Repair,Zeta Innovations,Replaced damaged cable,1200.0,2023-05-05,Rahul Sharma,Completed
+UST-LTP-0030,Upgrade,Innovatech,Upgraded RAM and SSD,5200.0,2023-06-25,Pooja Singh,Completed
+UST-MNT-0032,Service,Alpha Solutions,Monitor cleaning,850.0,2023-08-05,Sunita Patel,Completed
+UST-LTP-0033,Upgrade,Beta Corp,Upgraded storage,4800.0,2023-09-10,Rahul Sharma,Completed
+UST-MNT-0034,Repair,Delta Enterprises,Screen replacement,3300.0,2023-06-18,Anjali Kumar,Completed
+UST-LTP-0035,Service,Echo Solutions,Preventive maintenance,1100.0,2023-07-22,Rakesh Singh,Pending
+UST-LTP-0036,Upgrade,Falcon Enterprises,SSD and RAM upgrade,5200.0,2023-08-10,Rahul Kumar,Completed
+UST-MNT-0037,Repair,Gamma Innovations,Power supply repair,3100.0,2023-06-12,Pooja Sharma,Completed
+UST-LTP-0038,Service,Omni Solutions,System cleaning,900.0,2023-07-18,Sunil Patel,Pending
+UST-MNT-0039,Repair,Prime Technologies,Replaced hinges,3500.0,2023-08-05,Rajesh Kumar,Completed
+UST-LTP-0040,Upgrade,Tech Solutions,Installed new RAM,5000.0,2023-06-28,Rohit Sharma,Completed
+UST-LTP-0041,Repair,InfoTech Services,Keyboard replacement,1300.0,2023-07-10,Anjali Nair,Completed
+UST-MNT-0042,Service,Global Ventures,Monitor calibration,900.0,2023-08-12,Ramesh Kumar,Pending
+UST-LTP-0043,Upgrade,Alpha Corp,Installed SSD,4800.0,2023-09-02,Pooja Sharma,Completed
+UST-MNT-0044,Repair,Delta Solutions,Power supply repair,3200.0,2023-05-20,Rajiv Kumar,Completed
+UST-LTP-0045,Service,Echo Technologies,System update,950.0,2023-06-15,Anita Devi,Pending
+UST-LTP-0046,Upgrade,Falcon Corp,Upgraded RAM and SSD,5000.0,2023-07-22,Rajesh Kumar,Completed
+UST-MNT-0047,Repair,Omega Systems,Replaced monitor cable,1500.0,2023-08-05,Sunil Patel,Completed
+UST-LTP-0048,Service,Prime Solutions,General maintenance,1200.0,2023-06-28,Suresh Kumar,Pending
+UST-LTP-0049,Upgrade,TechnoWare,Upgraded GPU,7500.0,2023-07-30,Sunita Sharma,Completed
+UST-LTP-0051,Service,Global Ventures,Monitor cleaning,900.0,2023-06-10,Anjali Singh,Pending
+UST-LTP-0052,Upgrade,NextGen Solutions,Installed SSD,5000.0,2023-07-05,Rajesh Kumar,Completed
+UST-MNT-0053,Repair,Quantum Corp,Replaced hinges,3200.0,2023-08-01,Pooja Sharma,Completed
+UST-LTP-0054,Service,Vector Technologies,System update,950.0,2023-06-18,Anita Kumar,Pending
+UST-LTP-0055,Upgrade,Zeta Industries,Installed new RAM,4800.0,2023-07-12,Rahul Sharma,Completed
+UST-LTP-0057,Service,NextGen Solutions,Preventive maintenance,850.0,2023-07-28,Ramesh Kumar,Pending
+UST-LTP-0058,Upgrade,Alpha Corp,Upgraded storage,5000.0,2023-08-05,Pooja Sharma,Completed
+UST-MNT-0059,Repair,Beta Enterprises,Power supply repair,3100.0,2023-06-12,Rajiv Patel,Completed
+UST-LTP-0060,Service,Delta Tech,System cleaning,900.0,2023-07-18,Rahul Kumar,Pending
+UST-LTP-0061,Upgrade,Echo Innovations,Installed SSD and RAM,5200.0,2023-08-12,Sunil Singh,Completed
+UST-MNT-0062,Repair,Falcon Solutions,Monitor repair,3300.0,2023-06-20,Rakesh Patel,Completed
+UST-LTP-0063,Service,Gamma Corp,System update,950.0,2023-07-25,Anjali Devi,Pending
+UST-LTP-0064,Upgrade,Omni Enterprises,Upgraded RAM and SSD,5000.0,2023-08-05,Rajesh Singh,Completed
+UST-MNT-0065,Repair,Prime Innovations,Replaced damaged cable,1500.0,2023-06-15,Anita Sharma,Completed
+UST-LTP-0066,Service,Quantum Enterprises,System cleaning,900.0,2023-07-18,Rakesh Kumar,Pending
+UST-LTP-0067,Upgrade,Vector Solutions,Installed new SSD,4800.0,2023-08-12,Sunil Singh,Completed
+UST-MNT-0068,Repair,Zeta Innovations,Replaced monitor stand,3200.0,2023-06-10,Rahul Sharma,Completed
+UST-LTP-0069,Service,Innovatech,System update,950.0,2023-07-20,Pooja Singh,Pending
+UST-LTP-0070,Upgrade,NextGen Enterprises,Upgraded GPU,7500.0,2023-08-05,Rajesh Kumar,Completed
+UST-MNT-0071,Repair,Alpha Solutions,Replaced keyboard,1300.0,2023-06-18,Sunita Patel,Completed
+UST-LTP-0072,Service,Beta Corp,System cleaning,900.0,2023-07-12,Rahul Sharma,Pending
+UST-LTP-0073,Upgrade,Delta Enterprises,Installed RAM and SSD,5000.0,2023-08-10,Anjali Kumar,Completed
+UST-MNT-0074,Repair,Echo Solutions,Power supply repair,3100.0,2023-06-05,Rakesh Singh,Completed
+UST-LTP-0075,Service,Falcon Enterprises,System update,950.0,2023-07-18,Rahul Kumar,Pending
+UST-LTP-0076,Upgrade,Gamma Innovations,Installed SSD,4800.0,2023-08-12,Pooja Sharma,Completed
+UST-MNT-0077,Repair,Omni Solutions,Replaced damaged stand,1500.0,2023-06-12,Sunil Patel,Completed
+UST-LTP-0078,Service,Prime Technologies,System maintenance,900.0,2023-07-25,Rajesh Kumar,Pending
+UST-LTP-0079,Upgrade,Tech Solutions,Installed new RAM,5000.0,2023-08-05,Rohit Sharma,Completed
+UST-MNT-0080,Repair,InfoTech Services,Keyboard repair,1200.0,2023-06-18,Anjali Nair,Completed
+UST-LTP-0081,Service,Global Ventures,System update,950.0,2023-07-12,Ramesh Kumar,Pending
+UST-LTP-0082,Upgrade,Alpha Corp,Installed SSD,4800.0,2023-08-05,Pooja Sharma,Completed
+UST-MNT-0083,Repair,Delta Solutions,Power supply replacement,3100.0,2023-06-10,Rajiv Kumar,Completed
+UST-LTP-0084,Service,Echo Technologies,System cleaning,900.0,2023-07-20,Anita Devi,Pending
+UST-LTP-0085,Upgrade,Falcon Corp,Upgraded RAM,5000.0,2023-08-05,Rajesh Kumar,Completed
+UST-MNT-0086,Repair,Omega Systems,Monitor hinge repair,3200.0,2023-06-12,Sunil Patel,Completed
+UST-LTP-0087,Service,Prime Solutions,System update,950.0,2023-07-18,Suresh Kumar,Pending
+UST-LTP-0088,Upgrade,TechnoWare,Installed GPU,7500.0,2023-08-12,Sunita Sharma,Completed
+UST-LTP-0090,Service,Global Ventures,System maintenance,900.0,2023-07-10,Anjali Singh,Pending
+UST-LTP-0091,Upgrade,NextGen Solutions,Installed RAM,4800.0,2023-08-05,Rajesh Kumar,Completed
+UST-MNT-0092,Repair,Quantum Corp,Replaced monitor cable,3200.0,2023-06-12,Pooja Sharma,Completed
+UST-LTP-0093,Service,Vector Technologies,System update,950.0,2023-07-18,Anita Kumar,Pending
+UST-LTP-0094,Upgrade,Zeta Industries,Installed SSD,5000.0,2023-08-12,Rahul Sharma,Completed
+UST-MNT-0095,Repair,Innovatech,Replaced keyboard,1300.0,2023-06-15,Sunita Devi,Completed
+UST-LTP-0096,Service,NextGen Solutions,System maintenance,900.0,2023-07-10,Ramesh Kumar,Pending
+UST-LTP-0097,Upgrade,Alpha Corp,Installed RAM and SSD,5000.0,2023-08-05,Pooja Sharma,Completed
+UST-MNT-0098,Repair,Beta Enterprises,Power supply repair,3100.0,2023-06-12,Rajiv Patel,Completed
+UST-LTP-0099,Service,Delta Tech,System cleaning,900.0,2023-07-18,Rahul Kumar,Pending
+UST-LTP-0100,Upgrade,Echo Innovations,Installed GPU,7500.0,2023-08-12,Sunil Singh,Completed
