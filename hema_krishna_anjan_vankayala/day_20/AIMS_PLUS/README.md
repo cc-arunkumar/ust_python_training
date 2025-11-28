@@ -24,6 +24,7 @@ It provides RESTful APIs to manage assets, employees, maintenance logs, and vend
 ---
  
 ## 📂 Project Structure
+
 AIMS_Plus/
 │
 ├── database/
@@ -139,4 +140,5 @@ conn = pymysql.Connect(
 - PATCH /maintenance/{id}/status
 - DELETE /maintenance/{id}
 - GET /maintenance/search?keyword=
+
 - GET /maintenance/count
