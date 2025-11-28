@@ -46,6 +46,7 @@ AIMS_Plus/
 │   │   ├── employee_api.py
 │   │   ├── vendor_api.py
 │   │   └── maintenance_api.py
+|   |   └── login_api.py
 │   │
 │   ├── crud/
 │   │   ├── asset_crud.py
@@ -56,6 +57,7 @@ AIMS_Plus/
 │   ├── models/
 │   │   ├── asset_model.py
 │   │   ├── employee_model.py
+│   │   ├── user_model.py
 │   │   ├── vendor_model.py
 │   │   └── maintenance_model.py
 │   │
@@ -70,9 +72,9 @@ AIMS_Plus/
 │   │   └── dump_csv_data_util.py
 │   │
 │   ├── auth/
-│   │   └── auth_jwt_token.py
+│   │   └── jwt_auth.py
 │
-│   └── main.py
+├── main.py
 │
 └── README.md
  
