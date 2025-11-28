@@ -1,0 +1,204 @@
+
+# import csv
+# from datetime import datetime
+
+# print("Starting CSV validations...")
+
+# # --------------------- EMPLOYEE DIRECTORY ---------------------
+# print("\nValidating employee_directory.csv...")
+# valid_departments = ["HR", "IT", "Admin", "Finance"]
+# valid_status = ["Active", "Inactive", "Resigned"]
+# valid_locations = ["TVM", "Bangalore", "Chennai", "Hyderabad"]
+
+# with open("sample_data\\employee_directory.csv", "r") as file:
+#     csv_reader = csv.DictReader(file)
+#     validated_rows = []
+
+#     for row in csv_reader:
+#         if not row["emp_code"].startswith("USTEMP-"):
+#             continue
+#         if not row["full_name"].replace(" ", "").isalpha():
+#             continue
+#         if not row["email"].endswith("@ust.com"):
+#             continue
+#         if not row["phone"].isdigit() or len(row["phone"]) != 10 or row["phone"][0] not in "6789":
+#             continue
+#         if row["department"] not in valid_departments:
+#             continue
+#         if row["location"] not in valid_locations:
+#             continue
+#         try:
+#             join_date = datetime.strptime(row["join_date"], "%Y-%m-%d")
+#             if join_date > datetime.now():
+#                 continue
+#         except:
+#             continue
+#         if row["status"] not in valid_status:
+#             continue
+
+#         validated_rows.append(row)
+
+# with open("cleaned/employee_directory_validated.csv", "w", newline="") as file:
+#     writer = csv.DictWriter(file, fieldnames=csv_reader.fieldnames)
+#     writer.writeheader()
+#     writer.writerows(validated_rows)
+
+# print("employee_directory.csv validated and saved.")
+
+# # --------------------- ASSET INVENTORY ---------------------
+# print("\nValidating asset_inventory.csv...")
+# valid_types = ["Laptop", "Monitor", "Keyboard", "Mouse"]
+# valid_manufacturers = ["Dell", "HP", "Lenovo", "Samsung"]
+# valid_condition = ["New", "Good", "Used", "Damaged"]
+# valid_locations = ["TVM", "Bangalore", "Chennai", "Hyderabad"]
+# valid_status_asset = ["Available", "Assigned", "Repair", "Retired"]
+
+# with open("sample_data\\asset_inventory.csv", "r") as file:
+#     csv_reader = csv.DictReader(file)
+#     validated_rows = []
+#     serial_list = []  
+
+#     for row in csv_reader:
+#         if not row["asset_tag"].startswith("UST-"):
+#             continue
+#         if row["asset_type"] not in valid_types:
+#             continue
+#         if row["serial_number"] == "" or row["serial_number"] in serial_list:
+#             continue
+#         serial_list.append(row["serial_number"])  # keep track of used serials
+#         if row["manufacturer"] not in valid_manufacturers:
+#             continue
+#         if row["model"].strip() == "":
+#             continue
+#         try:
+#             purchase_date = datetime.strptime(row["purchase_date"], "%Y-%m-%d")
+#             if purchase_date > datetime.now():
+#                 continue
+#         except:
+#             continue
+#         try:
+#             warranty = int(row["warranty_years"])
+#             if warranty < 1 or warranty > 5:
+#                 continue
+#         except:
+#             continue
+#         if row["condition_status"] not in valid_condition:
+#             continue
+#         if row["assigned_to"].strip() != "" and not row["assigned_to"].replace(" ", "").isalpha():
+#             continue
+#         if row["location"] not in valid_locations:
+#             continue
+#         if row["asset_status"] not in valid_status_asset:
+#             continue
+
+#         validated_rows.append(row)
+
+# with open("cleaned/asset_inventory_validated.csv", "w", newline="") as file:
+#     writer = csv.DictWriter(file, fieldnames=csv_reader.fieldnames)
+#     writer.writeheader()
+#     writer.writerows(validated_rows)
+
+# print("asset_inventory.csv validated and saved.")
+
+# # --------------------- VENDOR MASTER ---------------------
+# print("\nValidating vendor_master.csv...")
+# valid_status_vendor = ["Active", "Inactive"]
+
+# with open("sample_data\\vendor_master.csv", "r") as file:
+#     csv_reader = csv.DictReader(file)
+#     validated_rows = []
+
+#     for row in csv_reader:
+
+#         # Fix: safely handle None values exactly in your style
+#         if not row["vendor_name"] or not row["vendor_name"].replace(" ", "").isalpha():
+#             continue
+
+#         if not row["contact_person"] or not row["contact_person"].replace(" ", "").isalpha():
+#             continue
+
+#         if (
+#             not row["contact_phone"]
+#             or not row["contact_phone"].isdigit()
+#             or len(row["contact_phone"]) != 10
+#             or row["contact_phone"][0] not in "6789"
+#         ):
+#             continue
+
+#         if not row["gst_number"] or len(row["gst_number"]) != 15:
+#             continue
+
+#         if not row["email"] or "@" not in row["email"]:
+#             continue
+
+#         if not row["address"] or len(row["address"]) > 200:
+#             continue
+
+#         if not row["city"] or row["city"] not in valid_locations:
+#             continue
+
+#         if not row["active_status"] or row["active_status"] not in valid_status_vendor:
+#             continue
+
+#         validated_rows.append(row)
+
+# with open("cleaned/vendor_master_validated.csv", "w", newline="") as file:
+#     writer = csv.DictWriter(file, fieldnames=csv_reader.fieldnames)
+#     writer.writeheader()
+#     writer.writerows(validated_rows)
+
+# print("vendor_master.csv validated and saved.")
+
+# # --------------------- MAINTENANCE LOG ---------------------
+# print("\nValidating maintenance_log.csv...")
+# valid_types_maint = ["Repair", "Service", "Upgrade"]
+# valid_status_maint = ["Completed", "Pending"]
+
+# with open("sample_data\\maintenance_log.csv", "r") as file:
+#     csv_reader = csv.DictReader(file)
+#     validated_rows = []
+
+#     for row in csv_reader:
+
+#         # Prevent NoneType error
+#         if not row["asset_tag"] or not row["asset_tag"].startswith("UST-"):
+#             continue
+
+#         if not row["maintenance_type"] or row["maintenance_type"] not in valid_types_maint:
+#             continue
+
+#         if not row["vendor_name"] or not row["vendor_name"].replace(" ", "").isalpha():
+#             continue
+
+#         if not row["description"] or len(row["description"].strip()) < 10:
+#             continue
+
+#         try:
+#             cost = float(row["cost"])
+#             if cost <= 0:
+#                 continue
+#         except:
+#             continue
+
+#         try:
+#             maint_date = datetime.strptime(row["maintenance_date"], "%Y-%m-%d")
+#             if maint_date > datetime.now():
+#                 continue
+#         except:
+#             continue
+
+#         if not row["technician_name"] or not row["technician_name"].replace(" ", "").isalpha():
+#             continue
+
+#         if not row["status"] or row["status"] not in valid_status_maint:
+#             continue
+
+#         validated_rows.append(row)
+
+# with open("cleaned/maintenance_log_validated.csv", "w", newline="") as file:
+#     writer = csv.DictWriter(file, fieldnames=csv_reader.fieldnames)
+#     writer.writeheader()
+#     writer.writerows(validated_rows)
+
+# print("maintenance_log.csv validated and saved.")
+# print("\nAll CSV validations completed successfully!")
