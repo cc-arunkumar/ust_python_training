@@ -3,13 +3,12 @@ from src.config.db_connection import get_connection
 from src.models.asset_model import AssetInventory
 
 # Function to create a new asset in the database
+import datetime
+
 def create_asset(asset: AssetInventory):
-    # Establish a connection to the database
     conn = get_connection()
     try:
-        # Use a cursor to execute the SQL query
         with conn.cursor() as cursor:
-            # Define the SQL query to insert a new asset
             sql = """
             INSERT INTO asset_inventory
             (asset_tag, asset_type, serial_number, manufacturer, model,
@@ -17,19 +16,16 @@ def create_asset(asset: AssetInventory):
              location, asset_status, last_updated)
             VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
             """
-            # Execute the query with values from the asset object
             cursor.execute(sql, (
                 asset.asset_tag, asset.asset_type, asset.serial_number,
                 asset.manufacturer, asset.model, asset.purchase_date,
                 asset.warranty_years, asset.condition_status, asset.assigned_to,
-                asset.location, asset.asset_status, asset.last_updated
+                asset.location, asset.asset_status,
+                datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # last_updated
             ))
-            # Commit the transaction to the database
             conn.commit()
-            # Return the ID of the newly inserted asset
             return cursor.lastrowid
     finally:
-        # Ensure the database connection is always closed
         conn.close()
 
 # Function to retrieve an asset by its ID

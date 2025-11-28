@@ -1,90 +1,52 @@
 vendor_id,vendor_name,contact_person,contact_phone,gst_number,email,address,city,active_status
 1,Tech Solutions,Rajesh Kumar,9876543210,29AAAPL1234C1ZV,contact@techsolutions.in,123 MG Road Bangalore,Bangalore,Active
-2,InfoTech Services,Sunita Sharma,9123456789,27BBBCD5678E1ZX,sunita@infotech.com,456 Park Street Kolkata,Kolkata,Active
-3,Global Ventures,Ramesh5 Kumar,8123456789,22CCCDE9101F2AB,ramesh@globalventures.com,789 Brigade Road Bangalore,Bangalore,Active
-4,Alpha123 Corp,Pooja Singh,7894561230,19DDDFF1234G5YZ,pooja.singh@alphacorp.com,101 MG Road Chennai,Chennai,Inactive
-5,Delta Solutions,Rajiv Kumar,9988776655,29EEEFF4567H8XY,contact@deltasolutions.in,202 MG Road Mumbai,Mumbai,Active
-6,Echo Technologies,Anita Devi,987654321,29FFFEE1234K9ZX,anita@echotech.in,303 Church Street Bangalore,Bangalore,Active
-7,Falcon Corp,Rajesh Kumar,9876543210,29AAAPL1234C1Z,contact@falconcorp.in,404 Park Avenue Chennai,Chennai,Inactive
-8,Omega Systems,Sunil Patel,1234567890,22GGGHH5678J1ZX,sunil@omegasystems.com,505 MG Road Hyderabad,Hyderabad,Active
-9,Prime Solutions,Suresh Kumar,9876543210,29IIIKL9101L2AB,suresh@primesolutions.in,606 MG Road Pune,Pune,Active
-10,TechnoWare,Sunita Sharma,9876543210,27JJJMM1234M3YZ,sunita@technoware.com,707 Park Street Kolkata,Kolkata,Inactive
 11,Zeta Industries,Rakesh Kumar,9876543210,29KKKNN4567N4XY,rakesh@zetainc.in,808 MG Road Chennai,Chennai,Active
 12,Innovatech,Rahul Sharma,9876543210,29LLLPP1234O5ZX,rahul@innovatech.com,909 Brigade Road Bangalore,Bangalore,Active
-13,NextGen Solutions,Anjali Singh,9876543210,27MMMQQ5678P6AB,anjali@nextgen.com,1010 MG Road Mumbai,Mumbai,Inactive
 14,Quantum Corp,Rajesh Kumar,9876543210,29NNNRR9101Q7YZ,rajesh@quantumcorp.in,1111 Church Street Hyderabad,Hyderabad,Active
-15,Vector Technologies,Pooja Sharma,9876543210,22OOOSS1234R8ZX,pooja@vectortech.com,1212 MG Road Pune,Pune,Active
 16,TechPros,Ramesh Kumar,9876543210,29PPPTT5678S9AB,ramesh@techpros.in,1313 Park Avenue Chennai,Chennai,Inactive
 17,Alpha Solutions,Sunita Devi,9876543210,27QQQUU9101T0YZ,sunita@alphasolutions.com,1414 MG Road Bangalore,Bangalore,Active
-18,Beta Enterprises,Rajiv Sharma,9876543210,29RRRVV1234U1ZX,rajiv@betaenterprises.in,1515 MG Road Mumbai,Mumbai,Active
-19,Delta Tech,Anita Kumar,9876543210,22SSSWW5678V2AB,anita@deltatech.com,1616 Park Street Kolkata,Kolkata,Inactive
 20,Echo Innovations,Sunil Singh,9876543210,29TTTXX9101W3YZ,sunil@echoinnovations.in,1717 Brigade Road Bangalore,Bangalore,Active
 21,Falcon Solutions,Rakesh Patel,9876543210,27UUUYY1234X4ZX,rakesh@falconsolutions.com,1818 MG Road Chennai,Chennai,Active
 22,Gamma Corp,Rahul Kumar,9876543210,29VVVZZ5678Y5AB,rahul@gammacorp.in,1919 MG Road Hyderabad,Hyderabad,Inactive
-23,OmniTech,Anjali Devi,9876543210,22WWWAA9101Z6YZ,anjali@omnitech.com,2020 MG Road Pune,Pune,Active
 24,Prime Enterprises,Rajesh Singh,9876543210,29XXXBB1234A7ZX,rajesh@primeenterprises.in,2121 Park Avenue Chennai,Chennai,Active
 25,Quantum Solutions,Sunita Kumar,9876543210,27YYYCC5678B8AB,sunita@quantumsolutions.com,2222 MG Road Bangalore,Bangalore,Inactive
-26,Vector Innovations,Rajiv Patel,9876543210,29ZZZDD9101C9YZ,rajiv@vectorinnovations.in,2323 MG Road Mumbai,Mumbai,Active
 27,Zeta Technologies,Pooja Sharma,9876543210,22AAADD1234D0ZX,pooja@zetatechnologies.com,2424 Church Street Hyderabad,Hyderabad,Active
-28,Innovatech,Ramesh Kumar,9876543210,29BBBEE5678E1AB,ramesh@innovatech.in,2525 MG Road Pune,Pune,Inactive
 29,NextGen Solutions,Sunil Singh,9876543210,27CCCFF9101F2YZ,sunil@nextgen.com,2626 Park Avenue Chennai,Chennai,Active
 30,Alpha Enterprises,Rahul Sharma,9876543210,29DDDGG1234G3ZX,rahul@alphaenterprises.in,2727 MG Road Bangalore,Bangalore,Active
-31,Beta Technologies,Anjali Kumar,9876543210,22EEEGG5678H4AB,anjali@betatech.com,2828 MG Road Mumbai,Mumbai,Inactive
-32,Delta Innovations,Rajesh Singh,9876543210,29FFFHH9101I5YZ,rajesh@deltainnovations.in,2929 Park Street Kolkata,Kolkata,Active
 33,Echo Enterprises,Pooja Patel,9876543210,27GGGII1234J6ZX,pooja@echoenterprises.com,3030 MG Road Chennai,Chennai,Active
 34,Falcon Technologies,Sunita Kumar,9876543210,29HHHJJ5678K7AB,sunita@falcontech.in,3131 Brigade Road Bangalore,Bangalore,Inactive
 35,Gamma Solutions,Ramesh Singh,9876543210,22IIIJJ9101L8YZ,ramesh@gammasolutions.com,3232 MG Road Hyderabad,Hyderabad,Active
-36,Omni Enterprises,Rajiv Patel,9876543210,29JJJKK1234M9ZX,rajiv@omni.com,3333 MG Road Pune,Pune,Active
 37,Prime Innovations,Anita Sharma,9876543210,27KKKLL5678N0AB,anita@primeinnovations.in,3434 Park Avenue Chennai,Chennai,Inactive
 38,Quantum Enterprises,Rakesh Kumar,9876543210,29LLLMM9101O1YZ,rakesh@quantumenterprises.com,3535 MG Road Bangalore,Bangalore,Active
-39,Vector Solutions,Sunil Singh,9876543210,22MMMNN1234P2ZX,sunil@vectorsolutions.in,3636 MG Road Mumbai,Mumbai,Active
 40,Zeta Innovations,Rahul Sharma,9876543210,29NNNOO5678Q3AB,rahul@zetainnovations.com,3737 Church Street Hyderabad,Hyderabad,Inactive
-41,Innovatech,Pooja Singh,9876543210,27OOOPP9101R4YZ,pooja@innovatech.com,3838 MG Road Pune,Pune,Active
 42,NextGen Enterprises,Rajesh Kumar,9876543210,29PPPQQ1234S5ZX,rajesh@nextgenenterprises.in,3939 Park Avenue Chennai,Chennai,Active
 43,Alpha Solutions,Sunita Patel,9876543210,22QQQRR5678T6AB,sunita@alphasolutions.com,4040 MG Road Bangalore,Bangalore,Inactive
-44,Beta Corp,Rajiv Sharma,9876543210,29RRRSS9101U7YZ,rajiv@betacorp.in,4141 MG Road Mumbai,Mumbai,Active
-45,Delta Enterprises,Anjali Kumar,9876543210,27SSSTT1234V8ZX,anjali@deltaenterprises.com,4242 Park Street Kolkata,Kolkata,Active
 46,Echo Solutions,Rakesh Singh,9876543210,29TTTUU5678W9AB,rakesh@echosolutions.in,4343 MG Road Chennai,Chennai,Inactive
 47,Falcon Enterprises,Rahul Kumar,9876543210,22UUUVV9101X0YZ,rahul@falconenterprises.com,4444 Brigade Road Bangalore,Bangalore,Active
 48,Gamma Innovations,Pooja Sharma,9876543210,29VVVWW1234Y1ZX,pooja@gammainnovations.in,4545 MG Road Hyderabad,Hyderabad,Active
-49,Omni Solutions,Sunil Patel,9876543210,27WWWXX5678Z2AB,sunil@omnisolutions.com,4646 MG Road Pune,Pune,Inactive
 50,Prime Technologies,Rajesh Kumar,9876543210,29XXXYY9101A3YZ,rajesh@primetechnologies.in,4747 Park Avenue Chennai,Chennai,Active
-51,Tech Solutions,Rahul5 Kumar,9876543210,29AAAAB1234C1ZX,rahul@techsolutions.in,4848 MG Road Bangalore,Bangalore,Active
-52,InfoTech Services,Sunita Singh,9876543210,27BBBBC5678D2YZ,sunita@infotech.com,4949 Park Street Kolkata,Kolkata,Inactive
-53,Global Ventures,Ramesh Kumar,98765432,22CCCDE9101F2AB,ramesh@globalventures.com,5050 Brigade Road Bangalore,Bangalore,Active
-54,Alpha Corp,Pooja Sharma,9876543210,19DDDFF1234G5YZ,pooja.sharma@alphacorp.com,5151 MG Road Chennai,Chennaai,Inactive
-55,Delta Solutions,Rajiv Kumar,9988776655,29EEEFF4567H8XY,contact@deltasolutions.in,5252 MG Road Mumbai,Mumbai,Active
-56,Echo Technologies,Anita Devi,987654321,29FFFEE1234K9ZX,anita@echotech.in,5353 Church Street Bangalore,Bangalore,Active
-57,Falcon Corp,Rajesh Kumar,9876543210,29AAAPL1234C1,contact@falconcorp.in,5454 Park Avenue Chennai,Chennai,Inactive
-58,Omega Systems,Sunil Patel,1234567890,22GGGHH5678J1ZX,sunil@omegasystems.com,5555 MG Road Hyderabad,Hyderabad,Active
-59,Prime Solutions,Suresh Kumar,9876543210,29IIIKL9101L2AB,suresh@primesolutions.in,5656 MG Road Pune,Pune,Active
-60,TechnoWare,Sunita Sharma,9876543210,27JJJMM1234M3Y,sunita@technoware.com,5757 Park Street Kolkata,Kolkata,Inactive
 61,Zeta Industries,Rakesh Kumar,9876543210,29KKKNN4567N4XY,rakesh@zetainc.in,5858 MG Road Chennai,Chennai,Active
 62,Innovatech,Rahul Sharma,9876543210,29LLLPP1234O5ZX,rahul@innovatech.com,5959 Brigade Road Bangalore,Bangalore,Active
-63,NextGen Solutions,Anjali Singh,9876543210,27MMMQQ5678P6AB,anjali@nextgen.com,6060 MG Road Mumbai,Mumbai,Inactive
 64,Quantum Corp,Rajesh Kumar,9876543210,29NNNRR9101Q7YZ,rajesh@quantumcorp.in,6161 Church Street Hyderabad,Hyderabad,Active
-65,Vector Technologies,Pooja Sharma,9876543210,22OOOSS1234R8ZX,pooja@vectortech.com,6262 MG Road Pune,Pune,Active
 66,TechPros,Ramesh Kumar,9876543210,29PPPTT5678S9AB,ramesh@techpros.in,6363 Park Avenue Chennai,Chennai,Inactive
 67,Alpha Solutions,Sunita Devi,9876543210,27QQQUU9101T0YZ,sunita@alphasolutions.com,6464 MG Road Bangalore,Bangalore,Active
-68,Beta Enterprises,Rajiv Sharma,9876543210,29RRRVV1234U1ZX,rajiv@betaenterprises.in,6565 MG Road Mumbai,Mumbai,Active
-69,Delta Tech,Anita Kumar,9876543210,22SSSWW5678V2AB,anita@deltatech.com,6666 Park Street Kolkata,Kolkata,Inactive
 70,Echo Innovations,Sunil Singh,9876543210,29TTTXX9101W3YZ,sunil@echoinnovations.in,6767 Brigade Road Bangalore,Bangalore,Active
 71,Falcon Solutions,Rakesh Patel,9876543210,27UUUYY1234X4ZX,rakesh@falconsolutions.com,6868 MG Road Chennai,Chennai,Active
 72,Gamma Corp,Rahul Kumar,9876543210,29VVVZZ5678Y5AB,rahul@gammacorp.in,6969 MG Road Hyderabad,Hyderabad,Inactive
-73,OmniTech,Anjali Devi,9876543210,22WWWAA9101Z6YZ,anjali@omnitech.com,7070 MG Road Pune,Pune,Active
 74,Prime Enterprises,Rajesh Singh,9876543210,29XXXBB1234A7ZX,rajesh@primeenterprises.in,7171 Park Avenue Chennai,Chennai,Active
 75,Quantum Solutions,Sunita Kumar,9876543210,27YYYCC5678B8AB,sunita@quantumsolutions.com,7272 MG Road Bangalore,Bangalore,Inactive
-76,Vector Innovations,Rajiv Patel,9876543210,29ZZZDD9101C9YZ,rajiv@vectorinnovations.in,7373 MG Road Mumbai,Mumbai,Active
 77,Zeta Technologies,Pooja Sharma,9876543210,22AAADD1234D0ZX,pooja@zetatechnologies.com,7474 Church Street Hyderabad,Hyderabad,Active
-78,Innovatech,Ramesh Kumar,9876543210,29BBBEE5678E1AB,ramesh@innovatech.in,7575 MG Road Pune,Pune,Inactive
 79,NextGen Solutions,Sunil Singh,9876543210,27CCCFF9101F2YZ,sunil@nextgen.com,7676 Park Avenue Chennai,Chennai,Active
 80,Alpha Enterprises,Rahul Sharma,9876543210,29DDDGG1234G3ZX,rahul@alphaenterprises.in,7777 MG Road Bangalore,Bangalore,Active
-81,Beta Technologies,Anjali Kumar,9876543210,22EEEGG5678H4AB,anjali@betatech.com,7878 MG Road Mumbai,Mumbai,Inactive
-82,Delta Innovations,Rajesh Singh,9876543210,29FFFHH9101I5YZ,rajesh@deltainnovations.in,7979 Park Street Kolkata,Kolkata,Active
 83,Echo Enterprises,Pooja Patel,9876543210,27GGGII1234J6ZX,pooja@echoenterprises.com,8080 MG Road Chennai,Chennai,Active
 84,Falcon Technologies,Sunita Kumar,9876543210,29HHHJJ5678K7AB,sunita@falcontech.in,8181 Brigade Road Bangalore,Bangalore,Inactive
 85,Gamma Solutions,Ramesh Singh,9876543210,22IIIJJ9101L8YZ,ramesh@gammasolutions.com,8282 MG Road Hyderabad,Hyderabad,Active
-86,Omni Enterprises,Rajiv Patel,9876543210,29JJJKK1234M9ZX,rajiv@omni.com,8383 MG Road Pune,Pune,Active
 87,Prime Innovations,Anita Sharma,9876543210,27KKKLL5678N0AB,anita@primeinnovations.in,8484 Park Avenue Chennai,Chennai,Inactive
 88,Quantum Enterprises,Rakesh Kumar,9876543210,29LLLMM9101O1YZ,rakesh@quantumenterprises.com,8585 MG Road Bangalore,Bangalore,Active
-89,Vector Solutions,Sunil Singh,9876543210,22MMMNN1234P2ZX,sunil@vectorsolutions.in,8686 MG Road Mumbai,Mumbai,Active
+90,Zeta Innovations,Rahul Sharma,9876543210,29NNNOO5678Q3AB,rahul@zetainnovations.com,8787 Church Street Hyderabad,Hyderabad,Inactive
+92,NextGen Enterprises,Rajesh Kumar,9876543210,29PPPQQ1234S5ZX,rajesh@nextgenenterprises.in,8989 Park Avenue Chennai,Chennai,Active
+93,Alpha Solutions,Sunita Patel,9876543210,22QQQRR5678T6AB,sunita@alphasolutions.com,9090 MG Road Bangalore,Bangalore,Inactive
+96,Echo Solutions,Rakesh Singh,9876543210,29TTTUU5678W9AB,rakesh@echosolutions.in,9393 MG Road Chennai,Chennai,Inactive
+97,Falcon Enterprises,Rahul Kumar,9876543210,22UUUVV9101X0YZ,rahul@falconenterprises.com,9494 Brigade Road Bangalore,Bangalore,Active
+98,Gamma Innovations,Pooja Sharma,9876543210,29VVVWW1234Y1ZX,pooja@gammainnovations.in,9595 MG Road Hyderabad,Hyderabad,Active
+100,Prime Technologies,Rajesh Kumar,9876543210,29XXXYY9101A3YZ,rajesh@primetechnologies.in,9797 Park Avenue Chennai,Chennai,Active

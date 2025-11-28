@@ -1,18 +1,38 @@
-class AIMSException(Exception):
-    """Base class for all custom exceptions in AIMS."""
+class InvalidInputException(Exception):
+    """
+    Raised when the input does not meet expected criteria.
+    Used for catching invalid or malformed user inputs.
+    """
     pass
 
 
-class ValidationError(AIMSException):
-    """Raised when data validation fails (e.g., invalid date, email)."""
+class DuplicateRecordException(Exception):
+    """
+    Raised when a record already exists in the system (e.g., duplicate email or ID).
+    Used to enforce uniqueness constraints.
+    """
     pass
 
 
-class DatabaseError(AIMSException):
-    """Raised when a database connection or operation fails."""
+class RecordNotFoundException(Exception):
+    """
+    Raised when a requested record is not found in the database.
+    Useful for handling cases where data is missing or deleted.
+    """
     pass
 
 
-class CSVError(AIMSException):
-    """Raised when there is an issue with CSV file handling."""
+class ValidationErrorException(Exception):
+    """
+    Raised when there is an issue with CSV file validation or format.
+    Triggered by issues like incorrect data types or missing columns.
+    """
+    pass
+
+
+class DatabaseConnectionException(Exception):
+    """
+    Raised when a connection to the database cannot be established.
+    Can be used to handle connectivity issues or configuration errors.
+    """
     pass
