@@ -1,7 +1,9 @@
-from fastapi import FastAPI, HTTPException, APIRouter
+from fastapi import FastAPI, HTTPException, APIRouter,Depends
 from typing import Optional
-from ..models.assetsinventory import AssetInventory, StatusValidate
+from ..models.assets_model import AssetInventory, StatusValidate
 from ..crud.asset_crud import AssetCrud
+from ..models.login_model import User
+from ..auth.jwt_auth import get_current_user
 
 # Initialize the AssetCrud instance to interact with the asset database
 asset_reader = AssetCrud()
@@ -11,7 +13,7 @@ asset_router = APIRouter(prefix="/asset")
 
 # Route to create a new asset record in the database
 @asset_router.post("/create")
-def create_asset(asset: AssetInventory):
+def create_asset(asset: AssetInventory,current_user: User = Depends(get_current_user)):
     try:
         # Call the create_asset method from AssetCrud to insert the asset
         return asset_reader.create_asset(asset)
@@ -21,7 +23,7 @@ def create_asset(asset: AssetInventory):
 
 # Route to retrieve a list of all assets, or filter by status
 @asset_router.get("/list")
-def get_all_asset(status: Optional[str] = "ALL"):
+def get_all_asset(status: Optional[str] = "ALL",current_user: User = Depends(get_current_user)):
     try:
         # Call the get_all_asset method from AssetCrud to fetch assets by status
         return asset_reader.get_all_asset(status)
@@ -31,7 +33,7 @@ def get_all_asset(status: Optional[str] = "ALL"):
 
 # Route to retrieve a specific asset by its ID
 @asset_router.get("/{id}")
-def get_asset_by_id(id: int):
+def get_asset_by_id(id: int,current_user: User = Depends(get_current_user)):
     try:
         # Call the get_asset_by_id method from AssetCrud to fetch asset by ID
         return asset_reader.get_asset_by_id(id)
@@ -41,7 +43,7 @@ def get_asset_by_id(id: int):
 
 # Route to update a specific asset by its ID
 @asset_router.put("/{id}")
-def update_asset(id: int, data: AssetInventory):
+def update_asset(id: int, data: AssetInventory,current_user: User = Depends(get_current_user)):
     try:
         # Call the update_asset method from AssetCrud to update asset by ID
         return asset_reader.update_asset(id, data)
@@ -52,7 +54,7 @@ def update_asset(id: int, data: AssetInventory):
 
 # Route to update the status of a specific asset by its ID
 @asset_router.patch("/{id}/status")
-def update_asset_status(id: int, status: StatusValidate):
+def update_asset_status(id: int, status: StatusValidate,current_user: User = Depends(get_current_user)):
     try:
         # Print the status for debugging purposes
         print(status)
@@ -64,7 +66,7 @@ def update_asset_status(id: int, status: StatusValidate):
 
 # Route to delete a specific asset by its ID
 @asset_router.delete("/{id}")
-def delete_asset(id: int):
+def delete_asset(id: int,current_user: User = Depends(get_current_user)):
     try:
         # Call the delete_asset method from AssetCrud to delete the asset by ID
         return asset_reader.delete_asset(id)
@@ -74,7 +76,7 @@ def delete_asset(id: int):
 
 # Route to search for an asset by a specific keyword (e.g., 'asset_tag') and value
 @asset_router.get("/search/keyword")
-def get_asset_by_keyword(keyword: str, value: str):
+def get_asset_by_keyword(keyword: str, value: str,current_user: User = Depends(get_current_user)):
     try:
         # Call the get_asset_by_keyword method from AssetCrud to search assets
         return asset_reader.get_asset_by_keyword(keyword, value)
@@ -85,7 +87,7 @@ def get_asset_by_keyword(keyword: str, value: str):
 
 # Route to retrieve the count of all assets
 @asset_router.get("/list/count")
-def get_count():
+def get_count(current_user: User = Depends(get_current_user)):
     try:
         # Call the get_all_asset_count method from AssetCrud to get the asset count
         return asset_reader.get_all_asset_count()

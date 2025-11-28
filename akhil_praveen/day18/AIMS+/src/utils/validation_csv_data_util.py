@@ -2,10 +2,10 @@
 import csv
 
 # Importing the necessary models for the application from the src.models package
-from src.models.assetsinventory import AssetInventory
-from src.models.employeedirectory import EmployeeDirectory
-from src.models.maintenancelog import MaintenanceLog
-from src.models.vendormaster import VendorMaster
+from models.assets_model import AssetInventory
+from models.employee_model import EmployeeDirectory
+from models.maintenance_model import MaintenanceLog
+from models.vendor_model import VendorMaster
 
 # Defining the base path for the CSV files
 path = "C:/Users/Administrator/Desktop/ust_python_training/akhil_praveen/day18/AIMS+/database/sample_data/"

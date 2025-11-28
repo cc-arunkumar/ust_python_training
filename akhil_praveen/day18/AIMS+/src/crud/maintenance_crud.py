@@ -1,6 +1,6 @@
 import pymysql
 from typing import Optional
-from ..models.maintenancelog import MaintenanceLog, StatusValidate
+from ..models.maintenance_model import MaintenanceLog, StatusValidate
 from ..config.db_connection import get_connection
 from datetime import datetime
 import csv
@@ -257,7 +257,7 @@ class MaintenanceCrud:
                 print("Connection Closed!")
 
     
-    # Method to bulk upload assets from a CSV file     
+    # Method to bulk upload maintenance from a CSV file     
     def bluk_upload(self):
         try:
             with open("path/to/maintenance_log.csv","r") as maintenance_file:

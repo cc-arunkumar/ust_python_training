@@ -1,6 +1,6 @@
 import pymysql
 from typing import Optional
-from ..models.employeedirectory import EmployeeDirectory, StatusValidate
+from ..models.employee_model import EmployeeDirectory, StatusValidate
 from ..config.db_connection import get_connection
 from datetime import datetime
 import csv
@@ -256,7 +256,7 @@ class EmployeeCrud:
                 conn.close()
                 print("Connection Closed!")
     
-    # Method to bulk upload assets from a CSV file     
+    # Method to bulk upload employee from a CSV file     
     def bluk_upload(self):
         try:
             with open("C:/Users/Administrator/Desktop/ust_python_training/akhil_praveen/day18/AIMS+/database/sample_data/final/employee_directory.csv","r") as employee_file:

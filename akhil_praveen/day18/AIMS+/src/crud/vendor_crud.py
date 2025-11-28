@@ -1,6 +1,6 @@
 import pymysql
 from typing import Optional
-from ..models.vendormaster import VendorMaster, StatusValidate
+from ..models.vendor_model import VendorMaster, StatusValidate
 from ..config.db_connection import get_connection
 from datetime import datetime
 import csv
@@ -257,7 +257,7 @@ class VendorCrud:
                 print("Connection Closed!")
 
     
-    # Method to bulk upload assets from a CSV file  
+    # Method to bulk upload vendor from a CSV file  
     def bluk_upload(self):
         try:
             with open("path/to/vendor_master.csv","r") as vendor_file:

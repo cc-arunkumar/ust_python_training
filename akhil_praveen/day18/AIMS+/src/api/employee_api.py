@@ -1,7 +1,9 @@
-from fastapi import FastAPI, HTTPException, APIRouter
+from fastapi import FastAPI, HTTPException, APIRouter,Depends
 from typing import Optional
-from ..models.employeedirectory import EmployeeDirectory, StatusValidate
+from ..models.employee_model import EmployeeDirectory, StatusValidate
 from ..crud.employee_crud import EmployeeCrud
+from ..models.login_model import User
+from ..auth.jwt_auth import get_current_user
 
 # Initialize the EmployeeCrud instance to interact with the employee database
 employee_reader = EmployeeCrud()
@@ -11,7 +13,7 @@ employee_router = APIRouter(prefix="/employee")
 
 # Route to create a new employee record in the database
 @employee_router.post("/create")
-def create_employee(employee: EmployeeDirectory):
+def create_employee(employee: EmployeeDirectory,current_user: User = Depends(get_current_user)):
     try:
         # Call the create_employee method from EmployeeCrud to insert the employee record
         return employee_reader.create_employee(employee)
@@ -22,7 +24,7 @@ def create_employee(employee: EmployeeDirectory):
 
 # Route to retrieve a list of all employees, or filter by status
 @employee_router.get("/list")
-def get_all_employee(status: Optional[str] = "ALL"):
+def get_all_employee(status: Optional[str] = "ALL",current_user: User = Depends(get_current_user)):
     try:
         # Call the get_all_employee method from EmployeeCrud to fetch employees based on status
         return employee_reader.get_all_employee(status)
@@ -32,7 +34,7 @@ def get_all_employee(status: Optional[str] = "ALL"):
 
 # Route to retrieve a specific employee by their ID
 @employee_router.get("/{id}")
-def get_employee_by_id(id: int):
+def get_employee_by_id(id: int,current_user: User = Depends(get_current_user)):
     try:
         # Call the get_employee_by_id method from EmployeeCrud to fetch employee by ID
         return employee_reader.get_employee_by_id(id)
@@ -42,7 +44,7 @@ def get_employee_by_id(id: int):
 
 # Route to update an employee's record by their ID
 @employee_router.put("/{id}")
-def update_employee(id: int, data: EmployeeDirectory):
+def update_employee(id: int, data: EmployeeDirectory,current_user: User = Depends(get_current_user)):
     try:
         # Call the update_employee method from EmployeeCrud to update the employee's data
         return employee_reader.update_employee(id, data)
@@ -53,7 +55,7 @@ def update_employee(id: int, data: EmployeeDirectory):
 
 # Route to update the status of an employee by their ID
 @employee_router.patch("/{id}/status")
-def update_employee_status(id: int, status: StatusValidate):
+def update_employee_status(id: int, status: StatusValidate,current_user: User = Depends(get_current_user)):
     try:
         # Print the status for debugging purposes
         print(status)
@@ -65,7 +67,7 @@ def update_employee_status(id: int, status: StatusValidate):
 
 # Route to delete an employee record by their ID
 @employee_router.delete("/{id}")
-def delete_employee(id: int):
+def delete_employee(id: int,current_user: User = Depends(get_current_user)):
     try:
         # Call the delete_employee method from EmployeeCrud to delete the employee by ID
         return employee_reader.delete_employee(id)
@@ -75,7 +77,7 @@ def delete_employee(id: int):
 
 # Route to search for an employee by a specific keyword (e.g., 'emp_code') and value
 @employee_router.get("/search/keyword")
-def get_employee_by_keyword(keyword: str, value: str):
+def get_employee_by_keyword(keyword: str, value: str,current_user: User = Depends(get_current_user)):
     try:
         # Call the get_employee_by_keyword method from EmployeeCrud to search employees
         return employee_reader.get_employee_by_keyword(keyword, value)
@@ -86,7 +88,7 @@ def get_employee_by_keyword(keyword: str, value: str):
 
 # Route to retrieve the count of all employees
 @employee_router.get("/list/count")
-def get_count():
+def get_count(current_user: User = Depends(get_current_user)):
     try:
         # Call the get_all_employee_count method from EmployeeCrud to get the employee count
         return employee_reader.get_all_employee_count()

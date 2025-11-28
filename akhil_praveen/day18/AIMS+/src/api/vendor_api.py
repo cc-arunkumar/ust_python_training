@@ -1,7 +1,9 @@
-from fastapi import FastAPI, HTTPException, APIRouter
+from fastapi import FastAPI, HTTPException, APIRouter,Depends
 from typing import Optional
-from ..models.vendormaster import VendorMaster, StatusValidate
+from ..models.vendor_model import VendorMaster, StatusValidate
 from ..crud.vendor_crud import VendorCrud
+from ..models.login_model import User
+from ..auth.jwt_auth import get_current_user
 
 # Initialize the VendorCrud instance to interact with the vendor database
 vendor_reader = VendorCrud()
@@ -11,7 +13,7 @@ vendor_router = APIRouter(prefix="/vendor")
 
 # Route to create a new vendor record in the database
 @vendor_router.post("/create")
-def create_vendor(vendor: VendorMaster):
+def create_vendor(vendor: VendorMaster,current_user: User = Depends(get_current_user)):
     try:
         # Call the create_vendor method from VendorCrud to insert the vendor record
         return vendor_reader.create_vendor(vendor)
@@ -22,7 +24,7 @@ def create_vendor(vendor: VendorMaster):
 
 # Route to retrieve a list of all vendors, or filter by status
 @vendor_router.get("/list")
-def get_all_vendor(status: Optional[str] = "ALL"):
+def get_all_vendor(status: Optional[str] = "ALL",current_user: User = Depends(get_current_user)):
     try:
         # Call the get_all_vendor method from VendorCrud to fetch vendor records based on status
         return vendor_reader.get_all_vendor(status)
@@ -32,7 +34,7 @@ def get_all_vendor(status: Optional[str] = "ALL"):
 
 # Route to retrieve a specific vendor record by its ID
 @vendor_router.get("/{id}")
-def get_vendor_by_id(id: int):
+def get_vendor_by_id(id: int,current_user: User = Depends(get_current_user)):
     try:
         # Call the get_vendor_by_id method from VendorCrud to fetch the vendor record by ID
         return vendor_reader.get_vendor_by_id(id)
@@ -42,7 +44,7 @@ def get_vendor_by_id(id: int):
 
 # Route to update a vendor record by its ID
 @vendor_router.put("/{id}")
-def update_vendor(id: int, data: VendorMaster):
+def update_vendor(id: int, data: VendorMaster,current_user: User = Depends(get_current_user)):
     try:
         # Call the update_vendor method from VendorCrud to update the vendor record
         return vendor_reader.update_vendor(id, data)
@@ -53,7 +55,7 @@ def update_vendor(id: int, data: VendorMaster):
 
 # Route to update the status of a vendor record by its ID
 @vendor_router.patch("/{id}/status")
-def update_vendor_status(id: int, status: StatusValidate):
+def update_vendor_status(id: int, status: StatusValidate,current_user: User = Depends(get_current_user)):
     try:
         # Print the status for debugging purposes
         print(status)
@@ -65,7 +67,7 @@ def update_vendor_status(id: int, status: StatusValidate):
 
 # Route to delete a vendor record by its ID
 @vendor_router.delete("/{id}")
-def delete_vendor(id: int):
+def delete_vendor(id: int,current_user: User = Depends(get_current_user)):
     try:
         # Call the delete_vendor method from VendorCrud to delete the vendor record by ID
         return vendor_reader.delete_vendor(id)
@@ -75,7 +77,7 @@ def delete_vendor(id: int):
 
 # Route to search for a vendor record by a specific keyword (e.g., 'vendor_name') and value
 @vendor_router.get("/search/keyword")
-def get_vendor_by_keyword(keyword: str, value: str):
+def get_vendor_by_keyword(keyword: str, value: str,current_user: User = Depends(get_current_user)):
     try:
         # Call the get_vendor_by_keyword method from VendorCrud to search vendor records
         return vendor_reader.get_vendor_by_keyword(keyword, value)
@@ -86,7 +88,7 @@ def get_vendor_by_keyword(keyword: str, value: str):
 
 # Route to retrieve the count of all vendor records
 @vendor_router.get("/list/count")
-def get_count():
+def get_count(current_user: User = Depends(get_current_user)):
     try:
         # Call the get_all_vendor_count method from VendorCrud to get the vendor count
         return vendor_reader.get_all_vendor_count()
