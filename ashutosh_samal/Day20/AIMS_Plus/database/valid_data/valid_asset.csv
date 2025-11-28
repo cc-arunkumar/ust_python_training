@@ -1,0 +1,43 @@
+asset_tag,asset_type,serial_number,manufacturer,model,purchase_date,warranty_years,condition_status,assigned_to,location,asset_status
+UST-LTP-0001,Laptop,SN-DL-10001,Dell,Latitude 5520,2022-01-15,3,Good,Rohit Sharma,Trivandrum,Assigned
+UST-MNT-0003,Monitor,SN-LG-10003,LG,UltraWide 29WL500,2021-11-20,2,Good,,Chennai,Available
+UST-MNT-0004,Monitor,SN-SAM-10004,Samsung,S24R350,2023-03-12,3,New,,Hyderabad,Available
+UST-LTP-0005,Laptop,SN-DL-10005,Dell,Latitude 5521,2024-12-01,3,Good,Ramesh Kumar,Trivandrum,Assigned
+UST-MNT-0011,Monitor,SN-LG-10011,LG,UltraWide 29WL501,2021-11-21,2,Good,,Chennai,Available
+UST-MNT-0012,Monitor,SN-SAM-10012,Samsung,S24R352,2023-03-13,3,New,,Hyderabad,Available
+UST-MNT-0015,Monitor,SN-LG-10015,LG,UltraWide 29WL502,2021-11-23,2,Good,,Chennai,Available
+UST-MNT-0016,Monitor,SN-SAM-10016,Samsung,S24R353,2023-03-14,3,New,,Hyderabad,Available
+UST-LTP-0017,Laptop,SN-DL-10017,Dell,Latitude 5524,2024-02-28,3,Good,Deepak Reddy,Trivandrum,Assigned
+UST-MNT-0019,Monitor,SN-LG-10019,LG,UltraWide 29WL503,2021-11-24,2,Good,,Chennai,Available
+UST-LTP-0021,Laptop,SN-DL-10021,Dell,Latitude 5525,2022-04-10,3,Good,Rohit Sharma,Trivandrum,Assigned
+UST-MNT-0024,Monitor,SN-SAM-10024,Samsung,S24R355,2025-03-20,3,Good,,Hyderabad,Available
+UST-LTP-0029,Laptop,SN-DL-10029,Dell,Latitude 5527,2022-03-18,3,Good,Vivek Reddy,Trivandrum,Assigned
+UST-MNT-0032,Monitor,SN-SAM-10032,Samsung,S24R357,2023-07-15,3,Good,,Hyderabad,Available
+UST-LTP-0033,Laptop,SN-DL-10033,Dell,Latitude 5528,2022-09-20,3,Good,Rajesh Patel,Trivandrum,Assigned
+UST-MNT-0036,Monitor,SN-SAM-10036,Samsung,S24R358,2023-11-14,3,Good,,Hyderabad,Available
+UST-LTP-0037,Laptop,SN-DL-10037,Dell,Latitude 5529,2024-02-28,3,Good,Deepak Reddy,Trivandrum,Assigned
+UST-MNT-0039,Monitor,SN-LG-10039,LG,UltraWide 29WL507,2021-11-24,2,Good,,Chennai,Available
+UST-LTP-0041,Laptop,SN-DL-10041,Dell,Latitude 5530,2022-01-10,3,Good,Rohit Sharma,Trivandrum,Assigned
+UST-MNT-0044,Monitor,SN-SAM-10044,Samsung,S24R360,2025-01-12,3,Good,,Hyderabad,Available
+UST-LTP-0049,Laptop,SN-DL-10049,Dell,Latitude 5532,2022-08-18,3,Good,Vivek Reddy,Trivandrum,Assigned
+UST-MNT-0052,Monitor,SN-SAM-10052,Samsung,S24R362,2023-07-15,3,Good,,Hyderabad,Available
+UST-LTP-0053,Laptop,SN-DL-10053,Dell,Latitude 5533,2022-09-20,3,Good,Rajesh Patel,Trivandrum,Assigned
+UST-MNT-0056,Monitor,SN-SAM-10056,Samsung,S24R363,2023-11-14,3,Good,,Hyderabad,Available
+UST-LTP-0057,Laptop,SN-DL-10057,Dell,Latitude 5534,2024-02-28,3,Good,Deepak Reddy,Trivandrum,Assigned
+UST-MNT-0059,Monitor,SN-LG-10059,LG,UltraWide 29WL511,2021-11-24,2,Good,,Chennai,Available
+UST-LTP-0061,Laptop,SN-DL-10061,Dell,Latitude 5535,2022-04-10,3,Good,Rohit Sharma,Trivandrum,Assigned
+UST-MNT-0064,Monitor,SN-SAM-10064,Samsung,S24R365,2025-03-20,3,Good,,Hyderabad,Available
+UST-LTP-0069,Laptop,SN-DL-10069,Dell,Latitude 5537,2022-03-18,3,Good,Vivek Reddy,Trivandrum,Assigned
+UST-MNT-0072,Monitor,SN-SAM-10072,Samsung,S24R367,2023-07-15,3,Good,,Hyderabad,Available
+UST-LTP-0073,Laptop,SN-DL-10073,Dell,Latitude 5538,2022-09-20,3,Good,Rajesh Patel,Trivandrum,Assigned
+UST-MNT-0076,Monitor,SN-SAM-10076,Samsung,S24R368,2023-11-14,3,Good,,Hyderabad,Available
+UST-LTP-0077,Laptop,SN-DL-10077,Dell,Latitude 5539,2024-02-28,3,Good,Deepak Reddy,Trivandrum,Assigned
+UST-MNT-0079,Monitor,SN-LG-10079,LG,UltraWide 29WL515,2021-11-24,2,Good,,Chennai,Available
+UST-LTP-0081,Laptop,SN-DL-10081,Dell,Latitude 5540,2022-04-10,3,Good,Rohit Sharma,Trivandrum,Assigned
+UST-MNT-0084,Monitor,SN-SAM-10084,Samsung,S24R370,2025-03-20,3,Good,,Hyderabad,Available
+UST-LTP-0089,Laptop,SN-DL-10089,Dell,Latitude 5542,2022-03-18,3,Good,Vivek Reddy,Trivandrum,Assigned
+UST-MNT-0092,Monitor,SN-SAM-10092,Samsung,S24R372,2023-07-15,3,Good,,Hyderabad,Available
+UST-LTP-0093,Laptop,SN-DL-10093,Dell,Latitude 5543,2022-09-20,3,Good,Rajesh Patel,Trivandrum,Assigned
+UST-MNT-0096,Monitor,SN-SAM-10096,Samsung,S24R373,2023-11-14,3,Good,,Hyderabad,Available
+UST-LTP-0097,Laptop,SN-DL-10097,Dell,Latitude 5544,2024-02-28,3,Good,Deepak Reddy,Trivandrum,Assigned
+UST-MNT-0099,Monitor,SN-LG-10099,LG,UltraWide 29WL519,2021-11-24,2,Good,,Chennai,Available
