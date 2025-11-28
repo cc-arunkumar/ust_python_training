@@ -24,7 +24,7 @@ It provides RESTful APIs to manage assets, employees, maintenance logs, and vend
 ---
  
 ## 📂 Project Structure
-`
+```
 AIMS_Plus/
 │
 ├── database/
@@ -75,7 +75,7 @@ AIMS_Plus/
 │   └── main.py
 │
 └── README.md
- `
+ ```
 **1. Configure Database**
  
 - Update src/config/db_connection.py with your MySQL credentials:
@@ -141,4 +141,5 @@ conn = pymysql.Connect(
 - GET /maintenance/search?keyword=
 
 - GET /maintenance/count
+
 
