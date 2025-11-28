@@ -18,7 +18,7 @@ serial_numbers_seen = set()
 valid_maintenance_types=["Repair", "Service", "Upgrade"]
 valid_maintencance_statuses = ["Completed", "Pending"]
 
-with open(r'C:\Users\Administrator\Desktop\Training\ust_python_training\harsh\day18\AIMS+\sample_data\asset_inventory.csv', mode='r') as file1:
+with open(r'C:\Users\Administrator\Desktop\Training\ust_python_training\harsh\day18\AIMSPlus\database\asset_inventory.csv', mode='r') as file1:
     reader = csv.DictReader(file1)
     all_fields = reader.fieldnames
     
@@ -67,7 +67,7 @@ with open(r'C:\Users\Administrator\Desktop\Training\ust_python_training\harsh\da
         if not errors:
             valid_rows.append(row)
     
-output_file = r'C:\Users\Administrator\Desktop\Training\ust_python_training\harsh\day18\AIMS+\sample_data\validated_asset_inventory.csv'
+output_file = r'C:\Users\Administrator\Desktop\Training\ust_python_training\harsh\day18\AIMSPlus\validated_asset_inventory.csv'
 
 with open(output_file, mode='w', newline='') as file2:
     writer = csv.DictWriter(file2, fieldnames=all_fields)
@@ -77,7 +77,7 @@ with open(output_file, mode='w', newline='') as file2:
 print(f"Validation completed. {len(valid_rows)} valid rows saved to '{output_file}'.")
 
 
-with open (r'C:\Users\Administrator\Desktop\Training\ust_python_training\harsh\day18\AIMS+\sample_data\vendor_master.csv',mode='r')as file2:
+with open (r'C:\Users\Administrator\Desktop\Training\ust_python_training\harsh\day18\AIMSPlus\database\vendor_master.csv',mode='r')as file2:
     reader=csv.DictReader(file2)
     all_fields=reader.fieldnames
     
@@ -115,7 +115,7 @@ with open (r'C:\Users\Administrator\Desktop\Training\ust_python_training\harsh\d
             valid_vendors.append(row)
         
 
-with open(r'C:\Users\Administrator\Desktop\Training\ust_python_training\harsh\day18\AIMS+\sample_data\updated_vendor_master.csv', mode='w', newline='') as file2:
+with open(r'C:\Users\Administrator\Desktop\Training\ust_python_training\harsh\day18\AIMSPlus\updated_vendor_master.csv', mode='w', newline='') as file2:
     writer = csv.DictWriter(file2, fieldnames=all_fields)
     writer.writeheader()
     writer.writerows(valid_vendors)
@@ -124,7 +124,7 @@ print(f"Validation completed. {len(valid_vendors)} valid vendors saved to '{outp
 
 
 
-with open(r'C:\Users\Administrator\Desktop\Training\ust_python_training\harsh\day18\AIMS+\sample_data\maintenance_log.csv', mode='r') as file3:
+with open(r'C:\Users\Administrator\Desktop\Training\ust_python_training\harsh\day18\AIMSPlus\database\maintenance_log.csv', mode='r') as file3:
     reader = csv.DictReader(file3)
     all_fields = reader.fieldnames
     maintenance_rows=[]
@@ -171,7 +171,7 @@ with open(r'C:\Users\Administrator\Desktop\Training\ust_python_training\harsh\da
             maintenance_rows.append(row)
 
 
-with open(r'C:\Users\Administrator\Desktop\Training\ust_python_training\harsh\day18\AIMS+\sample_data\updated_maintenance_valid.csv', mode='w', newline='') as valid_file:
+with open(r'C:\Users\Administrator\Desktop\Training\ust_python_training\harsh\day18\AIMSPlus\updated_maintenance_valid.csv', mode='w', newline='') as valid_file:
     writer = csv.DictWriter(valid_file, fieldnames=all_fields)
     writer.writeheader()
     writer.writerows(maintenance_rows)

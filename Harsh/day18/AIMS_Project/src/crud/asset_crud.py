@@ -7,16 +7,6 @@ def create_asset(asset_tag, asset_type, serial_number, manufacturer, model, purc
     try:  
         conn = get_connection()
         cursor = conn.cursor()
-        if not validators.validate_asset_tag(asset_tag):
-            raise ValueError("asset_tag must start with 'UST-'")
-        if not validators.validate_asset_type(asset_type):
-            raise ValueError("Invalid asset_type")
-        if not validators.validate_warranty(warranty_years):
-            raise ValueError("warranty_years must be > 0")
-        if not validators.validate_status_and_assignment(asset_status, assigned_to):
-            raise ValueError("Invalid status/assignment combination")
-
-        
         
         query = """INSERT INTO asset_inventory 
                     (asset_tag, asset_type, serial_number, manufacturer, model, purchase_date, warranty_years, assigned_to, asset_status, last_updated)
@@ -73,9 +63,6 @@ def delete_asset(asset_id):
     finally:
         cursor.close()
         conn.close()
-
-from config.db_connection import get_connection
-from datetime import datetime
 
 def update_asset(asset_id, asset_type, manufacturer, model, warranty_years, asset_status, assigned_to):
     conn = get_connection()
