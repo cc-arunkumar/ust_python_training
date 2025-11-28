@@ -1,0 +1,85 @@
+asset_tag,asset_type,serial_number,manufacturer,model,purchase_date,warranty_years,condition_status,assigned_to,location,asset_status
+UST-LTP-0001,Laptop,SN-DL-10001,Dell,Latitude 5520,2022-01-15,3,Good,Rohit Sharma,Trivandrum,Assigned
+UST-LTP-0002,Laptop,SN-LN-10002,Lenovo,ThinkPad E15,2023-02-10,2,New,Anjali Nair,Bangalore,Assigned
+UST-MNT-0003,Monitor,SN-LG-10003,LG,UltraWide 29WL500,2021-11-20,2,Good,,Chennai,Available
+UST-MNT-0004,Monitor,SN-SAM-10004,Samsung,S24R350,2023-03-12,3,New,,Hyderabad,Available
+UST-LTP-0005,Laptop,SN-DL-10005,Dell,Latitude 5521,2024-12-01,3,Good,Ramesh Kumar,Trivandrum,Assigned
+UST-LTP-0006,Laptop,SN-LN-10006,Lenovo,ThinkPad E16,2022-06-10,-1,New,Anita Das,Bangalore,Assigned
+UST-MNT-0007,Monitor,SN-LG-10007,LG,,2021-11-22,2,Fair,,Chennai,Available
+UST-MNT-0008,Monitor,SN-SAM-10008,Samsng,S24R351,2025-03-12,3,Good,,Hyderabad,Available
+UST-LTP-0009,Laptop,SN-DL-10009,Dell,Latitude 5522,2022-01-18,0,Excellent,Vivek Reddy,Trivandrum,Assigned
+UST-LTP-0010,Laptop,SN-LN-10010,Lenovo,ThinkPad E17,2023-02-12,2,New,Preeti Singh,Bangalore,Assigned
+UST-MNT-0011,Monitor,SN-LG-10011,LG,UltraWide 29WL501,2021-11-21,2,Good,,Chennai,Available
+UST-MNT-0012,Monitor,SN-SAM-10012,Samsung,S24R352,2023-03-13,3,New,,Hyderabad,Available
+UST-LTP-0013,Laptop,SN-DL-10013,Dell,Latitude 5523,2022-01-20,3,Fair,Rajesh Patel,Trivandrum,Assigned
+UST-LTP-0014,Laptop,SN-LN-10014,Lenovo,ThinkPad E18,2023-02-15,2,New,Divya Menon,Bangalore,Assigned
+UST-MNT-0015,Monitor,SN-LG-10015,LG,UltraWide 29WL502,2021-11-23,2,Good,,Chennai,Available
+UST-MNT-0016,Monitor,SN-SAM-10016,Samsung,S24R353,2023-03-14,3,New,,Hyderabad,Available
+UST-LTP-0017,Laptop,SN-DL-10017,Dell,Latitude 5524,2024-02-28,3,Good,Deepak Reddy,Trivandrum,Assigned
+UST-LTP-0018,Laptop,SN-LN-10018,Lenovo,ThinkPad E19,2022-06-11,2,New,Neha Gupta,Bangalore,Assigned
+UST-MNT-0019,Monitor,SN-LG-10019,LG,UltraWide 29WL503,2021-11-24,2,Good,,Chennai,Available
+UST-MNT-0020,Monitor,SN-SAM-10020,Samsung,S24R354,2023-03-15,3,Fair,,Hyderabad,Available
+UST-LTP-0021,Laptop,SN-DL-10021,Dell,Latitude 5525,2022-04-10,3,Good,Rohit Sharma,Trivandrum,Assigned
+UST-LTP-0022,Laptop,SN-LN-10022,Lenovo,ThinkPad E20,2023-05-18,2,New,Anjali Nair,Bangalore,Assigned
+UST-MNT-0023,Monitor,SN-LG-10023,LG,UltraWide 29WL504,2021-06-12,2,Fair,,Chennai,Available
+UST-MNT-0024,Monitor,SN-SAM-10024,Samsung,S24R355,2025-03-20,3,Good,,Hyderabad,Available
+UST-LTP-0025,Laptop,SN-DL-10025,Dell,Latitude 5526,2024-01-15,0,Good,Ramesh Kumar,Trivandrum,Assigned
+UST-LTP-0026,Laptop,SN-LN-10026,Lenovo,ThinkPad E21,2022-08-10,-2,New,Anita Das,Bangalore,Assigned
+UST-MNT-0027,Monitor,SN-LG-10027,LG,,2021-07-25,2,Fair,,Chennai,Available
+UST-MNT-0028,Monitor,SN-SAM-10028,Samsng,S24R356,2025-04-12,3,Excellent,,Hyderabad,Available
+UST-LTP-0029,Laptop,SN-DL-10029,Dell,Latitude 5527,2022-03-18,3,Good,Vivek Reddy,Trivandrum,Assigned
+UST-LTP-0030,Laptop,SN-LN-10030,Lenovo,ThinkPad E22,2023-06-12,2,New,Preeti Singh,Bangalore,Assigned
+UST-MNT-0031,Monitor,SN-LG-10031,LG,UltraWide 29WL505,2021-05-21,2,Fair,,Chennai,Available
+UST-MNT-0032,Monitor,SN-SAM-10032,Samsung,S24R357,2023-07-15,3,Good,,Hyderabad,Available
+UST-LTP-0033,Laptop,SN-DL-10033,Dell,Latitude 5528,2022-09-20,3,Good,Rajesh Patel,Trivandrum,Assigned
+UST-LTP-0034,Laptop,SN-LN-10034,Lenovo,ThinkPad E23,2023-08-15,2,New,Divya Menon,Bangalore,Assigned
+UST-MNT-0035,Monitor,SN-LG-10035,LG,UltraWide 29WL506,2021-10-23,2,Fair,,Chennai,Available
+UST-MNT-0036,Monitor,SN-SAM-10036,Samsung,S24R358,2023-11-14,3,Good,,Hyderabad,Available
+UST-LTP-0037,Laptop,SN-DL-10037,Dell,Latitude 5529,2024-02-28,3,Good,Deepak Reddy,Trivandrum,Assigned
+UST-LTP-0038,Laptop,SN-LN-10038,Lenovo,ThinkPad E24,2022-12-11,2,New,Neha Gupta,Bangalore,Assigned
+UST-MNT-0039,Monitor,SN-LG-10039,LG,UltraWide 29WL507,2021-11-24,2,Good,,Chennai,Available
+UST-MNT-0040,Monitor,SN-SAM-10040,Samsung,S24R359,2023-12-15,3,Fair,,Hyderabad,Available
+UST-LTP-0041,Laptop,SN-DL-10041,Dell,Latitude 5530,2022-01-10,3,Good,Rohit Sharma,Trivandrum,Assigned
+UST-LTP-0042,Laptop,SN-LN-10042,Lenovo,ThinkPad E25,2023-02-18,2,New,Anjali Nair,Bangalore,Assigned
+UST-MNT-0043,Monitor,SN-LG-10043,LG,UltraWide 29WL508,2021-03-12,2,Fair,,Chennai,Available
+UST-MNT-0044,Monitor,SN-SAM-10044,Samsung,S24R360,2025-01-12,3,Good,,Hyderabad,Available
+UST-LTP-0045,Laptop,SN-DL-10045,Dell,Latitude 5531,2024-05-15,0,Good,Ramesh Kumar,Trivandrum,Assigned
+UST-LTP-0046,Laptop,SN-LN-10046,Lenovo,ThinkPad E26,2022-06-10,-1,New,Anita Das,Bangalore,Assigned
+UST-MNT-0047,Monitor,SN-LG-10047,LG,,2021-07-22,2,Fair,,Chennai,Available
+UST-MNT-0048,Monitor,SN-SAM-10048,Samsng,S24R361,2025-03-15,3,Excellent,,Hyderabad,Available
+UST-LTP-0049,Laptop,SN-DL-10049,Dell,Latitude 5532,2022-08-18,3,Good,Vivek Reddy,Trivandrum,Assigned
+UST-LTP-0050,Laptop,SN-LN-10050,Lenovo,ThinkPad E27,2023-09-12,2,New,Preeti Singh,Bangalore,Assigned
+UST-MNT-0051,Monitor,SN-LG-10051,LG,UltraWide 29WL509,2021-05-21,2,Fair,,Chennai,Available
+UST-MNT-0052,Monitor,SN-SAM-10052,Samsung,S24R362,2023-07-15,3,Good,,Hyderabad,Available
+UST-LTP-0053,Laptop,SN-DL-10053,Dell,Latitude 5533,2022-09-20,3,Good,Rajesh Patel,Trivandrum,Assigned
+UST-LTP-0054,Laptop,SN-LN-10054,Lenovo,ThinkPad E28,2023-08-15,2,New,Divya Menon,Bangalore,Assigned
+UST-MNT-0055,Monitor,SN-LG-10055,LG,UltraWide 29WL510,2021-10-23,2,Fair,,Chennai,Available
+UST-MNT-0056,Monitor,SN-SAM-10056,Samsung,S24R363,2023-11-14,3,Good,,Hyderabad,Available
+UST-LTP-0057,Laptop,SN-DL-10057,Dell,Latitude 5534,2024-02-28,3,Good,Deepak Reddy,Trivandrum,Assigned
+UST-LTP-0058,Laptop,SN-LN-10058,Lenovo,ThinkPad E29,2022-12-11,2,New,Neha Gupta,Bangalore,Assigned
+UST-MNT-0059,Monitor,SN-LG-10059,LG,UltraWide 29WL511,2021-11-24,2,Good,,Chennai,Available
+UST-MNT-0060,Monitor,SN-SAM-10060,Samsung,S24R364,2023-12-15,3,Fair,,Hyderabad,Available
+UST-LTP-0061,Laptop,SN-DL-10061,Dell,Latitude 5535,2022-04-10,3,Good,Rohit Sharma,Trivandrum,Assigned
+UST-LTP-0062,Laptop,SN-LN-10062,Lenovo,ThinkPad E30,2023-05-18,2,New,Anjali Nair,Bangalore,Assigned
+UST-MNT-0063,Monitor,SN-LG-10063,LG,UltraWide 29WL512,2021-06-12,2,Fair,,Chennai,Available
+UST-MNT-0064,Monitor,SN-SAM-10064,Samsung,S24R365,2025-03-20,3,Good,,Hyderabad,Available
+UST-LTP-0065,Laptop,SN-DL-10065,Dell,Latitude 5536,2024-01-15,0,Good,Ramesh Kumar,Trivandrum,Assigned
+UST-LTP-0066,Laptop,SN-LN-10066,Lenovo,ThinkPad E31,2022-08-10,-2,New,Anita Das,Bangalore,Assigned
+UST-MNT-0067,Monitor,SN-LG-10067,LG,,2021-07-25,2,Fair,,Chennai,Available
+UST-MNT-0068,Monitor,SN-SAM-10068,Samsng,S24R366,2025-04-12,3,Excellent,,Hyderabad,Available
+UST-LTP-0069,Laptop,SN-DL-10069,Dell,Latitude 5537,2022-03-18,3,Good,Vivek Reddy,Trivandrum,Assigned
+UST-LTP-0070,Laptop,SN-LN-10070,Lenovo,ThinkPad E32,2023-06-12,2,New,Preeti Singh,Bangalore,Assigned
+UST-MNT-0071,Monitor,SN-LG-10071,LG,UltraWide 29WL513,2021-05-21,2,Fair,,Chennai,Available
+UST-MNT-0072,Monitor,SN-SAM-10072,Samsung,S24R367,2023-07-15,3,Good,,Hyderabad,Available
+UST-LTP-0073,Laptop,SN-DL-10073,Dell,Latitude 5538,2022-09-20,3,Good,Rajesh Patel,Trivandrum,Assigned
+UST-LTP-0074,Laptop,SN-LN-10074,Lenovo,ThinkPad E33,2023-08-15,2,New,Divya Menon,Bangalore,Assigned
+UST-MNT-0075,Monitor,SN-LG-10075,LG,UltraWide 29WL514,2021-10-23,2,Fair,,Chennai,Available
+UST-MNT-0076,Monitor,SN-SAM-10076,Samsung,S24R368,2023-11-14,3,Good,,Hyderabad,Available
+UST-LTP-0077,Laptop,SN-DL-10077,Dell,Latitude 5539,2024-02-28,3,Good,Deepak Reddy,Trivandrum,Assigned
+UST-LTP-0078,Laptop,SN-LN-10078,Lenovo,ThinkPad E34,2022-12-11,2,New,Neha Gupta,Bangalore,Assigned
+UST-MNT-0079,Monitor,SN-LG-10079,LG,UltraWide 29WL515,2021-11-24,2,Good,,Chennai,Available
+UST-MNT-0080,Monitor,SN-SAM-10080,Samsung,S24R369,2023-12-15,3,Fair,,Hyderabad,Available
+UST-LTP-0081,Laptop,SN-DL-10081,Dell,Latitude 5540,2022-04-10,3,Good,Rohit Sharma,Trivandrum,Assigned
+UST-LTP-0082,Laptop,SN-LN-10082,Lenovo,ThinkPad E35,2023-05-18,2,New,Anjali Nair,Bangalore,Assigned
+UST-MNT-0083,Monitor,SN-LG-10083,LG,UltraWide 29WL516,2021-06-12,2,Fair,,Chennai,Available
+UST-MNT-0084,Monitor,SN-SAM-10084,Samsung,S24R370,2025-03-20,3,Good,,Hyderabad,Available
