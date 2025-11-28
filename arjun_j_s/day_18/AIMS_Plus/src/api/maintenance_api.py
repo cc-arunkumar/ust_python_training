@@ -3,7 +3,7 @@ from ..models.maintenance_model import MaintenanceLog
 from ..models.user_model import User
 from ..crud.maintenance_crud import Maintain
 from typing import List, Optional
-from ..auth.authentication import get_current_user
+from ..auth.jwt_auth import get_current_user
 
 log_service = Maintain()  # Service instance for maintenance CRUD
 log_router = APIRouter(prefix="/maintenance")  # Router with /maintenance prefix

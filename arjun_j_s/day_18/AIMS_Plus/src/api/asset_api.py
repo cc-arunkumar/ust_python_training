@@ -3,7 +3,7 @@ from ..models.asset_model import AssetInventory
 from ..models.user_model import User
 from ..crud.asset_crud import Asset
 from typing import List, Optional
-from ..auth.authentication import get_current_user
+from ..auth.jwt_auth import get_current_user
 
 
 asset_service = Asset()  # Service instance for asset CRUD

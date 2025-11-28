@@ -3,7 +3,7 @@ from ..models.vendor_model import VendorMaster
 from ..models.user_model import User
 from ..crud.vendor_crud import Vendor
 from typing import List, Optional
-from ..auth.authentication import get_current_user
+from ..auth.jwt_auth import get_current_user
 
 vendor_service = Vendor()  # Service instance for vendor CRUD
 vendor_router = APIRouter(prefix="/vendor")  # Router with /vendor prefix

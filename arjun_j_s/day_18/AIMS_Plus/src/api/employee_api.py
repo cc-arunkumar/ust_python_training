@@ -3,7 +3,7 @@ from ..models.employee_model import EmployeeDirectory
 from ..models.user_model import User
 from ..crud.employee_crud import Employee
 from typing import List, Optional
-from ..auth.authentication import get_current_user
+from ..auth.jwt_auth import get_current_user
 
 emp_service = Employee()  # Service instance for employee CRUD
 emp_router = APIRouter(prefix="/employees")  # Router with /employees prefix
