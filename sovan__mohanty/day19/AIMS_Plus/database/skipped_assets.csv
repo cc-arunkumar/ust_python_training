@@ -1,0 +1,66 @@
+asset_tag,asset_type,serial_number,manufacturer,model,purchase_date,warranty_years,condition_status,assigned_to,location,asset_status,error_reason
+UST-LTP-0001,Laptop,SN-DL-10001,Dell,Latitude 5520,1/15/2022,3,Good,Rohit Sharma,Trivandrum,Assigned,Invalid location
+UST-MNT-0003,Monitor,SN-LG-10003,LG,UltraWide 29WL500,11/20/2021,2,Good,,Chennai,Available,Invalid manufacturer
+UST-LTP-0005,Laptop,SN-DL-10005,Dell,Latitude 5521,12/1/2024,3,Good,Ramesh Kumar,Trivandrum,Assigned,Invalid location
+UST-LTP-0006,Laptop,SN-LN-10006,Lenovo,ThinkPad E16,6/10/2022,-1,New,Anita Das,Bangalore,Assigned,Warranty years must be 1-5
+UST-MNT-0007,Monitor,SN-LG-10007,LG,,11/22/2021,2,Fair,,Chennai,Available,Invalid manufacturer
+UST-MNT-0008,Monitor,SN-SAM-10008,Samsng,S24R351,3/12/2025,3,Good,,Hyderabad,Available,Invalid manufacturer
+UST-LTP-0009,Laptop,SN-DL-10009,Dell,Latitude 5522,1/18/2022,0,Excellent,Vivek Reddy,Trivandrum,Assigned,Warranty years must be 1-5
+UST-MNT-0011,Monitor,SN-LG-10011,LG,UltraWide 29WL501,11/21/2021,2,Good,,Chennai,Available,Invalid manufacturer
+UST-LTP-0013,Laptop,SN-DL-10013,Dell,Latitude 5523,1/20/2022,3,Fair,Rajesh Patel,Trivandrum,Assigned,Invalid condition_status
+UST-MNT-0015,Monitor,SN-LG-10015,LG,UltraWide 29WL502,11/23/2021,2,Good,,Chennai,Available,Invalid manufacturer
+UST-LTP-0017,Laptop,SN-DL-10017,Dell,Latitude 5524,2/28/2024,3,Good,Deepak Reddy,Trivandrum,Assigned,Invalid location
+UST-MNT-0019,Monitor,SN-LG-10019,LG,UltraWide 29WL503,11/24/2021,2,Good,,Chennai,Available,Invalid manufacturer
+UST-MNT-0020,Monitor,SN-SAM-10020,Samsung,S24R354,3/15/2023,3,Fair,,Hyderabad,Available,Invalid condition_status
+UST-LTP-0021,Laptop,SN-DL-10021,Dell,Latitude 5525,4/10/2022,3,Good,Rohit Sharma,Trivandrum,Assigned,Invalid location
+UST-MNT-0023,Monitor,SN-LG-10023,LG,UltraWide 29WL504,6/12/2021,2,Fair,,Chennai,Available,Invalid manufacturer
+UST-LTP-0025,Laptop,SN-DL-10025,Dell,Latitude 5526,1/15/2024,0,Good,Ramesh Kumar,Trivandrum,Assigned,Warranty years must be 1-5
+UST-LTP-0026,Laptop,SN-LN-10026,Lenovo,ThinkPad E21,8/10/2022,-2,New,Anita Das,Bangalore,Assigned,Warranty years must be 1-5
+UST-MNT-0027,Monitor,SN-LG-10027,LG,,7/25/2021,2,Fair,,Chennai,Available,Invalid manufacturer
+UST-MNT-0028,Monitor,SN-SAM-10028,Samsng,S24R356,4/12/2025,3,Excellent,,Hyderabad,Available,Invalid manufacturer
+UST-LTP-0029,Laptop,SN-DL-10029,Dell,Latitude 5527,3/18/2022,3,Good,Vivek Reddy,Trivandrum,Assigned,Invalid location
+UST-MNT-0031,Monitor,SN-LG-10031,LG,UltraWide 29WL505,5/21/2021,2,Fair,,Chennai,Available,Invalid manufacturer
+UST-LTP-0033,Laptop,SN-DL-10033,Dell,Latitude 5528,9/20/2022,3,Good,Rajesh Patel,Trivandrum,Assigned,Invalid location
+UST-MNT-0035,Monitor,SN-LG-10035,LG,UltraWide 29WL506,10/23/2021,2,Fair,,Chennai,Available,Invalid manufacturer
+UST-LTP-0037,Laptop,SN-DL-10037,Dell,Latitude 5529,2/28/2024,3,Good,Deepak Reddy,Trivandrum,Assigned,Invalid location
+UST-MNT-0039,Monitor,SN-LG-10039,LG,UltraWide 29WL507,11/24/2021,2,Good,,Chennai,Available,Invalid manufacturer
+UST-MNT-0040,Monitor,SN-SAM-10040,Samsung,S24R359,12/15/2023,3,Fair,,Hyderabad,Available,Invalid condition_status
+UST-LTP-0041,Laptop,SN-DL-10041,Dell,Latitude 5530,1/10/2022,3,Good,Rohit Sharma,Trivandrum,Assigned,Invalid location
+UST-MNT-0043,Monitor,SN-LG-10043,LG,UltraWide 29WL508,3/12/2021,2,Fair,,Chennai,Available,Invalid manufacturer
+UST-LTP-0045,Laptop,SN-DL-10045,Dell,Latitude 5531,5/15/2024,0,Good,Ramesh Kumar,Trivandrum,Assigned,Warranty years must be 1-5
+UST-LTP-0046,Laptop,SN-LN-10046,Lenovo,ThinkPad E26,6/10/2022,-1,New,Anita Das,Bangalore,Assigned,Warranty years must be 1-5
+UST-MNT-0047,Monitor,SN-LG-10047,LG,,7/22/2021,2,Fair,,Chennai,Available,Invalid manufacturer
+UST-MNT-0048,Monitor,SN-SAM-10048,Samsng,S24R361,3/15/2025,3,Excellent,,Hyderabad,Available,Invalid manufacturer
+UST-LTP-0049,Laptop,SN-DL-10049,Dell,Latitude 5532,8/18/2022,3,Good,Vivek Reddy,Trivandrum,Assigned,Invalid location
+UST-MNT-0051,Monitor,SN-LG-10051,LG,UltraWide 29WL509,5/21/2021,2,Fair,,Chennai,Available,Invalid manufacturer
+UST-LTP-0053,Laptop,SN-DL-10053,Dell,Latitude 5533,9/20/2022,3,Good,Rajesh Patel,Trivandrum,Assigned,Invalid location
+UST-MNT-0055,Monitor,SN-LG-10055,LG,UltraWide 29WL510,10/23/2021,2,Fair,,Chennai,Available,Invalid manufacturer
+UST-LTP-0057,Laptop,SN-DL-10057,Dell,Latitude 5534,2/28/2024,3,Good,Deepak Reddy,Trivandrum,Assigned,Invalid location
+UST-MNT-0059,Monitor,SN-LG-10059,LG,UltraWide 29WL511,11/24/2021,2,Good,,Chennai,Available,Invalid manufacturer
+UST-MNT-0060,Monitor,SN-SAM-10060,Samsung,S24R364,12/15/2023,3,Fair,,Hyderabad,Available,Invalid condition_status
+UST-LTP-0061,Laptop,SN-DL-10061,Dell,Latitude 5535,4/10/2022,3,Good,Rohit Sharma,Trivandrum,Assigned,Invalid location
+UST-MNT-0063,Monitor,SN-LG-10063,LG,UltraWide 29WL512,6/12/2021,2,Fair,,Chennai,Available,Invalid manufacturer
+UST-LTP-0065,Laptop,SN-DL-10065,Dell,Latitude 5536,1/15/2024,0,Good,Ramesh Kumar,Trivandrum,Assigned,Warranty years must be 1-5
+UST-LTP-0066,Laptop,SN-LN-10066,Lenovo,ThinkPad E31,8/10/2022,-2,New,Anita Das,Bangalore,Assigned,Warranty years must be 1-5
+UST-MNT-0067,Monitor,SN-LG-10067,LG,,7/25/2021,2,Fair,,Chennai,Available,Invalid manufacturer
+UST-MNT-0068,Monitor,SN-SAM-10068,Samsng,S24R366,4/12/2025,3,Excellent,,Hyderabad,Available,Invalid manufacturer
+UST-LTP-0069,Laptop,SN-DL-10069,Dell,Latitude 5537,3/18/2022,3,Good,Vivek Reddy,Trivandrum,Assigned,Invalid location
+UST-MNT-0071,Monitor,SN-LG-10071,LG,UltraWide 29WL513,5/21/2021,2,Fair,,Chennai,Available,Invalid manufacturer
+UST-LTP-0073,Laptop,SN-DL-10073,Dell,Latitude 5538,9/20/2022,3,Good,Rajesh Patel,Trivandrum,Assigned,Invalid location
+UST-MNT-0075,Monitor,SN-LG-10075,LG,UltraWide 29WL514,10/23/2021,2,Fair,,Chennai,Available,Invalid manufacturer
+UST-LTP-0077,Laptop,SN-DL-10077,Dell,Latitude 5539,2/28/2024,3,Good,Deepak Reddy,Trivandrum,Assigned,Invalid location
+UST-MNT-0079,Monitor,SN-LG-10079,LG,UltraWide 29WL515,11/24/2021,2,Good,,Chennai,Available,Invalid manufacturer
+UST-MNT-0080,Monitor,SN-SAM-10080,Samsung,S24R369,12/15/2023,3,Fair,,Hyderabad,Available,Invalid condition_status
+UST-LTP-0081,Laptop,SN-DL-10081,Dell,Latitude 5540,4/10/2022,3,Good,Rohit Sharma,Trivandrum,Assigned,Invalid location
+UST-MNT-0083,Monitor,SN-LG-10083,LG,UltraWide 29WL516,6/12/2021,2,Fair,,Chennai,Available,Invalid manufacturer
+UST-LTP-0085,Laptop,SN-DL-10085,Dell,Latitude 5541,1/15/2024,0,Good,Ramesh Kumar,Trivandrum,Assigned,Warranty years must be 1-5
+UST-LTP-0086,Laptop,SN-LN-10086,Lenovo,ThinkPad E36,8/10/2022,-2,New,Anita Das,Bangalore,Assigned,Warranty years must be 1-5
+UST-MNT-0087,Monitor,SN-LG-10087,LG,,7/25/2021,2,Fair,,Chennai,Available,Invalid manufacturer
+UST-MNT-0088,Monitor,SN-SAM-10088,Samsng,S24R371,4/12/2025,3,Excellent,,Hyderabad,Available,Invalid manufacturer
+UST-LTP-0089,Laptop,SN-DL-10089,Dell,Latitude 5542,3/18/2022,3,Good,Vivek Reddy,Trivandrum,Assigned,Invalid location
+UST-MNT-0091,Monitor,SN-LG-10091,LG,UltraWide 29WL517,5/21/2021,2,Fair,,Chennai,Available,Invalid manufacturer
+UST-LTP-0093,Laptop,SN-DL-10093,Dell,Latitude 5543,9/20/2022,3,Good,Rajesh Patel,Trivandrum,Assigned,Invalid location
+UST-MNT-0095,Monitor,SN-LG-10095,LG,UltraWide 29WL518,10/23/2021,2,Fair,,Chennai,Available,Invalid manufacturer
+UST-LTP-0097,Laptop,SN-DL-10097,Dell,Latitude 5544,2/28/2024,3,Good,Deepak Reddy,Trivandrum,Assigned,Invalid location
+UST-MNT-0099,Monitor,SN-LG-10099,LG,UltraWide 29WL519,11/24/2021,2,Good,,Chennai,Available,Invalid manufacturer
+UST-MNT-0100,Monitor,SN-SAM-10100,Samsung,S24R374,12/15/2023,3,Fair,,Hyderabad,Available,Invalid condition_status
