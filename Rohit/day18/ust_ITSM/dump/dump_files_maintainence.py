@@ -1,57 +1,71 @@
-import csv
-import pymysql
-from datetime import datetime
+import csv  # Import csv module to read data from CSV files
+import pymysql  # Import pymysql to connect and interact with MySQL databases
+from datetime import datetime  # Import datetime for parsing and formatting dates
 
+# Function to establish a connection to the MySQL database
 def get_connection():
     return pymysql.connect(
-        host="localhost",
-        user="root",
-        password="pass@word1",
-        database="ust_asset_inventory"
+        host="localhost",       # Database server address (localhost = local machine)
+        user="root",            # MySQL username
+        password="pass@word1",  # MySQL password
+        database="ust_asset_inventory"  # Target database name
     )
 
+# Create a connection object
 conn = get_connection()
+# Create a cursor object to execute SQL queries
 cursor = conn.cursor()
 
-input_file = r"C:\Users\Administrator\Desktop\ust_python_training\Rohit\day18\ust_ITSM\data\new_maintenance_log(in).csv"
+# Open the input CSV file in read mode
+with open(r"C:\Users\Administrator\Desktop\ust_python_training\Rohit\day18\ust_ITSM\data\new_inventory.csv", mode="r", encoding="utf-8") as file:
+    reader = csv.DictReader(file)  # Read CSV rows as dictionaries (keys = column names)
 
-with open(input_file, mode="r", encoding="utf-8") as file:
-    reader = csv.DictReader(file)
-
+    # Iterate through each row in the CSV file
     for row in reader:
-        try:
-            # Parse and reformat date if needed
-            date_val = datetime.strptime(row["maintenance_date"], "%d/%m/%Y")  # adjust format to match your CSV
-            formatted_date = date_val.strftime("%Y-%m-%d")
+        purchase_date = row["purchase_date"]  # Extract purchase_date field from row
+        if purchase_date:  # If purchase_date exists
+            try:
+                # Try parsing date in format DD/MM/YYYY
+                parsed_date = datetime.strptime(purchase_date, "%d/%m/%Y").date()
+            except ValueError:
+                try:
+                    # If that fails, try parsing date in format MM/DD/YYYY
+                    parsed_date = datetime.strptime(purchase_date, "%m/%d/%Y").date()
+                except ValueError:
+                    # If both fail, set parsed_date to None
+                    parsed_date = None  
+            # Convert parsed_date to YYYY-MM-DD format if valid, else None
+            purchase_date = parsed_date.strftime("%Y-%m-%d") if parsed_date else None
+        else:
+            purchase_date = None  # If no date provided, set to None
 
-            sql = """
-            INSERT INTO maintenance_log (
-                log_id, asset_tag, maintenance_type, vendor_name,
-                description, cost, maintenance_date, technician_name, status
-            )
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
-            """
+        # Execute SQL INSERT query with row data
+        cursor.execute("""
+        INSERT INTO asset_inventory (
+            asset_tag, asset_type, serial_number, manufacturer, model,
+            purchase_date, warranty_years, condition_status, assigned_to,
+            location, asset_status
+        ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        """, (
+            row["asset_tag"],  # Asset tag
+            row["asset_type"],  # Asset type
+            row["serial_number"],  # Serial number
+            row["manufacturer"],  # Manufacturer name
+            row["model"],  # Model name
+            purchase_date,  # Parsed purchase date in YYYY-MM-DD format
+            int(row["warranty_years"]) if row["warranty_years"] else None,  # Warranty years as integer or None
+            row["condition_status"],  # Condition status
+            row["assigned_to"],  # Assigned employee
+            row["location"],  # Location
+            row["asset_status"],  # Asset status
+        ))
 
-            values = (
-                row["log_id"],
-                row["asset_tag"],
-                row["maintenance_type"],
-                row["vendor_name"],
-                row["description"],
-                row["cost"],
-                formatted_date,
-                row["technician_name"],   # ✅ corrected here
-                row["status"],
-            )
-
-            cursor.execute(sql, values)
-
-        except Exception as e:
-            print(f"Error inserting log_id {row.get('log_id')}: {e}")
-
-    conn.commit()
-
+# Commit all changes to the database (make sure inserts are saved)
+conn.commit()
+# Close the cursor object
 cursor.close()
+# Close the database connection
 conn.close()
 
-print("CSV data successfully dumped into maintenance_log table.")
+# Print confirmation message after successful insertion
+print("CSV data successfully dumped into MySQL database!")
