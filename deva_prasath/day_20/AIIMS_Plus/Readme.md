@@ -35,7 +35,7 @@ AIMS_Plus/
 │           ├── employee_inventory.csv
 │           ├── maintenance_log.csv
 │           |── vendor_master.csv
-│           │── final_data/
+│           │── final/
 │                   ├── validated_asset_inventory.csv
 │                   ├──  validated_employee_inventory.csv
 │                   ├── validated_maintenance_log.csv
@@ -45,6 +45,7 @@ AIMS_Plus/
 │   ├── api/
 │   │   ├── asset_api.py
 │   │   ├── employee_api.py
+|   |   ├── login_api.py
 │   │   ├── vendor_api.py
 │   │   └── maintenance_api.py
 │   │
@@ -57,6 +58,7 @@ AIMS_Plus/
 │   ├── models/
 │   │   ├── asset_model.py
 │   │   ├── employee_model.py
+|   |   ├── login_model.py
 │   │   ├── vendor_model.py
 │   │   └── maintenance_model.py
 │   │
@@ -73,7 +75,7 @@ AIMS_Plus/
 │   ├── auth/
 │   │   └── auth_jwt_token.py
 │
-│   └── main.py
+│── main.py
 │
 └── README.md
  
