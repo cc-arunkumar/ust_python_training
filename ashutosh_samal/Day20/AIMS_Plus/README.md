@@ -8,13 +8,11 @@ Employee Directory: Manage employee records with validation rules.
 Maintenance Logs: Track repairs, services, and upgrades for assets.
 Vendor Management: Maintain vendor details with GST and contact validation.
 Validation Layer: Business rules enforced via Pydantic models.
-
 Tech Stack
 Backend Framework: FastAPI
 Database: MySQL (via PyMySQL)
 ORM/Validation: Pydantic
 Language: Python 3.10+
-
 Project Structure
 AIMS_Plus/
 │
@@ -36,6 +34,7 @@ AIMS_Plus/
 │   ├── api/
 │   │   ├── asset_api.py
 │   │   ├── employee_api.py
+|   |   ├── login_api.py
 │   │   ├── vendor_api.py
 │   │   └── maintenance_api.py
 │   │
@@ -48,6 +47,7 @@ AIMS_Plus/
 │   ├── models/
 │   │   ├── asset_model.py
 │   │   ├── employee_model.py
+|   |   ├── login_model.py
 │   │   ├── vendor_model.py
 │   │   └── maintenance_model.py
 │   │
@@ -67,10 +67,16 @@ AIMS_Plus/
 │── main.py
 │
 └── README.md
-
-
 1. Configure Database
-Update src/config/db_connection.py with your MySQL credentials: conn = pymysql.Connect( host="localhost", user="root", password="yourpassword", database="ust_inventory_db", cursorclass=pymysql.cursors.DictCursor )
+
+Update src/config/db_connection.py with your MySQL credentials:
+conn = pymysql.Connect(
+    host="localhost",
+    user="root",
+    password="yourpassword",
+    database="ust_inventory_db",
+    cursorclass=pymysql.cursors.DictCursor
+)
 2.1 APIs for asset_inventory
 
 POST /assets/create Create asset
