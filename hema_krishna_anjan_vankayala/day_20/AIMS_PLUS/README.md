@@ -44,6 +44,7 @@ AIMS_Plus/
 ├── src/
 │   ├── api/
 │   │   ├── asset_api.py
+|   |   ├── login_api.py
 │   │   ├── employee_api.py
 │   │   ├── vendor_api.py
 │   │   └── maintenance_api.py
@@ -58,6 +59,7 @@ AIMS_Plus/
 │   │   ├── asset_model.py
 │   │   ├── employee_model.py
 │   │   ├── vendor_model.py
+|   |   ├── login_model.py
 │   │   └── maintenance_model.py
 │   │
 │   ├── config/
@@ -79,6 +81,8 @@ AIMS_Plus/
 **1. Configure Database**
  
 - Update src/config/db_connection.py with your MySQL credentials:
+
+```
 conn = pymysql.Connect(
     host="localhost",
     user="root",
@@ -86,7 +90,7 @@ conn = pymysql.Connect(
     database="ust_inventory_db",
     cursorclass=pymysql.cursors.DictCursor
 )
- 
+ ```
  
  
 **2.1 APIs for asset_inventory**
@@ -139,7 +143,7 @@ conn = pymysql.Connect(
 - PATCH /maintenance/{id}/status
 - DELETE /maintenance/{id}
 - GET /maintenance/search?keyword=
-
 - GET /maintenance/count
+
 
 
