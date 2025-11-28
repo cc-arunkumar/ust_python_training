@@ -3,7 +3,7 @@ from fastapi import FastAPI, HTTPException, status, APIRouter
 from ..auth.jwt_auth import create_access_token
 import os
 from dotenv import load_dotenv
-from ..models.login_model import Token, LoginRequest
+from ..models.user_model import Token, LoginRequest
 
 # Load environment variables from a .env file
 # This allows sensitive data (like demo credentials) to be stored securely outside the codebase
@@ -17,9 +17,6 @@ login_router = APIRouter(prefix="/login")
 DEMO_USERNAME = os.getenv("DEMO_USERNAME")
 DEMO_PASSWORD = os.getenv("DEMO_PASSWORD")
 
-# Debugging: Print credentials (not recommended in production!)
-# Consider removing or logging securely instead of printing
-print(DEMO_USERNAME, DEMO_PASSWORD)
 
 # Retrieve token expiration time (in minutes) from environment variables
 ACCESS_TOKEN_EXPIRE_MINUTES = os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES")
