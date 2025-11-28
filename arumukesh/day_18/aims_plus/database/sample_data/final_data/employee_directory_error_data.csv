@@ -1,0 +1,10 @@
+emp_code,full_name,email,phone,department,location,join_date,status
+USTEMP-1002,Anjali Nair,anjali.nair@ust,9876501234,HR,Bangalore,2020-02-20,Active
+EMP-1003,Vivek Reddy,vivek.reddy@ust.com,987651234,Finance,Chennai,2018-11-25,Active
+USTEMP-1007,Aditya Kumar,aditya.kumar@ust.com,9876556789,Support,Chennai,2020-08-05,Activ
+USTEMP-1017,Ramesh Kumar,ramesh.kumar@ust.com,9876557890,HR,Trivandrum,2019-05-14,Inactive
+USTEMP-1019,Varun Sharma,varun.sharmaust.com,9876579012,IT,Chennai,2021-09-08,Active
+USTEMP-1027,Rohan Singh,rohan.singh@ust.com,9876569012,Finance,Chennai,2022-13-12,Active
+USTEMP-1062,Manish Kumar,manish.kumar@ust,9876506789,IT,Bangalore,2021-04-21,Active
+USTEMP-1063,Preeti Sharma,preeti.sharma@ust.com,9876517890,HR,Chennai,2019-05-18,Activ
+USTEMP-1079,Sneha Sharma,sneha.sharmaust.com,9876573456,HR,Chennai,2021-06-13,Active
