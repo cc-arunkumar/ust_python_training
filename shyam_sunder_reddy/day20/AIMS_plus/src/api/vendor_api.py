@@ -1,5 +1,6 @@
 from fastapi import FastAPI, HTTPException, APIRouter,Depends
-from src.auth.jwt_auth import get_current_user,User
+from src.models.login_model import User
+from src.auth.jwt_auth import get_current_user
 from src.models import vendor_model
 from src.crud import vendor_crud
 from typing import List, Optional

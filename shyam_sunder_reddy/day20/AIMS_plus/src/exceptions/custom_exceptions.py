@@ -1,14 +1,26 @@
+def message(exception,msg):
+    info = {
+         "status": "Error",
+ "error_code": exception,
+ "message": msg
+    }
+    return info
+ 
 class InvalidInputException(Exception):
-    pass
-
+    def __init__(self, msg):
+        super().__init__(message("InvalidInputException",msg))
 class DuplicateRecordException(Exception):
-    pass
-
-class RecordNotFoundException(Exception):
-    pass
-
+    def __init__(self, msg):
+        super().__init__(message("InvalidInputException",msg))
+class RecordNotFoundExcpetion(Exception):
+    def __init__(self, msg):
+        super().__init__(message("InvalidInputException",msg))
 class ValidationErrorException(Exception):
-    pass
-
+    def __init__(self, msg):
+        super().__init__(message("InvalidInputException",msg))
 class DatabaseConnectionException(Exception):
-    pass
+    def __init__(self, msg):
+        super().__init__(message("InvalidInputException",msg))
+ 
+ 
+ 

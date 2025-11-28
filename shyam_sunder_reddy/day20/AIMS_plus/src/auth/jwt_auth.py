@@ -1,18 +1,16 @@
-from fastapi import HTTPException, status, Depends, APIRouter
+from fastapi import HTTPException, status, Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from pydantic import BaseModel
 from datetime import datetime, timedelta, timezone
 from typing import Optional
 from jose import JWTError, jwt
 from dotenv import load_dotenv
 import os
-
-jwt_router = APIRouter(prefix="/jwt")
+from src.models.login_model import LoginRequest,Token,User
 
 # Load environment variables
-load_dotenv(os.path.join(os.path.dirname(__file__), "user_credentials.env"))
+load_dotenv()
 
-SECRET_KEY = os.getenv("SECRET_KEY", "fallback-secret")
+SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
@@ -22,16 +20,7 @@ DEMO_PASSWORD = os.getenv("DEMO_PASSWORD")
 print("Loaded DEMO_USERNAME:", DEMO_USERNAME)
 print("Loaded DEMO_PASSWORD:", DEMO_PASSWORD)
 
-class LoginRequest(BaseModel):
-    username: str
-    password: str
 
-class Token(BaseModel):
-    access_token: str
-    token_type: str
-
-class User(BaseModel):
-    username: str
 
 def create_access_token(subject: str, expires_delta: Optional[timedelta] = None):
     to_encode = {"sub": subject}
@@ -54,14 +43,6 @@ def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(securit
 
     return User(username=username)
 
-@jwt_router.post("/login", response_model=Token)
-def login(data: LoginRequest):
-    if data.username != DEMO_USERNAME or data.password != DEMO_PASSWORD:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect username or password")
-
-    expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    token = create_access_token(subject=data.username, expires_delta=expires)
-    return Token(access_token=token, token_type="bearer")
 
 # @jwt_router.get("/me")
 # def read_me(current_user: User = Depends(get_current_user)):

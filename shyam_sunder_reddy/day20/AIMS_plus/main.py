@@ -3,7 +3,7 @@ from src.api.asset_api import asset_router
 from src.api.employee_api import employee_router
 from src.api.maintenance_api import maintenance_router
 from src.api.vendor_api import vendor_router
-from src.auth.jwt_auth import jwt_router
+from src.api.login_api import jwt_router
 # Initialize FastAPI application with a project title
 app = FastAPI(title="AIMS Plus")
 
