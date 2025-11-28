@@ -1,0 +1,114 @@
+emp_code,full_name,email,phone,department,location,join_date,status
+USTEMP-1001,Rohit Sharma,rohit.sharma@ust.com,9876543210,IT,Trivandrum,2019-01-15,Active
+USTEMP-1002,Anjali Nair,anjali.nair@ust,9876501234,HR,Bangalore,2020-02-20,Active
+EMP-1003,Vivek Reddy,vivek.reddy@ust.com,987651234,Finance,Chennai,2018-11-25,Active
+USTEMP-1004,Meera Krishnan,meera.krishnan@ust.com,9876523456,IT,Hyderabad,2023-06-12,Active
+USTEMP-1005,Arjun Menon,arjun.menon@ust.com,9876534567,Admin,Trivandrum,2022-03-19,Active
+USTEMP-1006,Sneha Iyer,sneha.iyer@ust.com,9876545678,Sales,Bangalore,2019-12-10,Active
+USTEMP-1007,Aditya Kumar,aditya.kumar@ust.com,9876556789,Support,Chennai,2020-08-05,Activ
+USTEMP-1008,Preeti Singh,preeti.singh@ust.com,9876567890,Finance,Hyderabad,2021-04-22,Active
+USTEMP-1009,Rajesh Patel,rajesh.patel@ust.com,9876578901,IT,Trivandrum,2018-07-11,Resigned
+USTEMP-1010,Divya Menon,divya.menon@ust.com,9876589012,HR,Bangalore,2019-03-30,Active
+USTEMP-1011,Karthik R,karthik.r@ust.com,9876590123,Admin,Chennai,2020-09-15,Active
+USTEMP-1012,Anita Das,anita.das@ust.com,9876502345,Finance,Hyderabad,2021-12-20,Active
+USTEMP-1013,Manoj Nair,manoj.nair@ust.com,9876513456,IT,Trivandrum,2020-06-18,Active
+USTEMP-1014,Shruti Sharma,shruti.sharma@ust.com,9876524567,Support,Bangalore,2019-11-07,Resigned
+USTEMP-1015,Deepak Reddy,deepak.reddy@ust.com,9876535678,IT,Chennai,2021-01-25,Active
+USTEMP-1016,Neha Gupta,neha.gupta@ust.com,9876546789,Finance,Hyderabad,2020-04-10,Active
+USTEMP-1017,Ramesh Kumar,ramesh.kumar@ust.com,9876557890,HR,Trivandrum,2019-05-14,Inactive
+USTEMP-1018,Ananya Singh,ananya.singh@ust.com,9876568901,Sales,Bangalore,2022-07-19,Active
+USTEMP-1019,Varun Sharma,varun.sharmaust.com,9876579012,IT,Chennai,2021-09-08,Active
+USTEMP-1020,Preethi Nair,preethi.nair@ust.com,9876580123,Admin,Hyderabad,2020-10-20,Active
+USTEMP-1021,Amit Patel,amit.patel@ust.com,9876591234,Finance,Trivandrum,2018-12-15,Resigned
+USTEMP-1022,Sanjana Menon,sanjana.menon@ust.com,9876503456,IT,Bangalore,2019-02-18,Active
+USTEMP-1023,Rajeev Reddy,rajeev.reddy@ust.com,9876514567,Support,Chennai,2020-05-22,Active
+USTEMP-1024,Priya Sharma,priya.sharma@ust.com,9876525678,HR,Hyderabad,2021-08-11,Active
+USTEMP-1025,Akash Kumar,akash.kumar@ust.com,9876536789,IT,Trivandrum,2019-03-09,Active
+USTEMP-1026,Nivedita Iyer,nivedita.iyer@ust.com,9876547890,Admin,Bangalore,2020-06-14,Active
+USTEMP-1027,Rohan Singh,rohan.singh@ust.com,9876569012,Finance,Chennai,2022-13-12,Active
+USTEMP-1028,Divya Patel,divya.patel@ust.com,9876570123,IT,Hyderabad,2022-01-12,Active
+USTEMP-1029,Vinay Menon,vinay.menon@ust.com,9876570123,Support,Trivandrum,2019-05-29,Active
+USTEMP-1030,Anjali Sharma,anjali.sharma@ust.com,9876583456,Sales,Bangalore,2020-07-06,Active
+USTEMP-1031,Siddharth Kumar,siddharth.kumar@ust.com,9876592345,IT,Chennai,2021-10-21,Active
+USTEMP-1032,Meera Singh,meera.singh@ust.com,9876504567,HR,Hyderabad,2022-03-13,Active
+USTEMP-1033,Praveen Reddy,praveen.reddy@ust.com,9876515678,Admin,Trivandrum,2020-12-19,Active
+USTEMP-1034,Sneha Sharma,sneha.sharma@ust.com,9876526789,Finance,Bangalore,2019-11-01,Active
+USTEMP-1035,Rohit Nair,rohit.nair@ust.com,9876537890,IT,Chennai,2021-01-09,Active
+USTEMP-1036,Anita Patel,anita.patel@ust.com,9876548901,Support,Hyderabad,2020-04-22,Active
+USTEMP-1037,Karthik Menon,karthik.menon@ust.com,9876559012,HR,Trivandrum,2021-06-15,Active
+USTEMP-1038,Divya Sharma,divya.sharma@ust.com,9876560123,Sales,Bangalore,2020-09-18,Active
+USTEMP-1039,Manish Kumar,manish.kumar@ust.com,9876571234,IT,Chennai,2019-03-21,Resigned
+USTEMP-1040,Neha Menon,neha.menon@ust.com,9876582345,Finance,Hyderabad,2021-11-09,Active
+USTEMP-1041,Ramesh Sharma,ramesh.sharma@ust.com,9876593456,IT,Trivandrum,2020-08-02,Active
+USTEMP-1042,Priya Nair,priya.nair@ust.com,9876505678,HR,Bangalore,2021-01-13,Active
+USTEMP-1043,Ankit Reddy,ankit.reddy@ust.com,9876516789,Support,Chennai,2019-04-25,Active
+USTEMP-1044,Shruti Patel,shruti.patel@ust.com,9876527890,IT,Hyderabad,2020-07-11,Active
+USTEMP-1045,Amit Sharma,amit.sharma@ust.com,9876538901,Finance,Trivandrum,2018-11-18,Resigned
+USTEMP-1046,Neha Kumar,neha.kumar@ust.com,9876549012,Admin,Bangalore,2019-06-05,Active
+USTEMP-1047,Varun Menon,varun.menon@ust.com,9876550123,IT,Chennai,2021-02-20,Active
+USTEMP-1048,Anjali Reddy,anjali.reddy@ust.com,9876561234,HR,Hyderabad,2020-03-14,Active
+USTEMP-1049,Rajesh Sharma,rajesh.sharma@ust.com,9876572345,IT,Trivandrum,2021-08-09,Active
+USTEMP-1050,Sneha Nair,sneha.nair@ust.com,9876583456,Finance,Bangalore,2019-12-22,Active
+USTEMP-1051,Rohan Kumar,rohan.kumar@ust.com,9876594567,Support,Chennai,2020-05-30,Active
+USTEMP-1052,Preethi Menon,preethi.menon@ust.com,9876506789,IT,Hyderabad,2021-07-27,Active
+USTEMP-1053,Amit Reddy,amit.reddy@ust.com,9876517890,HR,Trivandrum,2019-11-14,Active
+USTEMP-1054,Divya Patel,divya.patel@ust.com,9876528901,IT,Bangalore,2020-02-21,Active
+USTEMP-1055,Ananya Sharma,ananya.sharma@ust.com,9876539012,Finance,Chennai,2021-06-10,Active
+USTEMP-1056,Karthik Menon,karthik.menon@ust.com,9876540123,IT,Hyderabad,2020-08-05,Active
+USTEMP-1057,Meera Nair,meera.nair@ust.com,9876551234,HR,Trivandrum,2021-09-12,Active
+USTEMP-1058,Varun Sharma,varun.sharma@ust.com,9876562345,IT,Bangalore,2020-11-17,Active
+USTEMP-1059,Neha Patel,neha.patel@ust.com,9876573456,Finance,Chennai,2019-07-09,Resigned
+USTEMP-1060,Rohit Reddy,rohit.reddy@ust.com,9876584567,IT,Hyderabad,2021-01-05,Active
+USTEMP-1061,Anjali Menon,anjali.menon@ust.com,9876595678,Support,Trivandrum,2020-03-14,Active
+USTEMP-1062,Manish Kumar,manish.kumar@ust,9876506789,IT,Bangalore,2021-04-21,Active
+USTEMP-1063,Preeti Sharma,preeti.sharma@ust.com,9876517890,HR,Chennai,2019-05-18,Activ
+USTEMP-1064,Rajesh Patel,rajesh.patel@ust.com,9876528901,Finance,Hyderabad,2020-06-25,Active
+USTEMP-1065,Sneha Nair,sneha.nair@ust.com,9876539012,IT,Trivandrum,2021-07-30,Active
+USTEMP-1066,Amit Sharma,amit.sharma@ust.com,9876540123,Admin,Bangalore,2020-08-19,Active
+USTEMP-1067,Karthik Reddy,karthik.reddy@ust.com,9876551234,IT,Chennai,2021-09-11,Active
+USTEMP-1068,Neha Menon,neha.menon@ust.com,9876562345,HR,Hyderabad,2019-10-22,Resigned
+USTEMP-1069,Varun Sharma,varun.sharma@ust.com,9876573456,Finance,Trivandrum,2020-11-14,Active
+USTEMP-1070,Ananya Kumar,ananya.kumar@ust.com,9876584567,IT,Bangalore,2021-01-08,Active
+USTEMP-1071,Rohan Patel,rohan.patel@ust.com,9876595678,Support,Chennai,2020-03-20,Active
+USTEMP-1072,Meera Sharma,meera.sharma@ust.com,9876506789,IT,Hyderabad,2021-05-16,Active
+USTEMP-1073,Siddharth Menon,siddharth.menon@ust.com,9876517890,HR,Trivandrum,2020-07-09,Active
+USTEMP-1074,Preethi Reddy,preethi.reddy@ust.com,9876528901,IT,Bangalore,2021-08-25,Active
+USTEMP-1075,Anjali Sharma,anjali.sharma@ust.com,9876539012,Finance,Chennai,2019-09-30,Resigned
+USTEMP-1076,Vivek Kumar,vivek.kumar@ust.com,9876540123,IT,Hyderabad,2020-12-18,Active
+USTEMP-1077,Neha Patel,neha.patel@ust.com,9876551234,Admin,Trivandrum,2021-02-22,Active
+USTEMP-1078,Rajesh Reddy,rajesh.reddy@ust.com,9876562345,IT,Bangalore,2020-04-27,Active
+USTEMP-1079,Sneha Sharma,sneha.sharmaust.com,9876573456,HR,Chennai,2021-06-13,Active
+USTEMP-1080,Manish Menon,manish.menon@ust.com,9876584567,IT,Hyderabad,2020-08-09,Active
+USTEMP-1081,Ananya Sharma,ananya.sharma@ust.com,9876595678,Finance,Trivandrum,2021-10-04,Active
+USTEMP-1082,Rohit Patel,rohit.patel@ust.com,9876506789,IT,Bangalore,2020-11-19,Active
+USTEMP-1083,Preeti Menon,preeti.menon@ust.com,9876517890,Support,Chennai,2021-01-23,Active
+USTEMP-1084,Varun Reddy,varun.reddy@ust.com,9876528901,IT,Hyderabad,2020-02-14,Active
+USTEMP-1085,Meera Kumar,meera.kumar@ust.com,9876539012,HR,Trivandrum,2021-03-28,Active
+USTEMP-1086,Siddharth Sharma,siddharth.sharma@ust.com,9876540123,IT,Bangalore,2020-05-07,Active
+USTEMP-1087,Anjali Patel,anjali.patel@ust.com,9876551234,Finance,Chennai,2021-06-15,Active
+USTEMP-1088,Rohan Sharma,rohan.sharma@ust.com,9876562345,IT,Hyderabad,2020-07-21,Active
+USTEMP-1089,Neha Reddy,neha.reddy@ust.com,9876573456,HR,Trivandrum,2021-09-12,Active
+USTEMP-1090,Varun Kumar,varun.kumar@ust.com,9876584567,IT,Bangalore,2020-10-18,Active
+USTEMP-1091,Sneha Menon,sneha.menon@ust.com,9876595678,Support,Chennai,2021-12-05,Active
+USTEMP-1092,Manish Sharma,manish.sharma@ust.com,9876506789,IT,Hyderabad,2020-01-14,Active
+USTEMP-1093,Ananya Patel,ananya.patel@ust.com,9876517890,HR,Trivandrum,2021-03-02,Active
+USTEMP-1094,Preethi Kumar,preethi.kumar@ust.com,9876528901,IT,Bangalore,2020-04-25,Active
+USTEMP-1095,Rajesh Menon,rajesh.menon@ust.com,9876539012,Finance,Chennai,2021-06-18,Active
+USTEMP-1096,Neha Sharma,neha.sharma@ust.com,9876540123,IT,Hyderabad,2020-07-21,Active
+USTEMP-1097,Karthik Patel,karthik.patel@ust.com,9876551234,HR,Trivandrum,2021-08-14,Active
+USTEMP-1098,Anjali Reddy,anjali.reddy@ust.com,9876562345,IT,Bangalore,2020-09-07,Active
+USTEMP-1099,Vivek Sharma,vivek.sharma@ust.com,9876573456,Support,Chennai,2021-10-19,Active
+USTEMP-1100,Sneha Kumar,sneha.kumar@ust.com,9876584567,IT,Hyderabad,2020-11-23,Active
+
+
+
+|Field Validation Rule|Records (emp_code) Example / Count                                           |
+| -------------------| -------------------------------------------------------------------------- |
+| emp_code format    | 1003 (`EMP-1003`) → 1 record                                                 |
+| full_name          | None with visible impurity in current dataset (all names valid)              |
+| email format       | 1002, 1011, 1019, 1079, 1062 → 5 records                                     |
+| phone number length| 1003 → 1 record                                                              |
+| department         | None invalid in current dataset                                              |
+| location           | None invalid in current dataset                                              |
+| join_date          | 1027 (`2022-13-12`) → 1 record, 1062 (`future date`) → 1 record (if present) |
+| status             | 1007 (`Activ`) → 1 record                                                    |
