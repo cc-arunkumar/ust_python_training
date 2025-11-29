@@ -35,7 +35,7 @@ AIMS_Plus/
 │           ├── employee_inventory.csv
 │           ├── maintenance_log.csv
 │           |── vendor_master.csv
-│           │── final_data/
+│           └── final_data/
 │                   ├── validated_asset_inventory.csv
 │                   ├──  validated_employee_inventory.csv
 │                   ├── validated_maintenance_log.csv
