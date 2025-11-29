@@ -1,4 +1,4 @@
-# 📘 AIMS Plus
+#AIMS Plus
 
 AIMS Plus is an **Asset & Inventory Management System** powered by **FastAPI**.  
 It delivers RESTful APIs to handle assets, employees, maintenance records, and vendors, with strict validation enforced through **Pydantic models**.
@@ -14,7 +14,7 @@ It delivers RESTful APIs to handle assets, employees, maintenance records, and v
 
 ---
 
-## 🛠️ Technology Stack
+## Technology Stack
 - **Framework**: FastAPI  
 - **Database**: MySQL (PyMySQL driver)  
 - **Validation/ORM**: Pydantic  
@@ -22,7 +22,7 @@ It delivers RESTful APIs to handle assets, employees, maintenance records, and v
 
 ---
 
-## 📂 Folder Layout
+## Folder Layout
  AIMS_Plus/
 │
 ├── database/
@@ -68,7 +68,7 @@ Code
 
 ---
 
-## ⚙️ Database Setup
+##  Database Setup
 
 Update `src/config/db_connection.py` with your MySQL credentials:
 
