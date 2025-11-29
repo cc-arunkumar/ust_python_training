@@ -25,52 +25,6 @@ async def list_vendors(status: Optional[str] = None,current_user: User = Depends
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
-# Endpoint to fetch a vendor by its ID
-@vendor_router.get("/{vendor_id}")
-async def get_vendor(vendor_id: int,current_user: User = Depends(get_current_user)):
-    try:
-        vendor = get_vendor_by_id(vendor_id)
-        if not vendor:
-            raise HTTPException(status_code=404, detail="Vendor not found")
-        return vendor
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
-
-# Endpoint to create a new vendor
-@vendor_router.post("/create")
-async def create_vendor_endpoint(vendor: VendorCreate,current_user: User = Depends(get_current_user)):
-    try:
-        create_vendor(vendor)
-        return vendor
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
-
-# Endpoint to update an existing vendor
-@vendor_router.put("/{vendor_id}")
-async def update_vendor_endpoint(vendor_id: int, vendor: VendorCreate,current_user: User = Depends(get_current_user)):
-    try:
-        update_vendor(vendor_id, vendor)
-        return vendor
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
-
-# Endpoint to update a vendor's status (active/inactive)
-@vendor_router.patch("/{vendor_id}/status")
-async def update_vendor_status_endpoint(vendor_id: int, status: str,current_user: User = Depends(get_current_user)):
-    try:
-        update_vendor_status(vendor_id, status)
-        return {"message": "Vendor status updated successfully"}
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
-
-# Endpoint to delete a vendor
-@vendor_router.delete("/{vendor_id}")
-async def delete_vendor_endpoint(vendor_id: int,current_user: User = Depends(get_current_user)):
-    try:
-        delete_vendor(vendor_id)
-        return {"message": "Vendor deleted successfully"}
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
 
 # Endpoint to search vendors by keyword
 @vendor_router.get("/search")
@@ -89,3 +43,56 @@ async def count_vendors_endpoint(current_user: User = Depends(get_current_user))
         return {"total_vendors": count}
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+
+
+# Endpoint to fetch a vendor by its ID
+@vendor_router.get("/{vendor_id}")
+async def get_vendor(vendor_id: int,current_user: User = Depends(get_current_user)):
+    try:
+        vendor = get_vendor_by_id(vendor_id)
+        if not vendor:
+            raise HTTPException(status_code=404, detail="Vendor not found")
+        return vendor
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+# Endpoint to create a new vendor
+@vendor_router.post("/create")
+async def create_vendor_endpoint(vendor: VendorCreate,current_user: User = Depends(get_current_user)):
+    try:
+        create_vendor(vendor)
+        return vendor
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+# Endpoint to update an existing vendor
+@vendor_router.put("/{vendor_id}")
+async def update_vendor_endpoint(vendor_id: int, vendor: VendorCreate,current_user: User = Depends(get_current_user)):
+    try:
+        update_vendor(vendor_id, vendor)
+        return vendor
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+# Endpoint to update a vendor's status (active/inactive)
+@vendor_router.patch("/{vendor_id}/status")
+async def update_vendor_status_endpoint(vendor_id: int, status: str,current_user: User = Depends(get_current_user)):
+    try:
+        update_vendor_status(vendor_id, status)
+        return {"message": "Vendor status updated successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+# Endpoint to delete a vendor
+@vendor_router.delete("/{vendor_id}")
+async def delete_vendor_endpoint(vendor_id: int,current_user: User = Depends(get_current_user)):
+    try:
+        delete_vendor(vendor_id)
+        return {"message": "Vendor deleted successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+

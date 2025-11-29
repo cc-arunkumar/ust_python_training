@@ -25,6 +25,27 @@ async def list_assets(status: Optional[str] = None,current_user: User = Depends(
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))  # Handle any exceptions
 
+
+# Endpoint to search assets based on a keyword (e.g., asset tag, manufacturer, model)
+@asset_router.get("/search")
+async def search_assets_endpoint(keyword: str,current_user: User = Depends(get_current_user)):
+    try:
+        assets = find_assets_by_keyword(keyword)  # Call function to search for assets using the keyword
+        return assets  # Return the matching assets
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))  # Handle any exceptions
+
+
+# Endpoint to get the total count of assets in the database
+@asset_router.get("/count")
+async def count_assets_endpoint(current_user: User = Depends(get_current_user)):
+    try:
+        count = get_total_asset_count()  # Call function to get the total asset count
+        return {"total_assets": count}  # Return the total count of assets
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))  # Handle any exceptions
+
+
 # Endpoint to get a single asset by its asset_id
 @asset_router.get("/{asset_id}")
 async def get_asset(asset_id: int,current_user: User = Depends(get_current_user)):
@@ -36,6 +57,7 @@ async def get_asset(asset_id: int,current_user: User = Depends(get_current_user)
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))  # Handle any exceptions
 
+
 # Endpoint to create a new asset
 @asset_router.post("/create")
 async def create_asset_endpoint(asset: AssetCreate,current_user: User = Depends(get_current_user)):
@@ -44,6 +66,7 @@ async def create_asset_endpoint(asset: AssetCreate,current_user: User = Depends(
         return asset  # Return the created asset data
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))  # Handle any exceptions
+
 
 # Endpoint to update an existing asset
 @asset_router.put("/{asset_id}")
@@ -54,6 +77,7 @@ async def update_asset_endpoint(asset_id: int, asset: AssetCreate,current_user: 
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))  # Handle any exceptions
 
+
 # Endpoint to update the status of an asset (e.g., Available, Assigned, etc.)
 @asset_router.patch("/{asset_id}/status")
 async def update_asset_status_endpoint(asset_id: int, asset_status: str,current_user: User = Depends(get_current_user)):
@@ -62,6 +86,7 @@ async def update_asset_status_endpoint(asset_id: int, asset_status: str,current_
         return {"message": "Asset status updated successfully"}  # Return a success message
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))  # Handle any exceptions
+
 
 # Endpoint to delete an asset by its ID
 @asset_router.delete("/{asset_id}")
@@ -72,20 +97,3 @@ async def delete_asset_endpoint(asset_id: int,current_user: User = Depends(get_c
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))  # Handle any exceptions
 
-# Endpoint to search assets based on a keyword (e.g., asset tag, manufacturer, model)
-@asset_router.get("/search")
-async def search_assets_endpoint(keyword: str,current_user: User = Depends(get_current_user)):
-    try:
-        assets = find_assets_by_keyword(keyword)  # Call function to search for assets using the keyword
-        return assets  # Return the matching assets
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))  # Handle any exceptions
-
-# Endpoint to get the total count of assets in the database
-@asset_router.get("/count")
-async def count_assets_endpoint(current_user: User = Depends(get_current_user)):
-    try:
-        count = get_total_asset_count()  # Call function to get the total asset count
-        return {"total_assets": count}  # Return the total count of assets
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))  # Handle any exceptions

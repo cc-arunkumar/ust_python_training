@@ -6,8 +6,8 @@ from typing import Optional
 from jose import JWTError, jwt
 from dotenv import load_dotenv
 import os
-from src.models.auth_model import LoginRequest,Token,User
-from src.auth.auth_jwt_token import DEMO_PASSWORD,DEMO_USERNAME,ACCESS_TOKEN_EXPIRE_MINUTES,create_access_token
+from src.model.auth_model import LoginRequest,Token,User
+from src.auth.jwt_auth import DEMO_PASSWORD,DEMO_USERNAME,ACCESS_TOKEN_EXPIRE_MINUTES,create_access_token
 
 jwt_router = APIRouter(prefix="/jwt")
 load_dotenv(os.path.join(os.path.dirname(__file__), "user_credentials.env"))

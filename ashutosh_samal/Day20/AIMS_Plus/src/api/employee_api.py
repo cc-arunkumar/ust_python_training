@@ -24,6 +24,27 @@ def list_employees(status: Optional[str] = None,current_user: User = Depends(get
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))  # Raise HTTP error on failure
 
+
+# Endpoint to search for employees based on a keyword
+@employee_router.get("/search")
+async def search_employees_endpoint(keyword: str,current_user: User = Depends(get_current_user)):
+    try:
+        employees = find_employees_by_keyword(keyword)  # Search for employees by keyword
+        return employees
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))  # Raise HTTP error on failure
+
+
+# Endpoint to get the count of total employees
+@employee_router.get("/count")
+async def count_employees_endpoint(current_user: User = Depends(get_current_user)):
+    try:
+        count = get_total_employee_count()  # Get total employee count
+        return {"total_employees": count}  # Return employee count
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))  # Raise HTTP error on failure
+
+
 # Endpoint to fetch a specific employee by ID
 @employee_router.get("/{employee_id}")
 def get_employee(employee_id: int,current_user: User = Depends(get_current_user)):
@@ -35,6 +56,7 @@ def get_employee(employee_id: int,current_user: User = Depends(get_current_user)
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))  # Raise HTTP error on failure
 
+
 # Endpoint to create a new employee
 @employee_router.post("/create")
 def create_employee_endpoint(employee: EmployeeCreate,current_user: User = Depends(get_current_user)):
@@ -43,6 +65,7 @@ def create_employee_endpoint(employee: EmployeeCreate,current_user: User = Depen
         return employee  # Return created employee
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))  # Raise HTTP error on failure
+
 
 # Endpoint to update an existing employee by ID
 @employee_router.put("/{employee_id}")
@@ -53,6 +76,7 @@ async def update_employee_endpoint(employee_id: int, employee: EmployeeCreate,cu
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))  # Raise HTTP error on failure
 
+
 # Endpoint to update the status of an employee
 @employee_router.patch("/{employee_id}/status")
 async def update_employee_status_endpoint(employee_id: int, status: str,current_user: User = Depends(get_current_user)):
@@ -62,29 +86,12 @@ async def update_employee_status_endpoint(employee_id: int, status: str,current_
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))  # Raise HTTP error on failure
 
+
 # Endpoint to delete an employee by ID
 @employee_router.delete("/{employee_id}")
 async def delete_employee_endpoint(employee_id: int,current_user: User = Depends(get_current_user)):
     try:
         remove_employee(employee_id)  # Delete employee using the provided ID
         return {"message": "Employee deleted successfully"}  # Return success message
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))  # Raise HTTP error on failure
-
-# Endpoint to search for employees based on a keyword
-@employee_router.get("/search")
-async def search_employees_endpoint(keyword: str,current_user: User = Depends(get_current_user)):
-    try:
-        employees = find_employees_by_keyword(keyword)  # Search for employees by keyword
-        return employees
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))  # Raise HTTP error on failure
-
-# Endpoint to get the count of total employees
-@employee_router.get("/count")
-async def count_employees_endpoint(current_user: User = Depends(get_current_user)):
-    try:
-        count = get_total_employee_count()  # Get total employee count
-        return {"total_employees": count}  # Return employee count
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))  # Raise HTTP error on failure
