@@ -49,6 +49,7 @@
 
 
 from fastapi import FastAPI, Query
+from typing import List
 
 # Initialize FastAPI application
 app = FastAPI(title="UST Demo API")
