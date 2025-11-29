@@ -1,19 +1,19 @@
 # Import FastAPI components for building API routes and handling exceptions
-from fastapi import APIRouter, HTTPException, status
-
+from fastapi import APIRouter, HTTPException, status,Depends
+from ..auth.jwt_auth import get_current_user,User
 # Import CRUD operations and data model for Employee
 from ..crud.employee_crud import EmployeeCrud
 from ..model.employee_model import EmployeeModel
 
 # Initialize API Router with a prefix for all employee-related endpoints
-employee_api = APIRouter(prefix="/employee")
+employee_router = APIRouter(prefix="/employee")
 
 # Instantiate the EmployeeCrud class to interact with the database layer
 employee_crud = EmployeeCrud()
 
 
-@employee_api.get("/list_all")
-def get_all_employees():
+@employee_router.get("/list_all")
+def get_all_employees(user:User = Depends(get_current_user)):
     """
     Retrieve all employees from the system.
 
@@ -31,8 +31,8 @@ def get_all_employees():
         )
 
 
-@employee_api.post("/create")
-def create_employee(employee: EmployeeModel):
+@employee_router.post("/create")
+def create_employee(employee: EmployeeModel,user:User = Depends(get_current_user)):
     """
     Create a new employee record.
 
@@ -53,8 +53,8 @@ def create_employee(employee: EmployeeModel):
         )
 
 
-@employee_api.get("/get_by_id/{emp_id}")
-def get_employee_by_id(emp_id: int):
+@employee_router.get("/get_by_id/{emp_id}")
+def get_employee_by_id(emp_id: int,user:User = Depends(get_current_user)):
     """
     Retrieve a single employee by their unique ID.
 
@@ -75,8 +75,8 @@ def get_employee_by_id(emp_id: int):
         )
 
 
-@employee_api.put("/update/{emp_id}")
-def update_employee(emp_id: int, employee: EmployeeModel):
+@employee_router.put("/update/{emp_id}")
+def update_employee(emp_id: int, employee: EmployeeModel,user:User = Depends(get_current_user)):
     """
     Update an existing employee record.
 
@@ -98,8 +98,8 @@ def update_employee(emp_id: int, employee: EmployeeModel):
         )
 
 
-@employee_api.delete("/delete/{emp_id}")
-def delete_employee_by_id(emp_id: int):
+@employee_router.delete("/delete/{emp_id}")
+def delete_employee_by_id(emp_id: int,user:User = Depends(get_current_user)):
     """
     Delete an employee record by their unique ID.
 
