@@ -12,7 +12,7 @@ employee_api = APIRouter(prefix="/employee")
 employee_crud = EmployeeCrud()
 
 
-@employee_api.get("")
+@employee_api.get("/list_all")
 def get_all_employees():
     """
     Retrieve all employees from the system.
@@ -31,7 +31,7 @@ def get_all_employees():
         )
 
 
-@employee_api.post("")
+@employee_api.post("/create")
 def create_employee(employee: EmployeeModel):
     """
     Create a new employee record.
@@ -53,7 +53,7 @@ def create_employee(employee: EmployeeModel):
         )
 
 
-@employee_api.get("get_by_id/{emp_id}")
+@employee_api.get("/get_by_id/{emp_id}")
 def get_employee_by_id(emp_id: int):
     """
     Retrieve a single employee by their unique ID.
@@ -75,7 +75,7 @@ def get_employee_by_id(emp_id: int):
         )
 
 
-@employee_api.put("update/{emp_id}")
+@employee_api.put("/update/{emp_id}")
 def update_employee(emp_id: int, employee: EmployeeModel):
     """
     Update an existing employee record.
@@ -98,7 +98,7 @@ def update_employee(emp_id: int, employee: EmployeeModel):
         )
 
 
-@employee_api.delete("/{emp_id}")
+@employee_api.delete("/delete/{emp_id}")
 def delete_employee_by_id(emp_id: int):
     """
     Delete an employee record by their unique ID.

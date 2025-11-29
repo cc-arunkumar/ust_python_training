@@ -93,7 +93,10 @@ class EmployeeCrud:
             cursor.execute("SELECT * FROM ust_db.employees")
             rows = cursor.fetchall()
             data = [dict(zip(get_keys(), row)) for row in rows]
-            return data
+            if data:
+                return data
+            else:
+                raise Exception("No employee record found")
         except Exception as e:
             raise HTTPException(
                 status_code=status.HTTP_502_BAD_GATEWAY,
@@ -124,7 +127,10 @@ class EmployeeCrud:
             )
             record = cursor.fetchone()
             keys = get_keys()
-            return dict(zip(keys, record))
+            if record:
+                return dict(zip(keys, record))
+            else:
+                raise Exception("Employee record not found")
         except Exception as e:
             raise HTTPException(
                 status_code=status.HTTP_502_BAD_GATEWAY,
@@ -169,7 +175,8 @@ class EmployeeCrud:
                 )
             )
             conn.commit()
-            return employee
+            if EmployeeCrud.get_employee_by_id(self,emp_id):
+                return employee
         except Exception as e:
             raise HTTPException(
                 status_code=status.HTTP_502_BAD_GATEWAY,
@@ -195,9 +202,10 @@ class EmployeeCrud:
             conn = get_connection()
             cursor = conn.cursor()
             query = "DELETE FROM ust_db.employees WHERE employee_id = %s"
-            cursor.execute(query, (emp_id,))
-            conn.commit()
-            return "Employee record deleted"
+            if EmployeeCrud.get_employee_by_id(self,emp_id):
+                cursor.execute(query, (emp_id,))
+                conn.commit()
+                return "Employee record deleted"
         except Exception as e:
             raise HTTPException(
                 status_code=status.HTTP_502_BAD_GATEWAY,
