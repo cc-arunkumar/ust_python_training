@@ -1,0 +1,357 @@
+vendor_id,vendor_name,contact_person,contact_phone,gst_number,email,address,city,active_status,error
+3,Global Ventures,Ramesh5 Kumar,8123456789,22CCCDE9101F2AB,ramesh@globalventures.com,789 Brigade Road Bangalore,Bangalore,Active,"1 validation error for VendorModel
+contact_person
+  Value error, contact_person must only contain alphabets and spaces [type=value_error, input_value='Ramesh5 Kumar', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/value_error"
+4,Alpha123 Corp,Pooja Singh,7894561230,19DDDFF1234G5YZ,pooja.singh@alphacorp.com,101 MG Road Chennai,Chennai,Inactive,"1 validation error for VendorModel
+vendor_name
+  Value error, vendor_name must not contain digits [type=value_error, input_value='Alpha123 Corp', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/value_error"
+6,Echo Technologies,Anita Devi,987654321,29FFFEE1234K9ZX,anita@echotech.in,303 Church Street Bangalore,Bangalore,Active,"1 validation error for VendorModel
+contact_phone
+  Value error, contact_phone must be a valid 10-digit Indian mobile number starting with 6/7/8/9 [type=value_error, input_value='987654321', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/value_error"
+7,Falcon Corp,Rajesh Kumar,9876543210,29AAAPL1234C1Z,contact@falconcorp.in,404 Park Avenue Chennai,Chennai,Inactive,"1 validation error for VendorModel
+gst_number
+  String should have at least 15 characters [type=string_too_short, input_value='29AAAPL1234C1Z', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_too_short"
+8,Omega Systems,Sunil Patel,1234567890,22GGGHH5678J1ZX,sunil@omegasystems.com,505 MG Road Hyderabad,Hyderabad,Active,"1 validation error for VendorModel
+contact_phone
+  Value error, contact_phone must be a valid 10-digit Indian mobile number starting with 6/7/8/9 [type=value_error, input_value='1234567890', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/value_error"
+51,Tech Solutions,Rahul5 Kumar,9876543210,29AAAAB1234C1ZX,rahul@techsolutions.in,4848 MG Road Bangalore,Bangalore,Active,"1 validation error for VendorModel
+contact_person
+  Value error, contact_person must only contain alphabets and spaces [type=value_error, input_value='Rahul5 Kumar', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/value_error"
+53,Global Ventures,Ramesh Kumar,98765432,22CCCDE9101F2AB,ramesh@globalventures.com,5050 Brigade Road Bangalore,Bangalore,Active,"1 validation error for VendorModel
+contact_phone
+  Value error, contact_phone must be a valid 10-digit Indian mobile number starting with 6/7/8/9 [type=value_error, input_value='98765432', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/value_error"
+54,Alpha Corp,Pooja Sharma,9876543210,19DDDFF1234G5YZ,pooja.sharma@alphacorp.com,5151 MG Road Chennai,Chennaai,Inactive,"1 validation error for VendorModel
+city
+  Value error, city must be one of the approved cities: Mumbai, Delhi, Bangalore, Chennai, Kolkata, Hyderabad, Pune, Ahmedabad, Jaipur, Chandigarh, Surat, Lucknow, Indore, Vadodara, Nagpur, Patna, Bhopal, Coimbatore, Agra, Nashik, Visakhapatnam, Guwahati, Madurai, Vijayawada, Ludhiana, Jammu, Aurangabad, Dhanbad, Goa, Rajkot [type=value_error, input_value='Chennaai', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/value_error"
+56,Echo Technologies,Anita Devi,987654321,29FFFEE1234K9ZX,anita@echotech.in,5353 Church Street Bangalore,Bangalore,Active,"1 validation error for VendorModel
+contact_phone
+  Value error, contact_phone must be a valid 10-digit Indian mobile number starting with 6/7/8/9 [type=value_error, input_value='987654321', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/value_error"
+57,Falcon Corp,Rajesh Kumar,9876543210,29AAAPL1234C1,contact@falconcorp.in,5454 Park Avenue Chennai,Chennai,Inactive,"1 validation error for VendorModel
+gst_number
+  String should have at least 15 characters [type=string_too_short, input_value='29AAAPL1234C1', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_too_short"
+58,Omega Systems,Sunil Patel,1234567890,22GGGHH5678J1ZX,sunil@omegasystems.com,5555 MG Road Hyderabad,Hyderabad,Active,"1 validation error for VendorModel
+contact_phone
+  Value error, contact_phone must be a valid 10-digit Indian mobile number starting with 6/7/8/9 [type=value_error, input_value='1234567890', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/value_error"
+60,TechnoWare,Sunita Sharma,9876543210,27JJJMM1234M3Y,sunita@technoware.com,5757 Park Street Kolkata,Kolkata,Inactive,"1 validation error for VendorModel
+gst_number
+  String should have at least 15 characters [type=string_too_short, input_value='27JJJMM1234M3Y', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_too_short"
+| Field            | Validation Rule               | Example of Violation                                    | Count of Violations                                              |,,,,,,,,,"9 validation errors for VendorModel
+vendor_id
+  Input should be a valid integer, unable to parse string as an integer [type=int_parsing, input_value='| Field            | Val...                      |', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/int_parsing
+vendor_name
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+contact_person
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+contact_phone
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+gst_number
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+email
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+address
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+city
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+active_status
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type"
+| ---------------- | ----------------------------- | ------------------------------------------------------- | ---------------------------------------------------------------- |,,,,,,,,,"9 validation errors for VendorModel
+vendor_id
+  Input should be a valid integer, unable to parse string as an integer [type=int_parsing, input_value='| ---------------- | ---...--------------------- |', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/int_parsing
+vendor_name
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+contact_person
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+contact_phone
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+gst_number
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+email
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+address
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+city
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+active_status
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type"
+| `vendor_name`    | Alphabets only, max 100 chars | `Alpha123 Corp`                                         | 3                                                                |,,,,,,,,"9 validation errors for VendorModel
+vendor_id
+  Input should be a valid integer, unable to parse string as an integer [type=int_parsing, input_value='| `vendor_name`    | Alphabets only', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/int_parsing
+vendor_name
+  String should have at most 100 characters [type=string_too_long, input_value=' max 100 chars | `Alpha1...                      |', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_too_long
+contact_person
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+contact_phone
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+gst_number
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+email
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+address
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+city
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+active_status
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type"
+| `contact_person` | Alphabets only, max 100 chars | `Ramesh5 Kumar`                                         | 2                                                                |,,,,,,,,"9 validation errors for VendorModel
+vendor_id
+  Input should be a valid integer, unable to parse string as an integer [type=int_parsing, input_value='| `contact_person` | Alphabets only', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/int_parsing
+vendor_name
+  String should have at most 100 characters [type=string_too_long, input_value=' max 100 chars | `Ramesh...                      |', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_too_long
+contact_person
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+contact_phone
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+gst_number
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+email
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+address
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+city
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+active_status
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type"
+| `contact_phone`  | 10 digits, starting 6-9       | `98765432` (8 digits), `987654321` (9 digits)           | 4                                                                |,,,,,,,"9 validation errors for VendorModel
+vendor_id
+  Input should be a valid integer, unable to parse string as an integer [type=int_parsing, input_value='| `contact_phone`  | 10 digits', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/int_parsing
+vendor_name
+  Value error, vendor_name must not contain digits [type=value_error, input_value=' starting 6-9       | `98765432` (8 digits)', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/value_error
+contact_person
+  String should have at most 100 characters [type=string_too_long, input_value=' `987654321` (9 digits) ...                      |', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_too_long
+contact_phone
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+gst_number
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+email
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+address
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+city
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+active_status
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type"
+| `gst_number`     | Exactly 15 alphanumeric       | `29AAAPL1234C1` (14 chars), `29JJJMM1234M3Y` (14 chars) | 4                                                                |,,,,,,,,"9 validation errors for VendorModel
+vendor_id
+  Input should be a valid integer, unable to parse string as an integer [type=int_parsing, input_value='| `gst_number`     | Exa...AAAPL1234C1` (14 chars)', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/int_parsing
+vendor_name
+  Value error, vendor_name must not contain digits [type=value_error, input_value=' `29JJJMM1234M3Y` (14 ch...                      |', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/value_error
+contact_person
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+contact_phone
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+gst_number
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+email
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+address
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+city
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+active_status
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type"
+| `email`          | Valid email format            | `rajesh@falconcorp` (missing `.com`)                    | 0 (minor format deviations exist but all include `@` and domain) |,,,,,,,,,"9 validation errors for VendorModel
+vendor_id
+  Input should be a valid integer, unable to parse string as an integer [type=int_parsing, input_value='| `email`          | Val...clude `@` and domain) |', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/int_parsing
+vendor_name
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+contact_person
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+contact_phone
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+gst_number
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+email
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+address
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+city
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+active_status
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type"
+| `address`        | Max 200 chars                 | None in generated data                                  | 0                                                                |,,,,,,,,,"9 validation errors for VendorModel
+vendor_id
+  Input should be a valid integer, unable to parse string as an integer [type=int_parsing, input_value='| `address`        | Max...                      |', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/int_parsing
+vendor_name
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+contact_person
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+contact_phone
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+gst_number
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+email
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+address
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+city
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+active_status
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type"
+| `city`           | Must be valid Indian city     | `Chennaai` (typo)                                       | 1                                                                |,,,,,,,,,"9 validation errors for VendorModel
+vendor_id
+  Input should be a valid integer, unable to parse string as an integer [type=int_parsing, input_value='| `city`           | Mus...                      |', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/int_parsing
+vendor_name
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+contact_person
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+contact_phone
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+gst_number
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+email
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+address
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+city
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+active_status
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type"
+| `active_status`  | Only `Active` / `Inactive`    | `Actve` (typo)                                          | 0                                                                |,,,,,,,,,"9 validation errors for VendorModel
+vendor_id
+  Input should be a valid integer, unable to parse string as an integer [type=int_parsing, input_value='| `active_status`  | Onl...                      |', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/int_parsing
+vendor_name
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+contact_person
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+contact_phone
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+gst_number
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+email
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+address
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+city
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+active_status
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type"
+Total Records with Any Violation: 12 (some records violate more than one rule, but total distinct records with violations = 12),,,,,,,,"9 validation errors for VendorModel
+vendor_id
+  Input should be a valid integer, unable to parse string as an integer [type=int_parsing, input_value='Total Records with Any V...late more than one rule', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/int_parsing
+vendor_name
+  Value error, vendor_name must not contain digits [type=value_error, input_value=' but total distinct reco...s with violations = 12)', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/value_error
+contact_person
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+contact_phone
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+gst_number
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+email
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+address
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+city
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+active_status
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type"

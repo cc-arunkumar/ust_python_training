@@ -1,0 +1,33 @@
+log_id,asset_tag,maintenance_type,vendor_name,description,cost,maintenance_date,technician_name,status,error
+11,UST-LTP-0011,Repair,Invalid123 Vendor,Replaced keyboard,1200.00,2023-07-15,Rakesh Kumar,Completed,"1 validation error for MaintenanceLogModel
+vendor_name
+  Value error, vendor_name must only contain alphabets and spaces, no digits or special characters [type=value_error, input_value='Invalid123 Vendor', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/value_error"
+12,UST-MNT-0012,Servce,Global Ventures,Monitor calibration,1400.00,2023-08-01,Anjali Singh,Pending,"1 validation error for MaintenanceLogModel
+maintenance_type
+  Value error, maintenance_type must be one of Repair, Service, Upgrade [type=value_error, input_value='Servce', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/value_error"
+14,UST-MNT-0014,Repair,Quantum Corp,Repaired hinge,0,2023-10-01,Pooja Sharma,Completed,"1 validation error for MaintenanceLogModel
+cost
+  Input should be greater than 0 [type=greater_than, input_value='0', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/greater_than"
+17,UST-MNT-0017,Repair,Innovatech,Replaced monitor cable,-500.00,2023-05-20,Sunita Devi,Completed,"1 validation error for MaintenanceLogModel
+cost
+  Input should be greater than 0 [type=greater_than, input_value='-500.00', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/greater_than"
+31,UST-LTP-0031,Repa1r,NextGen Enterprises,Fixed keyboard,1250.00,2023-07-12,Rajesh Kumar,Pending,"1 validation error for MaintenanceLogModel
+maintenance_type
+  Value error, maintenance_type must be one of Repair, Service, Upgrade [type=value_error, input_value='Repa1r', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/value_error"
+50,UST-MNT-0050,Repair,InvalidVendor123,Replaced damaged stand,1500.00,2023-08-12,Rakesh Kumar,Completed,"1 validation error for MaintenanceLogModel
+vendor_name
+  Value error, vendor_name must only contain alphabets and spaces, no digits or special characters [type=value_error, input_value='InvalidVendor123', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/value_error"
+56,UST-MNT-0056,Repair,Innovatech,Replaced keyboard,-500.00,2023-05-20,Sunita Devi,Completed,"1 validation error for MaintenanceLogModel
+cost
+  Input should be greater than 0 [type=greater_than, input_value='-500.00', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/greater_than"
+89,UST-MNT-0089,Repair,InvalidVendor#123,Replaced stand,1500.00,2023-06-15,Rakesh Kumar,Completed,"1 validation error for MaintenanceLogModel
+vendor_name
+  Value error, vendor_name must only contain alphabets and spaces, no digits or special characters [type=value_error, input_value='InvalidVendor#123', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/value_error"

@@ -1,0 +1,277 @@
+emp_code,full_name,email,phone,department,location,join_date,status,error
+USTEMP-1002,Anjali Nair,anjali.nair@ust,9876501234,HR,Bangalore,2020-02-20,Active,"1 validation error for EmployeeDirectory
+email
+  Value error, email must end with '@ust.com' [type=value_error, input_value='anjali.nair@ust', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/value_error"
+EMP-1003,Vivek Reddy,vivek.reddy@ust.com,987651234,Finance,Chennai,2018-11-25,Active,"2 validation errors for EmployeeDirectory
+emp_code
+  Value error, emp_code must start with 'USTEMP' [type=value_error, input_value='EMP-1003', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/value_error
+phone
+  Value error, phone must be a valid 10-digit Indian mobile starting with 6/7/8/9 [type=value_error, input_value='987651234', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/value_error"
+USTEMP-1007,Aditya Kumar,aditya.kumar@ust.com,9876556789,Support,Chennai,2020-08-05,Activ,"1 validation error for EmployeeDirectory
+status
+  Value error, status must be one of: Active, Inactive, Resigned [type=value_error, input_value='Activ', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/value_error"
+USTEMP-1019,Varun Sharma,varun.sharmaust.com,9876579012,IT,Chennai,2021-09-08,Active,"1 validation error for EmployeeDirectory
+email
+  Value error, email must end with '@ust.com' [type=value_error, input_value='varun.sharmaust.com', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/value_error"
+USTEMP-1027,Rohan Singh,rohan.singh@ust.com,9876569012,Finance,Chennai,2022-13-12,Active,"1 validation error for EmployeeDirectory
+join_date
+  Input should be a valid date or datetime, month value is outside expected range of 1-12 [type=date_from_datetime_parsing, input_value='2022-13-12', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/date_from_datetime_parsing"
+USTEMP-1062,Manish Kumar,manish.kumar@ust,9876506789,IT,Bangalore,2021-04-21,Active,"1 validation error for EmployeeDirectory
+email
+  Value error, email must end with '@ust.com' [type=value_error, input_value='manish.kumar@ust', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/value_error"
+USTEMP-1063,Preeti Sharma,preeti.sharma@ust.com,9876517890,HR,Chennai,2019-05-18,Activ,"1 validation error for EmployeeDirectory
+status
+  Value error, status must be one of: Active, Inactive, Resigned [type=value_error, input_value='Activ', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/value_error"
+USTEMP-1079,Sneha Sharma,sneha.sharmaust.com,9876573456,HR,Chennai,2021-06-13,Active,"1 validation error for EmployeeDirectory
+email
+  Value error, email must end with '@ust.com' [type=value_error, input_value='sneha.sharmaust.com', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/value_error"
+|Field Validation Rule|Records (emp_code) Example / Count                                           |,,,,,,,,"8 validation errors for EmployeeDirectory
+emp_code
+  Value error, emp_code must start with 'USTEMP' [type=value_error, input_value='|Field Validation Rule|R...                      |', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/value_error
+full_name
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+email
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+phone
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+department
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+location
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+join_date
+  Input should be a valid date [type=date_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/date_type
+status
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type"
+| -------------------| -------------------------------------------------------------------------- |,,,,,,,,"8 validation errors for EmployeeDirectory
+emp_code
+  Value error, emp_code must start with 'USTEMP' [type=value_error, input_value='| -------------------| -...--------------------- |', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/value_error
+full_name
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+email
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+phone
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+department
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+location
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+join_date
+  Input should be a valid date [type=date_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/date_type
+status
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type"
+| emp_code format    | 1003 (`EMP-1003`) → 1 record                                                 |,,,,,,,,"8 validation errors for EmployeeDirectory
+emp_code
+  Value error, emp_code must start with 'USTEMP' [type=value_error, input_value='| emp_code format    | 1...                      |', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/value_error
+full_name
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+email
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+phone
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+department
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+location
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+join_date
+  Input should be a valid date [type=date_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/date_type
+status
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type"
+| full_name          | None with visible impurity in current dataset (all names valid)              |,,,,,,,,"8 validation errors for EmployeeDirectory
+emp_code
+  Value error, emp_code must start with 'USTEMP' [type=value_error, input_value='| full_name          | N...s valid)              |', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/value_error
+full_name
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+email
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+phone
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+department
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+location
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+join_date
+  Input should be a valid date [type=date_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/date_type
+status
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type"
+| email format       | 1002, 1011, 1019, 1079, 1062 → 5 records                                     |,,,,"6 validation errors for EmployeeDirectory
+emp_code
+  Value error, emp_code must start with 'USTEMP' [type=value_error, input_value='| email format       | 1002', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/value_error
+email
+  Value error, email must end with '@ust.com' [type=value_error, input_value=' 1019', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/value_error
+phone
+  Value error, phone must be a valid 10-digit Indian mobile starting with 6/7/8/9 [type=value_error, input_value=' 1079', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/value_error
+location
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+join_date
+  Input should be a valid date [type=date_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/date_type
+status
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type"
+| phone number length| 1003 → 1 record                                                              |,,,,,,,,"8 validation errors for EmployeeDirectory
+emp_code
+  Value error, emp_code must start with 'USTEMP' [type=value_error, input_value='| phone number length| 1...                      |', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/value_error
+full_name
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+email
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+phone
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+department
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+location
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+join_date
+  Input should be a valid date [type=date_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/date_type
+status
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type"
+| department         | None invalid in current dataset                                              |,,,,,,,,"8 validation errors for EmployeeDirectory
+emp_code
+  Value error, emp_code must start with 'USTEMP' [type=value_error, input_value='| department         | N...                      |', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/value_error
+full_name
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+email
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+phone
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+department
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+location
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+join_date
+  Input should be a valid date [type=date_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/date_type
+status
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type"
+| location           | None invalid in current dataset                                              |,,,,,,,,"8 validation errors for EmployeeDirectory
+emp_code
+  Value error, emp_code must start with 'USTEMP' [type=value_error, input_value='| location           | N...                      |', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/value_error
+full_name
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+email
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+phone
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+department
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+location
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+join_date
+  Input should be a valid date [type=date_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/date_type
+status
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type"
+| join_date          | 1027 (`2022-13-12`) → 1 record, 1062 (`future date`) → 1 record (if present) |,,,,,,,"7 validation errors for EmployeeDirectory
+emp_code
+  Value error, emp_code must start with 'USTEMP' [type=value_error, input_value='| join_date          | 1...-12`) → 1 record', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/value_error
+email
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+phone
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+department
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+location
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+join_date
+  Input should be a valid date [type=date_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/date_type
+status
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type"
+| status             | 1007 (`Activ`) → 1 record                                                    |,,,,,,,,"8 validation errors for EmployeeDirectory
+emp_code
+  Value error, emp_code must start with 'USTEMP' [type=value_error, input_value='| status             | 1...                      |', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/value_error
+full_name
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+email
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+phone
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+department
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+location
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+join_date
+  Input should be a valid date [type=date_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/date_type
+status
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type"
