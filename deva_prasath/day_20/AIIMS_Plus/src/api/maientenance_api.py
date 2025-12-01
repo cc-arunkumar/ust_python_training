@@ -26,6 +26,28 @@ async def list_maintenance(status: Optional[str] = None,current_user: dict = Dep
 
 
 
+
+# Endpoint to search for maintenance logs based on a keyword
+@maintenance_router.get("/search")
+async def search_maintenance_endpoint(keyword: str,current_user: dict = Depends(get_current_user)):
+    try:
+        logs = search_maintenance(keyword)  # Search for maintenance logs by keyword
+        return logs
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))  # Raise HTTP error on failure
+
+
+
+# Endpoint to get the count of total maintenance logs
+@maintenance_router.get("/count")
+async def count_maintenance_endpoint(current_user: dict = Depends(get_current_user)):
+    try:
+        count = count_maintenance()  # Get total maintenance log count
+        return {"total_maintenance_logs": count}  # Return maintenance log count
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))  # Raise HTTP error on failure
+
+
 # Endpoint to fetch a specific maintenance log by ID
 @maintenance_router.get("/{maintenance_id}")
 async def get_maintenance(maintenance_id: int,current_user: dict = Depends(get_current_user)):
@@ -77,26 +99,5 @@ async def delete_maintenance_endpoint(maintenance_id: int,current_user: dict = D
     try:
         delete_maintenance(maintenance_id)  # Delete maintenance log using the provided ID
         return {"message": "Maintenance record deleted successfully"}  # Return success message
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))  # Raise HTTP error on failure
-
-
-# Endpoint to search for maintenance logs based on a keyword
-@maintenance_router.get("/search")
-async def search_maintenance_endpoint(keyword: str,current_user: dict = Depends(get_current_user)):
-    try:
-        logs = search_maintenance(keyword)  # Search for maintenance logs by keyword
-        return logs
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))  # Raise HTTP error on failure
-
-
-
-# Endpoint to get the count of total maintenance logs
-@maintenance_router.get("/count")
-async def count_maintenance_endpoint(current_user: dict = Depends(get_current_user)):
-    try:
-        count = count_maintenance()  # Get total maintenance log count
-        return {"total_maintenance_logs": count}  # Return maintenance log count
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))  # Raise HTTP error on failure

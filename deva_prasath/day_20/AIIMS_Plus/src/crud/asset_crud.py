@@ -13,10 +13,8 @@ def get_db_connection():
 
 # Function to get assets, optionally filtered by status
 def get_assets(status: Optional[str] = None):
-    print("at crud")
     conn = get_db_connection()  # Get database connection
     cursor = conn.cursor()  # Create a cursor for database operations
-    print("Connection established")
     try:
         if status:  # If status filter is provided
             cursor.execute("select * FROM asset_inventory WHERE asset_status=%s", (status,))
@@ -133,26 +131,43 @@ def delete_asset(asset_id: int):
         cursor.close()  # Close cursor
         conn.close()  # Close connection
 
-# Function to search for assets based on a keyword
-def search_assets(keyword: str):
-    conn = get_db_connection()  # Get database connection
-    cursor = conn.cursor()  # Create cursor
+# # Function to search for assets based on a keyword
+# def search_assets(keyword: str):
+#     conn = get_db_connection()  # Get database connection
+#     cursor = conn.cursor()  # Create cursor
+#     try:
+#         query = """
+#         select * FROM asset_inventory WHERE 
+#         asset_tag LIKE %s OR 
+#         model LIKE %s OR 
+#         manufacturer LIKE %s
+#         """
+#         like_keyword = f"%{keyword}%"  # Prepare the keyword for SQL LIKE query
+#         cursor.execute(query, (like_keyword, like_keyword, like_keyword))
+#         return cursor.fetchall()  # Return all results
+#     finally:
+#         cursor.close()  # Close cursor
+#         conn.close()  # Close connection
+
+
+def search_assets(keyword):
+    conn = get_db_connection()
+    cursor = conn.cursor()
     try:
-        query = """
-        select * FROM asset_inventory WHERE 
-        asset_tag LIKE %s OR 
-        model LIKE %s OR 
-        manufacturer LIKE %s
-        """
-        like_keyword = f"%{keyword}%"  # Prepare the keyword for SQL LIKE query
-        cursor.execute(query, (like_keyword, like_keyword, like_keyword))
-        return cursor.fetchall()  # Return all results
+        like = f"%{keyword}%"
+        cursor.execute("""
+            SELECT * FROM asset_inventory
+            WHERE asset_tag LIKE %s OR model LIKE %s OR manufacturer LIKE %s OR serial_number LIKE %s
+        """, (like, like, like, like))
+        rows = cursor.fetchall()
+        if not rows:
+            return {"message": "No assets found"}
+        return {"search_results": rows}
+    except Exception as e:
+        return {"error": str(e)}
     finally:
-        cursor.close()  # Close cursor
-        conn.close()  # Close connection
-
-
-
+        cursor.close()
+        conn.close()
 
 # Function to count the total number of assets
 def count_assets():

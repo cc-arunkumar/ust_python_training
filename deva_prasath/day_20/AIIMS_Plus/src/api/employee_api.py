@@ -25,6 +25,27 @@ def list_employees(status: Optional[str] = None,current_user: dict = Depends(get
         raise HTTPException(status_code=400, detail=str(e))  # Raise HTTP error on failure
 
 
+
+# Endpoint to search for employees based on a keyword
+@employee_router.get("/search")
+async def search_employees_endpoint(keyword: str,current_user: dict = Depends(get_current_user)):
+    try:
+        employees = search_employees(keyword)  # Search for employees by keyword
+        return employees
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))  # Raise HTTP error on failure
+
+
+# Endpoint to get the count of total employees
+@employee_router.get("/count")
+async def count_employees_endpoint(current_user: dict = Depends(get_current_user)):
+    try:
+        count = count_employees()  # Get total employee count
+        return {"total_employees": count}  # Return employee count
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))  # Raise HTTP error on failure
+
+
 # Endpoint to fetch a specific employee by ID
 @employee_router.get("/{employee_id}")
 def get_employee(employee_id: int,current_user: dict = Depends(get_current_user)):
@@ -78,21 +99,3 @@ async def delete_employee_endpoint(employee_id: int,current_user: dict = Depends
         raise HTTPException(status_code=400, detail=str(e))  # Raise HTTP error on failure
 
 
-# Endpoint to search for employees based on a keyword
-@employee_router.get("/search")
-async def search_employees_endpoint(keyword: str,current_user: dict = Depends(get_current_user)):
-    try:
-        employees = search_employees(keyword)  # Search for employees by keyword
-        return employees
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))  # Raise HTTP error on failure
-
-
-# Endpoint to get the count of total employees
-@employee_router.get("/count")
-async def count_employees_endpoint(current_user: dict = Depends(get_current_user)):
-    try:
-        count = count_employees()  # Get total employee count
-        return {"total_employees": count}  # Return employee count
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))  # Raise HTTP error on failure

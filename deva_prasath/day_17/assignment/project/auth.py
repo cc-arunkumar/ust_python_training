@@ -19,6 +19,6 @@ def verify_token(token: str):
     try:
         #decoding
         payload=jwt.decode(token,SECRET_KEY,algorithms=["HS256"])
-        return payload.get("sub")  # Return the subject (username)
+        return payload.get("sub")  # Return the subject (username)``
     except JWTError:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,detail="Could not validate credentials")

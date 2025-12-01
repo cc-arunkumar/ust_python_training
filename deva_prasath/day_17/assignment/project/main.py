@@ -42,7 +42,7 @@ def create_task(task:TaskModel,current_user:User=Depends(verify_token)):
     }
     tasks.append(task_data)
     next_id+=1
-    return task_data
+    return task_data 
 
 #get all api that retruns all tasks
 @app.get("/tasks",response_model=List[TaskModel])

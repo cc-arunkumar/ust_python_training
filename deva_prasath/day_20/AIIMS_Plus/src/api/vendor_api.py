@@ -26,6 +26,27 @@ async def list_vendors(status: Optional[str] = None,current_user: dict = Depends
         raise HTTPException(status_code=400, detail=str(e))  # Raise HTTP error on failure
 
 
+
+# Endpoint to search for vendors based on a keyword
+@vendor_router.get("/search")
+async def search_vendors_endpoint(keyword: str,current_user: dict = Depends(get_current_user)):
+    try:
+        vendors = search_vendors(keyword)  # Search for vendors by keyword
+        return vendors
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))  # Raise HTTP error on failure
+
+
+# Endpoint to get the count of total vendors
+@vendor_router.get("/count")
+async def count_vendors_endpoint(current_user: dict = Depends(get_current_user)):
+    try:
+        count = count_vendors()  # Get total vendor count
+        return {"total_vendors": count}  # Return vendor count
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))  # Raise HTTP error on failure
+
+
 # Endpoint to fetch a specific vendor by ID
 @vendor_router.get("/{vendor_id}")
 async def get_vendor(vendor_id: int,current_user: dict = Depends(get_current_user)):
@@ -75,25 +96,5 @@ async def delete_vendor_endpoint(vendor_id: int,current_user: dict = Depends(get
     try:
         delete_vendor(vendor_id)  # Delete vendor using the provided ID
         return {"message": "Vendor deleted successfully"}  # Return success message
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))  # Raise HTTP error on failure
-
-
-# Endpoint to search for vendors based on a keyword
-@vendor_router.get("/search")
-async def search_vendors_endpoint(keyword: str,current_user: dict = Depends(get_current_user)):
-    try:
-        vendors = search_vendors(keyword)  # Search for vendors by keyword
-        return vendors
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))  # Raise HTTP error on failure
-
-
-# Endpoint to get the count of total vendors
-@vendor_router.get("/count")
-async def count_vendors_endpoint(current_user: dict = Depends(get_current_user)):
-    try:
-        count = count_vendors()  # Get total vendor count
-        return {"total_vendors": count}  # Return vendor count
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))  # Raise HTTP error on failure

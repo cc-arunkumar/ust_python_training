@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException ,Depends # Import FastAPI components
+from fastapi import APIRouter, HTTPException ,Depends,Query # Import FastAPI components
 from typing import List, Optional  # Import typing components for type hinting
 from ..models.asset_model import AssetCreate  # Import AssetCreate model from asset_model
 from ..auth.auth_jwt_token import get_current_user
@@ -27,6 +27,23 @@ def list_assets(current_user: dict = Depends(get_current_user),status: Optional[
         raise HTTPException(status_code=400, detail=str(e))  # Raise HTTP error on failure
 
 
+
+
+@asset_router.get("/count")
+async def count_assets_endpoint(current_user: dict = Depends(get_current_user)):
+    try:
+        count = count_assets()  # Get total asset count
+        return {"total_assets": count}  # Return asset count
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+
+
+@asset_router.get("/search")
+def search(keyword: str = Query(..., description="Search in tag, model, manufacturer, serial"),current_user: dict = Depends(get_current_user)):
+    return search_assets(keyword)
+ 
 
 # Endpoint to fetch a specific asset by ID
 @asset_router.get("/{asset_id}")
@@ -81,25 +98,5 @@ def delete_asset_endpoint(asset_id: int,current_user: dict = Depends(get_current
         return {"message": "Asset deleted successfully"}  # Return success message
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))  # Raise HTTP error on failure
-
-
-# Endpoint to search for assets based on a keyword
-@asset_router.get("/search")
-def search_assets_endpoint(keyword: str,current_user: dict = Depends(get_current_user)):
-    try:
-        assets = search_assets(keyword)  # Search for assets by keyword
-        return assets
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))  # Raise HTTP error on failure
-
-
-# Endpoint to get the count of total assets
-@asset_router.get("/count")
-async def count_assets_endpoint(current_user: dict = Depends(get_current_user)):
-    try:
-        count = count_assets()  # Get total asset count
-        return {"total_assets": count}  # Return asset count
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
 
 
