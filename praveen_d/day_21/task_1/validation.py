@@ -4,7 +4,7 @@ from typing import Optional,List
 import re
 from datetime import datetime
 class Validation(BaseModel):
-    first_name:str = Field(...,min_length=1,pattern=r"^[A-Za-z ]+$")
+    first_name:str = Field(...,min_length=1,pattern=r"^[A-Za-z]+$")
     last_name:str
     email: EmailStr = Field(...,max_length=100)
     position:Optional[str]=None
