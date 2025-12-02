@@ -1,108 +1,61 @@
-from fastapi import HTTPException, Depends,APIRouter
-from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
-from jose import jwt, JWTError
-from typing import Optional
+from fastapi import FastAPI, Depends, HTTPException, status, APIRouter
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from jose import JWTError, jwt
 from datetime import datetime, timedelta, timezone
-
-from dotenv import load_dotenv
-import os
-
 from pydantic import BaseModel
+import os
+from dotenv import load_dotenv
 
-login_router = APIRouter(prefix="/auth")
+# Load environment variables
+load_dotenv()
+SECRET_KEY = os.getenv("JWT_SECRET_KEY")
+ALGORITHM = os.getenv("ALGORITHM")
+ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", 15))
 
-# Model representing a user with a username
+app = FastAPI()
+auth_router = APIRouter(prefix="/auth")
+
+# OAuth2 scheme: expects Authorization: Bearer <token>
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token")
+
+# Pydantic models
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
 class User(BaseModel):
     username: str
 
-# Model representing an authentication token and its type
-class Token(BaseModel):
-    token: str
-    token_type: str
-
-# Model representing login request payload with username and password
-class LoginRequest(BaseModel):
-    username: str
-    password: str
-
-# Load environment variables from .env file
-load_dotenv()
-
-# Secret key and algorithm used for JWT encoding/decoding
-JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
-ALGORITHM = os.getenv("ALGORITHM")
-
-# Expected username for validation
-USERNAME = os.getenv("USER_NAME")
-
-expire = os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES")
-
-
-# -------------------- JWT Token Creation --------------------
-def create_access_token(subject: str, expires_delta: Optional[timedelta] = None):
-    """
-    Create a JWT access token with subject (username) and expiration time.
-    Default expiration is 15 minutes if not provided.
-    """
-    to_encode = {"sub": subject}
-    if expires_delta:
-        expires = datetime.now(timezone.utc) + expires_delta
-    else:
-        expires = datetime.now(timezone.utc) + timedelta(minutes=15)
-    to_encode.update({"exp": expires})
-
-    # Encode payload into JWT using secret key and algorithm
-    encoded = jwt.encode(to_encode, JWT_SECRET_KEY, algorithm=ALGORITHM)
-    return encoded
-
-
-# -------------------- Security Dependency --------------------
-# HTTPBearer enforces Authorization header with Bearer token
-security = HTTPBearer()
-
+# -------------------- Token Creation --------------------
+def create_access_token(data: dict, expires_delta: timedelta | None = None):
+    to_encode = data.copy()
+    expire = datetime.now(timezone.utc) + (expires_delta or timedelta(minutes=15))
+    to_encode.update({"exp": expire})
+    return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
 # -------------------- Current User Retrieval --------------------
-def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)) -> User:
-    """
-    Validate JWT token from Authorization header and return current user.
-    Raises HTTP 401 if token is invalid/expired or user not found.
-    """
-    token = credentials.credentials
+def get_current_user(token: str = Depends(oauth2_scheme)) -> User:
     try:
-        # Decode JWT token using secret key and algorithm
-        payload = jwt.decode(token, JWT_SECRET_KEY, algorithms=[ALGORITHM])
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        username: str = payload.get("sub")
+        if username is None:
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
+        return User(username=username)
     except JWTError:
-        raise HTTPException(status_code=401, detail="Invalid or expired token")
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid or expired token")
 
-    # Extract username from token payload
-    username = payload.get("sub")
-    if username != USERNAME:
-        raise HTTPException(status_code=401, detail="User not found")
+# -------------------- Login Endpoint --------------------
+@auth_router.post("/token", response_model=Token)
+def login(form_data: OAuth2PasswordRequestForm = Depends()):
+    # Validate against environment variables
+    if form_data.username != os.getenv("USER_NAME") or form_data.password != os.getenv("PASSWORD"):
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
 
-    # Return validated user object
-    return User(username=username)
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(data={"sub": form_data.username}, expires_delta=access_token_expires)
+    return {"access_token": access_token, "token_type": "bearer"}
 
-
-@login_router.post("/login", response_model=Token)
-def login(user: LoginRequest):
-    """
-    Authenticate user with username and password.
-    If valid, generate and return a JWT access token.
-    """
-    try:
-        # Validate credentials against environment variables
-        if (user.username != os.getenv("USER_NAME") or user.password != os.getenv("PASSWORD")):
-            raise HTTPException(status_code=404, detail="Invalid username or password")
-
-        # Set token expiration time
-        expires = timedelta(minutes=int(expire))
-
-        # Generate JWT token
-        token = create_access_token(user.username, expires)
-
-        # Return token response
-        return Token(token=token, token_type="bearer")
-
-    except Exception as e:
-        # Handle unexpected errors
-        raise HTTPException(status_code=404, detail=str(e))
+# -------------------- Protected Endpoint --------------------
+@auth_router.get("/me", response_model=User)
+def read_users_me(current_user: User = Depends(get_current_user)):
+    return current_user

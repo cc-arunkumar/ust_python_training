@@ -2,7 +2,7 @@ from fastapi import FastAPI,HTTPException,Depends
 from pydantic import BaseModel,Field,model_validator
 from datetime import datetime,date
 from typing import Literal
-from auth import get_current_user,login_router,User
+from auth import get_current_user,auth_router,User
 import pymysql
 
 
@@ -38,7 +38,7 @@ class TrainingRequest(BaseModel):
         
 app = FastAPI(title="UST TRAINING REQUEST")
 
-app.include_router(login_router)
+app.include_router(auth_router)
 
 
 @app.get("/api/v1/training-requests/")
