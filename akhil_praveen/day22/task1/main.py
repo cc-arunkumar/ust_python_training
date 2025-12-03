@@ -1,16 +1,18 @@
-from fastapi import FastAPI,HTTPException,Depends
+from fastapi import FastAPI,HTTPException,Depends,status
+from fastapi.security import OAuth2PasswordRequestForm
 from pydantic import BaseModel,Field,model_validator
 from typing import Optional,Literal
 import re
 from datetime import datetime,date,timedelta
 import os
 from dotenv import load_dotenv
-from auth import create_access_token,get_current_user,User,Token,LoginRequest
+from auth import create_access_token,get_current_user,User,Token,auth_router
 import pymysql
 
 load_dotenv()
 
 app = FastAPI(title="UST Employee Training Request Management")
+app.include_router(auth_router)
 
 class StatusValidation(BaseModel):
     status : str = Literal["PENDING","APPROVED","REJECTED"]
@@ -56,16 +58,6 @@ def close_connection(conn,cursor):
         cursor.close()
         print("connection closed!")
 
-
-@app.post("/login",response_model=Token)
-def login(data:LoginRequest,):
-    if data.username!= DEMO_USERNAME or data.password != DEMO_PASSWORD:
-        raise HTTPException(status_code=401,detail="Incorrect username or password!")
-    
-    expires = timedelta(minutes=int(ACCESS_TOKEN_EXPIRE_MINUTES))
-    token =  create_access_token(subject=data.username,expire_delta=expires)
-    
-    return Token(access_token=token,token_type="bearer")
 
 @app.post(BASE_URL)
 def create_request(data:TrainingRequest,current : User = Depends(get_current_user)):

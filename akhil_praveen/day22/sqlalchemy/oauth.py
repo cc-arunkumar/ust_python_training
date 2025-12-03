@@ -8,8 +8,7 @@ from dotenv import load_dotenv
  
 # Load environment variables
 load_dotenv()
-
-SECRET_KEY = os.getenv("SECRET_KEY")
+SECRET_KEY = os.getenv("JWT_SECRET_KEY")
 ALGORITHM = os.getenv("ALGORITHM")
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", 15))
  
@@ -17,7 +16,7 @@ app = FastAPI()
 auth_router = APIRouter(prefix="/auth")
  
 # OAuth2 scheme: expects Authorization: Bearer <token>
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token")
  
 # Pydantic models
 class Token(BaseModel):
@@ -49,7 +48,7 @@ def get_current_user(token: str = Depends(oauth2_scheme)) -> User:
 @auth_router.post("/token", response_model=Token)
 def login(form_data: OAuth2PasswordRequestForm = Depends()):
     # Validate against environment variables
-    if form_data.username != os.getenv("DEMO_USERNAME") or form_data.password != os.getenv("DEMO_PASSWORD"):
+    if form_data.username != os.getenv("USER_NAME") or form_data.password != os.getenv("PASSWORD"):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
  
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
