@@ -12,7 +12,7 @@ router = APIRouter()
 async def create_application(app_in: Application, current_user: dict = Depends(get_current_user)):
     if current_user["role"] not in [UserRole.EMPLOYEE_TP, UserRole.EMPLOYEE_NON_TP]:
         raise HTTPException(403)
-    app_in.employee_id = int(current_user["employee_id"])
+    app_in.employee_id = current_user["employee_id"]
     app_in.id = str(uuid.uuid4())
     await collections["applications"].insert_one(app_in.dict(by_alias=True))
     return app_in

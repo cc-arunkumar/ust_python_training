@@ -6,22 +6,27 @@ from utils.security import get_current_user
 router = APIRouter()
 
 async def get_manager_applications(current_user: dict, status_filter: list = None):
+    role = current_user["role"]
+    emp_id = current_user["employee_id"]
+
     query = {}
-    if current_user["role"] == UserRole.TP_MANAGER:
-        query = {"status": ApplicationStatus.SUBMITTED}
+
+    if role == "TP Manager":
         tp_emp_ids = [e["employee_id"] async for e in collections["employees"].find({"type": "TP"}, {"employee_id": 1})]
-        query["employee_id"] = {"$in": tp_emp_ids}
-    elif current_user["role"] == UserRole.WFM:
-        job_ids = [j["rr_id"] async for j in collections["jobs"].find({"wfm_id": current_user["employee_id"]}, {"rr_id": 1})]
-        query["job_rr_id"] = {"$in": job_ids}
+        query = {"employee_id": {"$in": tp_emp_ids}, "status": "Submitted"}
+
+    elif role == "WFM":
+        job_rr_ids = [j["_id"] async for j in collections["jobs"].find({"wfm_id": emp_id}, {"_id": 1})]
+        query = {"job_rr_id": {"$in": job_rr_ids}}
         if status_filter:
             query["status"] = {"$in": status_filter}
-    elif current_user["role"] == UserRole.HM:
-        job_ids = [j["rr_id"] async for j in collections["jobs"].find({"hm_id": current_user["employee_id"]}, {"rr_id": 1})]
-        query["job_rr_id"] = {"$in": job_ids}
-        query["status"] = ApplicationStatus.SELECTED
+
+    elif role == "HM":
+        job_rr_ids = [j["_id"] async for j in collections["jobs"].find({"hm_id": emp_id}, {"_id": 1})]
+        query = {"job_rr_id": {"$in": job_rr_ids}, "status": "Selected"}
+
     else:
-        raise HTTPException(403)
+        raise HTTPException(status_code=403, detail="Unauthorized")
 
     return await collections["applications"].find(query).to_list(200)
 
