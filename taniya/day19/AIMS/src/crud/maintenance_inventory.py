@@ -62,8 +62,7 @@ def list_maintenance():
     """
     Fetch all maintenance records from maintenance_log table.
     """
-    conn = None
-    cursor = None
+    
     try:
         conn = get_connection()
         cursor = conn.cursor(pymysql.cursors.DictCursor)  # DictCursor returns rows as dictionaries

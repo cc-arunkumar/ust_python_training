@@ -124,3 +124,8 @@ if __name__ == "__main__":
     # Create processor with input and output file paths
     processor = OrderProcessor("orders_raw.csv", "orders_processed.csv", "orders_skipped.csv")
     processor.process_order()  # Run processing
+    
+    
+    #  if not re.match(r"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.com$", v):
+    #     raise ValueError("Invalid email format (must end with .com)")
+    # return v 

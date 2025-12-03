@@ -171,8 +171,7 @@ def count_assets():
 def update_asset(asset_id, asset_tag, asset_type, serial_number, manufacturer, model,
                  purchase_date, warranty_years, condition_status,
                  assigned_to, location, asset_status):
-    conn = None
-    cursor = None
+    
     try:
         conn = get_connection()
         cursor = conn.cursor()
@@ -192,7 +191,7 @@ def update_asset(asset_id, asset_tag, asset_type, serial_number, manufacturer, m
             serial_number,
             str(manufacturer),
             model,
-            purchase_date.strftime("%Y-%m-%d"),  # Format date to YYYY-MM-DD
+            purchase_date.strftime("%Y-%m-%d"),  
             warranty_years,
             str(condition_status),
             assigned_to,

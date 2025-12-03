@@ -9,7 +9,7 @@ app = FastAPI(title="Task Manager")
 @app.get("/")
 def check():
     return "Hello from the server side"
-
+ID_COUNT=0
 @app.post("/login", response_model=Token)
 def login(data: LoginRequest):
     if data.username != users["rahul"]["username"] or data.password != users["rahul"]["password"]:
@@ -23,7 +23,6 @@ def login(data: LoginRequest):
 
 @app.post("/tasks", response_model=Task)
 def post_tasks(task: Task, current_user: User = Depends(get_current_user)):
-    global ID_COUNT
     task.id = ID_COUNT
     ID_COUNT += 1
     Tasks.append(task)
