@@ -4,39 +4,79 @@ from typing import List, Optional,Literal
 from datetime import datetime,date,timedelta
 from enum import Enum
 import uuid
-
-class UserRole(str, Enum):
-    ADMIN = "Admin"
-    TP_MANAGER = "TP Manager"
-    WFM = "WFM"
-    HM = "HM"
-    EMPLOYEE_TP = "TP"
-    EMPLOYEE_NON_TP = "Non TP"
-
-class ApplicationStatus(str, Enum):
-    DRAFT = "Draft"
-    SUBMITTED = "Submitted"
-    SHORTLISTED = "Shortlisted"
-    INTERVIEW = "Interview"
-    SELECTED = "Selected"
-    REJECTED = "Rejected"
-    ALLOCATED = "Allocated"
-    WITHDRAWN = "Withdrawn"
-
+ 
+ 
+ 
 class Employee(BaseModel):
-    employee_id: int
-    employee_name: str
-    employeee_type:str
-    designation: str
-    band: str
-    city: str
-    location_description: str
-    primary_technology: str
-    secondary_technology: str
-    detailed_skills: List[str] = []
-    type: str  # "TP" or "Non TP"
-    resume_text: Optional[str] = None
-
+    employee_id: int = Field(..., alias="Employee ID")
+    employee_name: str = Field(..., alias="Employee Name")
+    employment_type: str = Field(..., alias="Employment Type")
+    designation: str = Field(..., alias="Designation")
+    band: str = Field(..., alias="Band")
+    city: str = Field(..., alias="City")
+    location_description: str = Field(..., alias="Location Description")
+    primary_technology: str = Field(..., alias="Primary Technology")
+    secondary_technology: Optional[str] = Field(None, alias="Secondary Technology")
+    detailed_skills: List[str] = Field(default_factory=list, alias="Detailed Skill Set (List of top skills on profile)")
+    type: Literal["TP", "Non TP"] = Field(..., alias="Type")
+    resume_text: Optional[str] = Field(None)
+ 
+    # -------------------------------------------------
+    # 1. Normalize Type (TP / Non TP) – case insensitive
+    # -------------------------------------------------
+    @field_validator("type", mode="before")
+    @classmethod
+    def normalize_type(cls, v):
+        if not v:
+            return "Non TP"
+        val = str(v).strip().upper()
+        return "TP" if val == "TP" else "Non TP"
+ 
+    # -------------------------------------------------
+    # 2. Accept ALL real bands seen in your data:
+    #     A0–A9, B1–B9, C1–C9, D1–D9
+    #     T1–T9, E1–E9, P1–P9
+    # -------------------------------------------------
+    @field_validator("band", mode="before")
+    @classmethod
+    def normalize_band(cls, v):
+        if not v or str(v).strip() == "":
+            return "A0"
+ 
+        value = str(v).strip().upper()
+ 
+        # All valid patterns
+        if re.match(r"^[A-D][0-9]$", value):    # A0–D9
+            return value
+        if re.match(r"^[TEP][1-9]$", value):    # T1–T9, E1–E9, P1–P9
+            return value
+ 
+        raise ValueError(f"Invalid band format: '{v}' → '{value}'")
+ 
+    # -------------------------------------------------
+    # 3. Handle "Not Available" gracefully
+    # -------------------------------------------------
+    @field_validator("primary_technology", "secondary_technology", mode="before")
+    @classmethod
+    def handle_not_available(cls, v, info):
+        if not v or str(v or "").strip().upper() in ("NOT AVAILABLE", "NA", "NULL", ""):
+            return "" if info.field_name == "primary_technology" else None
+        return str(v).strip()
+ 
+    # -------------------------------------------------
+    # 4. Split skills (handles commas, question marks, etc.)
+    # -------------------------------------------------
+    @field_validator("detailed_skills", mode="before")
+    @classmethod
+    def split_detailed_skills(cls, v):
+        if not v or str(v).strip().upper() in ("NA", "NOT AVAILABLE", "NULL", ""):
+            return []
+        skills = [s.strip() for s in re.split(r'[,?]', str(v)) if s.strip()]
+        return skills
+ 
+    class Config:
+        populate_by_name = True
+        extra = "ignore"
 class Job(BaseModel):
     rr_id: str = Field(..., alias="_id")
     title: str
@@ -52,13 +92,12 @@ class Job(BaseModel):
     account_name : str
     project_id : str
     created_at: datetime = Field(default_factory=datetime.utcnow)
-
-
+ 
+ 
 # Excel stores dates as numbers starting from 1899-12-30 (Windows) or 1904 (Mac)
 # Most corporate reports use 1900 system (with leap year bug)
 EXCEL_EPOCH = date(1899, 12, 30)
-
-
+   
 class ResourceRequest(BaseModel):
     resource_request_id: str = Field(..., alias="Resource Request ID")
     rr_fte: float = Field(..., alias="RR FTE")
@@ -121,12 +160,12 @@ class ResourceRequest(BaseModel):
     last_activity_date: AwareDatetime = Field(..., alias="Last Activity Date")
     last_activity: Optional[str] = Field(None, alias="Last Activity")
     contract_category: Optional[str] = Field(None, alias="Contract Category")
-
+ 
     # Skills are stored as comma-separated strings in the report
     mandatory_skills: List[str] = Field(default_factory=list, alias="Mandatory Skills")
     optional_skills: List[str] = Field(default_factory=list, alias="Optional Skills")
     rr_skill_group: Optional[str] = Field(None, alias="RR Skill Group")
-
+ 
     matching_resources_count_score_50_and_above: Optional[int] = Field(None, alias="Matching Resources Count (Score 50% and above)")
     hiring_request_submit_date_mte: Optional[date] = Field(None, alias="Hiring request Submit Date (MTE)")
     marked_to_external: Literal["Yes", "No"] = Field(..., alias="Marked To External")
@@ -156,11 +195,11 @@ class ResourceRequest(BaseModel):
     cancel_requested: Optional[Literal["yes", "no"]] = Field(None, alias="Cancel Requested")
     legal_entity: Optional[str] = Field(None, alias="Legal Entity")
     company_name: Optional[str] = Field(None, alias="Company Name")
-
+ 
     # ===========================
     # Field Validators
     # ===========================
-
+ 
     @field_validator(
         "rr_fte", "allocated_fte", "actual_bill_rate", "bill_rate", "target_ecr",
         mode="before"
@@ -170,7 +209,7 @@ class ResourceRequest(BaseModel):
         if v == "NA" or v == "" or v is None:
             return None
         return float(v) if v is not None else None
-
+ 
     @field_validator(
         "exclusive_to_ust", "contract_to_hire", mode="before"
     )
@@ -183,7 +222,7 @@ class ResourceRequest(BaseModel):
         if str(v).strip().upper() in ("FALSE", "NO", "0", "NA"):
             return False
         return bool(v)
-
+ 
     @field_validator("mandatory_skills", "optional_skills", mode="before")
     @classmethod
     def split_skills(cls, v):
@@ -192,7 +231,7 @@ class ResourceRequest(BaseModel):
         # Skills are comma-separated, sometimes with extra spaces
         skills = [s.strip() for s in str(v).split(",") if s.strip()]
         return skills
-
+ 
     @field_validator(
         "rr_start_date", "rr_end_date", "project_start_date", "project_end_date",
         "raised_on", "rr_finance_approved_date", "wfm_approved_date",
@@ -213,7 +252,7 @@ class ResourceRequest(BaseModel):
             return EXCEL_EPOCH + timedelta(days=int(v))
         # String date
         return v
-
+ 
     @field_validator("last_activity_date", mode="before")
     @classmethod
     def parse_activity_datetime(cls, v):
@@ -226,7 +265,7 @@ class ResourceRequest(BaseModel):
             cleaned = re.sub(r"\s*\(.*?\)", "", v)  # remove (PT)
             return parser.parse(cleaned, dayfirst=False)
         return v
-
+ 
     @field_validator("billable", "client_interview_required", "marked_to_external", mode="before")
     @classmethod
     def normalize_yes_no(cls, v):
@@ -235,7 +274,7 @@ class ResourceRequest(BaseModel):
         if str(v).strip().upper() in ("NO", "N"):
             return "No"
         return v
-
+ 
     @model_validator(mode="after")
     def validate_dates_order(self):
         if self.rr_start_date and self.rr_end_date:
@@ -245,21 +284,9 @@ class ResourceRequest(BaseModel):
             if self.project_start_date > self.project_end_date:
                 raise ValueError("Project Start Date cannot be after Project End Date")
         return self
-
+ 
     class Config:
         populate_by_name = True
         extra = "ignore"  # Important: ignore any extra columns in future reports
-
  
-class Application(BaseModel):
-    id: str = Field(default_factory=lambda: str(uuid.uuid4()), alias="_id")
-    employee_id: int
-    job_rr_id: str
-    status: ApplicationStatus = ApplicationStatus.DRAFT
-    resume: Optional[str] = None
-    cover_letter: Optional[str] = None
-    submitted_at: Optional[datetime] = None
-    updated_at: datetime = Field(default_factory=datetime.utcnow)
-
-    class Config:
-        populate_by_name = True
+ 

@@ -1,5 +1,5 @@
 from fastapi import APIRouter, File, UploadFile, Depends, HTTPException
-from datetime import datetime
+from datetime import datetime,timezone
 import pandas as pd
 from io import BytesIO
 from database import collections
@@ -38,7 +38,7 @@ async def upload_career_velocity(
             "secondary_technology": row.get("Secondary Technology", ""),
             "skills": skills,
             "type": row["Type"].strip(),
-            "updated_at": datetime.now()
+            "updated_at": datetime.now(timezone.utc)
         }
         records.append(record)
 
@@ -54,7 +54,7 @@ async def upload_career_velocity(
         "action": "upload_employees",
         "uploaded_by": current_user["employee_id"],
         "count": len(records),
-        "timestamp": datetime.now()
+        "timestamp": datetime.now(timezone.utc)
     })
 
     return {"message": f"{len(records)} employees processed"}
@@ -90,7 +90,7 @@ async def upload_rr_report(file: UploadFile = File(...), current_user: dict = De
             "wfm_id": str(row["WFM ID"]),
             "hm_id": str(row["HM ID"]),
             "status": "Open",
-            "uploaded_at": datetime.utcnow()
+            "uploaded_at": datetime.now(timezone.utc)
         }
         new_jobs.append(job)
 
