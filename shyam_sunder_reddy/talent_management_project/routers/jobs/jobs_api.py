@@ -12,7 +12,7 @@ async def get_all_jobs(location: Optional[str] = None, current_user=Depends(get_
 
 @jobs_router.post("/create")
 async def create_new_job(new_job: ResourceRequest, current_user=Depends(get_current_user)):
-    if current_user.role != "HM":
+    if current_user["role"] != "HM":
         raise HTTPException(status_code=403, detail="Not Authorized")
     try:
         await jobs_crud.create_job_and_resource_request(new_job, current_user)
@@ -22,7 +22,7 @@ async def create_new_job(new_job: ResourceRequest, current_user=Depends(get_curr
 
 @jobs_router.put("/modify")
 async def update_job(request_id: str, updated_job: ResourceRequest, current_user=Depends(get_current_user)):
-    if current_user.role != "HM":
+    if current_user["role"] != "HM":
         raise HTTPException(status_code=403, detail="Not Authorized")
     try:
         await jobs_crud.update_job_and_resource_request(request_id, updated_job, current_user)

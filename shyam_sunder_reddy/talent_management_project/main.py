@@ -21,20 +21,7 @@ client = AsyncIOMotorClient("mongodb+srv://303391_db_user:5IhrghdRaiXTR22b@clust
 db = client.talent_management
 
 app.include_router(router, tags=["Auth"])
-# app.include_router(admin.router, tags=["Admin"])
-# app.include_router(file_upload.router, prefix="/api/upload", tags=["File Upload"])
-app.include_router(jobs_router, prefix="/api/jobs", tags=["Jobs"])
-# app.include_router(employee.router, prefix="/api/employees", tags=["Employees"])
-# app.include_router(application.router, prefix="/api/applications", tags=["Applications"])
-# app.include_router(manager_workflow.router, prefix="/api/manager", tags=["Manager Workflow"])
-
-@app.get("/")
-def root():
-    return {"message": "Talent Management System API"}
-
-# from fastapi import FastAPI,APIRouter
 
 
+app.include_router(jobs_router, tags=["Jobs"])
 
-# app=FastAPI(title="hii")
-# app.include_router(jobs_router)

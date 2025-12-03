@@ -10,7 +10,7 @@ from typing import Optional
 # === CONFIG ===
 SECRET_KEY = "your-super-secret-key-2025-change-in-prod!!!"  # Use env var in prod
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 5
+ACCESS_TOKEN_EXPIRE_MINUTES = 9
 REFRESH_TOKEN_EXPIRE_DAYS = 7
 
 pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")
