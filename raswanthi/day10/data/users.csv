@@ -1,0 +1,31 @@
+user_id,name,email,status,max_loans,active_loans,password
+U2001,Arun Kumar,arun.kumar@example.com,active,5,0,
+U2002,Riya Sharma,riya.sharma@example.com,active,5,0,
+U2003,John Mathew,john.mathew@example.com,inactive,5,0,
+U2004,Nisha Thomas,nisha.thomas@example.com,active,3,0,
+U2005,Anil Kumar,anil.kumar@example.com,active,5,0,
+U2006,Meera Dsouza,meera.dsouza@example.com,banned,5,0,
+U2007,Kiran Mohan,kiran.mohan@example.com,active,4,0,
+U2008,Sona Prakash,sona.prakash@example.com,active,5,0,
+U2009,Ravi Shankar,ravi.shankar@example.com,active,2,0,
+U2010,Mona Raj,mona.raj@example.com,active,5,0,
+U2011,Arvind Iyer,arvind.iyer@example.com,active,3,0,
+U2012,Divya Menon,divya.menon@example.com,inactive,5,0,
+U2013,Hari Nath,hari.nath@example.com,active,4,0,
+U2014,Joel Thomas,joel.thomas@example.com,active,5,0,
+U2015,Philip Mathew,philip.mathew@example.com,active,5,0,
+U2016,Balu Nair,balu.nair@example.com,active,5,0,
+U2017,Aswin Kumar,aswin.kumar@example.com,active,5,0,
+U2018,Leena George,leena.george@example.com,active,4,0,
+U2019,Sandra Joy,sandra.joy@example.com,active,3,0,
+U2020,Vishnu S,vishnu.s@example.com,active,3,2,
+U2021,Ajay Dev,ajay.dev@example.com,banned,5,0,
+U2022,Kavya Sunny,kavya.sunny@example.com,active,5,0,
+U2023,Neeraj Pillai,neeraj.pillai@example.com,active,4,0,
+U2024,Sachin Patel,sachin.patel@example.com,active,5,0,
+U2025,Veena Shetty,veena.shetty@example.com,active,2,0,
+U2026,Raghavi,raghavi@example.com,active,4,0,raghavi
+U2027,John Jeffry,john@example.com,active,2,0,john
+U2028,Rashi,rashi@example.com,active,3,1,rashi
+U2029,Tara,tara@example.com,inactive,4,0,tara
+U2030,Ravi,ravi@example.com,active,3,0,ravi
