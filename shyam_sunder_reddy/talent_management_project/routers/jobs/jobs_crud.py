@@ -48,7 +48,8 @@ async def get_jobs(location: Optional[str], current_user):
  
             query = {
                 "job_grade": {"$in": [curr_band, above_band, below_band]},
-                "required_skills": {"$in": curr_skills}
+                "required_skills": {"$in": curr_skills},
+                "status":True
             }
             if location:
                 query["city"] = location
@@ -62,6 +63,7 @@ async def get_jobs(location: Optional[str], current_user):
             query = {}
             if location:
                 query["city"] = location
+            query["status"]=True
             cursor = db.jobs.find(query)
             docs = await cursor.to_list(length=100)
             for d in docs:
