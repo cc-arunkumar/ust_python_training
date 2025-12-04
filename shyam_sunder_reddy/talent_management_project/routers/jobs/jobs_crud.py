@@ -232,3 +232,5 @@ async def update_job_and_resource_request(request_id: str, update_data: Resource
 #             session.abort_transaction()
 #             raise Exception(f"Error occurred: {e}")
  
+ 
+ 
