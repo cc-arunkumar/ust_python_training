@@ -64,6 +64,7 @@ async def get_jobs(location: Optional[str], current_user):
             if location:
                 query["city"] = location
             query["status"]=True
+            #can add filters like skills and job grade 
             cursor = db.jobs.find(query)
             docs = await cursor.to_list(length=100)
             for d in docs:
