@@ -1,0 +1,114 @@
+FastAPI Students CRUD (In-memory)
+
+====================================
+1. POST /students
+------------------------------------
+Create a new student.
+
+Request Body:
+{
+  "name": "Alice",
+  "age": 20,
+  "grade": "A"
+}
+
+Response Body:
+{
+  "Student Created": {
+    "name": "Alice",
+    "age": 20,
+    "grade": "A"
+  }
+}
+
+====================================
+2. GET /students
+------------------------------------
+Get all students.
+
+Response Body (example after adding 2 students):
+[
+  {
+    "name": "Alice",
+    "age": 20,
+    "grade": "A"
+  },
+  {
+    "name": "Bob",
+    "age": 22,
+    "grade": "B"
+  }
+]
+
+====================================
+3. GET /students/{index}
+------------------------------------
+Get a student by index.
+
+Example Request:
+GET /students/0
+
+Response Body:
+{
+  "name": "Alice",
+  "age": 20,
+  "grade": "A"
+}
+
+Error Example (invalid index):
+{
+  "detail": "Student not found"
+}
+
+====================================
+4. PUT /students/{index}
+------------------------------------
+Update a student at a given index.
+
+Example Request:
+PUT /students/1
+
+Request Body:
+{
+  "name": "Bob",
+  "age": 23,
+  "grade": "A+"
+}
+
+Response Body:
+{
+  "name": "Bob",
+  "age": 23,
+  "grade": "A+"
+}
+
+Error Example (invalid index):
+{
+  "detail": "Student not found"
+}
+
+====================================
+5. DELETE /students/{index}
+------------------------------------
+Delete a student at a given index.
+
+Example Request:
+DELETE /students/0
+
+Response Body:
+{
+  "name": "Alice",
+  "age": 20,
+  "grade": "A"
+}
+
+Error Example (invalid index):
+{
+  "detail": "Student not found"
+}
+
+====================================
+Notes:
+- Students are stored in memory (Python list).
+- Index-based access is used instead of IDs.
+- Data will be lost when the server restarts.
