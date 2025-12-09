@@ -1,0 +1,122 @@
+2025-12-05 17:58:57,079 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-05 17:58:57,079 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-05 17:58:57,080 - INFO - Added job "process_updated_rr_report" to job store "default"
+2025-12-05 17:58:57,080 - INFO - Added job "delete_old_files_in_processed" to job store "default"
+2025-12-05 17:58:57,080 - INFO - Scheduler started
+2025-12-05 19:49:00,359 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-05 19:49:00,360 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-05 19:49:00,361 - INFO - Added job "process_updated_rr_report" to job store "default"
+2025-12-05 19:49:00,362 - INFO - Added job "delete_old_files_in_processed" to job store "default"
+2025-12-05 19:49:00,362 - INFO - Scheduler started
+2025-12-05 20:19:10,591 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-05 20:19:10,592 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-05 20:19:10,593 - INFO - Added job "process_updated_rr_report" to job store "default"
+2025-12-05 20:19:10,593 - INFO - Added job "delete_old_files_in_processed" to job store "default"
+2025-12-05 20:19:10,593 - INFO - Scheduler started
+2025-12-05 20:51:54,873 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-05 20:51:54,873 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-05 20:51:54,874 - INFO - Added job "process_updated_rr_report" to job store "default"
+2025-12-05 20:51:54,874 - INFO - Added job "delete_old_files_in_processed" to job store "default"
+2025-12-05 20:51:54,874 - INFO - Scheduler started
+2025-12-05 20:52:52,092 - INFO - Accessing jobs under hm_id: U10330
+2025-12-05 20:54:30,637 - INFO - Accessing jobs under hm_id: U25790
+2025-12-05 20:57:07,574 - INFO - Accessing jobs under hm_id: U68669
+2025-12-05 20:59:38,170 - INFO - Fetched the all Resource Requests under HM ID:U68669
+2025-12-05 20:59:38,171 - INFO - Extracted 7 unique skills across resource requests
+2025-12-05 20:59:38,593 - INFO - Returning full summary (no filters applied)
+2025-12-05 21:03:41,113 - INFO - Fetched the all Resource Requests under HM ID:U68669
+2025-12-05 21:03:41,113 - INFO - Extracted 7 unique skills across resource requests
+2025-12-05 21:03:41,113 - INFO - Returning data with skill filter only
+2025-12-05 21:05:49,552 - INFO - Fetched the all Resource Requests under HM ID:U68669
+2025-12-05 21:05:49,552 - INFO - Extracted 7 unique skills across resource requests
+2025-12-05 21:05:49,578 - INFO - Returning data with skill filter only
+2025-12-05 21:09:26,768 - INFO - Fetched the all Resource Requests under HM ID:U68669
+2025-12-05 21:09:26,769 - INFO - Extracted 7 unique skills across resource requests
+2025-12-05 21:09:26,769 - INFO - Returning data with skill filter only
+2025-12-05 21:09:34,953 - INFO - Fetched the all Resource Requests under HM ID:U68669
+2025-12-05 21:09:34,953 - INFO - Extracted 7 unique skills across resource requests
+2025-12-05 21:09:34,954 - INFO - Returning data with skill filter only
+2025-12-05 21:09:49,726 - INFO - Fetched the all Resource Requests under HM ID:U68669
+2025-12-05 21:09:49,727 - INFO - Extracted 7 unique skills across resource requests
+2025-12-05 21:09:49,727 - INFO - Returning data with skill filter only
+2025-12-05 21:10:53,943 - INFO - Fetched the all Resource Requests under HM ID:U68669
+2025-12-05 21:10:53,944 - INFO - Extracted 7 unique skills across resource requests
+2025-12-05 21:10:53,944 - INFO - Returning data with skill filter only
+2025-12-05 21:11:51,291 - INFO - Fetched the all Resource Requests under HM ID:U68669
+2025-12-05 21:11:51,291 - INFO - Extracted 7 unique skills across resource requests
+2025-12-05 21:11:51,291 - INFO - Returning data with skill filter only
+2025-12-05 21:12:56,108 - INFO - Fetched the all Resource Requests under HM ID:U68669
+2025-12-05 21:12:56,108 - INFO - Extracted 7 unique skills across resource requests
+2025-12-05 21:12:56,108 - INFO - Returning data with skill filter only
+2025-12-05 21:13:12,982 - INFO - Fetched the all Resource Requests under HM ID:U68669
+2025-12-05 21:13:12,982 - INFO - Extracted 7 unique skills across resource requests
+2025-12-05 21:13:12,983 - INFO - Returning data with skill filter only
+2025-12-05 21:13:52,249 - INFO - Fetched the all Resource Requests under HM ID:U68669
+2025-12-05 21:13:52,249 - INFO - Extracted 7 unique skills across resource requests
+2025-12-05 21:13:52,249 - INFO - Returning data with skill filter only
+2025-12-05 21:14:00,107 - INFO - Fetched the all Resource Requests under HM ID:U68669
+2025-12-05 21:14:00,107 - INFO - Extracted 7 unique skills across resource requests
+2025-12-05 21:14:00,107 - INFO - Returning data with skill filter only
+2025-12-05 21:14:29,114 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-05 21:14:29,115 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-05 21:14:29,116 - INFO - Added job "process_updated_rr_report" to job store "default"
+2025-12-05 21:14:29,116 - INFO - Added job "delete_old_files_in_processed" to job store "default"
+2025-12-05 21:14:29,116 - INFO - Scheduler started
+2025-12-05 22:04:46,753 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-05 22:04:46,754 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-05 22:04:46,755 - INFO - Added job "process_updated_rr_report" to job store "default"
+2025-12-05 22:04:46,755 - INFO - Added job "delete_old_files_in_processed" to job store "default"
+2025-12-05 22:04:46,755 - INFO - Scheduler started
+2025-12-05 22:06:49,982 - INFO - Fetched the all Resource Requests under HM ID:U25790
+2025-12-05 22:06:49,983 - INFO - Extracted 31 unique skills across resource requests
+2025-12-05 22:06:49,983 - INFO - Returning data with skill filter only
+2025-12-05 22:07:05,134 - INFO - Fetched the all Resource Requests under HM ID:U25790
+2025-12-05 22:07:05,135 - INFO - Extracted 31 unique skills across resource requests
+2025-12-05 22:07:06,131 - INFO - Returning full summary (no filters applied)
+2025-12-05 22:07:33,820 - INFO - Fetched the all Resource Requests under HM ID:U25790
+2025-12-05 22:07:33,821 - INFO - Extracted 31 unique skills across resource requests
+2025-12-05 22:07:33,844 - INFO - Returning data with skill filter only
+2025-12-05 22:07:41,835 - INFO - Fetched the all Resource Requests under HM ID:U25790
+2025-12-05 22:07:41,836 - INFO - Extracted 31 unique skills across resource requests
+2025-12-05 22:07:42,809 - INFO - Returning full summary (no filters applied)
+2025-12-05 22:08:29,668 - INFO - Accessing jobs under hm_id: U25790
+2025-12-06 09:13:44,054 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-06 09:13:44,055 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-06 09:13:44,057 - INFO - Added job "process_updated_rr_report" to job store "default"
+2025-12-06 09:13:44,057 - INFO - Added job "delete_old_files_in_processed" to job store "default"
+2025-12-06 09:13:44,057 - INFO - Scheduler started
+2025-12-06 09:15:38,737 - INFO - Fetched the all Resource Requests under HM ID:U10330
+2025-12-06 09:15:38,738 - INFO - Extracted 4 unique skills across resource requests
+2025-12-06 09:15:38,841 - INFO - Returning full summary (no filters applied)
+2025-12-06 09:16:19,151 - INFO - Fetched the all Resource Requests under HM ID:U10330
+2025-12-06 09:16:19,152 - INFO - Extracted 4 unique skills across resource requests
+2025-12-06 09:16:19,176 - INFO - Returning data with skill filter only
+2025-12-06 09:18:09,513 - INFO - Fetched the all Resource Requests under HM ID:U10330
+2025-12-06 09:18:09,514 - INFO - Extracted 0 unique skills across resource requests
+2025-12-06 09:18:09,514 - INFO - Returning data with resource_request filter only
+2025-12-06 09:18:24,177 - INFO - Fetched the all Resource Requests under HM ID:U10330
+2025-12-06 09:18:24,177 - INFO - Extracted 0 unique skills across resource requests
+2025-12-06 09:18:24,177 - INFO - Returning data with both resource_request and skill filters
+2025-12-06 09:18:33,298 - INFO - Fetched the all Resource Requests under HM ID:U10330
+2025-12-06 09:18:33,298 - INFO - Extracted 0 unique skills across resource requests
+2025-12-06 09:18:33,299 - INFO - Returning data with resource_request filter only
+2025-12-06 09:20:06,433 - INFO - Fetched the all Resource Requests under HM ID:U10330
+2025-12-06 09:20:06,433 - INFO - Extracted 4 unique skills across resource requests
+2025-12-06 09:20:06,528 - INFO - Returning data with resource_request filter only
+2025-12-06 09:22:07,913 - INFO - Fetched jobs for TP Employee: 2706
+2025-12-06 10:51:24,595 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-06 10:51:24,595 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-06 10:51:24,596 - INFO - Added job "process_updated_rr_report" to job store "default"
+2025-12-06 10:51:24,596 - INFO - Added job "delete_old_files_in_processed" to job store "default"
+2025-12-06 10:51:24,596 - INFO - Scheduler started
+2025-12-06 10:53:17,533 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-06 10:53:17,533 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-06 10:53:17,535 - INFO - Added job "process_updated_rr_report" to job store "default"
+2025-12-06 10:53:17,535 - INFO - Added job "delete_old_files_in_processed" to job store "default"
+2025-12-06 10:53:17,535 - INFO - Scheduler started
+2025-12-06 11:08:54,965 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-06 11:08:54,965 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-06 11:08:54,966 - INFO - Added job "process_updated_rr_report" to job store "default"
+2025-12-06 11:08:54,966 - INFO - Added job "delete_old_files_in_processed" to job store "default"
+2025-12-06 11:08:54,966 - INFO - Scheduler started
+2025-12-06 11:11:49,175 - INFO - Fetched jobs for HM Employee :U68669
