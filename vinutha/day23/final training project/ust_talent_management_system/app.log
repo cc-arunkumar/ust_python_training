@@ -1,0 +1,80 @@
+2025-12-05 18:48:35,822 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-05 18:48:35,823 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-05 18:48:35,824 - INFO - Added job "process_updated_rr_report" to job store "default"
+2025-12-05 18:48:35,824 - INFO - Added job "delete_old_files_in_processed" to job store "default"
+2025-12-05 18:48:35,824 - INFO - Scheduler started
+2025-12-06 06:36:32,825 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-06 06:36:32,825 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-06 06:36:32,826 - INFO - Added job "process_updated_rr_report" to job store "default"
+2025-12-06 06:36:32,828 - INFO - Added job "delete_old_files_in_processed" to job store "default"
+2025-12-06 06:36:32,828 - INFO - Scheduler started
+2025-12-06 06:36:36,763 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-06 06:36:36,763 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-06 06:36:36,764 - INFO - Added job "process_updated_rr_report" to job store "default"
+2025-12-06 06:36:36,764 - INFO - Added job "delete_old_files_in_processed" to job store "default"
+2025-12-06 06:36:36,764 - INFO - Scheduler started
+2025-12-06 06:37:59,250 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-06 06:37:59,251 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-06 06:37:59,252 - INFO - Added job "process_updated_rr_report" to job store "default"
+2025-12-06 06:37:59,252 - INFO - Added job "delete_old_files_in_processed" to job store "default"
+2025-12-06 06:37:59,252 - INFO - Scheduler started
+2025-12-06 06:40:57,588 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-06 06:40:57,588 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-06 06:40:57,589 - INFO - Added job "process_updated_rr_report" to job store "default"
+2025-12-06 06:40:57,589 - INFO - Added job "delete_old_files_in_processed" to job store "default"
+2025-12-06 06:40:57,589 - INFO - Scheduler started
+2025-12-06 06:41:00,896 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-06 06:41:00,897 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-06 06:41:00,898 - INFO - Added job "process_updated_rr_report" to job store "default"
+2025-12-06 06:41:00,898 - INFO - Added job "delete_old_files_in_processed" to job store "default"
+2025-12-06 06:41:00,898 - INFO - Scheduler started
+2025-12-06 06:41:04,231 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-06 06:41:04,231 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-06 06:41:04,232 - INFO - Added job "process_updated_rr_report" to job store "default"
+2025-12-06 06:41:04,233 - INFO - Added job "delete_old_files_in_processed" to job store "default"
+2025-12-06 06:41:04,233 - INFO - Scheduler started
+2025-12-06 07:11:32,589 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-06 07:11:32,589 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-06 07:11:32,590 - INFO - Added job "process_updated_rr_report" to job store "default"
+2025-12-06 07:11:32,590 - INFO - Added job "delete_old_files_in_processed" to job store "default"
+2025-12-06 07:11:32,590 - INFO - Scheduler started
+2025-12-06 07:11:35,876 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-06 07:11:35,876 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-06 07:11:35,877 - INFO - Added job "process_updated_rr_report" to job store "default"
+2025-12-06 07:11:35,878 - INFO - Added job "delete_old_files_in_processed" to job store "default"
+2025-12-06 07:11:35,878 - INFO - Scheduler started
+2025-12-06 07:24:20,384 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-06 07:24:20,384 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-06 07:24:20,385 - INFO - Added job "process_updated_rr_report" to job store "default"
+2025-12-06 07:24:20,385 - INFO - Added job "delete_old_files_in_processed" to job store "default"
+2025-12-06 07:24:20,385 - INFO - Scheduler started
+2025-12-06 07:24:43,187 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-06 07:24:43,188 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-06 07:24:43,189 - INFO - Added job "process_updated_rr_report" to job store "default"
+2025-12-06 07:24:43,189 - INFO - Added job "delete_old_files_in_processed" to job store "default"
+2025-12-06 07:24:43,189 - INFO - Scheduler started
+2025-12-06 09:20:54,859 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-06 09:20:54,859 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-06 09:20:54,860 - INFO - Added job "process_updated_rr_report" to job store "default"
+2025-12-06 09:20:54,860 - INFO - Added job "delete_old_files_in_processed" to job store "default"
+2025-12-06 09:20:54,860 - INFO - Scheduler started
+2025-12-06 10:11:27,697 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-06 10:11:27,697 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-06 10:11:27,697 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-06 10:11:27,698 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-06 10:11:27,698 - INFO - Added job "process_updated_rr_report" to job store "default"
+2025-12-06 10:11:27,698 - INFO - Added job "delete_old_files_in_processed" to job store "default"
+2025-12-06 10:11:27,698 - INFO - Scheduler started
+2025-12-06 10:11:27,699 - INFO - Added job "process_updated_rr_report" to job store "default"
+2025-12-06 10:11:27,699 - INFO - Added job "delete_old_files_in_processed" to job store "default"
+2025-12-06 10:11:27,699 - INFO - Scheduler started
+2025-12-06 10:12:58,882 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-06 10:12:58,882 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-06 10:12:58,883 - INFO - Added job "process_updated_rr_report" to job store "default"
+2025-12-06 10:12:58,883 - INFO - Added job "delete_old_files_in_processed" to job store "default"
+2025-12-06 10:12:58,884 - INFO - Scheduler started
+2025-12-06 10:13:20,491 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-06 10:13:20,491 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-12-06 10:13:20,493 - INFO - Added job "process_updated_rr_report" to job store "default"
+2025-12-06 10:13:20,493 - INFO - Added job "delete_old_files_in_processed" to job store "default"
+2025-12-06 10:13:20,493 - INFO - Scheduler started
