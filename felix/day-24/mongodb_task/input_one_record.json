@@ -1,0 +1,17 @@
+{
+ "name": "Felix",
+ "age": 23,
+ "department": "IT", 
+ "skills": ["python","mongodb"], 
+ "address": { 
+ "city": "Trivandrum",
+ "state": "Kerala"
+ },
+ "projects": [
+ {
+ "name": "Employe management",
+ "status": "planned"
+ }
+],
+ "experience_years": 3
+}
