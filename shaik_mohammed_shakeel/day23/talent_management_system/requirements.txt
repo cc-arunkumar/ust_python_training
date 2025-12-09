@@ -1,0 +1,24 @@
+fastapi>=0.104.0
+uvicorn>=0.23.0
+motor>=3.3.0
+pydantic>=2.5.0
+python-jose[cryptography]
+passlib[bcrypt]
+python-multipart
+pandas
+openpyxl
+PyPDF2
+python-docx
+argon2-cffi
+chardet
+apscheduler
+aiofiles
+
+# Existing dependencies (as per your current environment)
+httpx==0.22.0
+python-dotenv==0.20.0
+pdfminer.six==20201018
+fitz==1.19.6
+docx2txt==0.8
+bson==0.5.10
+aiohttp==3.8.1
