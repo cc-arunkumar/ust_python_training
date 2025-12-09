@@ -1,4 +1,4 @@
-# AIMS Plus
+#  AIMS Plus
 
 AIMS Plus is an **Asset & Inventory Management System** built with **FastAPI**.  
 It provides RESTful APIs to manage assets, employees, maintenance logs, and vendors, with validation rules enforced using **Pydantic models**.
