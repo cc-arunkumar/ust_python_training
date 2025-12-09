@@ -1,0 +1,15 @@
+[
+ {
+ "emp_id": 101,
+ "name": "Anu Joseph",
+ "age": 23,
+ "department": "AI",
+ "skills": ["python", "mongodb"],
+ "address": { "city": "Trivandrum", "state": "Kerala" },
+ "projects": [
+ { "name": "VisionAI", "status": "completed" },
+ { "name": "DocScan", "status": "in-progress" }
+ ],
+ "experience_years": 1
+ }
+]

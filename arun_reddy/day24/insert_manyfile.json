@@ -1,0 +1,107 @@
+[
+       {
+ "emp_id": 102,
+ "name": "Rahul Menon",
+ "age": 26,
+ "department": "Cloud",
+ "skills": ["aws", "docker"],
+ "address": { "city": "Kochi", "state": "Kerala" },
+ "projects": [
+ { "name": "USTCloudPortal", "status": "planned" }
+ ],
+ "experience_years": 3
+ },
+ {
+ "emp_id": 103,
+ "name": "Sahana R",
+ "age": 22,
+ "department": "Testing",
+ "skills": ["selenium"],
+ "address": { "city": "Chennai", "state": "TN" },
+ "projects": [],
+ "experience_years": 1
+ },
+ {
+ "emp_id": 104,
+ "name": "Vishnu Prakash",
+ "age": 29,
+ "department": "Cybersecurity",
+ "skills": ["networking", "siem"],
+ "address": { "city": "Trivandrum", "state": "Kerala" },
+ "projects": [
+ { "name": "SecureBank", "status": "in-progress" }
+ ],
+ "experience_years": 5
+ },
+ {
+ "emp_id": 105,
+ "name": "Maya Kumar",
+ "age": 25,
+ "department": "AI",
+ "skills": ["python", "deep-learning"],
+ "address": { "city": "Bangalore", "state": "KA" },
+ "projects": [
+ { "name": "VisionAI", "status": "completed" }
+ ],
+ "experience_years": 2
+ },
+ {
+
+ "emp_id": 106,
+ "name": "Arjun S",
+ "age": 28,
+ "department": "Cloud",
+ "skills": ["azure"],
+ "address": { "city": "Kochi", "state": "Kerala" },
+ "projects": [
+ { "name": "DevOpsBoost", "status": "in-progress" }
+ ],
+ "experience_years": 4
+ },
+ {
+ "emp_id": 107,
+ "name": "Neha Mohan",
+ "age": 24,
+ "department": "Data",
+ "skills": ["sql", "tableau"],
+ "address": { "city": "Chennai", "state": "TN" },
+ "projects": [
+ { "name": "USTAnalyticsHub", "status": "planned" }
+ ],
+ "experience_years": 2
+ },
+ {
+ "emp_id": 108,
+ "name": "Suresh B",
+ "age": 27,
+ "department": "Data",
+ "address": { "city": "Kochi", "state": "Kerala" },
+ "projects": [],
+ "experience_years": 3
+ },
+ {
+ "emp_id": 109,
+ "name": "Lavanya N",
+ "age": 21,
+
+ "department": "Testing",
+ "skills": [],
+ "address": { "city": "Trivandrum", "state": "Kerala" },
+ "projects": [
+ { "name": "QualityX", "status": "in-progress" }
+ ],
+ "experience_years": 0
+ },
+ {
+ "emp_id": 110,
+ "name": "Rakesh Pillai",
+ "age": 30,
+ "department": "Cybersecurity",
+ "skills": ["networking", "firewall", "linux"],
+ "projects": [
+ { "name": "SecuritySuite", "status": "deployed" }
+ ],
+ "experience_years": 7
+ }
+
+]
