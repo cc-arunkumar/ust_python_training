@@ -1,0 +1,15 @@
+<!doctype html>
+<html>
+  <head><meta charset="utf-8"><title>Profile</title></head>
+  <body style="font-family: sans-serif; padding: 40px;">
+    <h1>GitHub Profile</h1>
+    <p><strong>Login:</strong> {{ profile.get('login') }}</p>
+    <p><strong>Name:</strong> {{ profile.get('name') }}</p>
+    <p><strong>Bio:</strong> {{ profile.get('bio') }}</p>
+    <p><strong>Email:</strong> {{ email }}</p>
+    <p><img src="{{ profile.get('avatar_url') }}" width="120" style="border-radius:8px"></p>
+    <p><strong>Raw token (for debugging):</strong></p>
+    <pre>{{ token | safe }}</pre>
+    <p><a href="/logout">Logout</a></p>
+  </body>
+</html>
