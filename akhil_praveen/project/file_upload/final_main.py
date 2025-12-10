@@ -1,308 +1,346 @@
 # main.py
+import os
+import logging
+from datetime import datetime, timezone
+from typing import List
+
+import pandas as pd
+import chardet
+from io import BytesIO
+
 from fastapi import FastAPI, File, UploadFile, HTTPException, Request
 from fastapi.responses import JSONResponse
-from typing import List
-import pandas as pd
-from io import BytesIO
-from datetime import datetime, date, time, timezone
-import chardet
+
 from database import collections
-from bson import ObjectId
+from final_model import Employee, ResourceRequest, Job, User
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
-# Import your models
-from final_model import Employee, ResourceRequest, Job
+# -------------------------------------------------------------------
+# Logging
+# -------------------------------------------------------------------
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger("RRProcessor")
 
-
-# ============================================================
-# 🔥 CUSTOM EXCEPTION CLASSES
-# ============================================================
+# -------------------------------------------------------------------
+# Custom Exceptions
+# -------------------------------------------------------------------
 class FileFormatException(HTTPException):
     def __init__(self, detail="Invalid file format"):
         super().__init__(status_code=400, detail=detail)
-
 
 class ValidationException(HTTPException):
     def __init__(self, detail):
         super().__init__(status_code=422, detail={"validation_error": detail})
 
-
 class DatabaseException(HTTPException):
     def __init__(self, detail="Database operation failed"):
         super().__init__(status_code=500, detail=detail)
-
 
 class ReportProcessingException(HTTPException):
     def __init__(self, detail):
         super().__init__(status_code=400, detail=detail)
 
-
-# ============================================================
-# 🔥 GLOBAL EXCEPTION HANDLERS
-# ============================================================
 app = FastAPI(title="Career Velocity & RR Report Processor")
 
+# -------------------------------------------------------------------
+# Global Exception Handlers
+# -------------------------------------------------------------------
 @app.exception_handler(FileFormatException)
-async def file_format_exception_handler(request: Request, exc: FileFormatException):
+async def file_format_handler(_: Request, exc: FileFormatException):
     return JSONResponse(status_code=exc.status_code, content={"error": exc.detail})
-
 
 @app.exception_handler(ValidationException)
-async def validation_exception_handler(request: Request, exc: ValidationException):
+async def validation_handler(_: Request, exc: ValidationException):
     return JSONResponse(status_code=exc.status_code, content={"error": exc.detail})
-
 
 @app.exception_handler(DatabaseException)
-async def db_exception_handler(request: Request, exc: DatabaseException):
+async def db_handler(_: Request, exc: DatabaseException):
     return JSONResponse(status_code=exc.status_code, content={"error": exc.detail})
-
 
 @app.exception_handler(ReportProcessingException)
-async def report_processing_exception_handler(request: Request, exc: ReportProcessingException):
+async def processing_handler(_: Request, exc: ReportProcessingException):
     return JSONResponse(status_code=exc.status_code, content={"error": exc.detail})
 
-
-# ============================================================
-# IN-MEMORY STORAGE
-# ============================================================
-employees_in_memory: List[Employee] = []
-resource_requests_in_memory: List[ResourceRequest] = []
-
-
-# ============================================================
-# 🔥 UNIVERSAL AUDIT LOGGER
-# ============================================================
-async def log_upload_action(
-    audit_type: str,
-    filename: str,
-    file_type: str,
-    uploaded_by: str,
-    total_rows: int,
-    valid_rows: int,
-    failed_rows: int,
-    sample_errors
-):
-    audit_record = {
+# -------------------------------------------------------------------
+# Audit Logging
+# -------------------------------------------------------------------
+async def log_upload_action(audit_type: str, filename: str, file_type: str,
+                           uploaded_by: str, total_rows: int, valid_rows: int,
+                           failed_rows: int, sample_errors):
+    await collections["audit_logs"].insert_one({
         "audit_type": audit_type,
         "filename": filename,
         "file_type": file_type,
-        "uploaded_by": uploaded_by or "Unknown User",
-        "upload_time_utc": datetime.utcnow(),
+        "uploaded_by": uploaded_by or "System",
+        "upload_time_utc": datetime.now(timezone.utc),
         "total_rows": total_rows,
         "valid_rows": valid_rows,
         "failed_rows": failed_rows,
         "sample_errors": sample_errors,
-    }
+    })
 
-    await collections["audit_logs"].insert_one(audit_record)
-    return True
-
-
-# ============================================================
-# ENCODING DETECTOR
-# ============================================================
-def detect_encoding(byte_data: bytes) -> str:
-    detection = chardet.detect(byte_data)
-    encoding = detection["encoding"] or "utf-8"
-    if detection["confidence"] < 0.7:
+# -------------------------------------------------------------------
+# Utilities
+# -------------------------------------------------------------------
+def detect_encoding(data: bytes) -> str:
+    result = chardet.detect(data)
+    encoding = result["encoding"] or "utf-8"
+    if result["confidence"] < 0.7:
         for enc in ["utf-8", "cp1252", "latin1", "iso-8859-1"]:
             try:
-                byte_data.decode(enc)
+                data.decode(enc)
                 return enc
             except:
                 continue
-        return "utf-8"
     return encoding
 
-
-# ============================================================
-# DATE FIXER FOR MONGO
-# ============================================================
-def convert_dates_for_mongo(data):
-    for key, value in data.items():
-        if isinstance(value, dict):
-            data[key] = convert_dates_for_mongo(value)
-        elif isinstance(value, date) and not isinstance(value, datetime):
-            data[key] = datetime.combine(value, time.min).replace(tzinfo=timezone.utc)
+def convert_dates_for_mongo(data: dict):
+    """Convert date objects to UTC datetime for MongoDB storage."""
+    from datetime import date, time
+    for k, v in data.items():
+        if isinstance(v, dict):
+            data[k] = convert_dates_for_mongo(v)
+        elif isinstance(v, date) and not isinstance(v, datetime):
+            data[k] = datetime.combine(v, time.min).replace(tzinfo=timezone.utc)
     return data
 
-
-# ============================================================
-# RR SYNC FUNCTION (UNCHANGED)
-# ============================================================
+# -------------------------------------------------------------------
+# Database Sync Functions
+# -------------------------------------------------------------------
 async def sync_rr_with_db(validated_rrs: List[ResourceRequest]):
-    pass  # Your original function here
+    uploaded_ids = {rr.resource_request_id for rr in validated_rrs}
 
+    # Fetch current state
+    existing_rrs = await collections["resource_request"].find(
+        {}, {"Resource Request ID": 1, "rr_status": 1}
+    ).to_list(None)
+    rr_map = {r["Resource Request ID"]: r for r in existing_rrs}
 
-# ============================================================
-# 📌 CAREER VELOCITY UPLOAD WITH AUDIT + CUSTOM EXCEPTIONS
-# ============================================================
-@app.post("/upload/employees")
-async def upload_career_velocity(file: UploadFile = File(...)):
-    global employees_in_memory
+    existing_jobs = await collections["jobs"].find(
+        {}, {"rr_id": 1, "status": 1}
+    ).to_list(None)
+    job_map = {j["rr_id"]: j for j in existing_jobs}
 
-    if not file.filename.endswith((".xlsx", ".xls")):
-        raise FileFormatException("Only Excel files (.xlsx/.xls) allowed")
+    rr_insert, rr_reactivate = [], []
+    job_insert, job_reactivate = [], []
 
-    content = await file.read()
-    try:
-        df = pd.read_excel(BytesIO(content))
-    except Exception as e:
-        raise ReportProcessingException(f"Failed to read Excel: {e}")
+    for rr in validated_rrs:
+        rr_id = rr.resource_request_id
+        rr_data = convert_dates_for_mongo(rr.model_dump(by_alias=True))
 
-    required_cols = ["Employee ID", "Employee Name", "Designation", "Band", "City", "Type"]
-    missing = [c for c in required_cols if c not in df.columns]
-    if missing:
-        raise ValidationException(f"Missing required columns: {missing}")
+        if rr_id not in rr_map:
+            rr_insert.append(rr_data)
+        elif not rr_map[rr_id].get("rr_status"):
+            rr_reactivate.append({"filter": {"Resource Request ID": rr_id},
+                                  "update": {"$set": {"rr_status": True}}})
 
-    validated_employees = []
-    errors = []
+        job_data = convert_dates_for_mongo(Job(
+            rr_id=rr_id, title=rr.ust_role, city=rr.city, state=rr.state,
+            country=rr.country, required_skills=rr.mandatory_skills,
+            description=rr.job_description, rr_start_date=rr.rr_start_date,
+            rr_end_date=rr.rr_end_date, wfm_id=rr.wfm_id, hm_id=rr.hm_id,
+            status=rr.flag, job_grade=rr.job_grade, account_name=rr.account_name,
+            project_id=rr.project_id
+        ).__dict__)
 
-    for idx, row in df.iterrows():
-        row_dict = {k: None if pd.isna(v) else v for k, v in row.to_dict().items()}
+        if rr_id not in job_map:
+            job_insert.append(job_data)
+        elif not job_map[rr_id].get("status"):
+            job_reactivate.append({"filter": {"rr_id": rr_id},
+                                   "update": {"$set": {"status": True}}})
 
-        try:
-            emp = Employee(**row_dict)
-            validated_employees.append(emp)
-        except Exception as e:
-            errors.append({"row": idx + 2, "error": str(e), "data": row_dict})
+    # Deactivate removed RRs/Jobs
+    deactivate_rr = [{"filter": {"Resource Request ID": rid}, "update": {"$set": {"rr_status": False}}}
+                     for rid in rr_map if rid not in uploaded_ids and rr_map[rid].get("rr_status")]
+    deactivate_job = [{"filter": {"rr_id": rid}, "update": {"$set": {"status": False}}}
+                      for rid in job_map if rid not in uploaded_ids and job_map[rid].get("status")]
 
-    # AUDIT LOG
-    await log_upload_action(
-        audit_type="employees",
-        filename=file.filename,
-        file_type="Excel",
-        uploaded_by="System",
-        total_rows=len(df),
-        valid_rows=len(validated_employees),
-        failed_rows=len(errors),
-        sample_errors=errors[:5],
-    )
+    # Bulk operations
+    if rr_insert:   await collections["resource_request"].insert_many(rr_insert, ordered=False)
+    if job_insert:  await collections["jobs"].insert_many(job_insert, ordered=False)
 
-    # INSERT INTO MONGO
-    if validated_employees:
-        records = [e.model_dump(by_alias=True) for e in validated_employees]
-        try:
-            await collections["employees"].insert_many(records, ordered=False)
-        except Exception as e:
-            raise DatabaseException(f"Failed to insert employees: {e}")
+    for op in rr_reactivate + deactivate_rr:
+        await collections["resource_request"].update_one(op["filter"], op["update"])
+    for op in job_reactivate + deactivate_job:
+        await collections["jobs"].update_one(op["filter"], op["update"])
 
     return {
-        "message": "Employee report processed successfully!",
-        "valid": len(validated_employees),
-        "failed": len(errors),
-        "errors_sample": errors[:5],
+        "rr_inserted": len(rr_insert),
+        "rr_reactivated+deactivated": len(rr_reactivate) + len(deactivate_rr),
+        "jobs_inserted": len(job_insert),
+        "jobs_reactivated+deactivated": len(job_reactivate) + len(deactivate_job),
     }
 
+async def sync_employees_with_db(employees: List[Employee], users: List[User]):
 
-# ============================================================
-# 📌 RR REPORT UPLOAD WITH AUDIT + CUSTOM EXCEPTIONS
-# ============================================================
-@app.post("/upload/rr-report")
-async def upload_rr_report(file: UploadFile = File(...)):
-    filename = file.filename.lower()
-    content = await file.read()
+    existing = await collections["employees"].find({}, {"Employee ID": 1, "status": 1}).to_list(None)
+    emp_map = {e["Employee ID"]: e for e in existing}
 
-    if not filename.endswith((".xlsx", ".xls", ".csv")):
-        raise FileFormatException("Only .xlsx, .xls or .csv allowed")
+    existing_users = await collections["users"].find({}, {"employee_id": 1}).to_list(None)
+    user_set = {u["employee_id"] for u in existing_users}
 
-    # Parse file
-    try:
-        if filename.endswith(".csv"):
-            encoding = detect_encoding(content)
-            df = pd.read_csv(
-                BytesIO(content),
-                skiprows=6,
-                encoding=encoding,
-                dtype=str,
-                engine="python",
-                on_bad_lines="skip",
-            )
+    inserts_emp, inserts_user, updates = [], [], []
+
+    for emp, user in zip(employees, users):
+        eid = emp.employee_id
+        emp_data = convert_dates_for_mongo(emp.model_dump(by_alias=True))
+        user_data = user.model_dump(by_alias=True)
+
+        if eid not in emp_map:
+            emp_data["status"] = True
+            inserts_emp.append(emp_data)
+            inserts_user.append(user_data)
         else:
-            df = pd.read_excel(BytesIO(content), skiprows=6, dtype=str)
+            if not emp_map[eid].get("status"):
+                updates.append({"filter": {"Employee ID": eid}, "update": {"$set": {"status": True}}})
+            updates.append({"filter": {"Employee ID": eid}, "update": {"$set": emp_data}})
+            if str(eid) not in user_set:
+                inserts_user.append(user_data)
 
+    if inserts_emp:  await collections["employees"].insert_many(inserts_emp, ordered=False)
+    if inserts_user: await collections["users"].insert_many(inserts_user, ordered=False)
+    for op in updates:
+        await collections["employees"].update_one(op["filter"], op["update"])
+
+    return {
+        "employees_inserted": len(inserts_emp),
+        "employees_updated": len(updates),
+        "users_inserted": len(inserts_user),
+    }
+
+# -------------------------------------------------------------------
+# API Endpoints
+# -------------------------------------------------------------------
+@app.post("/upload/employees")
+async def upload_career_velocity(file: UploadFile = File(...)):
+    content = await file.read()
+    if not file.filename.lower().endswith((".xlsx", ".xls", ".csv")):
+        raise FileFormatException("Only .xlsx, .xls, or .csv files allowed")
+
+    # Load file
+    try:
+        df = (pd.read_csv(BytesIO(content), encoding=detect_encoding(content), dtype=str, engine="python", on_bad_lines="skip")
+              if file.filename.endswith(".csv") else pd.read_excel(BytesIO(content)))
         df = df.dropna(how="all")
     except Exception as e:
         raise ReportProcessingException(f"Failed to read file: {e}")
 
+    required = ["Employee ID", "Employee Name", "Designation", "Band", "City", "Type"]
+    if missing := [c for c in required if c not in df.columns]:
+        raise ValidationException(f"Missing columns: {missing}")
+
+    valid_emps, valid_users, errors = [], [], []
+    for idx, row in df.iterrows():
+        row_dict = {k: None if pd.isna(v) else str(v).strip() for k, v in row.to_dict().items()}
+        try:
+            emp = Employee(**row_dict)
+            user = User(employee_id=str(emp.employee_id), role=emp.type)
+            valid_emps.append(emp)
+            valid_users.append(user)
+        except Exception as e:
+            errors.append({"row": idx + 2, "error": str(e)})
+
+    await log_upload_action("employees", file.filename,
+                            "CSV" if file.filename.endswith(".csv") else "Excel",
+                            "API User", len(df), len(valid_emps), len(errors), errors[:5])
+
+    if not valid_emps:
+        return {"message": "No valid employees found", "errors_sample": errors[:5]}
+
+    result = await sync_employees_with_db(valid_emps, valid_users)
+    return {
+        "message": "Career Velocity processed successfully",
+        "processed": len(valid_emps),
+        "failed": len(errors),
+        "errors_sample": errors[:5],
+        "sync": result
+    }
+
+@app.post("/upload/rr-report")
+async def upload_rr_report(file: UploadFile = File(...)):
+    content = await file.read()
+    if not file.filename.lower().endswith((".xlsx", ".xls", ".csv")):
+        raise FileFormatException("Only Excel/CSV files allowed")
+
+    try:
+        df = (pd.read_csv(BytesIO(content), skiprows=6, encoding=detect_encoding(content),
+                          dtype=str, engine="python", on_bad_lines="skip")
+              if file.filename.endswith(".csv") else pd.read_excel(BytesIO(content), skiprows=6, dtype=str))
+        df = df.dropna(how="all")
+    except Exception as e:
+        raise ReportProcessingException(f"Failed to read RR report: {e}")
+
     if "Resource Request ID" not in df.columns:
-        raise ValidationException("Missing required column 'Resource Request ID'")
+        raise ValidationException("Column 'Resource Request ID' is required")
 
-    validated_rrs = []
-    errors = []
-
+    valid_rrs, errors = [], []
     for idx, row in df.iterrows():
         rr_id = row.get("Resource Request ID")
         if not rr_id or pd.isna(rr_id):
             continue
-
         row_dict = {k: None if pd.isna(v) else v for k, v in row.to_dict().items()}
         row_dict["rr_status"] = True
-
         try:
-            rr = ResourceRequest(**row_dict)
-            validated_rrs.append(rr)
+            # row_dict["Mandatory Skills"] = 
+            valid_rrs.append(ResourceRequest(**row_dict))
         except Exception as e:
             errors.append({"row": idx + 8, "rr_id": str(rr_id), "error": str(e)})
 
-    # AUDIT
-    await log_upload_action(
-        audit_type="rr_report",
-        filename=file.filename,
-        file_type="CSV" if filename.endswith(".csv") else "Excel",
-        uploaded_by="System",
-        total_rows=len(df),
-        valid_rows=len(validated_rrs),
-        failed_rows=len(errors),
-        sample_errors=errors[:5],
-    )
+    await log_upload_action("rr_report", file.filename,
+                            "CSV" if file.filename.endswith(".csv") else "Excel",
+                            "API User", len(df), len(valid_rrs), len(errors), errors[:5])
 
-    # Save in memory
-    global resource_requests_in_memory
-    resource_requests_in_memory.extend(validated_rrs)
+    if not valid_rrs:
+        return {"message": "No valid RRs found", "errors_sample": errors[:5]}
 
-    # Sync DB
+    await sync_rr_with_db(valid_rrs)
+    return {
+        "message": "RR Report processed successfully",
+        "valid_requests": len(valid_rrs),
+        "failed": len(errors),
+        "errors_sample": errors[:5]
+    }
+
+# -------------------------------------------------------------------
+# Auto-processing (watch folder)
+# -------------------------------------------------------------------
+UPLOAD_FOLDER = "updated"
+PROCESSED_FOLDER = "processed"
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+os.makedirs(PROCESSED_FOLDER, exist_ok=True)
+
+async def auto_rr_job():
+    files = [f for f in os.listdir(UPLOAD_FOLDER)
+             if f.lower().endswith((".xlsx", ".xls", ".csv"))]
+    if not files:
+        return
+
+    latest = sorted(files)[-1]
+    src = os.path.join(UPLOAD_FOLDER, latest)
+    dst = os.path.join(PROCESSED_FOLDER, f"{datetime.now():%Y%m%d_%H%M%S}_{latest}")
+
     try:
-        await sync_rr_with_db(validated_rrs)
+        print(src)
+        with open(src, "rb") as f:
+            fake_file = UploadFile(filename=latest, file=BytesIO(f.read()))
+        await upload_rr_report(fake_file)
+        os.rename(src, dst)
+        logger.info(f"Auto-processed RR: {latest} → processed/")
     except Exception as e:
-        raise DatabaseException(f"RR Sync failed: {e}")
+        logger.error(f"Auto RR job failed for {latest}: {e}")
 
-    return {
-        "message": "RR Report processed successfully!",
-        "valid_requests": len(validated_rrs),
-        "failed_rows": len(errors),
-        "errors_sample": errors[:5],
-    }
+scheduler = AsyncIOScheduler()
+scheduler.add_job(auto_rr_job, "cron", minute="*", id="rr_watcher")
+scheduler.start()
 
-
-# ============================================================
-# OTHER ENDPOINTS
-# ============================================================
-@app.get("/data/employees")
-async def get_employees():
-    return {"count": len(employees_in_memory), "employees": employees_in_memory[:10]}
-
-
-@app.get("/data/rrs")
-async def get_rrs():
-    return {
-        "total": len(resource_requests_in_memory),
-        "sample": [
-            {
-                "rr_id": rr.resource_request_id,
-                "role": rr.ust_role,
-                "location": f"{rr.city}, {rr.country}",
-                "priority": rr.priority,
-                "skill_count": len(rr.mandatory_skills),
-            }
-            for rr in resource_requests_in_memory[:5]
-        ],
-    }
-
-
+# -------------------------------------------------------------------
+# Health check
+# -------------------------------------------------------------------
 @app.get("/")
 async def root():
     return {
-        "message": "Career Velocity & RR Report Processor API",
-        "audit_logging": "Enabled",
-        "custom_exceptions": "Enabled",
+        "service": "Career Velocity & RR Report Processor",
+        "status": "running",
+        "auto_processing": "every minute from ./updated/",
+        "processed_folder": "./processed/"
     }

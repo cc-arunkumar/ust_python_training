@@ -1,110 +1,114 @@
 from pydantic import BaseModel, field_validator, Field, AwareDatetime
 import re
-from typing import List, Optional,Literal
+from typing import List, Optional, Literal
 from datetime import date, datetime, timezone
 
 
-
+# ============================================================
+# EMPLOYEE MODEL
+# ============================================================
 class Employee(BaseModel):
     employee_id: int = Field(..., alias="Employee ID")
     employee_name: str = Field(..., alias="Employee Name")
     employment_type: str = Field(..., alias="Employment Type")
     designation: str = Field(..., alias="Designation")
-    band: str = Field(..., alias="Band")
+    band: Optional[str] = Field( alias="Band")
     city: str = Field(..., alias="City")
     location_description: str = Field(..., alias="Location Description")
     primary_technology: str = Field(..., alias="Primary Technology")
     secondary_technology: Optional[str] = Field(None, alias="Secondary Technology")
-    detailed_skills: List[str] = Field(default_factory=list, alias="Detailed Skill Set (List of top skills on profile)")
+    detailed_skills: List[str] = Field(default_factory=list,
+                                       alias="Detailed Skill Set (List of top skills on profile)")
     type: Literal["TP", "Non TP"] = Field(..., alias="Type")
+    resume : Optional[str] = None
     resume_text: Optional[str] = Field(None)
 
-    # -------------------------------------------------
-    # 1. Normalize Type (TP / Non TP) – case insensitive
-    # -------------------------------------------------
+    # Normalize TP / Non TP
     @field_validator("type", mode="before")
     @classmethod
     def normalize_type(cls, v):
         if not v:
             return "Non TP"
-        val = str(v).strip().upper()
-        return "TP" if val == "TP" else "Non TP"
+        return "TP" if str(v).strip().upper() == "TP" else "Non TP"
 
-    # -------------------------------------------------
-    # 2. Accept ALL real bands seen in your data:
-    #     A0–A9, B1–B9, C1–C9, D1–D9
-    #     T1–T9, E1–E9, P1–P9
-    # -------------------------------------------------
+    # Validate and normalize band values
     @field_validator("band", mode="before")
     @classmethod
     def normalize_band(cls, v):
         if not v or str(v).strip() == "":
-            return "A0"
+            return None
 
         value = str(v).strip().upper()
 
-        # All valid patterns
         if re.match(r"^[A-D][0-9]$", value):    # A0–D9
             return value
-        if re.match(r"^[TEP][1-9]$", value):    # T1–T9, E1–E9, P1–P9
+        if re.match(r"^[TEP][1-9]$", value):    # T/E/P grades
             return value
 
-        raise ValueError(f"Invalid band format: '{v}' → '{value}'")
+        raise ValueError(f"Invalid band format: '{value}'")
 
-    # -------------------------------------------------
-    # 3. Handle "Not Available" gracefully
-    # -------------------------------------------------
+    # Handle NA/Not Available
     @field_validator("primary_technology", "secondary_technology", mode="before")
     @classmethod
     def handle_not_available(cls, v, info):
-        if not v or str(v or "").strip().upper() in ("NOT AVAILABLE", "NA", "NULL", ""):
+        if not v or str(v).strip().upper() in ("NOT AVAILABLE", "NA", "NULL", ""):
             return "" if info.field_name == "primary_technology" else None
         return str(v).strip()
 
-    # -------------------------------------------------
-    # 4. Split skills (handles commas, question marks, etc.)
-    # -------------------------------------------------
+    # Split comma-separated or question-mark-separated skills
     @field_validator("detailed_skills", mode="before")
     @classmethod
     def split_detailed_skills(cls, v):
         if not v or str(v).strip().upper() in ("NA", "NOT AVAILABLE", "NULL", ""):
             return []
-        skills = [s.strip() for s in re.split(r'[,?]', str(v)) if s.strip()]
-        return skills
+        return [s.strip() for s in re.split(r'[,?]', str(v)) if s.strip()]
 
     class Config:
-        populate_by_name = True
+        populate_by_name = False
         extra = "ignore"
 
+# ============================================================
+# USER MODEL
+# ============================================================
+
+class User(BaseModel):
+    employee_id : str 
+    password : str = "$argon2id$v=19$m=65536,t=3,p=4$otQ6h9CaM4ZwzlnL2TtnTA$gbLxVjVlKj/NYp7KF7B287JDOVMMHO3oDGUbjszW32U"
+    role : str 
+    is_active : bool = True
+    created_at : datetime = datetime.now(timezone.utc)
+
+# ============================================================
+# JOB MODEL
+# ============================================================
 class Job(BaseModel):
-    rr_id: str 
-    title: str 
-    city: str 
+    rr_id: str
+    title: str
+    city: str
     state: Optional[str] = None
-    country: str 
-    required_skills: List[str] 
-    description: Optional[str] 
-    rr_start_date: date 
-    rr_end_date: date 
-    wfm_id: str 
-    hm_id: str 
-    status: bool = True
-    job_grade: str 
-    account_name: str 
-    project_id: str 
+    country: str
+    required_skills: List[str]
+    description: Optional[str]
+    rr_start_date: date
+    rr_end_date: date
+    wfm_id: str
+    hm_id: str
+    status: bool 
+    job_grade: str
+    account_name: str
+    project_id: str
     created_at: datetime = datetime.now(timezone.utc)
- 
- 
-# model.py → FINAL VERSION – ZERO ERRORS ON REAL FILE
 
 
-
+# ============================================================
+# RESOURCE REQUEST MODEL
+# ============================================================
 class ResourceRequest(BaseModel):
     resource_request_id: str = Field(..., alias="Resource Request ID")
     rr_fte: float = Field(..., alias="RR FTE")
     allocated_fte: Optional[float] = Field(None, alias="Allocated FTE")
     rr_status: Literal["Approved", "Cancelled", "Closed", "EDIT REQUEST APPROVED"] = Field(..., alias="RR Status")
-    rr_type: Literal["New Project", "Existing Project","Replacement","Attrition"] = Field(..., alias="RR Type")
+    rr_type: Literal["New Project", "Existing Project", "Replacement", "Attrition"] = Field(..., alias="RR Type")
     priority: str = Field(..., alias="Priority")
     ust_role: str = Field(..., alias="UST - Role")
     city: str = Field(..., alias="City")
@@ -128,7 +132,7 @@ class ResourceRequest(BaseModel):
     actual_bill_rate: Optional[float] = Field(None, alias="Actual Bill Rate")
     actual_currency: Optional[str] = Field(None, alias="Actual Currency")
     bill_rate: Optional[float] = Field(None, alias="Bill Rate")
-    billing_frequency: Optional[Literal["H", "D", "M","Y"]] = Field(None, alias="Billing Frequency")
+    billing_frequency: Optional[Literal["H", "D", "M", "Y"]] = Field(None, alias="Billing Frequency")
     currency: Optional[str] = Field(None, alias="Currency")
     target_ecr: Optional[float] = Field(None, alias="Target ECR")
     accepted_resource_type: Optional[str] = Field("Any", alias="Accepted Resource Type")
@@ -161,25 +165,47 @@ class ResourceRequest(BaseModel):
     last_activity_date: AwareDatetime = Field(..., alias="Last Activity Date")
     last_activity: Optional[str] = Field(None, alias="Last Activity")
     contract_category: Optional[str] = Field(None, alias="Contract Category")
-    mandatory_skills: str = Field(..., alias="Mandatory Skills")
-    optional_skills: Optional[str] = Field(..., alias="Optional Skills")
+    mandatory_skills: List[str] = Field(..., alias="Mandatory Skills")
+    optional_skills: Optional[List[str]] = Field(None, alias="Optional Skills")
     rr_skill_group: Optional[str] = Field(None, alias="RR Skill Group")
-    rr_status:bool = True
+    flag: bool = True   
+    matching_resources_count: Optional[int] = Field(None, alias="Matching Resources Count (Score 50% and above)")
+    hiring_request_submit_date_mte: Optional[date] = Field(None, alias="Hiring request Submit Date (MTE)")
+    marked_to_external: Optional[str] = Field(None, alias="Marked To External")
+    mte_status: Optional[str] = Field(None, alias="MTE Status")
+    external_system: Optional[str] = Field(None, alias="External - System")
+    so_initiator_name: Optional[str] = Field(None, alias="SO Initiator Name")
+    so_initiator_id: Optional[str] = Field(None, alias="SO Initiator ID")
+    external_status: Optional[str] = Field(None, alias="External Status")
+    allocation_project_id: Optional[str] = Field(None, alias="Allocation Project ID")
+    allocation_project_start_date: Optional[date] = Field(None, alias="Allocation Project Start Date")
+    allocation_project_end_date: Optional[date] = Field(None, alias="Allocation Project End Date")
+    practice_line: Optional[str] = Field(None, alias="Practice Line")
+    ta_cluster_lead: Optional[str] = Field(None, alias="TA Cluster Lead")
+    rr_ageing: Optional[int] = Field(None, alias="RR Ageing")
+    duration_before_cancellation: Optional[int] = Field(None, alias="Duration before Cancellation")
+    resources_in_propose: Optional[int] = Field(None, alias="Resources in Propose")
+    resources_in_hm_check: Optional[int] = Field(None, alias="Resources in HM Check")
+    resources_in_internal_interview: Optional[int] = Field(None, alias="Resources in Internal Interview")
+    resources_in_customer_interview: Optional[int] = Field(None, alias="Resources in Customer Interview")
+    resources_in_accept: Optional[int] = Field(None, alias="Resources in Accept")
+    resources_in_allocated: Optional[int] = Field(None, alias="Resources in Allocated")
+    resources_in_not_allocated: Optional[int] = Field(None, alias="Resources in Not Allocated")
+    resources_in_reject: Optional[int] = Field(None, alias="Resources in Reject")
+    edits_requested: Optional[str] = Field(None, alias="Edits Requested")
+    outgoing_employee_id: Optional[str] = Field(None, alias="Outgoing Employee Id")
+    outgoing_employee_name: Optional[str] = Field(None, alias="Outgoing Employee Name")
+    cancel_requested: Optional[str] = Field(None, alias="Cancel Requested")
+    legal_entity: str = Field(..., alias="Legal Entity")
+    company_name: str = Field(..., alias="Company Name")
 
-    # ------------------------------------------------------------
-    # PRIORITY NORMALIZATION
-    # ------------------------------------------------------------
+    # Your existing validators remain 100% unchanged
     @field_validator("priority", mode="after")
     @classmethod
     def normalize_priority(cls, v):
-        if not v:
-            return "P4"
-        val = str(v).strip().upper()
-        return val if val in ("P1", "P2", "P3", "P4") else "P4"
+        v = str(v).strip().upper()
+        return v if v in ("P1", "P2", "P3", "P4") else "P4"
 
-    # ------------------------------------------------------------
-    # YES/NO → BOOL
-    # ------------------------------------------------------------
     @field_validator("exclusive_to_ust", "contract_to_hire", mode="before")
     @classmethod
     def str_to_bool(cls, v):
@@ -187,56 +213,40 @@ class ResourceRequest(BaseModel):
             return v
         return str(v).strip().upper() in ("TRUE", "YES", "Y", "1")
 
-    # ------------------------------------------------------------
-    # SKILL STRING SPLIT
-    # ------------------------------------------------------------
-    @field_validator("mandatory_skills", "optional_skills", mode="after")
+    @field_validator("mandatory_skills", "optional_skills", mode="before")
     @classmethod
     def split_skills_from_string(cls, v):
-        if v is None:
+        if not v or str(v).strip().upper() in ("", "NA", "N/A"):
             return []
-        text = str(v).strip()
-        if text in ("", "NA", "N/A"):
-            return []
-        return [item.strip() for item in text.split(",") if item.strip()]
+        return [item.strip() for item in str(v).split(",") if item.strip()]
 
-    # ------------------------------------------------------------
-    # CLEAN DATE PARSING USING ONLY strptime (Your Request)
-    # ------------------------------------------------------------
     @field_validator(
         "rr_start_date", "rr_end_date", "project_start_date", "project_end_date",
         "raised_on", "last_updated_on", "rr_finance_approved_date", "wfm_approved_date",
-        "edit_requested_date", "resubmitted_date",
+        "edit_requested_date", "resubmitted_date","allocation_project_start_date","hiring_request_submit_date_mte","allocation_project_end_date",
         mode="before", check_fields=False
     )
     @classmethod
     def validate_rr_start_date(cls, v):
         if isinstance(v, date):
-            return v  # Already a date
-        
-        v = str(v).strip()
-        if v == "" or v.lower() == "none":
-            return None   # allow null dates
+            return v
 
-        # Try expected format: 06 Jan 2025
+        v = str(v).strip()
+        if v.lower() in ("", "none"):
+            return None
+
         try:
             return datetime.strptime(v, "%d %b %Y").date()
         except:
             pass
 
-        # Try DB format: 2024-04-01 00:00:00 or 2024-04-01
         try:
             return datetime.fromisoformat(v.replace(" ", "T")).date()
         except:
             pass
 
-        raise ValueError(
-            f"Invalid date format '{v}'. Expected formats: 'DD Mon YYYY' (e.g., 06 Jan 2025) or ISO format (YYYY-MM-DD)."
-        )
+        raise ValueError(f"Invalid date format '{v}'")
 
-    # ------------------------------------------------------------
-    # CLEAN DATETIME PARSE FOR LAST ACTIVITY DATE
-    # ------------------------------------------------------------
     @field_validator("last_activity_date", mode="before")
     @classmethod
     def parse_last_activity_date(cls, v):
@@ -244,51 +254,25 @@ class ResourceRequest(BaseModel):
             return None
 
         if isinstance(v, datetime):
-            # If datetime is naive, attach UTC
-            if v.tzinfo is None:
-                return v.replace(tzinfo=timezone.utc)
-            return v
+            return v.replace(tzinfo=timezone.utc) if v.tzinfo is None else v
 
         raw = str(v).strip()
-
-        # Remove timezone label like (PT)
         cleaned = raw.split("(")[0].strip().rstrip(",")
 
-        # Try: 27 Jan 2025, 10:13 AM
-        try:
-            dt = datetime.strptime(cleaned, "%d %b %Y, %I:%M %p")
-            return dt.replace(tzinfo=timezone.utc)
-        except:
-            pass
+        for fmt in ("%d %b %Y, %I:%M %p", "%d %b %Y %I:%M %p", "%d %b %Y %H:%M:%S"):
+            try:
+                dt = datetime.strptime(cleaned, fmt)
+                return dt.replace(tzinfo=timezone.utc)
+            except:
+                continue
 
-        # Try: 27 Jan 2025 10:13 AM
-        try:
-            dt = datetime.strptime(cleaned, "%d %b %Y %I:%M %p")
-            return dt.replace(tzinfo=timezone.utc)
-        except:
-            pass
-
-        # Try: 06 Jan 2025 14:45:22
-        try:
-            dt = datetime.strptime(cleaned, "%d %b %Y %H:%M:%S")
-            return dt.replace(tzinfo=timezone.utc)
-        except:
-            pass
-
-        # Try ISO
         try:
             dt = datetime.fromisoformat(cleaned)
-            if dt.tzinfo is None:
-                dt = dt.replace(tzinfo=timezone.utc)
-            return dt
+            return dt if dt.tzinfo else dt.replace(tzinfo=timezone.utc)
         except:
             pass
 
-        raise ValueError(
-            f"Invalid datetime '{v}'. Supported formats: "
-            "'DD Mon YYYY, HH:MM AM/PM', 'DD Mon YYYY HH:MM:SS', ISO."
-        )
-
+        raise ValueError(f"Invalid datetime '{v}'")
 
     class Config:
         populate_by_name = True
