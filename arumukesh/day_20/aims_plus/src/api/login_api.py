@@ -1,50 +1,34 @@
 from fastapi import Depends, APIRouter, HTTPException, status
+from fastapi.security import OAuth2PasswordRequestForm
 from datetime import timedelta
 
-# Import models and authentication utilities
-from src.model.model_maintenance_log import MaintenanceLog
-from src.auth.jwt_authentication import (
-    get_current_user,
-    User,
-    DEMO_PASSWORD,
-    DEMO_USERNAME,
-    LoginRequest,
-    ACCESS_TOKEN_EXPIRE_MINUTES,
-    create_access_token
-)
-from src.model.model_login import User, LoginRequest, Token
+from src.auth.jwt_authentication import authenticate_user, create_access_token, get_current_user, ACCESS_TOKEN_EXPIRE_MINUTES
+from src.model.model_login import Token, User
+
+router = APIRouter(prefix="/auth", tags=["Authentication"])
 
 
-# APIRouter for authentication related endpoints
-router = APIRouter(prefix="/jwt")
+@router.post("/token", response_model=Token)
+async def login(form_data: OAuth2PasswordRequestForm = Depends()):
+    """OAuth2 Username/Password Login"""
+    user = authenticate_user(form_data.username, form_data.password)
 
-
-@router.post("/login", response_model=Token)
-def login(data: LoginRequest):
-    """
-    Authenticates a user and generates a JWT access token.
-
-    Args:
-        data (LoginRequest): Contains the username and password entered by the user.
-
-    Returns:
-        Token: Contains the generated JWT and token type.
-
-    Raises:
-        HTTPException: If the credentials do not match the stored demo credentials.
-    """
-
-    # Validate username and password against stored credentials
-    if data.username != DEMO_USERNAME or data.password != DEMO_PASSWORD:
+    if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect username or password"
+            detail="Invalid username or password",
+            headers={"WWW-Authenticate": "Bearer"}
         )
-    
-    # Set expiration time for JWT token
-    expires = timedelta(minutes=int(ACCESS_TOKEN_EXPIRE_MINUTES))
-    
-    # Create the JWT access token
-    token = create_access_token(subject=data.username, expires_delta=expires)
 
-    return Token(access_token=token, token_type="bearer")
+    token = create_access_token(
+        {"sub": user.username},
+        expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    )
+
+    return {"access_token": token, "token_type": "bearer"}
+
+
+@router.get("/me")
+def profile(current_user: User = Depends(get_current_user)):
+    """Protected Endpoint"""
+    return {"message": "Secure route accessed", "user": current_user.username}

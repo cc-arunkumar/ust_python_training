@@ -1,102 +1,80 @@
-from fastapi import HTTPException, status, Depends, APIRouter
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from pydantic import BaseModel
-from datetime import datetime, timedelta, timezone
-from typing import Optional
-from jose import JWTError, jwt
+from fastapi import Depends, HTTPException, status, APIRouter
+from fastapi.security import OAuth2PasswordBearer
+from jose import jwt, JWTError
+from passlib.context import CryptContext
 from dotenv import load_dotenv
+from datetime import datetime, timedelta, timezone
+from pydantic import BaseModel
 import os
-from src.model.model_login import User,LoginRequest
+from typing import Optional
+from src.model.model_login import User
 
-# Creating a router with prefix "/jwt"
 jwt_router = APIRouter(prefix="/jwt")
 
-# Load environment variables from `.env` file
-load_dotenv(os.path.join(os.path.dirname(__file__)))
+load_dotenv()
 
-# Security environment variables
-SECRET_KEY = os.getenv("SECRET_KEY", "fallback-secret")  # Secret key used to sign JWT tokens
-ALGORITHM = os.getenv("ALGORITHM")                      # Encryption algorithm
-ACCESS_TOKEN_EXPIRE_MINUTES = os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES")
+# Environment Variables
+SECRET_KEY = os.getenv("SECRET_KEY", "fallback-secret")
+ALGORITHM = os.getenv("ALGORITHM", "HS256")
+ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", 15))
 
-# Demo user credentials from env
+# Demo User
 DEMO_USERNAME = os.getenv("DEMO_USERNAME")
-DEMO_PASSWORD = os.getenv("DEMO_PASSWORD")
+DEMO_PASSWORD = os.getenv("DEMO_PASSWORD")  # <-- stored plain for demo
 
-print("Loaded DEMO_USERNAME:", DEMO_USERNAME)
-print("Loaded DEMO_PASSWORD:", DEMO_PASSWORD)
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token")
 
-# ----------------------------- TOKEN GENERATION -----------------------------
 
-def create_access_token(subject: str, expires_delta: Optional[timedelta] = None):
-    """
-    Creates a JWT token with expiration time.
+# ------------------ Helper Methods ------------------
 
-    Args:
-        subject (str): The username or identifier to embed in the token.
-        expires_delta (Optional[timedelta]): Custom expiration duration.
+def verify_password(raw_password: str, hashed_password: str):
+    """Compare plain text password with hashed value."""
+    return pwd_context.verify(raw_password, hashed_password)
 
-    Returns:
-        str: Encoded JWT token.
-    """
-    to_encode = {"sub": subject}
-    expire = datetime.now(timezone.utc) + (expires_delta or timedelta(minutes=15))
-    
-    # Add expiration info into token body
+
+def hash_password(password: str):
+    """Hash password for secure storage."""
+    return pwd_context.hash(password)
+
+
+def get_user(username: str):
+    """Mock DB lookup."""
+    if username == DEMO_USERNAME:
+        return User(username=username)
+    return None
+
+
+def authenticate_user(username: str, password: str):
+    """Validate credentials."""
+    if username == DEMO_USERNAME and password == DEMO_PASSWORD:
+        return get_user(username)
+    return None
+
+
+def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
+    """Generate JWT token."""
+    to_encode = data.copy()
+    expire = datetime.now(timezone.utc) + (expires_delta or timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
     to_encode.update({"exp": expire})
-
-    # Encode token using secret key
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
-# ----------------------------- AUTH VALIDATION -----------------------------
 
-security = HTTPBearer()  # Token reader middleware
-
-def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)) -> User:
-    """
-    Validates and decodes the JWT token and returns authenticated user.
-
-    Args:
-        credentials (HTTPAuthorizationCredentials): The extracted bearer token.
-
-    Returns:
-        User: The authenticated user object.
-
-    Raises:
-        HTTPException: If token is missing, invalid, or user not found.
-    """
-    token = credentials.credentials
+def get_current_user(token: str = Depends(oauth2_scheme)):
+    """Extract current user from JWT."""
     try:
-        # Decode token with stored secret key
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        username = payload.get("sub")
+
+        if username is None:
+            raise HTTPException(status_code=401, detail="Token missing username")
+
     except JWTError:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, 
-            detail="Invalid or expired token"
-        )
+        raise HTTPException(status_code=401, detail="Invalid or expired token")
 
-    # Extract username from the token
-    username = payload.get("sub")
+    user = get_user(username)
 
-    # Validate if token user exists
-    if username != DEMO_USERNAME:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, 
-            detail="User not found"
-        )
+    if user is None:
+        raise HTTPException(status_code=401, detail="User not found")
 
-    return User(username=username)
-
-
-# ----------------------------- OPTIONAL PROTECTED ENDPOINT -----------------------------
-# Uncomment if needed
-
-# @jwt_router.get("/me")
-# def read_me(current_user: User = Depends(get_current_user)):
-#     """
-#     A protected route that returns the logged-in user's data.
-#     """
-#     return {
-#         "message": "This is a protected endpoint using JWT TOKEN",
-#         "user": current_user,
-#     }
+    return user

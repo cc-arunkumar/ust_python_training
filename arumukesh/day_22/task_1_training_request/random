@@ -1,0 +1,1 @@
+,req.employee_id,req.employee_name,req.training_title,req.training_description,req.requested_date,req.status,req.manager_id,req.last_updated
