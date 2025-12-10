@@ -1,0 +1,17 @@
+
+    {
+ "emp_id": 110,
+ "name": "Mohan",
+ "age": 24,
+ "department": "Data",
+ "skills": ["sql", "tableau"],
+ "address": { "city": "Chennai", "state": "TN" },
+ "projects": [
+ { "name": "USTAnalyticsHub", "status": "planned" }
+ ],
+ "experience_years": 2,
+ "nested_field":[
+    {"field_added":2},
+    {"Valid_fileds":7}
+ ]
+ }
