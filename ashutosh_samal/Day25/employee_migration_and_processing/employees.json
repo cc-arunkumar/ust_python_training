@@ -1,0 +1,37 @@
+[
+    {
+    "emp_id": 201,
+    "name": "Anu Joseph",
+    "department": "AI",
+    "age": 23,
+    "city": "Trivandrum"
+    },
+    {
+    "emp_id": 202,
+    "name": "Rahul Menon",
+    "department": "Cloud",
+    "age": 26,
+    "city": "Kochi"
+    },
+    {
+    "emp_id": 203,
+    "name": "Sahana R",
+    "department": "Testing",
+    "age": 22,
+    "city": "Chennai"
+    },
+    {
+    "emp_id": 204,
+    "name": "Vishnu Prakash",
+    "department": "Cybersecurity",
+    "age": 29,
+    "city": "Trivandrum"
+    },
+    {
+    "emp_id": 205,
+    "name": "Maya Kumar",
+    "department": "AI",
+    "age": 25,
+    "city": "Bangalore"
+    }
+]
