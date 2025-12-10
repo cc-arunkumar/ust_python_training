@@ -3,7 +3,7 @@ from db_connection import get_connection
 from models import TrainingRequest, TrainingUpdate
 from jwt import require_auth
 
-router = APIRouter(prefix="/SOAHN", tags=["training-requests"])
+router = APIRouter(prefix="/SOHAN", tags=["training-requests"])
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
 def create_request(body: TrainingRequest,user=Depends(require_auth)):
