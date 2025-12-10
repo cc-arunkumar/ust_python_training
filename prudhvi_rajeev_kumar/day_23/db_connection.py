@@ -68,3 +68,66 @@ for student in db.students.find():
 
 # db.students.delete_many({"age" : {"$lte" : 22}})
 # print("age lt 22 deleted.")
+
+
+
+
+
+# import json
+# import mysql.connector
+# from pymongo import MongoClient
+
+# # Step 1: Read the JSON file
+# def read_json_file(file_path):
+#     with open(file_path, 'r') as f:
+#         data = json.load(f)
+#     return data
+
+# # Step 2: Insert data into MySQL
+# def insert_data_into_mysql(data):
+#     conn = mysql.connector.connect(
+#         host="localhost",  # Change as per your MySQL setup
+#         user="root",  # Your MySQL username
+#         password="password",  # Your MySQL password
+#         database="your_database"  # Replace with your database name
+#     )
+#     cursor = conn.cursor()
+
+#     # Assuming data is a list of dictionaries
+#     for item in data:
+#         # Adjust the query based on your data structure
+#         query = "INSERT INTO your_table_name (column1, column2) VALUES (%s, %s)"
+#         cursor.execute(query, (item['key1'], item['key2']))  # Replace with actual keys
+#     conn.commit()
+#     cursor.close()
+#     conn.close()
+
+# # Step 3: Read data from MySQL
+# def read_data_from_mysql():
+#     conn = mysql.connector.connect(
+#         host="localhost",  # Change as per your MySQL setup
+#         user="root",  # Your MySQL username
+#         password="password",  # Your MySQL password
+#         database="your_database"  # Replace with your database name
+#     )
+#     cursor = conn.cursor(dictionary=True)  # Return data as a dictionary
+#     cursor.execute("SELECT * FROM your_table_name")  # Replace with your table name
+#     data = cursor.fetchall()
+#     cursor.close()
+#     conn.close()
+#     return data
+
+# # Step 4: Insert data into MongoDB
+# def insert_data_into_mongodb(data):
+#     client = MongoClient("mongodb://localhost:27017/")  # Replace with your MongoDB URI
+#     db = client['your_database']  # Your MongoDB database
+#     collection = db['your_collection']  # Your MongoDB collection
+
+#     # Insert data
+#     collection.insert_many(data)
+
+# # Example usage
+# json_data = read_json_file('data.json')  # Replace with your JSON file path
+# insert_data_into_mysql(json_data)  # Insert JSON data into MySQL
+# mysql_data = read_data_from_mysql()  # Read data back from MySQL
+# insert_data_into_mongodb(mysql_data)  # Insert MySQL data into MongoDB

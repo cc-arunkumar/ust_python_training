@@ -1,57 +1,135 @@
-from fastapi import FastAPI, HTTPException, Depends
-from datetime import timedelta
+from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordRequestForm
+from sqlalchemy.orm import Session
 from typing import List
+from database import get_db, create_all_tables
+from models import LoginRequest, Token, TaskModel, TaskCreate, TaskUpdate, UserORM, TaskORM
+from utils import create_access_token
+from auth import get_current_user
+from models import User
+from mongodb_logger import log_activity
 
-from models import LoginRequest, Token, User, TaskModel
-from utils import create_access_token, ACCESS_TOKEN_EXPIRE_MINUTES
-from auth import get_current_user, DEMO_USERNAME, DEMO_PASSWORD
+app = FastAPI(title="UST Task Manager", version="2.0")
 
-app = FastAPI(title="Task Tracker API")
+create_all_tables()
 
-next_id = 1
-tasks: List[TaskModel] = []
+@app.on_event("startup")
+def seed_default_user():
+    db = next(get_db())
+    try:
+        existing = db.query(UserORM).filter(UserORM.username == "rahul").first()
+        if not existing:
+            db.add(UserORM(username="rahul", password="password123"))
+            db.commit()
+    finally:
+        db.close()
 
 @app.post("/login", response_model=Token)
-def login(data: LoginRequest):
-    if data.username != DEMO_USERNAME or data.password != DEMO_PASSWORD:
-        raise HTTPException(status_code=401, detail="Incorrect username or password.")
-    expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    token = create_access_token(subject=data.username, expires_delta=expires)
-    return Token(access_token=token, token_type="bearer")
+def login(credentials: LoginRequest, db: Session = Depends(get_db)):
+    user = db.query(UserORM).filter(UserORM.username == credentials.username).first()
+    if not user or user.password != credentials.password:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid username or password")
 
-@app.post("/tasks")
-def create_task(task: TaskModel, current_user: User = Depends(get_current_user)):
-    global next_id
-    task.id = next_id
-    tasks.append(task)
-    next_id += 1
-    return task
+    token = create_access_token(subject=user.username)
+    return {"access_token": token, "token_type": "bearer"}
 
-@app.get("/tasks")
-def get_tasks(current_user: User = Depends(get_current_user)):
-    return tasks
+@app.post("/tasks", response_model=TaskModel)
+def create_task(
+    task_in: TaskCreate,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    user = db.query(UserORM).filter(UserORM.username == current_user.username).first()
+    if not user:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User not found")
 
-@app.get("/tasks/{task_id}")
-def get_task_by_id(task_id: int, current_user: User = Depends(get_current_user)):
-    for task in tasks:
-        if task.id == task_id:
-            return task
-    raise HTTPException(status_code=404, detail="Task not found")
+    task = TaskORM(
+        title=task_in.title,
+        description=task_in.description,
+        completed=False,
+        user_id=user.id,
+    )
+    db.add(task)
+    db.commit()
+    db.refresh(task)
+    log_activity(current_user.username, "CREATE", task.id)
 
-@app.put("/tasks/{task_id}")
-def update_task(task_id: int, new_data: TaskModel, current_user: User = Depends(get_current_user)):
-    for task in tasks:
-        if task.id == task_id:
-            task.title = new_data.title
-            task.description = new_data.description
-            task.completed = new_data.completed
-            return task
-    raise HTTPException(status_code=404, detail="Task not found")
+    return TaskModel(id=task.id, title=task.title, description=task.description, completed=task.completed)
+
+@app.get("/tasks", response_model=List[TaskModel])
+def list_tasks(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    user = db.query(UserORM).filter(UserORM.username == current_user.username).first()
+    if not user:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User not found")
+
+    tasks = (
+        db.query(TaskORM)
+        .filter(TaskORM.user_id == user.id)
+        .order_by(TaskORM.id.asc())
+        .all()
+    )
+    return [TaskModel(id=t.id, title=t.title, description=t.description, completed=t.completed) for t in tasks]
+
+@app.get("/tasks/{task_id}", response_model=TaskModel)
+def get_task(
+    task_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    user = db.query(UserORM).filter(UserORM.username == current_user.username).first()
+    if not user:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User not found")
+
+    task = db.query(TaskORM).filter(TaskORM.id == task_id, TaskORM.user_id == user.id).first()
+    if not task:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Task not found")
+
+    return TaskModel(id=task.id, title=task.title, description=task.description, completed=task.completed)
+
+@app.put("/tasks/{task_id}", response_model=TaskModel)
+def update_task(
+    task_id: int,
+    task_in: TaskUpdate,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    user = db.query(UserORM).filter(UserORM.username == current_user.username).first()
+    if not user:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User not found")
+
+    task = db.query(TaskORM).filter(TaskORM.id == task_id, TaskORM.user_id == user.id).first()
+    if not task:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Task not found")
+
+    task.title = task_in.title
+    task.description = task_in.description
+    task.completed = task_in.completed
+    db.commit()
+    db.refresh(task)
+
+    log_activity(current_user.username, "UPDATE", task.id)
+
+    return TaskModel(id=task.id, title=task.title, description=task.description, completed=task.completed)
 
 @app.delete("/tasks/{task_id}")
-def delete_task(task_id: int, current_user: User = Depends(get_current_user)):
-    for task in tasks:
-        if task.id == task_id:
-            tasks.remove(task)
-            return {"message": "Task deleted successfully"}
-    raise HTTPException(status_code=404, detail="Task not found")
+def delete_task(
+    task_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    user = db.query(UserORM).filter(UserORM.username == current_user.username).first()
+    if not user:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User not found")
+
+    task = db.query(TaskORM).filter(TaskORM.id == task_id, TaskORM.user_id == user.id).first()
+    if not task:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Task not found")
+
+    db.delete(task)
+    db.commit()
+
+    log_activity(current_user.username, "DELETE", task.id)
+    return {"detail": "Task deleted successfully"}
