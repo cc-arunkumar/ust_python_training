@@ -1,60 +1,40 @@
+# auth.py
 from jose import jwt, JWTError
-from fastapi import FastAPI, HTTPException, status, Depends
+from fastapi import HTTPException, status, Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from sqlalchemy.orm import Session
 from datetime import datetime, timedelta, timezone
-from typing import Optional
-from models import User
+from database import get_db
+from models import UserDB, User
 
-SECRECT_KEY = "abcdefg"   # Used to sign JWT tokens (keep this secret in real apps!)
-ALGORITHM = "HS256"       # Hashing algorithm for JWT
-ACCESS_TOKEN_EXPIRE_MINUTES = 30  # Token expiry time
-COUNT = 1
+SECRET_KEY = "UST-TaskTracker-Secret"
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
-# Demo credentials (entered at runtime)
-users = {
- "rahul": {
- "username": "rahul",
- "password": "password123"
- }
-}
+security = HTTPBearer()
 
-DEMO_USERNAME = users["rahul"]["username"]
-DEMO_PASSWORD = users["rahul"]["password"]
-
-def create_access_token(subject: str, expires_delta: Optional[timedelta] = None):
-    """
-    Create a JWT access token with subject (username) and expiry.
-    """
+def create_access_token(subject: str, expires_delta=None):
     to_encode = {"sub": subject}
-
-    # Set expiry time
-    if expires_delta:
-        expire = datetime.now(timezone.utc) + expires_delta
-    else:
-        expire = datetime.now(timezone.utc) + timedelta(minutes=15)
-
+    expire = datetime.now(timezone.utc) + (expires_delta or timedelta(minutes=30))
     to_encode.update({"exp": expire})
+    return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
-    # Encode JWT
-    encoded = jwt.encode(to_encode, SECRECT_KEY, algorithm=ALGORITHM)
-    return encoded
 
-# ------------------ Security Dependency ------------------
+def get_current_user(
+    credentials: HTTPAuthorizationCredentials = Depends(security),
+    db: Session = Depends(get_db)
+) -> User:
 
-security = HTTPBearer()  # Extracts Authorization header
-
-def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)) -> User:
-    """
-    Validate JWT token and return current user.
-    """
     token = credentials.credentials
     try:
-        payload = jwt.decode(token, SECRECT_KEY, algorithms=[ALGORITHM])
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
     except JWTError:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid or expired token")
+        raise HTTPException(401, "Invalid or expired token")
 
     username = payload.get("sub")
-    if username != DEMO_USERNAME:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User not found")
+    user = db.query(UserDB).filter(UserDB.username == username).first()
 
-    return User(username=username)
+    if not user:
+        raise HTTPException(401, "User not found")
+
+    return User(username=user.username)

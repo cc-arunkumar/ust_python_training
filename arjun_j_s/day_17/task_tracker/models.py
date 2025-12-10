@@ -1,32 +1,53 @@
-from pydantic import BaseModel,Field
-from typing import List
+# models.py
+from pydantic import BaseModel, Field
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey
+from sqlalchemy.orm import relationship
+from database import Base
 
-#Login 
+# ----- SQLAlchemy MODELS -----
+
+class UserDB(Base):
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True, index=True)
+    username = Column(String(255), unique=True)
+    password = Column(String(255))
+
+    tasks = relationship("TaskDB", back_populates="owner")
+
+
+class TaskDB(Base):
+    __tablename__ = "tasks"
+
+    id = Column(Integer, primary_key=True, index=True)
+    title = Column(String(255))
+    description = Column(String(255))
+    completed = Column(Boolean, default=False)
+    user_id = Column(Integer, ForeignKey("users.id"))
+
+    owner = relationship("UserDB", back_populates="tasks")
+
+
+# ----- Pydantic MODELS (UNCHANGED FROM PHASE 1) -----
+
 class LoginRequest(BaseModel):
     username: str
     password: str
 
-#Token
 class Token(BaseModel):
     access_token: str
     token_type: str
 
-#User
 class User(BaseModel):
     username: str
 
-#Task
 class Task(BaseModel):
-    id : int = Field(...,gt=0)
-    title : str = Field(...)
-    description : str = Field(...)
-    completed : bool = Field(default=False)
-
-task_list : List[Task] = []
+    id : int
+    title : str
+    description : str
+    completed : bool
 
 class CreateTask(BaseModel):
-    title : str = Field(...)
-    description : str = Field(...)
-    completed : bool = Field(default=False)
-
-
+    title: str
+    description: str
+    completed: bool = False

@@ -1,84 +1,129 @@
-from fastapi import FastAPI,HTTPException,status, Depends
-from models import Task,CreateTask,Token,LoginRequest,User,task_list
-from datetime import datetime, timedelta, timezone
-from typing import List
-from auth import DEMO_PASSWORD,DEMO_USERNAME,create_access_token,ACCESS_TOKEN_EXPIRE_MINUTES,get_current_user,COUNT
+# main.py
+from fastapi import FastAPI, HTTPException, Depends, status
+from sqlalchemy.orm import Session
+from models import Task, CreateTask, LoginRequest, Token, User, UserDB, TaskDB,Base
+from auth import create_access_token, get_current_user, ACCESS_TOKEN_EXPIRE_MINUTES
+from database import get_db,engine
+from mongodb_logger import log_action
+from datetime import timedelta
 
-
-
+Base.metadata.create_all(bind=engine)
 app = FastAPI(title="UST Task Tracker")
 
 
-
+# ------------------ LOGIN ------------------
 @app.post("/login", response_model=Token)
-def login(data: LoginRequest):
-    """
-    Login endpoint: validates credentials and returns JWT token.
-    """
-    if data.username != DEMO_USERNAME or data.password != DEMO_PASSWORD:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect username or password")
+def login(data: LoginRequest, db: Session = Depends(get_db)):
 
-    expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    token = create_access_token(subject=data.username, expires_delta=expires)
+    user = db.query(UserDB).filter(UserDB.username == data.username).first()
+
+    if not user or user.password != data.password:
+        raise HTTPException(401, "Invalid username or password")
+
+    token = create_access_token(
+        subject=user.username,
+        expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    )
 
     return Token(access_token=token, token_type="bearer")
 
 
-# @app.get("/me")
-# def read_me(current_user: User = Depends(get_current_user)):
-#     """
-#     Protected endpoint: requires valid JWT token.
-#     """
-#     return {
-#         "message": "This is a protected endpoint",
-#         "user": current_user
-#     }
+# ------------------ GET ALL TASKS ------------------
+@app.get("/task", response_model=list[Task])
+def get_all_tasks(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    user = db.query(UserDB).filter(UserDB.username == current_user.username).first()
+    tasks = db.query(TaskDB).filter(TaskDB.user_id == user.id).all()
+    return tasks
 
 
-@app.get("/task",response_model=List[Task])
-def get_all_task(current_user: User = Depends(get_current_user)):
-    return task_list
+# ------------------ GET TASK BY ID ------------------
+@app.get("/task/{task_id}", response_model=Task)
+def get_task_by_id(
+    task_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    user = db.query(UserDB).filter(UserDB.username == current_user.username).first()
 
-@app.get("/task/{id}",response_model=Task)
-def get_task_by_id(id:int,current_user: User = Depends(get_current_user)):
-    for data in task_list:
-        if(data.id==id):
-            return data
-    raise HTTPException(status_code=404,detail="Task Not Found")
+    task = db.query(TaskDB).filter(TaskDB.id == task_id, TaskDB.user_id == user.id).first()
 
-@app.post("/task",response_model=Task)
-def create_task(task:CreateTask,current_user: User = Depends(get_current_user)):
-    global COUNT
-    new_task = Task(
-        id=COUNT,
+    if not task:
+        raise HTTPException(404, "Task not found")
+
+    return task
+
+
+# ------------------ CREATE TASK ------------------
+@app.post("/task", response_model=Task)
+def create_task(
+    task: CreateTask,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+
+    user = db.query(UserDB).filter(UserDB.username == current_user.username).first()
+
+    new_task = TaskDB(
         title=task.title,
         description=task.description,
-        completed=task.completed
+        completed=task.completed,
+        user_id=user.id
     )
-    COUNT+=1
-    task_list.append(new_task)
+    db.add(new_task)
+    db.commit()
+    db.refresh(new_task)
+
+    log_action(user.username, "CREATE", new_task.id)
+
     return new_task
 
-@app.put("/task/{id}",response_model=Task)
-def update_task(id:int,task:CreateTask,current_user: User = Depends(get_current_user)):
-    for idx,data in enumerate(task_list):
-        if(data.id==id):
-            updated = Task(
-                id=id,
-                title=task.title,
-                description=task.description,
-                completed=task.completed
-            )
-            task_list[idx]=updated
-            return updated
-    raise HTTPException(status_code=404,detail="Task Not Found")
 
-@app.delete("/task/{id}")
-def delete_task(id:int,current_user: User = Depends(get_current_user)):
-    for idx,data in enumerate(task_list):
-        if(data.id == id):
-            task_list.pop(idx)
-            return {"message":"Task Deleted Successfully"}
-        
-    raise HTTPException(status_code=404,detail="Not Found")
+# ------------------ UPDATE TASK ------------------
+@app.put("/task/{task_id}", response_model=Task)
+def update_task(
+    task_id: int,
+    task: CreateTask,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    user = db.query(UserDB).filter(UserDB.username == current_user.username).first()
 
+    existing = db.query(TaskDB).filter(TaskDB.id == task_id, TaskDB.user_id == user.id).first()
+    if not existing:
+        raise HTTPException(404, "Task not found")
+
+    existing.title = task.title
+    existing.description = task.description
+    existing.completed = task.completed
+
+    db.commit()
+    db.refresh(existing)
+
+    log_action(user.username, "UPDATE", task_id)
+
+    return existing
+
+
+# ------------------ DELETE TASK ------------------
+@app.delete("/task/{task_id}")
+def delete_task(
+    task_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    user = db.query(UserDB).filter(UserDB.username == current_user.username).first()
+
+    existing = db.query(TaskDB).filter(TaskDB.id == task_id, TaskDB.user_id == user.id).first()
+
+    if not existing:
+        raise HTTPException(404, "Task not found")
+
+    db.delete(existing)
+    db.commit()
+
+    log_action(user.username, "DELETE", task_id)
+
+    return {"message": "Task Deleted Successfully"}
