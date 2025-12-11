@@ -1,180 +1,121 @@
-from datetime import datetime, timedelta, timezone
-from typing import Optional
-from fastapi import FastAPI, HTTPException, status, Depends
-from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
-from pydantic import BaseModel
-from jose import JWTError, jwt
-from model import CreateTask, TaskModel, tasks, id_list, UpdateTask, LoginRequest, User, Token
-from auth import ALGORITHM, SECRET_KEY, create_access_token, get_current_user, DEMO_PASSWORD, DEMO_USERNAME, ACCESS_TOKEN_EXPIRE_MINUTES
+from fastapi import FastAPI, HTTPException, Depends, status
+from sqlalchemy.orm import Session
+from models import Task, CreateTask, LoginRequest, Token, User, UserDB, TaskDB,Base
+from auth import create_access_token, get_current_user, ACCESS_TOKEN_EXPIRE_MINUTES
+from database import get_db,engine
+from day17.task1.audits_log import log_action
+from datetime import timedelta
 
-# Initialize FastAPI app
-app = FastAPI(title="UST Task Manager")
+Base.metadata.create_all(bind=engine)
+app = FastAPI(title="UST Task Tracker")
 
-next_id = 1  # Variable to keep track of the next task ID
 
-# Login endpoint to authenticate and return a JWT token
 @app.post("/login", response_model=Token)
-def login(data: LoginRequest):
-    # Check if the provided username and password match the demo credentials
-    if data.username != DEMO_USERNAME or data.password != DEMO_PASSWORD:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid Username or Password")
-    
-    # Generate the access token with expiration time
-    expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    token = create_access_token(subject=data.username, expires_delta=expires)
-    
-    # Return the JWT token
+def login(data: LoginRequest, db: Session = Depends(get_db)):
+
+    user = db.query(UserDB).filter(UserDB.username == data.username).first()
+
+    if not user or user.password != data.password:
+        raise HTTPException(401, "Invalid username or password")
+
+    token = create_access_token(
+        subject=user.username,
+        expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    )
+
     return Token(access_token=token, token_type="bearer")
 
+@app.get("/task", response_model=list[Task])
+def get_all_tasks(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    user = db.query(UserDB).filter(UserDB.username == current_user.username).first()
+    tasks = db.query(TaskDB).filter(TaskDB.user_id == user.id).all()
+    return tasks
 
-# Endpoint to add a new task (requires a valid JWT token)
-@app.post("/task")
-def add_task(task: CreateTask, current_user: User = Depends(get_current_user)):
-    global next_id
-    new_task = TaskModel(
-        id=next_id,
+ 
+@app.get("/task/{task_id}", response_model=Task)
+def get_task_by_id(
+    task_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    user = db.query(UserDB).filter(UserDB.username == current_user.username).first()
+
+    task = db.query(TaskDB).filter(TaskDB.id == task_id, TaskDB.user_id == user.id).first()
+
+    if not task:
+        raise HTTPException(404, "Task not found")
+
+    return task
+
+
+@app.post("/task", response_model=Task)
+def create_task(
+    task: CreateTask,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+
+    user = db.query(UserDB).filter(UserDB.username == current_user.username).first()
+
+    new_task = TaskDB(
         title=task.title,
-        description=task.description
+        description=task.description,
+        completed=task.completed,
+        user_id=user.id
     )
-    tasks.append(new_task)  # Append new task to the list of tasks
-    id_list.append(next_id)  # Add task ID to the ID list
-    next_id += 1  # Increment the task ID for the next task
+    db.add(new_task)
+    db.commit()
+    db.refresh(new_task)
+
+    log_action(user.username, "CREATE", new_task.id)
+
     return new_task
 
 
-# Get all tasks (requires a valid JWT token)
-@app.get("/task")
-def get_all_tasks(current_user: User = Depends(get_current_user)):
-    return tasks  # Return the list of all tasks
+@app.put("/task/{task_id}", response_model=Task)
+def update_task(
+    task_id: int,
+    task: CreateTask,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    user = db.query(UserDB).filter(UserDB.username == current_user.username).first()
+
+    existing = db.query(TaskDB).filter(TaskDB.id == task_id, TaskDB.user_id == user.id).first()
+    if not existing:
+        raise HTTPException(404, "Task not found")
+
+    existing.title = task.title
+    existing.description = task.description
+    existing.completed = task.completed
+
+    db.commit()
+    db.refresh(existing)
+
+    log_action(user.username, "UPDATE", task_id)
+
+    return existing
 
 
-# Get a task by its ID (requires a valid JWT token)
-@app.get("/task/{id}")
-def get_task_by_id(id: int, current_user: User = Depends(get_current_user)):
-    if id not in id_list:
-        raise HTTPException(status_code=404, detail="Task doesn't exist!")  # Task not found
-    for data in tasks:
-        if data.id == id:
-            return data  # Return the task if found
+@app.delete("/task/{task_id}")
+def delete_task(
+    task_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    user = db.query(UserDB).filter(UserDB.username == current_user.username).first()
 
+    existing = db.query(TaskDB).filter(TaskDB.id == task_id, TaskDB.user_id == user.id).first()
 
-# Update a task by its ID (requires a valid JWT token)
-@app.put("/task/{id}")
-def update_task(id: int, task: UpdateTask, current_user: User = Depends(get_current_user)):
-    if id not in id_list:
-        raise HTTPException(status_code=404, detail="Task doesn't exist!")  # Task not found
-    for i in range(len(tasks)):
-        if tasks[i].id == id:
-            updated_task = TaskModel(id=id,
-                                     title=task.title,
-                                     description=task.description,
-                                     completed=task.completed)
-            tasks[i] = updated_task  # Update the task
-            return updated_task  # Return the updated task
+    if not existing:
+        raise HTTPException(404, "Task not found")
 
+    db.delete(existing)
+    db.commit()
 
-# Delete a task by its ID (requires a valid JWT token)
-@app.delete("/task/{id}")
-def delete_profile(id: int, current_user: User = Depends(get_current_user)):
-    if id not in id_list:
-        raise HTTPException(status_code=404, detail="Task Not Found")  # Task not found
-    for i in range(len(tasks)):
-        if tasks[i].id == id:
-            removed = tasks.pop(i)  # Remove the task from the list
-            id_list.remove(id)  # Remove the ID from the ID list
-            return removed  # Return the removed task
+    log_action(user.username, "DELETE", task_id)
 
-
-# Sample Output
-
-"""
-Sample Output for /login (POST):
-Input:
-{
-    "username": "demo_user",
-    "password": "demo_password"
-}
-Output:
-{
-    "access_token": "some_jwt_token",
-    "token_type": "bearer"
-}
-
-Sample Output for /task (POST):
-Input:
-{
-    "title": "Task 1",
-    "description": "Description of Task 1"
-}
-Output:
-{
-    "id": 1,
-    "title": "Task 1",
-    "description": "Description of Task 1",
-    "completed": false
-}
-
-Sample Output for /task (GET):
-Input:
-Authorization: Bearer <some_jwt_token>
-Output:
-[
-    {
-        "id": 1,
-        "title": "Task 1",
-        "description": "Description of Task 1",
-        "completed": false
-    },
-    {
-        "id": 2,
-        "title": "Task 2",
-        "description": "Description of Task 2",
-        "completed": false
-    }
-]
-
-Sample Output for /task/{id} (GET):
-Input:
-Authorization: Bearer <some_jwt_token>
-Output:
-{
-    "id": 1,
-    "title": "Task 1",
-    "description": "Description of Task 1",
-    "completed": false
-}
-
-Sample Output for /task/{id} (GET) with invalid ID:
-Input:
-Authorization: Bearer <some_jwt_token>
-Output:
-{
-    "detail": "Task doesn't exist!"
-}
-
-Sample Output for /task/{id} (PUT):
-Input:
-{
-    "title": "Updated Task 1",
-    "description": "Updated Description of Task 1",
-    "completed": true
-}
-Output:
-{
-    "id": 1,
-    "title": "Updated Task 1",
-    "description": "Updated Description of Task 1",
-    "completed": true
-}
-
-Sample Output for /task/{id} (DELETE):
-Input:
-Authorization: Bearer <some_jwt_token>
-Output:
-{
-    "id": 1,
-    "title": "Task 1",
-    "description": "Description of Task 1",
-    "completed": false
-}
-"""
+    return {"message": "Task Deleted Successfully"}

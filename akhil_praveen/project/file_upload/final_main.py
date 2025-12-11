@@ -329,9 +329,9 @@ async def auto_rr_job():
     except Exception as e:
         logger.error(f"Auto RR job failed for {latest}: {e}")
 
-scheduler = AsyncIOScheduler()
-scheduler.add_job(auto_rr_job, "cron", minute="*", id="rr_watcher")
-scheduler.start()
+# scheduler = AsyncIOScheduler()
+# scheduler.add_job(auto_rr_job, "cron", minute="*", id="rr_watcher")
+# scheduler.start()
 
 # -------------------------------------------------------------------
 # Health check
