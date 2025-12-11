@@ -1,68 +1,121 @@
-from mysql_service import MySQLService
-from mongo_service import MongoService
+from fastapi import FastAPI, HTTPException, Depends, status
+from sqlalchemy.orm import Session
+from models import Task, CreateTask, LoginRequest, Token, User, UserDB, TaskDB,Base
+from auth import create_access_token, get_current_user, ACCESS_TOKEN_EXPIRE_MINUTES
+from database import get_db,engine
+from day17.task1.audits_log import log_action
+from datetime import timedelta
+
+Base.metadata.create_all(bind=engine)
+app = FastAPI(title="UST Task Tracker")
+
+
+@app.post("/login", response_model=Token)
+def login(data: LoginRequest, db: Session = Depends(get_db)):
+
+    user = db.query(UserDB).filter(UserDB.username == data.username).first()
+
+    if not user or user.password != data.password:
+        raise HTTPException(401, "Invalid username or password")
+
+    token = create_access_token(
+        subject=user.username,
+        expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    )
+
+    return Token(access_token=token, token_type="bearer")
+
+@app.get("/task", response_model=list[Task])
+def get_all_tasks(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    user = db.query(UserDB).filter(UserDB.username == current_user.username).first()
+    tasks = db.query(TaskDB).filter(TaskDB.user_id == user.id).all()
+    return tasks
+
  
- 
-mysql = MySQLService()
-mysql.create_table()
-mysql.load_json_to_mysql("employees.json")
-employees = mysql.read_employees()
- 
-# Transform Data -----------------
-modified = []
-for emp in employees:
-    emp['category'] = "Fresher" if emp['age'] < 25 else "Experienced"
-    modified.append(emp)
- 
-print("\nModified Employees:", modified)
- 
-mongo = MongoService()
-mongo.clear_collection()
-mongo.insert_many(modified)
- 
-mongo.insert_one({
-    "emp_id": 999,
-    "name": "New Employee",
-    "department": "AI",
-    "age": 24,
-    "city": "Kochi",
-    "category": "Fresher"
-})
- 
-mongo.read_all()
- 
-mongo.update_one(201, {"city": "UpdatedCity", "department": "UpdatedDept"})
-mongo.delete_one(203)
-mongo.delete_many("Testing")
- 
-mongo.read_all()
- 
-#Output
-# Connection Established with Mysql
-# MySQL Table Created (if not exists).
-# JSON Data Inserted Into MySQL Successfully.
-# Data Read From MySQL: [{'emp_id': 201, 'name': 'Anu Joseph', 'department': 'AI', 'age': 23, 'city': 'Trivandrum'}, {'emp_id': 202, 'name': 'Rahul Menon', 'department': 'Cloud', 'age': 26, 'city': 'Kochi'}, {'emp_id': 203, 'name': 'Sahana R', 'department': 'Testing', 'age': 22, 'city': 'Chennai'}, {'emp_id': 204, 'name': 'Vishnu Prakash', 'department': 'Cybersecurity', 'age': 29, 'city': 'Trivandrum'}, {'emp_id': 205, 'name': 'Maya Kumar', 'department': 'AI', 'age': 25, 'city': 'Bangalore'}]
- 
-# Modified Employees: [{'emp_id': 201, 'name': 'Anu Joseph', 'department': 'AI', 'age': 23, 'city': 'Trivandrum', 'category': 'Fresher'}, {'emp_id': 202, 'name': 'Rahul Menon', 'department': 'Cloud', 'age': 26, 'city': 'Kochi',
-# 'category': 'Experienced'}, {'emp_id': 203, 'name': 'Sahana R', 'department': 'Testing', 'age': 22, 'city': 'Chennai', 'category': 'Fresher'}, {'emp_id': 204, 'name': 'Vishnu Prakash', 'department': 'Cybersecurity', 'age': 29, 'city': 'Trivandrum', 'category': 'Experienced'}, {'emp_id': 205, 'name': 'Maya Kumar', 'department': 'AI', 'age': 25, 'city': 'Bangalore', 'category': 'Experienced'}]
-# Connection Established with Mongo
-# MongoDB Collection Cleared.
-# Inserted Modified Employees Into MongoDB.
-# One Employee Inserted.
-# All Employees From MongoDB:
-# {'_id': ObjectId('6938f476969cd5370cca5db4'), 'emp_id': 201, 'name': 'Anu Joseph', 'department': 'AI', 'age': 23, 'city': 'Trivandrum', 'category': 'Fresher'}
-# {'_id': ObjectId('6938f476969cd5370cca5db5'), 'emp_id': 202, 'name': 'Rahul Menon', 'department': 'Cloud', 'age': 26, 'city': 'Kochi', 'category': 'Experienced'}
-# {'_id': ObjectId('6938f476969cd5370cca5db6'), 'emp_id': 203, 'name': 'Sahana R', 'department': 'Testing', 'age':
-# 22, 'city': 'Chennai', 'category': 'Fresher'}
-# {'_id': ObjectId('6938f476969cd5370cca5db7'), 'emp_id': 204, 'name': 'Vishnu Prakash', 'department': 'Cybersecurity', 'age': 29, 'city': 'Trivandrum', 'category': 'Experienced'}
-# {'_id': ObjectId('6938f476969cd5370cca5db8'), 'emp_id': 205, 'name': 'Maya Kumar', 'department': 'AI', 'age': 25, 'city': 'Bangalore', 'category': 'Experienced'}
-# {'_id': ObjectId('6938f476969cd5370cca5db9'), 'emp_id': 999, 'name': 'New Employee', 'department': 'AI', 'age': 24, 'city': 'Kochi', 'category': 'Fresher'}
-# Employee Updated.
-# One Employee Deleted.
-# Employees From Department Deleted: Testing
-# All Employees From MongoDB:
-# {'_id': ObjectId('6938f476969cd5370cca5db4'), 'emp_id': 201, 'name': 'Anu Joseph', 'department': 'UpdatedDept', 'age': 23, 'city': 'UpdatedCity', 'category': 'Fresher'}
-# {'_id': ObjectId('6938f476969cd5370cca5db5'), 'emp_id': 202, 'name': 'Rahul Menon', 'department': 'Cloud', 'age': 26, 'city': 'Kochi', 'category': 'Experienced'}
-# {'_id': ObjectId('6938f476969cd5370cca5db7'), 'emp_id': 204, 'name': 'Vishnu Prakash', 'department': 'Cybersecurity', 'age': 29, 'city': 'Trivandrum', 'category': 'Experienced'}
-# {'_id': ObjectId('6938f476969cd5370cca5db8'), 'emp_id': 205, 'name': 'Maya Kumar', 'department': 'AI', 'age': 25, 'city': 'Bangalore', 'category': 'Experienced'}
-# {'_id': ObjectId('6938f476969cd5370cca5db9'), 'emp_id': 999, 'name': 'New Employee', 'department': 'AI', 'age': 24, 'city': 'Kochi', 'category': 'Fresher'}
- 
+@app.get("/task/{task_id}", response_model=Task)
+def get_task_by_id(
+    task_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    user = db.query(UserDB).filter(UserDB.username == current_user.username).first()
+
+    task = db.query(TaskDB).filter(TaskDB.id == task_id, TaskDB.user_id == user.id).first()
+
+    if not task:
+        raise HTTPException(404, "Task not found")
+
+    return task
+
+
+@app.post("/task", response_model=Task)
+def create_task(
+    task: CreateTask,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+
+    user = db.query(UserDB).filter(UserDB.username == current_user.username).first()
+
+    new_task = TaskDB(
+        title=task.title,
+        description=task.description,
+        completed=task.completed,
+        user_id=user.id
+    )
+    db.add(new_task)
+    db.commit()
+    db.refresh(new_task)
+
+    log_action(user.username, "CREATE", new_task.id)
+
+    return new_task
+
+
+@app.put("/task/{task_id}", response_model=Task)
+def update_task(
+    task_id: int,
+    task: CreateTask,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    user = db.query(UserDB).filter(UserDB.username == current_user.username).first()
+
+    existing = db.query(TaskDB).filter(TaskDB.id == task_id, TaskDB.user_id == user.id).first()
+    if not existing:
+        raise HTTPException(404, "Task not found")
+
+    existing.title = task.title
+    existing.description = task.description
+    existing.completed = task.completed
+
+    db.commit()
+    db.refresh(existing)
+
+    log_action(user.username, "UPDATE", task_id)
+
+    return existing
+
+
+@app.delete("/task/{task_id}")
+def delete_task(
+    task_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    user = db.query(UserDB).filter(UserDB.username == current_user.username).first()
+
+    existing = db.query(TaskDB).filter(TaskDB.id == task_id, TaskDB.user_id == user.id).first()
+
+    if not existing:
+        raise HTTPException(404, "Task not found")
+
+    db.delete(existing)
+    db.commit()
+
+    log_action(user.username, "DELETE", task_id)
+
+    return {"message": "Task Deleted Successfully"}
