@@ -16,12 +16,13 @@ class Token(BaseModel):
 class User(BaseModel):
     username: str
 
-class Taskmodel(BaseModel):
-    id:int
+class Taskmodelcreate(BaseModel):
+    title:str
+    description:str
+   
+    
+class TaskModel(BaseModel):
     title:str
     description:str
     completed:Optional[bool]=False
-class Tasks(BaseModel):
-    title:str
-    description:str
-    completed:Optional[bool]=False
+    
