@@ -1,4 +1,4 @@
-# mongodb_logger.py
+
 from pymongo import MongoClient
 from datetime import datetime
 
