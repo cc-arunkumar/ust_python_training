@@ -1,116 +1,121 @@
-from fastapi import FastAPI, HTTPException, Depends
+# main.py
+from fastapi import FastAPI, HTTPException, Depends, status
+from sqlalchemy.orm import Session
+from models import Task, CreateTask, LoginRequest, Token, User, UserDB, TaskDB,Base
+from auth import create_access_token, get_current_user, ACCESS_TOKEN_EXPIRE_MINUTES
+from database import get_db,engine
+from mongodb_logger import log_action
 from datetime import timedelta
-from typing import List
 
-from raswanthi.day17.ust_task_manager.ust_taskmanager.models import LoginRequest, TokenResponse, Task, CreateTask, UpdateTask
-from raswanthi.day17.ust_task_manager.auth import create_access_token, get_current_user, ACCESS_TOKEN_EXPIRE_MINUTES, users
-from raswanthi.day17.ust_task_manager.ust_taskmanager.utils import next_id
-
-# Initialize FastAPI app
-app = FastAPI(title="UST Task Manager")
-
-# In-memory storage for tasks
-tasks: List[Task] = []
-current_id: int = 0   # Tracks the latest task ID
+Base.metadata.create_all(bind=engine)
+app = FastAPI(title="UST Task Tracker")
 
 
-# Authentication Endpoints
+@app.post("/login", response_model=Token)
+def login(data: LoginRequest, db: Session = Depends(get_db)):
 
-@app.post("/login", response_model=TokenResponse)
-def login(credentials: LoginRequest):
-    """
-    Login endpoint:
-    - Validates username and password against hardcoded users.
-    - Returns a JWT token if credentials are correct.
-    """
-    user = users.get(credentials.username)
-    if not user or user["password"] != credentials.password:
-        raise HTTPException(status_code=401, detail="Invalid username or password")
+    user = db.query(UserDB).filter(UserDB.username == data.username).first()
 
-    # Create JWT token with expiration
-    expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    token = create_access_token(subject=credentials.username, expires_delta=expires)
-    return TokenResponse(access_token=token)
+    if not user or user.password != data.password:
+        raise HTTPException(401, "Invalid username or password")
 
-
-
-# Task CRUD Endpoints
-
-@app.post("/tasks", response_model=Task)
-def create_task(task: CreateTask, current_user=Depends(get_current_user)):
-    """
-    Create a new task:
-    - Requires valid JWT authentication.
-    - Auto-increments task ID.
-    - Stores task in memory.
-    """
-    global current_id, tasks
-    current_id = next_id(current_id)
-    new_task = Task(
-        id=current_id,
-        title=task.title,
-        description=task.description,
-        completed=False
+    token = create_access_token(
+        subject=user.username,
+        expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     )
-    tasks.append(new_task)
-    return new_task
+
+    return Token(access_token=token, token_type="bearer")
 
 
-@app.get("/tasks", response_model=List[Task])
-def get_all_tasks(current_user=Depends(get_current_user)):
-    """
-    Get all tasks:
-    - Requires valid JWT authentication.
-    - Returns the full list of tasks.
-    """
+@app.get("/task", response_model=list[Task])
+def get_all_tasks(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    user = db.query(UserDB).filter(UserDB.username == current_user.username).first()
+    tasks = db.query(TaskDB).filter(TaskDB.user_id == user.id).all()
     return tasks
 
 
-@app.get("/tasks/{task_id}", response_model=Task)
-def get_task(task_id: int, current_user=Depends(get_current_user)):
-    """
-    Get a single task by ID:
-    - Requires valid JWT authentication.
-    - Returns the task if found, else raises 404.
-    """
-    task = next((t for t in tasks if t.id == task_id), None)
-    if task is None:
-        raise HTTPException(status_code=404, detail="Task not found")
+@app.get("/task/{task_id}", response_model=Task)
+def get_task_by_id(
+    task_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    user = db.query(UserDB).filter(UserDB.username == current_user.username).first()
+
+    task = db.query(TaskDB).filter(TaskDB.id == task_id, TaskDB.user_id == user.id).first()
+
+    if not task:
+        raise HTTPException(404, "Task not found")
+
     return task
 
+@app.post("/task", response_model=Task)
+def create_task(
+    task: CreateTask,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
 
-@app.put("/tasks/{task_id}", response_model=Task)
-def update_task(task_id: int, update: UpdateTask, current_user=Depends(get_current_user)):
-    """
-    Update an existing task:
-    - Requires valid JWT authentication.
-    - Finds task by ID and updates its fields.
-    - Returns updated task or raises 404 if not found.
-    """
-    for idx, t in enumerate(tasks):
-        if t.id == task_id:
-            updated = Task(
-                id=t.id,
-                title=update.title,
-                description=update.description,
-                completed=update.completed
-            )
-            tasks[idx] = updated
-            return updated
-    raise HTTPException(status_code=404, detail="Task not found")
+    user = db.query(UserDB).filter(UserDB.username == current_user.username).first()
+
+    new_task = TaskDB(
+        title=task.title,
+        description=task.description,
+        completed=task.completed,
+        user_id=user.id
+    )
+    db.add(new_task)
+    db.commit()
+    db.refresh(new_task)
+
+    log_action(user.username, "CREATE", new_task.id)
+
+    return new_task
 
 
-@app.delete("/tasks/{task_id}")
-def delete_task(task_id: int, current_user=Depends(get_current_user)):
-    """
-    Delete a task by ID:
-    - Requires valid JWT authentication.
-    - Removes task from memory if found.
-    - Returns success message or raises 404 if not found.
-    """
-    global tasks
-    for idx, t in enumerate(tasks):
-        if t.id == task_id:
-            tasks.pop(idx)
-            return {"message": "Task deleted successfully"}
-    raise HTTPException(status_code=404, detail="Task not found")
+@app.put("/task/{task_id}", response_model=Task)
+def update_task(
+    task_id: int,
+    task: CreateTask,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    user = db.query(UserDB).filter(UserDB.username == current_user.username).first()
+
+    existing = db.query(TaskDB).filter(TaskDB.id == task_id, TaskDB.user_id == user.id).first()
+    if not existing:
+        raise HTTPException(404, "Task not found")
+
+    existing.title = task.title
+    existing.description = task.description
+    existing.completed = task.completed
+
+    db.commit()
+    db.refresh(existing)
+
+    log_action(user.username, "UPDATE", task_id)
+
+    return existing
+
+@app.delete("/task/{task_id}")
+def delete_task(
+    task_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    user = db.query(UserDB).filter(UserDB.username == current_user.username).first()
+
+    existing = db.query(TaskDB).filter(TaskDB.id == task_id, TaskDB.user_id == user.id).first()
+
+    if not existing:
+        raise HTTPException(404, "Task not found")
+
+    db.delete(existing)
+    db.commit()
+
+    log_action(user.username, "DELETE", task_id)
+
+    return {"message": "Task Deleted Successfully"}
