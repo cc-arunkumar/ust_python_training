@@ -8,7 +8,7 @@ print("DB connected successfully!")
 # Documents to insert
 students = [
     {
-        "name": "Sovan",
+        "name": "Pihoo",
         "age": 25,
         "skills": ["Java", "React"]
     },
