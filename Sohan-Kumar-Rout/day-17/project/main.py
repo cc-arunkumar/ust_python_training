@@ -4,21 +4,25 @@ from typing import List, Optional
 from fastapi import FastAPI, HTTPException, status, Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from jose import jwt, JWTError
-from models import Task,TaskCreate,TaskUpdate,UserLogin,Token
+from models import Task,TaskCreate,TaskUpdate,UserLogin,Token,User, Tasks as TaskModel
 from auth import create_access_token,get_current_user,DEMO_USERNAME,DEMO_PASSWORD
-
+from database import Base,engine,get_db
+from sqlalchemy.orm import Session
 
 app = FastAPI(title="UST Task Manager")
 
+#connection logic we have to declare this inorder to connect it to the database
 
-# In-memory storage
+Base.metadata.create_all(bind=engine) 
+
+# # In-memory storage
 tasks: List[dict] = []
 next_task_id = 1
 
 
 # Login (no JWT required)
 @app.post("/login", response_model=Token)
-def login(data: UserLogin):
+def login(data: UserLogin, db:Session = Depends(get_db)):
     if data.username != DEMO_USERNAME or data.password != DEMO_PASSWORD:
         raise HTTPException(status_code=401, detail="Invalid username or password")
     token = create_access_token(username=data.username)
