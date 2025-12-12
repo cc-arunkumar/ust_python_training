@@ -1,0 +1,292 @@
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+}
+a:hover {
+  color: #535bf2;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+button:hover {
+  border-color: #646cff;
+}
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+  a:hover {
+    color: #747bff;
+  }
+  button {
+    background-color: #f9f9f9;
+  }
+}
+
+/* 
+
+body {
+  background-color: #9fcbf7; 
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px; 
+  justify-content: center; 
+  padding: 20px;
+}
+
+
+.card {
+  padding: 20px;
+  margin: 20px;
+  border-radius: 15px;
+  display: inline-block;
+  max-width: 400px;
+  height: 350px;
+  color: #fff; 
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(45deg, #ff4081, #ff3d00); 
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); 
+  transition: transform 0.3s ease, box-shadow 0.3s ease, filter 0.3s ease, color 0.3s ease;
+}
+
+.card:hover h2, .card:hover p {
+  color: #000; 
+  font-weight: bold; 
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% -200%;
+  }
+  100% {
+    background-position: 200% 200%;
+  }
+}
+
+@keyframes sparkle {
+  0% {
+    box-shadow: 0 0 15px 2px rgba(255, 255, 255, 0.5), 0 0 25px rgba(255, 255, 255, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 30px 5px rgba(255, 255, 255, 0.7), 0 0 50px rgba(255, 255, 255, 0.5);
+  }
+  100% {
+    box-shadow: 0 0 15px 2px rgba(255, 255, 255, 0.5), 0 0 25px rgba(255, 255, 255, 0.3);
+  }
+}
+
+
+.card:nth-child(1) {
+  background: linear-gradient(45deg, #00c6ff, #0072ff);
+}
+
+.card:nth-child(2) {
+  background: linear-gradient(45deg, #ff4e50, #f9d423); 
+}
+
+.card:nth-child(3) {
+  background: linear-gradient(45deg, #56ccf2, #6e7dff); 
+}
+
+.card:nth-child(4) {
+  background: linear-gradient(45deg, #ff6a00, #ee0979); 
+}
+
+.card:nth-child(5) {
+  background: linear-gradient(45deg, #8e44ad, #e91e63); 
+}
+
+.card:nth-child(6) {
+  background: linear-gradient(45deg, #00b894, #0984e3); 
+}
+
+.card:nth-child(7) {
+  background: linear-gradient(45deg, #1abc9c, #16a085); 
+}
+
+.card:nth-child(8) {
+  background: linear-gradient(45deg, #f39c12, #f1c40f); 
+}
+
+
+.card:hover {
+  transform: scale(1.05); 
+  box-shadow: 0 0 40px 10px rgba(255, 255, 255, 0.6), 0 0 60px rgba(255, 255, 255, 0.5); 
+  filter: brightness(1.2); 
+  animation: none; 
+}
+
+
+.card h2 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+  font-weight: normal;
+  transition: color 0.3s ease, font-weight 0.3s ease;
+}
+
+.card p {
+  font-size: 1rem;
+  line-height: 1.5;
+  transition: color 0.3s ease, font-weight 0.3s ease;
+}
+
+@media (max-width: 768px) {
+  .card {
+    max-width: 90%;
+    height: auto;
+  }
+  .container {
+    justify-content: space-around;
+  }
+}
+ */
+
+
+/* Global styles */
+body {
+  background-color: #9fcbf7; /* Light, clean background */
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+/* Container for cards */
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px; /* Space between cards */
+  justify-content: center; /* Centering the cards */
+  padding: 20px;
+}
+
+/* Card Styling */
+.card {
+  padding: 20px;
+  margin: 20px;
+  border-radius: 15px;
+  display: inline-block;
+  max-width: 400px;
+  height: 350px;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(45deg, #ff4081, #ff3d00); /* Bold vibrant pink to orange gradient */
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); /* Slight shadow for depth */
+  transition: transform 0.3s ease, box-shadow 0.3s ease, filter 0.3s ease, color 0.3s ease;
+  cursor: pointer; /* Make the card clickable */
+}
+
+/* Hover Effects */
+.card:hover {
+  transform: scale(1.05); /* Slightly enlarge the card */
+  box-shadow: 0 0 40px 10px rgba(255, 255, 255, 0.6); /* Glowing shadow */
+  filter: brightness(1.2); /* Increase brightness on hover */
+}
+
+/* Text Styling on hover */
+.card:hover h2, .card:hover p {
+  color: #000; /* Text becomes black on hover */
+  font-weight: bold; /* Make text bold */
+}
+
+/* Click celebration effect */
+.card.clicked::after {
+  content: "🎉🎉🎉"; /* Small confetti */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 3rem;
+  animation: confettiClick 1s ease-out;
+}
+
+@keyframes confettiClick {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.2);
+    opacity: 0.6;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.5);
+    opacity: 0;
+  }
+}
+
+/* Text Styling */
+.card h2 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+  font-weight: normal;
+  transition: color 0.3s ease, font-weight 0.3s ease;
+}
+
+.card p {
+  font-size: 1rem;
+  line-height: 1.5;
+  transition: color 0.3s ease, font-weight 0.3s ease;
+}
+
+/* Responsive Design for Smaller Screens */
+@media (max-width: 768px) {
+  .card {
+    max-width: 90%;
+    height: auto;
+  }
+  .container {
+    justify-content: space-around;
+  }
+}
