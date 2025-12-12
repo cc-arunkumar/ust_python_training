@@ -1,0 +1,127 @@
+.main_div {
+  display: inline-block;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+}
+
+/* Card container */
+.greet-card {
+  max-width: 24rem; /* md:max-w-sm */
+  width: 75%;
+  padding: 1rem; /* p-6 */
+  border-radius: 1rem; /* rounded-xl */
+  background-color: #000; /* bg-black */
+  border: 1px solid #3f3f46; /* border-zinc-800 */
+  box-shadow: 0 8px 20px rgba(0,0,0,0.4); /* shadow-xl */
+  transition: all 0.3s ease;
+}
+
+.greet-card:hover {
+  border-color: #fff; /* hover:border-white */
+  transform: scale(1.05); /* hover:scale-105 */
+}
+
+/* Image wrapper */
+.greet-card .image-wrapper {
+  position: relative;
+  overflow: hidden;
+  border-radius: 0.75rem; /* rounded-lg */
+  margin-bottom: 1.5rem;
+  
+}
+
+.greet-card img {
+  object-fit: cover;
+  object-position: center;
+  width: 100%;
+  height: 50%; /* h-48 */
+  transition: transform 0.3s ease;
+}
+
+.greet-card:hover img {
+  transform: scale(1.1); /* group-hover:scale-110 */
+}
+
+/* Gradient overlay */
+.greet-card .overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.6), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.greet-card:hover .overlay {
+  opacity: 1;
+}
+
+/* Featured badge */
+.greet-card .badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  background: #fff;
+  color: #000;
+  border-radius: 9999px;
+  margin-bottom: 0.75rem;
+}
+
+/* Title */
+.greet-card h2 {
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #fff;
+  margin-bottom: 0.5rem;
+  transition: color 0.2s ease;
+}
+
+.greet-card:hover h2 {
+  color: #d1d5db; /* group-hover:text-gray-300 */
+}
+
+/* Description */
+.greet-card p {
+  color: #9ca3af; /* text-gray-400 */
+  font-size: 0.875rem;
+  line-height: 1.5;
+  margin-bottom: 1.5rem;
+}
+
+/* Footer */
+.greet-card .footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Button */
+.greet-card button {
+  padding: 0.5rem 1rem;
+  background: #fff;
+  color: #000;
+  font-size: 0.875rem;
+  border-radius: 0.5rem;
+  transition: background 0.2s ease;
+  cursor: pointer;
+}
+
+.greet-card button:hover {
+  background: #e5e7eb; /* hover:bg-gray-200 */
+}
+
+/* Views section */
+.greet-card .views {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.75rem;
+  color: #6b7280; /* text-gray-500 */
+}
+
+.greet-card .views svg {
+  width: 1rem;
+  height: 1rem;
+}

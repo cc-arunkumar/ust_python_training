@@ -1,0 +1,41 @@
+.employee-card {
+    display: inline-block;
+  background-color:aquamarine;   /* light background */
+  border: 1px solid #ddd;      /* subtle border */
+  padding: 1rem;               /* spacing inside */
+  border-radius: 12px;         /* rounded corners */
+  max-width: 300px;
+  margin: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* clean shadow */
+  transition: transform 0.2s ease;
+  text-align: center;
+}
+
+.employee-card:hover {
+  transform: translateY(-4px);
+}
+
+.employee-name {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.employee-id,
+.employee-role,
+.employee-location {
+  font-size: 0.95rem;
+  margin: 0.25rem 0;
+  color: #333;
+}
+.heading,.Emp,.Project{
+    text-align: center;
+}
+.image {
+  width: 200px;              /* make image fill the card width */
+  height: 200px;            /* fixed height for consistency */
+  object-fit: cover;        /* crop/scale nicely without distortion */
+  border-radius: 12px;      /* rounded corners */
+  display: block;           /* remove inline spacing */
+  margin-bottom: 1rem;      /* spacing below image */
+}
