@@ -1,0 +1,42 @@
+/* General style for the body */
+body {
+  display: flex;
+  justify-content: center;  /* Center horizontally */
+  align-items: center;      /* Center vertically */
+  height: 100vh;            /* Full viewport height */
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f5f5f5;
+}
+
+/* Main container to center the content */
+div {
+  text-align: center;       /* Center text inside */
+  padding: 20px;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  background-color: #fff;
+  width: 250px;             /* Set a fixed width */
+  display: flex;
+  flex-direction: column;   /* Stack items vertically */
+  justify-content: center;  /* Ensure buttons stay in the middle */
+  align-items: center;      /* Ensure content is centered horizontally */
+}
+
+/* Button styling */
+button {
+  margin: 10px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  border: 2px solid #007bff;
+  border-radius: 5px;
+  background-color: #007bff;
+  color: white;
+  transition: background-color 0.3s ease;
+}
+
+/* Button hover effect */
+button:hover {
+  background-color: #0056b3;
+}

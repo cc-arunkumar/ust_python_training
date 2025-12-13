@@ -1,0 +1,108 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+
+}
+
+.read-the-docs {
+  color: #888;
+}
+
+.card-container {
+  display: flex;
+  justify-content: center;     /* Centers the cards */
+  gap: 16px;                   /* Small space between cards */
+  padding: 20px 10px;
+  overflow: hidden;            /* No scrollbar */
+}
+
+.red {
+  background-color: lightgrey;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 16px;
+  width: 240px;                /* Smaller width */
+  min-width: 240px;
+  height: 160px;               /* Fixed smaller height */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  font-family: Arial, sans-serif;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+}
+
+.red:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
+  border-color: #007bff;
+}
+
+.red h3 {
+  margin: 0 0 10px 0;
+  color: #222;
+  font-size: 1.25em;
+  font-weight: bold;
+}
+
+.red p {
+  margin: 6px 0;
+  color: #444;
+  font-size: 0.95em;
+  line-height: 1.4;
+}
+
+.red p strong {
+  color: #007bff;
+  font-weight: 600;
+}
+
+/* Optional: Make page look clean */
+body {
+  margin: 0;
+  background-color: #f8f9fa;
+}
+
+h1 {
+  text-align: center;
+  color: #333;
+  margin: 30px 0;
+  font-family: Arial, sans-serif;
+}
+
