@@ -1,0 +1,31 @@
+import { useState } from "react";
+
+export default function CheckboxList() {
+  const items = ["Item 1", "Item 2", "Item 3", "Item 4", "Item 5"];
+  const [checked, setChecked] = useState([]);
+
+  const toggleCheck = (item) => {
+    setChecked(
+      checked.includes(item)
+        ? checked.filter(i => i !== item)
+        : [...checked, item]
+    );
+  };
+
+  return (
+    <div >
+      <h3>Checkbox List</h3>
+      {items.map(item => (
+        <div key={item}>
+          <input
+            type="checkbox"
+            checked={checked.includes(item)}
+            onChange={() => toggleCheck(item)}
+          />
+          {item}
+        </div>
+      ))}
+      <p>Checked count: {checked.length}</p>
+    </div>
+  );
+}

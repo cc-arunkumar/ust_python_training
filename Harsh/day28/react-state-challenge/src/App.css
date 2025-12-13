@@ -1,0 +1,160 @@
+/* Global container */
+.app-container {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  padding: 20px;
+  min-height: 100vh;
+  animation: fadeIn 1s ease-in-out;
+}
+
+/* Title */
+.app-title {
+  color: #333;
+  margin-bottom: 20px;
+  font-size: 2rem;
+  animation: slideDown 1s ease;
+}
+
+/* Card wrapper for each component */
+.card {
+  border: 1px solid #ccc;
+  padding: 15px;
+  margin: 15px auto;
+  width: 320px;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.25);
+}
+
+/* Buttons */
+button {
+  margin: 5px;
+  padding: 6px 12px;
+  cursor: pointer;
+  border-radius: 4px;
+  border: none;
+  background: linear-gradient(135deg, #007bff, #00c6ff);
+  color: #fff;
+  font-size: 0.9rem;
+  transition: background 0.4s ease, transform 0.2s ease;
+}
+
+button:hover {
+  background: linear-gradient(135deg, #0056b3, #0099cc);
+  transform: scale(1.05);
+}
+
+/* Inputs */
+input {
+  margin: 5px;
+  padding: 6px;
+  width: 80%;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 0.9rem;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+input:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 6px rgba(0, 123, 255, 0.6);
+  outline: none;
+}
+
+/* Lists */
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  margin: 6px 0;
+  transition: color 0.3s ease;
+}
+
+/* For TaskListToggle (strike-through when completed) */
+li.completed {
+  text-decoration: line-through;
+  color: #888;
+  animation: fadeOut 0.5s ease forwards;
+}
+
+/* ColorChanger box */
+.color-box {
+  margin: 10px auto;
+  width: 100%;
+  height: 50px;
+  border: 1px solid #333;
+  border-radius: 4px;
+  transition: background-color 0.5s ease;
+}
+
+/* Employee list */
+.employee-list {
+  margin-top: 10px;
+  text-align: left;
+}
+
+.employee-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: transform 0.3s ease;
+}
+
+.employee-list li:hover {
+  transform: scale(1.02);
+}
+
+/* Checkbox list */
+.checkbox-item {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin: 5px 0;
+  transition: color 0.3s ease;
+}
+
+.checkbox-item input {
+  margin-right: 8px;
+}
+
+/* Body background with animated gradient */
+body {
+  margin: 0;
+  display: flex;
+  justify-content: center;   /* horizontal centering */
+  align-items: center;       /* vertical centering */
+  min-height: 100vh;         /* full viewport height */
+  background: linear-gradient(-45deg, #f5f7fa, #e0f7fa, #fce4ec, #e8f5e9);
+  background-size: 400% 400%;
+  animation: gradientBG 10s ease infinite;
+}
+
+/* 🔹 Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideDown {
+  from { transform: translateY(-20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0.5; }
+}
+
+@keyframes gradientBG {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
