@@ -1,0 +1,104 @@
+/* TaskList Component Styles */
+.bg-white {
+  background-color: white;
+}
+
+.rounded-lg {
+  border-radius: 0.75rem;
+}
+
+.shadow {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.p-6 {
+  padding: 1.5rem;
+}
+
+h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 0.75rem;
+}
+
+.text-lg {
+  font-size: 1.125rem;
+}
+
+.text-slate-700 {
+  color: #374151;
+}
+
+/* Task List Styling */
+ul {
+  margin-top: 1rem;
+}
+
+li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #f1f5f9;
+  padding: 0.75rem;
+  border-radius: 0.375rem;
+  transition: background-color 0.3s ease;
+}
+
+li:hover {
+  background-color: #e2e8f0;
+}
+
+li span {
+  font-weight: 500;
+}
+
+li .line-through {
+  text-decoration: line-through;
+}
+
+li .text-slate-400 {
+  color: #9ca3af;
+}
+
+li .text-slate-700 {
+  color: #374151;
+}
+
+/* Button Styling */
+button {
+  padding: 0.25rem 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border-radius: 0.375rem;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+/* Complete Button */
+button.bg-green-500 {
+  background-color: #10b981;
+  color: white;
+}
+
+button.bg-green-500:hover {
+  background-color: #059669;
+}
+
+button.bg-slate-300 {
+  background-color: #e2e8f0;
+  color: #4b5563;
+}
+
+button.bg-slate-300:hover {
+  background-color: #cbd5e1;
+}
+
+button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.4);
+}
+
+/* Hover and Interactive Effects */
+button:hover {
+  transform: translateY(-3px);
+}

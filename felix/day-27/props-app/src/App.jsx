@@ -7,13 +7,15 @@ import WhetherCard from "./WhetherCard";
 import ProductCard from "./ProductCard";
 import Card from "./Card";
 import EmployeeCard from "./EmployeeCard";
+import Increment from "./Increment"
+import Decrement from "./decrement";
 
 function App() {
   const [count, setCount] = useState(0);
 
   return (
     <>
-      <h1>Hey There.....</h1>
+      {/* <h1>Hey There.....</h1> */}
       {/*<div className="left-side">
         <GreetCard name="RAM" text="Namaste" />
       </div>
@@ -64,7 +66,7 @@ function App() {
           <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
         </div>
       </Card> */}
-      <div className="employeecard">
+      {/* <div className="employeecard">
         <EmployeeCard image_url = "./pexels-moh-adbelghaffar-771742.jpg" name = "Felix" employeeId = "U1011" role = "SDE-1" location = "Kottayam"/>
         </div>
         <div className="employeecard">
@@ -72,7 +74,9 @@ function App() {
         </div>
         <div className="employeecard">
         <EmployeeCard image_url = "./pexels-jibarofoto-1759530.jpg" name = "Akhil" employeeId = "U1012" role = "SDE-3" location = "Kollam"/>
-      </div>
+      </div> */}
+      <Increment/>
+      {/* <Decrement/> */}
     </>
   );
 }

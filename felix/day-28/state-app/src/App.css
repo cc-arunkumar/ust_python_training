@@ -1,0 +1,172 @@
+/* Global Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  background: #f7f7f7;
+  font-size: 16px;
+}
+
+h1, h2 {
+  margin-bottom: 10px;
+}
+
+/* App Background */
+.min-h-screen {
+  min-height: 100vh;
+  background: linear-gradient(to bottom right, #f8fafc, #e0e7ff);
+}
+
+/* Main container */
+.max-w-6xl {
+  max-width: 72rem;
+}
+
+.mx-auto {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.p-8 {
+  padding: 2rem;
+}
+
+/* Section Header Styles */
+h1 {
+  color: #1e293b;
+  font-size: 2.5rem;
+  font-weight: 700;
+}
+
+p {
+  color: #4b5563;
+  font-size: 1rem;
+}
+
+/* Level 1 Styles */
+section {
+  margin-bottom: 2rem;
+}
+
+h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid;
+  transition: color 0.3s ease;
+}
+
+h2.border-blue-500 {
+  border-color: #3b82f6;
+}
+
+h2.border-green-500 {
+  border-color: #10b981;
+}
+
+h2.border-purple-500 {
+  border-color: #8b5cf6;
+}
+
+/* Grid Layouts */
+.grid {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.md\:grid-cols-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.md\:grid-cols-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.md\:col-span-2 {
+  grid-column: span 2;
+}
+
+/* Card Styles */
+section > div {
+  background-color: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+section > div:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+/* Text Styling */
+.text-4xl {
+  font-size: 2.25rem;
+}
+
+.text-2xl {
+  font-size: 1.5rem;
+}
+
+.font-bold {
+  font-weight: 700;
+}
+
+.font-semibold {
+  font-weight: 600;
+}
+
+.text-slate-800 {
+  color: #1e293b;
+}
+
+.text-slate-600 {
+  color: #4b5563;
+}
+
+.text-slate-700 {
+  color: #374151;
+}
+
+.text-slate-50 {
+  color: #fafafa;
+}
+
+/* Color Utility Classes */
+.bg-gradient-to-br {
+  background-image: linear-gradient(to bottom right, #f8fafc, #e0e7ff);
+}
+
+.bg-slate-100 {
+  background-color: #f1f5f9;
+}
+
+.text-slate-600 {
+  color: #4b5563;
+}
+
+.mb-8 {
+  margin-bottom: 2rem;
+}
+
+.mb-2 {
+  margin-bottom: 0.5rem;
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 768px) {
+  .md\:grid-cols-3 {
+    grid-template-columns: repeat(1, 1fr);
+  }
+
+  .md\:grid-cols-2 {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}
