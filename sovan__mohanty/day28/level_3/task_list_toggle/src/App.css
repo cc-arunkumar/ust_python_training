@@ -1,0 +1,25 @@
+.App {
+  text-align: center;
+  margin-top: 50px;
+  font-family: Arial, sans-serif;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  margin: 10px 0;
+  font-size: 1.2rem;
+}
+
+input[type="checkbox"] {
+  margin-right: 10px;
+}
+
+p {
+  margin-top: 20px;
+  font-weight: bold;
+  color: #4f46e5;
+}
