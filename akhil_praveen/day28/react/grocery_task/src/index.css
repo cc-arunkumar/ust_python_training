@@ -1,0 +1,135 @@
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Roboto', sans-serif;
+}
+
+/* Body */
+body {
+  background-color: #ecf0f1; /* Lighter background */
+  background-image: url("./assets/ust_tvm_image.jpeg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  color: #2c3e50;
+  padding: 20px; /* Added padding to body for spacing */
+}
+
+/* App Container */
+div{
+  max-width: 950px;
+  margin: 0 auto; /* Centered the container */
+  padding: 20px;
+  background-color: #fff; /* White background for container */
+  border-radius: 10px; /* Rounded corners */
+}
+
+/* Headings */
+h1 {
+  text-align: center;
+  margin-bottom: 25px;
+  color: #34495e;
+  padding: 10px 0;
+}
+
+h2 {
+  margin: 25px 0 15px;
+  color: #2980b9;
+}
+
+/* Grocery List */
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  background: #fff;
+  padding: 18px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Enhanced shadow for list items */
+}
+
+li:hover {
+  background-color: #f7f7f7; /* Light hover effect */
+}
+
+/* Buttons */
+.add_button {
+  background-color: #5db972;
+  color: #fff;
+  border: none;
+  padding: 10px 16px; /* Increased padding for buttons */
+  border-radius: 6px; /* Slightly larger radius for rounded corners */
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease-in-out; /* Added transition for scaling */
+}
+
+.add_button:hover {
+  background-color: #9b59b6;
+  transform: scale(1.05); /* Slight scale effect on hover */
+}
+
+.remove_button {
+  background-color: #c74040;
+  color: #fff;
+  border: none;
+  padding: 10px 16px; /* Increased padding for buttons */
+  border-radius: 6px; /* Slightly larger radius for rounded corners */
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease-in-out; /* Added transition for scaling */
+}
+h2{
+  text-align: center;
+}
+.remove_button:hover {
+  background-color: #f09c3d;
+  transform: scale(1.05); /* Slight scale effect on hover */
+}
+
+
+/* Cart Items */
+input[type="number"] {
+  padding: 6px;
+  width: 60px;
+  border-radius: 6px;
+  border: 2px solid #bdc3c7;
+  margin-left: 10px; /* Added margin to space out from quantity label */
+}
+
+/* Messages */
+p {
+  margin: 12px 0;
+  padding: 10px;
+  font-size: 16px;
+}
+
+/* Success Message */
+p[style*="green"] {
+  background-color: #e8f9e4;
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px solid #27ae60;
+  margin-top: 20px;
+  font-weight: bold;
+  color: #27ae60;
+}
+
+/* Price Summary */
+hr {
+  margin: 20px 0;
+  border: 0;
+  border-top: 2px solid #ccc;
+}
+
+h3 {
+  color: #27ae60;
+  font-size: 22px;
+  margin-bottom: 10px;
+}
+

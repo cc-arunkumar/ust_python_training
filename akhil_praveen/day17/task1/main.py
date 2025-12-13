@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from models import Task, CreateTask, LoginRequest, Token, User, UserDB, TaskDB,Base
 from auth import create_access_token, get_current_user, ACCESS_TOKEN_EXPIRE_MINUTES
 from database import get_db,engine
-from day17.task1.audits_log import log_action
+from audits_log import log_action
 from datetime import timedelta
 
 Base.metadata.create_all(bind=engine)
