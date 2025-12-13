@@ -1,0 +1,87 @@
+:root {
+  align-items: center;
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  
+  
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+}
+a:hover {
+  color: #535bf2;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #ffffff;
+    background-color: #c2c2c2b0;
+  }
+  a:hover {
+    color: #747bff;
+  }
+
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+  background-image: url('https://static.ambitionbox.com/api/v2/photo/VU14SklWRDhucUNoWXhSRWJLUVZBUT09');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+h2{
+  font-size: 30px;
+}
+
+
+.card {
+  
+ 
+  background: linear-gradient(150deg,rgb(109, 235, 228),rgb(206, 155, 216),rgb(185, 226, 137));
+  text-align: center;
+  font-size: 10px;
+  padding: 10px;
+  margin: 10px;
+  border-radius: 15px;
+  display: inline-block;
+  width: 200px;
+  height: 300px;
+  color: #1a1a1a;
+  box-shadow: black;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
