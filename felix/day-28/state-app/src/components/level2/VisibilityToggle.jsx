@@ -17,8 +17,7 @@ export default function VisibilityToggle() {
         <div className="bg-indigo-50 border border-indigo-200 p-4 rounded text-slate-700">
           <p className="font-medium mb-2">Additional Information</p>
           <p className="text-sm">
-            This component demonstrates conditional rendering using React state. 
-            Toggle the button to show or hide content dynamically.
+            Confidential Data Do not share it with anyone
           </p>
         </div>
       )}
