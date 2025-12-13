@@ -1,0 +1,184 @@
+/* Root Variables for Light Theme */
+:root {
+  --primary-color: #007bff; /* Clean blue for primary actions */
+  --secondary-color: #28a745; /* Fresh green for secondary actions */
+  --background-light: #f8d7da; /* Very light pink background */
+  --text-dark: #212529; /* Dark text for readability */
+  --text-light: #ffffff; /* Light text for components */
+  --input-bg-light: #ffffff; /* White background for inputs */
+  --input-border-light: #ced4da; /* Subtle border color for inputs */
+  --button-bg-light: #007bff; /* Blue button background */
+  --button-bg-light-hover: #0056b3; /* Darker blue on hover */
+  --button-text-light: #ffffff; /* Button text color */
+  --button-hover-gradient: radial-gradient(circle, #74b9ff, #0056b3); /* Hover gradient effect */
+  --border-radius: 8px; /* Rounded corners */
+  --transition-speed: 0.3s; /* Smooth transition for hover and focus effects */
+  --shadow-light: rgba(0, 0, 0, 0.1); /* Light shadow for soft depth */
+  --shadow-dark: rgba(0, 0, 0, 0.3); /* Dark shadow for depth */
+  --background-gradient: radial-gradient(circle, rgba(255, 255, 255, 0.8), rgba(242, 242, 242, 1)); /* Subtle background gradient */
+}
+
+/* General Reset */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Roboto', sans-serif;
+  line-height: 1.5;
+  background-color: var(--background-light); /* Very light pink background */
+  color: var(--text-dark);
+  height: 100%;
+  background: var(--background-gradient); /* Background gradient */
+}
+
+/* Page Header */
+h1 {
+  font-size: 2.5em;
+  color: var(--primary-color);
+  margin-bottom: 20px;
+  font-weight: 700;
+  text-align: center;
+}
+
+/* Button Styles */
+button {
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: var(--border-radius);
+  background-color: var(--button-bg-light);
+  color: var(--button-text-light);
+  cursor: pointer;
+  transition: background-color var(--transition-speed), transform var(--transition-speed), background var(--transition-speed);
+  display: inline-block;
+  margin-top: 20px;
+}
+
+button:hover {
+  background-color: var(--button-bg-light-hover);
+  background: var(--button-hover-gradient); /* Hover gradient effect */
+  transform: scale(1.05);
+}
+
+button:focus,
+button:focus-visible {
+  outline: 4px auto var(--primary-color);
+}
+
+/* Input Fields */
+input[type="text"] {
+  padding: 12px 20px;
+  font-size: 1rem;
+  border-radius: var(--border-radius);
+  border: 2px solid var(--input-border-light);
+  background-color: var(--input-bg-light);
+  color: var(--text-dark);
+  width: 100%;
+  max-width: 350px;
+  transition: border-color var(--transition-speed), background-color var(--transition-speed);
+  box-shadow: 0 4px 8px var(--shadow-light);
+}
+
+input[type="text"]:focus {
+  border-color: var(--primary-color);
+  outline: none;
+  background-color: #e9ecef;
+}
+
+/* Container for components */
+.component-container {
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: var(--border-radius);
+  box-shadow: 0 2px 8px var(--shadow-light);
+  text-align: center;
+  width: 100%;
+  max-width: 450px;
+  margin: 20px auto;
+  transition: background-color var(--transition-speed);
+}
+
+.component-container h3 {
+  font-size: 1.8em;
+  color: var(--text-dark);
+  margin-bottom: 20px;
+}
+
+.component-container p {
+  color: var(--text-dark);
+  margin-top: 10px;
+}
+
+/* Hover Effects for Links */
+a {
+  font-weight: 500;
+  color: var(--primary-color);
+  text-decoration: none;
+  transition: color var(--transition-speed);
+}
+
+a:hover {
+  color: var(--secondary-color);
+  text-decoration: underline;
+}
+
+/* Light Mode Styles (Optional for system theme preference) */
+@media (prefers-color-scheme: light) {
+  :root {
+    --background-light: #ffffff;
+    --text-dark: #212529;
+    --input-bg-light: #ffffff;
+    --button-bg-light: #007bff;
+    --button-bg-light-hover: #0056b3;
+    --primary-color: #007bff;
+    --secondary-color: #28a745;
+  }
+
+  body {
+    background-color: var(--background-light);
+  }
+
+  .component-container {
+    background-color: var(--background-light);
+    box-shadow: 0 2px 12px var(--shadow-light);
+  }
+
+  button {
+    background-color: var(--button-bg-light);
+    color: var(--button-text-light);
+  }
+
+  button:hover {
+    background-color: var(--button-bg-light-hover);
+  }
+
+  input[type="text"] {
+    background-color: var(--input-bg-light);
+    color: var(--text-dark);
+  }
+
+  a:hover {
+    color: var(--primary-color);
+  }
+}
+
+/* Animation for smooth transitions */
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Use fade-in for content */
+.component-container {
+  animation: fadeIn 1s ease-in-out;
+}
