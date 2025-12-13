@@ -1,0 +1,102 @@
+.container {
+  max-width: 650px;
+  margin: 30px auto;
+  font-family: Arial, sans-serif;
+}
+
+.card {
+  background: #fff;
+  padding: 20px;
+  margin-bottom: 25px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Buttons */
+.btn {
+  padding: 6px 12px;
+  margin-left: 10px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  background-color: #0078ff;
+  color: white;
+}
+
+.btn:hover {
+  background-color: #005fcc;
+}
+
+.add-btn {
+  margin-top: 10px;
+  background-color: #28a745;
+}
+
+.add-btn:hover {
+  background-color: #1e7e34;
+}
+
+.remove-btn {
+  background-color: #dc3545;
+  margin-left: 15px;
+}
+
+.remove-btn:hover {
+  background-color: #b52a37;
+}
+
+/* Inputs */
+.input-box {
+  width: 100%;
+  padding: 10px;
+  margin-top: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+/* Task List */
+.task-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.completed {
+  text-decoration: line-through;
+  color: gray;
+}
+
+/* Employee List */
+.employee-list {
+  margin-top: 15px;
+  padding-left: 20px;
+}
+
+.employee-item {
+  margin-bottom: 8px;
+}
+
+/* Checkbox List */
+.checkbox-row {
+  margin-bottom: 8px;
+}
+
+.count-text {
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+
+.title {
+  margin-bottom: 15px;
+  font-size: 24px;
+  text-align: center;
+  color: #222;
+}
+
+.paragraph {
+  font-size: 16px;
+  color: #555;
+  text-align: center;
+}
