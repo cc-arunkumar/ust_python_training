@@ -1,0 +1,203 @@
+/* Root container */
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+ 
+/* Logo animations */
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  transition: transform 0.3s ease, filter 0.3s ease;
+}
+ 
+.logo:hover {
+  transform: scale(1.1);
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+ 
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+ 
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+ 
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+ 
+/* Card styling */
+.card {
+  padding: 2em;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+ 
+/* General body */
+body {
+  font-family: "Segoe UI", Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(135deg, #f4f4f9, #e9ecef);
+}
+ 
+/* App container */
+.app {
+  max-width: 1200px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: white;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  transition: box-shadow 0.3s ease;
+}
+.app:hover {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+ 
+h1 {
+  text-align: center;
+  color: #333;
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+ 
+/* Lists */
+.grocery-list,
+.cart {
+  margin: 20px 0;
+  background-color: rgb(rgb(184, 156, 156), rgb(180, 211, 180), rgb(164, 164, 214));
+}
+ 
+.item-list,
+.cart-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+ 
+/* Items */
+.item,
+.cart-item {
+  background-color: #c2d2d3;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 15px;
+  width: calc(33% - 20px);
+  box-sizing: border-box;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.item:hover,
+.cart-item:hover {
+  transform: scale(1.03);
+  box-shadow: 0 4px 12px rgba(70, 57, 57, 0.1);
+}
+ 
+/* Buttons */
+.item button,
+.cart-item button {
+  background: linear-gradient(135deg, #45a049, #45a049);
+  color: white;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+.item button:hover,
+.cart-item button:hover {
+  background: linear-gradient(135deg, #4645a0, #3e8e41);
+  transform: translateY(-2px);
+}
+ 
+/* Inputs */
+.cart-item input {
+  width: 60px;
+  padding: 6px;
+  margin-right: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+ 
+/* Totals */
+.cart-total {
+  text-align: right;
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-top: 10px;
+}
+ 
+/* Success message */
+.success-message {
+  background-color: #4caf50;
+  color: rgb(248, 242, 242);
+  padding: 12px;
+  border-radius: 6px;
+  margin-top: 15px;
+  text-align: center;
+  animation: fadeIn 0.5s ease-in-out;
+}
+ 
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+ 
+/* Discount */
+.discount {
+  font-weight: bold;
+  color: #f44336;
+  font-size: 1.1rem;
+  animation: pulse 1.5s infinite;
+}
+ 
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+    color: #d32f2f;
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+ 
+/* Responsive */
+@media (max-width: 768px) {
+  .item,
+  .cart-item {
+    width: calc(50% - 20px);
+  }
+}
+ 
+@media (max-width: 480px) {
+  .item,
+  .cart-item {
+    width: 100%;
+  }
+}
+ 
+ 
