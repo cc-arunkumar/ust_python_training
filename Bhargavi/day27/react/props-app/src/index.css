@@ -1,0 +1,159 @@
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #798c9c;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+  background-color: #e6f2f8;
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+  color: #14100f;
+  text-align: center;
+}
+
+h2 {
+  font-size: 2em;
+  margin-bottom: 15px;
+  color: #4e2a84;
+  font-weight: 600;
+}
+
+h3 {
+  font-size: 1.5em;
+  margin-bottom: 10px;
+  color: #633fb6;
+  font-weight: 600;
+}
+
+button {
+  border-radius: 8px;
+  border: 2px solid #ff8c00;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #ffbf00;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+button:hover {
+  background-color: #ff6f00;
+  border-color: #ff5722;
+}
+
+button:focus,
+button:focus-visible {
+  outline: 4px auto #ff5722;
+}
+
+a {
+  font-weight: 500;
+  color: #ff4081;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #ff80ab;
+}
+
+.employee-card {
+  background: linear-gradient(to right, #a4f1d1, #b9d9f3);
+  border: 1px solid silver;
+  padding: 25px;
+  border-radius: 15px;
+  margin: 15px;
+  width: calc(50% - 20px);
+  box-sizing: border-box;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  text-align: center;
+}
+
+.employee-card img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 15px;
+}
+
+.employee-card p {
+  margin: 5px 0;
+  font-size: 1.1em;
+  color: #333;
+}
+
+.employee-card p strong {
+  color: #281570;
+  font-weight: bold;
+}
+
+.employee-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+.employee-list, .project-team {
+  display: flex;
+  flex-wrap: inline;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 0 20px;
+  width: 100%;
+}
+
+.employee-card {
+  width: calc(50% - 20px);
+}
+
+@media (max-width: 768px) {
+  .employee-card {
+    width: calc(50% - 20px);
+  }
+}
+
+@media (max-width: 480px) {
+  .employee-card {
+    width: 100%;
+  }
+}
+
+.card1 {
+  background: linear-gradient(to right, #00bcd4, #ff4081);
+  padding: 20px;
+  border-radius: 20px;
+  display: inline-flex;
+  margin: 20px;
+  max-width: 600px;
+  color: white;
+}
+
+.card2 {
+  background: linear-gradient(to right, #8e44ad, #f39c12);
+  padding: 20px;
+  border-radius: 20px;
+  display: inline-flex;
+  margin: 20px;
+  max-width: 600px;
+  color: white;
+}
