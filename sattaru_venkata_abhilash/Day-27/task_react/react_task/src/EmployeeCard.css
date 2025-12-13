@@ -1,0 +1,75 @@
+/* General Styles */
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+  background-image: url('background.jfif'); /* Set background image */
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+/* Card Wrapper */
+.card-wrapper {
+  perspective: 1000px; /* Enables the 3D effect */
+  margin: 20px;
+}
+
+/* Employee Card Styling */
+.employeecard {
+  background-color: rgb(248, 232, 250);
+  padding: 20px;
+  margin: 20px;
+  border-radius: 10px;
+  width: 300px;
+  height: 350px;
+  border-color: #1a1a1a;
+  color: rgb(11, 11, 11);
+  cursor: pointer;
+  transition: transform 0.6s; /* Smooth transition for flip */
+  transform-style: preserve-3d; /* 3D effect for flipping */
+  position: relative;
+}
+
+/* The Front Side of the Card */
+.employeecard .front, .employeecard .back {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden; /* Hide the back side when flipped */
+}
+
+.employeecard .front {
+  z-index: 2; /* Makes the front visible first */
+}
+
+.employeecard .back {
+  background-color: #f0f0f0;
+  transform: rotateY(180deg); /* Initially hide the back side */
+  padding: 20px;
+}
+
+/* Flip the card when 'open' class is added */
+.employeecard.open {
+  transform: rotateY(180deg); /* Flip the card */
+}
+
+/* Styling for the card text */
+h3 {
+  font-size: 1.5em;
+  margin-bottom: 10px;
+}
+
+p {
+  font-size: 1.1em;
+}
