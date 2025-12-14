@@ -11,7 +11,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 users = {
     "rahul": {
-        "username": "rohit",
+        "username": "taniya",
         "password": "password123"
     }
 }
