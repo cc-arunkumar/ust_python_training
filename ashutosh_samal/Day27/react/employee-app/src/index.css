@@ -1,0 +1,98 @@
+
+/* General styles for the page */
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color-scheme: light dark;
+  background-color: #242424;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Body styles */
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+  background-color: bisque;
+  font-family: 'Avenir', sans-serif;
+}
+
+/* Container for the root */
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+/* Heading styles */
+h1 {
+  color: white;
+  font-size: 3rem;
+  margin-bottom: 2rem;
+  font-weight: bold;
+}
+h2 {
+  color: black;
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  font-weight: bold;
+}
+
+/* Card Styles */
+.empcard {
+  background: linear-gradient(45deg, #00c6ff, #0072ff); /* Gradient background for card */
+  color: white;
+  text-align: center;
+  padding: 20px;
+  border-radius: 15px;
+  width: 280px;
+  height: 200px;
+  margin: 20px;
+  display: inline-block;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Hover effect for the cards */
+.empcard:hover {
+  transform: translateY(-10px); /* Lift effect */
+  box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Style for card title and details */
+.empcard h2,
+.empcard h3 {
+  margin: 10px 0;
+  font-size: 1.2rem;
+  color: white;
+}
+
+/* Styling the employee name and other details */
+.empcard h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+/* Adjust text color for different sections */
+h3 {
+  font-size: 1rem;
+  color: white
+}
+
+
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .empcard {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+}

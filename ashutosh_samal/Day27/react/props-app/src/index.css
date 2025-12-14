@@ -1,0 +1,38 @@
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: lightgrey;
+/* 
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale; */
+}
+
+.card{
+  background-color: aquamarine;
+  text-align: center;
+  padding: 20px;
+  color: coral;
+  border-radius: 20px;
+  width: 300px;
+  height: 250px;
+  margin: 20px;
+  display:inline-block;
+}
+
+.card1{
+  background-color: aquamarine;
+  text-align: center;
+  padding: 20px;
+  color: black;
+  border-radius: 20px;
+  width: 300px;
+  height: 250px;
+  margin: 20px;
+  display:inline-block;
+}
