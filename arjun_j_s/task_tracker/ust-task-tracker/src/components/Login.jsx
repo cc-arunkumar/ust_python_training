@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { CheckCircle2 } from 'lucide-react';
 import { login } from '../api/taskApi';
-import { saveToken } from '../utils/auth';
 
 function Login({ onLoginSuccess }) {
   const [username, setUsername] = useState('');
@@ -15,7 +14,7 @@ function Login({ onLoginSuccess }) {
     
     try {
       const data = await login(username, password);
-      saveToken(data.access_token);
+      // Token is already saved in localStorage by the login function
       onLoginSuccess(data.access_token);
     } catch (err) {
       setError(err.message);
@@ -31,10 +30,10 @@ function Login({ onLoginSuccess }) {
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md transform hover:scale-105 transition-transform duration-300">
         <div className="text-center mb-8">
-          <div className="bg-linear-to-r from-indigo-500 to-purple-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+          <div className="bg-gradient-to-r from-indigo-500 to-purple-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
             <CheckCircle2 className="text-white" size={32} />
           </div>
           <h1 className="text-3xl font-bold text-gray-800 mb-2">UST Task Tracker</h1>
@@ -75,7 +74,7 @@ function Login({ onLoginSuccess }) {
           <button
             onClick={handleLogin}
             disabled={loading}
-            className="w-full bg-linear-to-r from-indigo-500 to-purple-600 text-white py-3 rounded-lg font-semibold hover:from-indigo-600 hover:to-purple-700 transform hover:scale-105 transition-all shadow-lg disabled:opacity-50"
+            className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 text-white py-3 rounded-lg font-semibold hover:from-indigo-600 hover:to-purple-700 transform hover:scale-105 transition-all shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? 'Signing in...' : 'Sign In'}
           </button>

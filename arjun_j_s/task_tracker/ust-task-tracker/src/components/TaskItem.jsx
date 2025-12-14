@@ -37,7 +37,11 @@ function TaskItem({
           />
           <div className="flex gap-2">
             <button
-              onClick={() => onUpdate(task.id, editingTask)}
+              onClick={() => onUpdate(editingTask.id, {
+                title: editingTask.title,
+                description: editingTask.description,
+                completed: editingTask.completed
+              })}
               className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-sm font-medium"
             >
               Save

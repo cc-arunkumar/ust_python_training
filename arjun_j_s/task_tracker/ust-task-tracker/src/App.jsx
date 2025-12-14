@@ -1,32 +1,30 @@
 import React, { useState, useEffect } from 'react';
 import Login from './components/Login';
 import Dashboard from './components/Dashboard';
-import { getToken } from './utils/auth';
+import { isAuthenticated } from './api/taskApi';
 
 function App() {
-  const [token, setToken] = useState(getToken());
+  const [isLoggedIn, setIsLoggedIn] = useState(isAuthenticated());
 
   useEffect(() => {
-    const storedToken = getToken();
-    if (storedToken) {
-      setToken(storedToken);
-    }
+    setIsLoggedIn(isAuthenticated());
   }, []);
 
-  const handleLoginSuccess = (newToken) => {
-    setToken(newToken);
+  const handleLoginSuccess = () => {
+    setIsLoggedIn(true);
   };
 
   const handleLogout = () => {
-    setToken(null);
+    setIsLoggedIn(false);
+    localStorage.removeItem('token');
   };
 
   return (
     <div className="app">
-      {!token ? (
+      {!isLoggedIn ? (
         <Login onLoginSuccess={handleLoginSuccess} />
       ) : (
-        <Dashboard token={token} onLogout={handleLogout} />
+        <Dashboard onLogout={handleLogout} />
       )}
     </div>
   );

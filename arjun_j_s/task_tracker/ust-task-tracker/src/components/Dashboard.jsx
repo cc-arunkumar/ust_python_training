@@ -6,7 +6,7 @@ import TaskForm from './TaskForm';
 import TaskList from './TaskList';
 import { getTasks, createTask, updateTask, deleteTask } from '../api/taskApi';
 
-function Dashboard({ token, onLogout }) {
+function Dashboard({ onLogout }) {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -20,7 +20,7 @@ function Dashboard({ token, onLogout }) {
 
   const fetchTasks = async () => {
     try {
-      const data = await getTasks(token);
+      const data = await getTasks();
       setTasks(data);
     } catch (err) {
       setError(err.message);
@@ -29,8 +29,9 @@ function Dashboard({ token, onLogout }) {
 
   const handleCreateTask = async (newTask) => {
     setLoading(true);
+    setError('');
     try {
-      await createTask(token, newTask);
+      await createTask(newTask);
       await fetchTasks();
       setShowAddTask(false);
     } catch (err) {
@@ -41,8 +42,9 @@ function Dashboard({ token, onLogout }) {
   };
 
   const handleUpdateTask = async (taskId, updates) => {
+    setError('');
     try {
-      await updateTask(token, taskId, updates);
+      await updateTask(taskId, updates);
       await fetchTasks();
     } catch (err) {
       setError(err.message);
@@ -50,8 +52,9 @@ function Dashboard({ token, onLogout }) {
   };
 
   const handleDeleteTask = async (taskId) => {
+    setError('');
     try {
-      await deleteTask(token, taskId);
+      await deleteTask(taskId);
       await fetchTasks();
     } catch (err) {
       setError(err.message);
@@ -74,7 +77,7 @@ function Dashboard({ token, onLogout }) {
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-indigo-50 via-purple-50 to-pink-50">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50">
       <Navbar onLogout={onLogout} />
       
       <div className="max-w-7xl mx-auto px-4 py-8">

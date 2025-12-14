@@ -1,14 +1,24 @@
 # main.py
 from fastapi import FastAPI, HTTPException, Depends, status
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
-from models import Task, CreateTask, LoginRequest, Token, User, UserDB, TaskDB,Base
+from models import Task, CreateTask, LoginRequest, Token, User, UserDB, TaskDB, Base
 from auth import create_access_token, get_current_user, ACCESS_TOKEN_EXPIRE_MINUTES
-from database import get_db,engine
+from database import get_db, engine
 from mongodb_logger import log_action
 from datetime import timedelta
 
 Base.metadata.create_all(bind=engine)
 app = FastAPI(title="UST Task Tracker")
+
+# ================= CORS CONFIGURATION =================
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173", "http://localhost:3000"],  # Add your frontend URLs
+    allow_credentials=True,
+    allow_methods=["*"],  # Allows all methods (GET, POST, PUT, DELETE, OPTIONS, etc.)
+    allow_headers=["*"],  # Allows all headers
+)
 
 
 # ------------------ LOGIN ------------------

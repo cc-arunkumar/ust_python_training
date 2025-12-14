@@ -57,7 +57,7 @@ function TaskFilters({
       
       <button
         onClick={() => setShowAddTask(!showAddTask)}
-        className="flex items-center justify-center space-x-2 px-6 py-3 bg-linear-to-r from-indigo-500 to-purple-600 text-white rounded-lg font-semibold hover:from-indigo-600 hover:to-purple-700 transform hover:scale-105 transition-all shadow-lg"
+        className="flex items-center justify-center space-x-2 px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-lg font-semibold hover:from-indigo-600 hover:to-purple-700 transform hover:scale-105 transition-all shadow-lg"
       >
         <Plus size={20} />
         <span>Add Task</span>

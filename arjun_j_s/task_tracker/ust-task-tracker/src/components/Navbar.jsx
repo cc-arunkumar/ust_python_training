@@ -1,10 +1,10 @@
 import React from 'react';
 import { CheckCircle2, LogOut } from 'lucide-react';
-import { removeToken } from '../utils/auth';
+import { logout } from '../api/taskApi';
 
 function Navbar({ onLogout }) {
   const handleLogout = () => {
-    removeToken();
+    logout(); // This removes the token from localStorage
     onLogout();
   };
 
@@ -12,10 +12,10 @@ function Navbar({ onLogout }) {
     <nav className="bg-white shadow-md sticky top-0 z-10">
       <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
         <div className="flex items-center space-x-3">
-          <div className="bg-linear-to-r from-indigo-500 to-purple-600 w-10 h-10 rounded-full flex items-center justify-center">
+          <div className="bg-gradient-to-r from-indigo-500 to-purple-600 w-10 h-10 rounded-full flex items-center justify-center">
             <CheckCircle2 className="text-white" size={20} />
           </div>
-          <h1 className="text-2xl font-bold bg-linear-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+          <h1 className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
             UST Task Tracker
           </h1>
         </div>

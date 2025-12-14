@@ -17,7 +17,7 @@ function TaskForm({ onSubmit, onCancel, loading, initialTask = null }) {
   };
 
   return (
-    <div className="bg-linear-to-r from-indigo-50 to-purple-50 p-6 rounded-lg mb-6 border-2 border-indigo-200">
+    <div className="bg-gradient-to-r from-indigo-50 to-purple-50 p-6 rounded-lg mb-6 border-2 border-indigo-200">
       <h3 className="text-lg font-semibold text-gray-800 mb-4">
         {initialTask ? 'Edit Task' : 'Create New Task'}
       </h3>
