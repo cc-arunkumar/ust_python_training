@@ -1,0 +1,151 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Poppins", sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #9fa8da, #5c6bc0);
+}
+
+.app-container {
+  text-align: center;
+  width: 100%;
+  max-width: 900px;
+}
+
+.success-message {
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: 0.4s ease;
+  background: linear-gradient(135deg, #d4f8d4, #b2fab4);
+  padding: 10px 15px;
+  border-left: 5px solid #2e7d32;
+  border-radius: 4px;
+  width: fit-content;
+  font-weight: bold;
+  margin: 10px auto;
+}
+
+.success-message.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.grocery-container {
+  background: linear-gradient(135deg, #ffffff, #e8eaf6);
+  padding: 100px;
+  border-radius: 10px;
+  margin: 20px auto;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  width: 350px;
+}
+
+.grocery-item {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  background: linear-gradient(135deg, #ffffff, #f3f4ff);
+  border-radius: 6px;
+  transition: 0.3s;
+  border-left: 4px solid transparent;
+}
+
+.grocery-item.expensive {
+  border-left: 4px solid #d32f2f;
+}
+
+.add-btn {
+  background: linear-gradient(135deg, #7b1fa2, #4a148c);
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.add-btn:hover {
+  background: linear-gradient(135deg, #4a148c, #311b92);
+}
+
+.cart-container {
+  background: linear-gradient(135deg, #ffffff, #e8eaf6);
+  padding: 90px;
+  border-radius: 10px;
+  margin: 20px auto;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  width: 450px;
+}
+
+.cart-item {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  background: linear-gradient(135deg, #ffffff, #f3f4ff);
+  border-radius: 6px;
+  border-left: 4px solid transparent;
+  transition: 0.3s;
+}
+
+.cart-item.bulk {
+  border-left: 4px solid #ff9800;
+  background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+}
+
+.quantity-input {
+  width: 50px;
+  padding: 5px;
+  border-radius: 4px;
+  border: 1px solid #9fa8da;
+}
+
+.remove-btn {
+  background: linear-gradient(135deg, #d32f2f, #b71c1c);
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.remove-btn:hover {
+  background: linear-gradient(135deg, #9a0007, #7f0000);
+}
+
+.remove-btn.danger {
+  background: linear-gradient(135deg, #b71c1c, #880e4f);
+}
+
+.total-price {
+  font-size: 22px;
+  font-weight: bold;
+  margin-top: 15px;
+  color: #1a237e;
+}
+
+.total-price.discount {
+  color: #2e7d32;
+  text-shadow: 0 0 5px #a5d6a7;
+}
+
+.discount-text {
+  color: #2e7d32;
+  font-weight: bold;
+}
+
+.marquee-text {
+  background: linear-gradient(135deg, #7b1fa2, #4a148c);
+  color: white;
+  padding: 12px 0;
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  border-radius: 5px;
+}
