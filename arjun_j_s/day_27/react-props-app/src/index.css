@@ -1,0 +1,12 @@
+.employeecard{
+  background: linear-gradient(to top, #94ab2f, #e1e43d, #f0f3bd);
+  padding: 20px;
+  display: inline-block;
+  margin: 10px;
+  border-radius: 10px;
+  max-width: 400px;
+  min-width: 150px;
+  max-height: 500px;
+  color: black;
+  border: 2px solid black;
+}
