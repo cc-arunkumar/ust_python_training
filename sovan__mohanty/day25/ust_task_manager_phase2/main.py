@@ -5,7 +5,17 @@ from auth import create_access_token, get_user
 from utils import create_task, get_tasks, get_task, update_task, delete_task
 from database import get_db
 
+from fastapi.middleware.cors import CORSMiddleware
+
 app = FastAPI(title="UST Task Manager Phase 2")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],  # frontend URL
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.post("/login", response_model=Token)
 def login(data: LoginRequest, db: Session = Depends(get_db)):

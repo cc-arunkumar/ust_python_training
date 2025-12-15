@@ -9,7 +9,9 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     username = Column(String(50), unique=True, nullable=False)
     password = Column(String(100), nullable=False)
-    task=relationship("TaskORM")
+
+    tasks = relationship("TaskORM", back_populates="user")
+
 
 class TaskORM(Base):
     __tablename__ = "tasks"
@@ -18,7 +20,8 @@ class TaskORM(Base):
     description = Column(String(255), nullable=False)
     completed = Column(Boolean, default=False)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    user = relationship("User")
+
+    user = relationship("User", back_populates="tasks")
 
 class Task(BaseModel):
     id: int
