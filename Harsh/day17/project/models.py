@@ -16,9 +16,14 @@ class Token(BaseModel):
     token_type: str
 
 class Task(BaseModel):
+    id: int | None = None   # include id
     title: str
     description: str
     completed: bool = False
+
+    class Config:
+        orm_mode = True
+
 
 
 class UserDB(Base):

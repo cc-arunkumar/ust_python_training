@@ -1,0 +1,197 @@
+/* General App Styling */
+body {
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: linear-gradient(135deg, #f4f6f9, #e9ecef);
+  margin: 0;
+  padding: 0;
+  transition: background 0.5s ease;
+  display: inline;
+  
+}
+
+h1 {
+  text-align: center;
+  margin: 20px 0;
+  color: #333;
+  animation: fadeIn 1s ease-in-out;
+}
+
+/* Container Layout */
+.container {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-start;
+  margin: 30px auto;
+  max-width: 1200px;
+  gap: 20px;
+  transition: all 0.3s ease;
+}
+
+/* Grocery List & Cart Cards */
+.grocery-list, .cart {
+  flex: 1;
+  padding: 20px;
+  background: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.grocery-list:hover, .cart:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+/* Headings */
+.grocery-list h2, .cart h2 {
+  margin-bottom: 15px;
+  color: #007bff;
+  font-size: 1.4rem;
+  border-bottom: 2px solid #007bff;
+  padding-bottom: 5px;
+}
+
+/* Lists */
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  margin: 12px 0;
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background 0.3s ease;
+}
+
+li:hover {
+  background: #f8f9fa;
+}
+
+/* Buttons */
+button {
+  margin-left: 10px;
+  padding: 6px 12px;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+button:hover {
+  background: #0056b3;
+  transform: scale(1.05);
+}
+
+.cart button {
+  background: #dc3545;
+}
+
+.cart button:hover {
+  background: #a71d2a;
+}
+
+/* Inputs */
+.cart input[type="number"] {
+  width: 60px;
+  margin: 0 10px;
+  padding: 6px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  transition: border-color 0.3s ease;
+}
+
+.cart input[type="number"]:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+/* Messages */
+.success {
+  text-align: center;
+  color: #28a745;
+  font-weight: bold;
+  margin: 10px 0;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.discount {
+  color: #e63946;
+  font-weight: bold;
+  margin-top: 10px;
+  animation: pulse 1s infinite;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); color: #c1121f; }
+  100% { transform: scale(1); }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .grocery-list, .cart {
+    width: 90%;
+    margin-bottom: 20px;
+  }
+}
+
+/* Festive Welcome Banner */
+.welcome-banner {
+  width: 100%;
+  background: linear-gradient(90deg, #684dff, #0d2b1c);
+  color: #fff;
+  font-size: 1.3rem;
+  font-weight: bold;
+  padding: 12px 0;
+  overflow: hidden;
+  position: relative;
+  border-radius: 8px;
+  margin-bottom: 25px;
+  text-align: center;
+}
+
+.welcome-banner span {
+  display: inline-block;
+  white-space: nowrap;
+  padding-left: 100%;
+  animation: scrollText 10s linear infinite;
+}
+
+@keyframes scrollText {
+  from { transform: translateX(0); }
+  to { transform: translateX(-100%); }
+}
+
+/* Grocery Item with Image */
+.grocery-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.grocery-item img {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 6px;
+  margin-right: 10px;
+  border: 1px solid #ddd;
+}
