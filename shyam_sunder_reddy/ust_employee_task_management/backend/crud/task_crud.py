@@ -8,8 +8,8 @@ from datetime import datetime
 
 def add_task(new_task: TaskReqRes,role,user):
 	try:
-		if role !="Manager" or role!="Admin":
-			raise HTTPException(status_code=409,detail="Only Manager and Admin can create a new task")
+		if role not in ["Manager", "Admin"]:
+			raise HTTPException(status_code=403,detail="Only Manager and Admin can create a new task")
 		session = get_connection()
 		task = TaskSchema(
 			title=new_task.title,
@@ -48,17 +48,17 @@ def get_all_tasks(role,user):
 			if "Manager" in user.role: 
 				tasks = session.query(TaskSchema).filter(TaskSchema.reviewer == user.e_id).all()
 			else:
-				raise HTTPException(status_code=409,detail="Not Authorized")
+				raise HTTPException(status_code=403,detail="Not Authorized")
 		elif role=="Admin" :
 			if "Admin" in user.role:
 				tasks=session.query(TaskSchema).all()
 			else:
-				raise HTTPException(status_code=409,detail="Not Authorized")
+				raise HTTPException(status_code=403,detail="Not Authorized")
 		else:
 			if role in user.role:
 				tasks=session.query(TaskSchema).filter(TaskSchema.assigned_to==user.e_id).all()
 			else:
-				raise HTTPException(status_code=409,detail="Not Authorized")
+				raise HTTPException(status_code=403,detail="Not Authorized")
 		return [TaskReqRes.from_orm(t) for t in tasks]
 	except SQLAlchemyError as e:
 		session.rollback()
@@ -81,8 +81,19 @@ def get_task_by_id(t_id: int):
 		session.close()
 
 
-def update_task(t_id: int, updated: dict):
+def get_task_by_status(status,role,user):
+    try:
+        data=get_all_tasks(role,user)
+        new_data = [task for task in data if task.status == status]
+        return new_data
+    except SQLAlchemyError as e:
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+    
+    
+def update_task(t_id: int, updated: dict,role,user):
 	try:
+		if role not in ["Manager", "Admin"]:
+			raise HTTPException(status_code=403,detail="Dont have access to update task")
 		session = get_connection()
 		t = session.query(TaskSchema).filter(TaskSchema.t_id == t_id).first()
 		if not t:
@@ -90,18 +101,21 @@ def update_task(t_id: int, updated: dict):
 
 		# handle assignment timestamp
 		if "assigned_to" in updated and updated.get("assigned_to") and not t.assigned_at:
-			t.assigned_at = datetime.utcnow()
+			t.assigned_at = datetime.now()
 
 		# handle status -> if changed to DONE set actual_closure
 		if "status" in updated:
 			new_status = updated.get("status")
-			if new_status and new_status.upper() == "DONE":
-				t.actual_closure = datetime.utcnow()
+			if new_status:
+				if new_status.upper() == "DONE":
+					t.actual_closure = datetime.now()
+				if t.status.upper()=="IN_PROGRESS":
+					raise HTTPException(status_code=403,detail="Only assigned employee can change the status of task in progress")
 
 		for key, value in updated.items():
 			setattr(t, key, value)
 
-		t.updated_at = datetime.utcnow()
+		t.updated_at = datetime.now()
 		session.commit()
 		session.refresh(t)
 		return TaskReqRes.from_orm(t)
@@ -112,6 +126,34 @@ def update_task(t_id: int, updated: dict):
 		session.close()
 
 
+def patch_status(t_id,status,role,user):
+    try:
+        session = get_connection()
+        t = session.query(TaskSchema).filter(TaskSchema.t_id == t_id).first()
+        if role=="Manager":
+            if user.e_id!=t.reviewer:
+                raise HTTPException(status_code=403,detail="Not Reviewer for the task")
+            if (status.upper()=="IN_PROGRESS" or status.upper()=="DONE") and t.status.upper()=="REVIEW":
+                t.status=status
+            else:
+                raise HTTPException(status_code=409,detail="Only change the status to in progress or done from status review")
+        else:
+            if user.e_id!=t.assigned_to:
+                raise HTTPException(status_code=403,detail="Not assigned for the task")
+            if status.upper()=="IN_PROGRESS" and t.status.upper()=="TO_DO":
+                t.status=status
+            else:
+                raise HTTPException(status_code=409,detail="Only change the status from to do to in progress")
+        session.commit()
+        session.refresh(t)
+        return TaskReqRes.from_orm(t)
+    except SQLAlchemyError as e:
+        session.rollback()
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+    finally:
+        session.close()
+
+        
 def delete_task(t_id: int):
 	try:
 		session = get_connection()
