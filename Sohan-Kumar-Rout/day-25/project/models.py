@@ -5,13 +5,12 @@ from sqlalchemy.orm import relationship
 
 # ---------- SQLAlchemy ORM Models ----------
 class User(Base):
-    __tablename__ = "user"   #  plural for consistency
+    __tablename__ = "users"
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     username = Column(String(100), unique=True, nullable=False)
     password = Column(String(100), nullable=False)
 
-    # Relationship to TaskORM
-    # tasks = relationship("TaskORM")
+    tasks = relationship("TaskORM", back_populates="user")
 
 
 class TaskORM(Base):

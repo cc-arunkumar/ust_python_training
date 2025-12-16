@@ -1,95 +1,128 @@
 import React, { useEffect, useState } from "react";
-import { createEmployee, updateEmployee } from "../services/employeeService";
-
-const initialFormState = {
-  name: "",
-  email: "",
-  designation: "",
-  department: "",
-  location: "",
-  status: "Active",
-  salary: "",
-  date_of_joining: "",
-};
+import { createEmployee, updateEmployee, getEmployees } from "../services/employeeService";
 
 const EmployeeForm = ({ selectedEmployee, onSuccess }) => {
-  const [formData, setFormData] = useState(initialFormState);
-  const [loading, setLoading] = useState(false);
+  const [employee, setEmployee] = useState({
+    name: "",
+    email: "",
+    designation: "",
+    managerId: "",
+  });
+
+  const [managers, setManagers] = useState([]);
 
   useEffect(() => {
+    loadManagers();
+
     if (selectedEmployee) {
-      setFormData(selectedEmployee);
-    } else {
-      setFormData(initialFormState);
+      setEmployee({
+        name: selectedEmployee.name || "",
+        email: selectedEmployee.email || "",
+        designation: selectedEmployee.designation || "",
+        managerId: selectedEmployee.managerId ?? "",
+      });
     }
   }, [selectedEmployee]);
 
+  const loadManagers = async () => {
+    const res = await getEmployees();
+    setManagers(res); // FIXED
+  };
+
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: name === "salary" ? Number(value) || "" : value,
-    }));
+    setEmployee({ ...employee, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
 
-    try {
-      if (selectedEmployee?.id) {
-        await updateEmployee(selectedEmployee.id, formData);
-      } else {
-        await createEmployee(formData);
-      }
-      onSuccess();
-    } catch (err) {
-      console.error(err);
-      alert("Error saving employee");
-    } finally {
-      setLoading(false);
+    if (selectedEmployee) {
+      await updateEmployee(selectedEmployee.id, employee);
+      alert("Employee updated successfully");
+    } else {
+      await createEmployee(employee);
+      alert("Employee created successfully");
     }
+
+    onSuccess();
+
+    setEmployee({
+      name: "",
+      email: "",
+      designation: "",
+      managerId: "",
+    });
   };
 
   return (
-    <div className="bg-[#112240] shadow-lg border border-[#1F2A40] rounded-lg p-6 mb-6 text-white">
-      <h2 className="text-2xl font-semibold mb-4">
-        {selectedEmployee ? "Edit Employee" : "Create Employee"}
+    <div className="bg-[#1F2635] p-6 rounded-xl shadow-lg text-white max-w-2xl mb-6">
+      <h2 className="text-2xl font-bold mb-6 text-blue-400">
+        {selectedEmployee ? "Update Employee" : "Create Employee"}
       </h2>
 
-      <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-4">
-        {Object.keys(initialFormState).map((field) => (
-          <div key={field} className="flex flex-col">
-            <label className="font-medium capitalize mb-1">
-              {field.replace(/_/g, " ")}
-            </label>
+      <form onSubmit={handleSubmit} className="space-y-4">
 
-            <input
-              type={field === "date_of_joining" ? "date" : "text"}
-              name={field}
-              value={formData[field] || ""}
-              onChange={handleChange}
-              className="bg-[#0A1A2F] border border-[#1F2A40] text-white rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600"
-            />
-          </div>
-        ))}
-
-        <div className="col-span-2 flex gap-4 mt-4">
-          <button
-            type="submit"
-            className="bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded text-white font-semibold"
-          >
-            {loading ? "Saving..." : selectedEmployee ? "Update" : "Create"}
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setFormData(initialFormState)}
-            className="bg-gray-600 hover:bg-gray-700 px-6 py-2 rounded text-white"
-          >
-            Reset
-          </button>
+        {/* Name */}
+        <div>
+          <label className="block mb-1 text-sm font-medium">Name</label>
+          <input
+            type="text"
+            name="name"
+            value={employee.name}
+            onChange={handleChange}
+            className="w-full p-3 bg-[#1A2230] border border-[#2F3A4D] rounded outline-none"
+          />
         </div>
+
+        {/* Email */}
+        <div>
+          <label className="block mb-1 text-sm font-medium">Email</label>
+          <input
+            type="email"
+            name="email"
+            value={employee.email}
+            onChange={handleChange}
+            className="w-full p-3 bg-[#1A2230] border border-[#2F3A4D] rounded outline-none"
+          />
+        </div>
+
+        {/* Designation */}
+        <div>
+          <label className="block mb-1 text-sm font-medium">Designation</label>
+          <input
+            type="text"
+            name="designation"
+            value={employee.designation}
+            onChange={handleChange}
+            className="w-full p-3 bg-[#1A2230] border border-[#2F3A4D] rounded outline-none"
+          />
+        </div>
+
+        {/* Manager */}
+        <div>
+          <label className="block mb-1 text-sm font-medium">Manager</label>
+          <select
+            name="managerId"
+            value={employee.managerId}
+            onChange={handleChange}
+            className="w-full p-3 bg-[#1A2230] border border-[#2F3A4D] rounded outline-none"
+          >
+            <option value="">Select Manager</option>
+
+            {managers.map((m) => (
+              <option key={m.id} value={m.id}>
+                {m.id} — {m.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <button
+          type="submit"
+          className="w-full bg-blue-600 py-3 rounded-lg font-semibold hover:bg-blue-700"
+        >
+          {selectedEmployee ? "Update Employee" : "Create Employee"}
+        </button>
       </form>
     </div>
   );

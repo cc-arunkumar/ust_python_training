@@ -5,6 +5,6 @@ def get_connection():
     host = "localhost",
     user= "root",
     password = "pass@word1",
-    database= "ust_asset_db"
+    database= "ust_task_manager"
     )
     return conn
