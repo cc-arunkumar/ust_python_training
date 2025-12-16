@@ -15,7 +15,7 @@ class TaskReqRes(BaseModel):
     priority: str = Field(..., description="high, medium, low")
     status: Optional[str] = Field(default="TO_DO")
     reviewer: Optional[int] = None
-    created_by: Optional[int] = None
+    created_by: Optional[int] =None
     expected_closure: datetime
     actual_closure: Optional[datetime] = None
 

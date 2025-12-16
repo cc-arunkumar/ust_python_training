@@ -21,9 +21,11 @@ def get_all(role,user=Depends(get_current_user)):
 
 
 @task_router.post("/create")
-def add_new_task(new_task: TaskReqRes):
+def add_new_task(role,new_task: TaskReqRes,user=Depends(get_current_user)):
     try:
-        t = add_task(new_task)
+        if role not in user.role:
+            raise HTTPException(status_code=409,detail="The user doesnt have the mentioned role")
+        t = add_task(new_task,role,user)
         return {"detail": "Task Added Successfully", "task": t}
     except HTTPException as e:
         raise e
@@ -32,9 +34,9 @@ def add_new_task(new_task: TaskReqRes):
 
 
 @task_router.get("/get", response_model=TaskReqRes)
-def get_by_id(id: int):
+def get_by_id(id: int,user=Depends(get_current_user)):
     try:
-        t = get_task_by_id(id)
+        t = get_task_by_id(id,user)
         return t
     except HTTPException as e:
         raise e
@@ -43,9 +45,9 @@ def get_by_id(id: int):
 
 
 @task_router.put("/update")
-def update_task_data(id: int, new_data: dict):
+def update_task_data(id: int, new_data: dict,user=Depends(get_current_user)):
     try:
-        updated = update_task(id, new_data)
+        updated = update_task(id, new_data,user)
         return {"detail": "Task Updated Successfully", "task": updated}
     except HTTPException as e:
         raise e
@@ -54,9 +56,9 @@ def update_task_data(id: int, new_data: dict):
 
 
 @task_router.delete("/delete")
-def delete_task_by_id(id: int):
+def delete_task_by_id(id: int,user=Depends(get_current_user)):
     try:
-        resp = delete_task(id)
+        resp = delete_task(id,user)
         return resp
     except HTTPException as e:
         raise e

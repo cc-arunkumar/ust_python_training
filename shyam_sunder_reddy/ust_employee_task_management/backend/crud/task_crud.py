@@ -6,8 +6,10 @@ from fastapi import HTTPException
 from datetime import datetime
 
 
-def add_task(new_task: TaskReqRes):
+def add_task(new_task: TaskReqRes,role,user):
 	try:
+		if role !="Manager" or role!="Admin":
+			raise HTTPException(status_code=409,detail="Only Manager and Admin can create a new task")
 		session = get_connection()
 		task = TaskSchema(
 			title=new_task.title,
@@ -18,15 +20,15 @@ def add_task(new_task: TaskReqRes):
 			updated_by=new_task.updated_by,
 			updated_at=new_task.updated_at,
 			priority=new_task.priority,
-			status=new_task.status or "TO_DO",
+			status="TO_DO",
 			reviewer=new_task.reviewer,
-			created_by=new_task.created_by,
+			created_by=user.e_id,
 			expected_closure=new_task.expected_closure,
 			actual_closure=new_task.actual_closure
 		)
 		# set assigned_at if assigned_to is present but no assigned_at
-		if task.assigned_to and not task.assigned_at:
-			task.assigned_at = datetime.utcnow()
+		if task.assigned_to :
+			task.assigned_at = datetime.now()
 
 		session.add(task)
 		session.commit()
@@ -46,14 +48,17 @@ def get_all_tasks(role,user):
 			if "Manager" in user.role: 
 				tasks = session.query(TaskSchema).filter(TaskSchema.reviewer == user.e_id).all()
 			else:
-				raise HTTPException(status_code=400,detail="Not Authorized")
+				raise HTTPException(status_code=409,detail="Not Authorized")
 		elif role=="Admin" :
 			if "Admin" in user.role:
 				tasks=session.query(TaskSchema).all()
 			else:
-				raise HTTPException(status_code=400,detail="Not Authorized")
-		else: 
-			tasks=session.query(TaskSchema).filter(TaskSchema.assigned_to==user.e_id).all()
+				raise HTTPException(status_code=409,detail="Not Authorized")
+		else:
+			if role in user.role:
+				tasks=session.query(TaskSchema).filter(TaskSchema.assigned_to==user.e_id).all()
+			else:
+				raise HTTPException(status_code=409,detail="Not Authorized")
 		return [TaskReqRes.from_orm(t) for t in tasks]
 	except SQLAlchemyError as e:
 		session.rollback()
