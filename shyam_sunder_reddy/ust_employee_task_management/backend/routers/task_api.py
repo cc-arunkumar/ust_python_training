@@ -1,15 +1,16 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException,Depends
 from crud.task_crud import add_task, get_all_tasks, get_task_by_id, update_task, delete_task
 from models.task import TaskReqRes
 from typing import List
+from utils.auth import get_current_user
 
 task_router = APIRouter(prefix="/Task", tags=["Task"])
 
 
 @task_router.get("/getall", response_model=List[TaskReqRes])
-def get_all(role):
+def get_all(role,user=Depends(get_current_user)):
     try:
-        tasks = get_all_tasks(role)
+        tasks = get_all_tasks(role,user)
         if not tasks:
             raise HTTPException(status_code=404, detail="No tasks found")
         return tasks

@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey,ARRAY,JSON
 from database.sql_db import Base, engine
 
 
@@ -6,7 +6,7 @@ class UserSchema(Base):
     __tablename__ = "users"
     e_id = Column(Integer, primary_key=True, index=True)
     password = Column(String(100), nullable=False)
-    role = Column(String(200), nullable=False)  # comma-separated roles
+    role = Column(JSON, nullable=False)  
     status = Column(String(20), nullable=False)
 
     def __repr__(self):

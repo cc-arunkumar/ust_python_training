@@ -39,11 +39,21 @@ def add_task(new_task: TaskReqRes):
 		session.close()
 
 
-def get_all_tasks(role):
+def get_all_tasks(role,user):
 	try:
 		session = get_connection()
-		if role=="manager": tasks = session.query(TaskSchema).all()
-    	else: tasks=session.query(TaskSchema).filter()
+		if role == "Manager":
+			if "Manager" in user.role: 
+				tasks = session.query(TaskSchema).filter(TaskSchema.reviewer == user.e_id).all()
+			else:
+				raise HTTPException(status_code=400,detail="Not Authorized")
+		elif role=="Admin" :
+			if "Admin" in user.role:
+				tasks=session.query(TaskSchema).all()
+			else:
+				raise HTTPException(status_code=400,detail="Not Authorized")
+		else: 
+			tasks=session.query(TaskSchema).filter(TaskSchema.assigned_to==user.e_id).all()
 		return [TaskReqRes.from_orm(t) for t in tasks]
 	except SQLAlchemyError as e:
 		session.rollback()
