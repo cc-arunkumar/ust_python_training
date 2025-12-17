@@ -1,56 +1,107 @@
 import React, { useState } from "react";
-import { loginUser } from "../services/authService";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [emp_id, setEmpId] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setError("");
 
     try {
-      const res = await loginUser(emp_id, password);
+      const response = await fetch("http://localhost:8000/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ emp_id, password }),
+      });
 
-      localStorage.setItem("token", res.access_token);
-      localStorage.setItem("role", res.role);
-      localStorage.setItem("emp_id", res.emp_id);
+      const data = await response.json();
 
-      if (res.role === "Admin") window.location.href = "/admin/employees";
-      if (res.role === "Manager") window.location.href = "/manager/tasks";
-      if (res.role === "Employee") window.location.href = "/employee/tasks";
+      if (!response.ok) {
+        throw new Error(data.message || "Invalid credentials");
+      }
+
+      // Save to localStorage
+      localStorage.setItem("token", data.access_token || data.token);
+      localStorage.setItem("emp_id", data.emp_id);
+      localStorage.setItem("user_name", data.name || "Manager");
+      localStorage.setItem("role", data.role);
+
+      // Redirect based on role
+      if (data.role === "Manager") {
+        navigate("/manager/dashboard");
+      } else if (data.role === "Admin") {
+        navigate("/admin/employees");
+      } else if (data.role === "Employee") {
+        navigate("/employee/tasks");
+      } else {
+        navigate("/login");
+      }
     } catch (err) {
-      alert("Invalid credentials");
+      console.error("Login error:", err);
+      setError(err.message || "Login failed");
     }
   };
 
   return (
-    <div className="h-screen flex items-center justify-center bg-gray-900">
-      <form
-        onSubmit={handleLogin}
-        className="bg-gray-800 p-8 rounded-xl text-white w-96"
-      >
-        <h2 className="text-2xl font-bold mb-6 text-blue-400">Login</h2>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-600 to-blue-500">
+      <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-md">
+        <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">
+          Member Login
+        </h2>
 
-        <input
-          type="number"
-          placeholder="Employee ID"
-          value={emp_id}
-          onChange={(e) => setEmpId(e.target.value)}
-          className="w-full p-3 mb-4 bg-gray-700 rounded"
-        />
+        {error && (
+          <div className="mb-4 text-red-500 text-sm text-center">{error}</div>
+        )}
 
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="w-full p-3 mb-4 bg-gray-700 rounded"
-        />
+        <form onSubmit={handleLogin} className="space-y-4">
+          <div className="relative">
+            <span className="absolute left-3 top-2.5 text-gray-400">🆔</span>
+            <input
+              type="text"
+              placeholder="Employee ID"
+              value={emp_id}
+              onChange={(e) => setEmpId(e.target.value)}
+              className="w-full pl-10 pr-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-purple-500"
+              required
+            />
+          </div>
 
-        <button className="w-full bg-blue-600 py-3 rounded hover:bg-blue-700">
-          Login
-        </button>
-      </form>
+          <div className="relative">
+            <span className="absolute left-3 top-2.5 text-gray-400">🔒</span>
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full pl-10 pr-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-purple-500"
+              required
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="w-full bg-green-500 hover:bg-green-600 text-white py-2 rounded font-semibold"
+          >
+            LOGIN
+          </button>
+
+          <div className="text-center text-sm mt-2">
+            <a href="#" className="text-blue-600 hover:underline">
+              Forgot Employee ID / Password?
+            </a>
+          </div>
+
+          <div className="text-center text-sm mt-4">
+            <a href="#" className="text-blue-600 hover:underline">
+              Create your Account →
+            </a>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };

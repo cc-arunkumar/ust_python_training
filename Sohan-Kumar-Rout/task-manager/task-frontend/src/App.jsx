@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Login from "./pages/Login";
+import DashboardManager from "./pages/DashboardManager";   // ✅ Manager Dashboard
 import KanbanBoard from "./components/KanbanBoard";
 
 import SidebarAdmin from "./components/SidebarAdmin";
@@ -41,18 +42,15 @@ const Layout = ({ sidebar, children }) => (
   </div>
 );
 
-
 function App() {
   const [theme, setTheme] = useState("light");
 
-  // Load theme from localStorage on first load
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme") || "light";
     setTheme(savedTheme);
     document.documentElement.className = savedTheme;
   }, []);
 
-  // Toggle theme
   const toggleTheme = () => {
     const newTheme = theme === "light" ? "dark" : "light";
     setTheme(newTheme);
@@ -62,7 +60,6 @@ function App() {
 
   return (
     <BrowserRouter>
-      {/* THEME TOGGLE BUTTON */}
       <ThemeToggle theme={theme} toggleTheme={toggleTheme} />
 
       <Routes>
@@ -78,7 +75,6 @@ function App() {
             </Layout>
           }
         />
-
         <Route
           path="/admin/employees/create"
           element={
@@ -87,7 +83,6 @@ function App() {
             </Layout>
           }
         />
-
         <Route
           path="/admin/tasks"
           element={
@@ -96,7 +91,6 @@ function App() {
             </Layout>
           }
         />
-
         <Route
           path="/admin/tasks/create"
           element={
@@ -105,7 +99,6 @@ function App() {
             </Layout>
           }
         />
-
         <Route
           path="/admin/kanban"
           element={
@@ -117,6 +110,14 @@ function App() {
 
         {/* ---------------- MANAGER ROUTES ---------------- */}
         <Route
+          path="/manager/dashboard"
+          element={
+            <Layout sidebar={<SidebarManager />}>
+              <DashboardManager />   {/* ✅ Manager Dashboard */}
+            </Layout>
+          }
+        />
+        <Route
           path="/manager/employees"
           element={
             <Layout sidebar={<SidebarManager />}>
@@ -124,7 +125,6 @@ function App() {
             </Layout>
           }
         />
-
         <Route
           path="/manager/tasks"
           element={
@@ -133,7 +133,6 @@ function App() {
             </Layout>
           }
         />
-
         <Route
           path="/manager/tasks/create"
           element={
@@ -142,7 +141,6 @@ function App() {
             </Layout>
           }
         />
-
         <Route
           path="/manager/kanban"
           element={
@@ -161,7 +159,6 @@ function App() {
             </Layout>
           }
         />
-
         <Route
           path="/employee/kanban"
           element={
