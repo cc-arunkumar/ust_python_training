@@ -40,7 +40,8 @@ class EmployeeOut(EmployeeBase):
 class TaskBase(BaseModel):
     title: str
     description: Optional[str] = None
-    status: Optional[str] = "Pending"
+    # UPDATED DEFAULT STATUS
+    status: Optional[str] = "TO_DO"
     assigned_to: int
     assigned_by: int
     reviewer: Optional[int] = None
@@ -135,6 +136,6 @@ class UserOut(UserBase):
 # LOGIN SCHEMA
 # =========================================================
 
-class UserLogin(BaseModel): 
-    emp_id: int 
+class UserLogin(BaseModel):
+    emp_id: int
     password: str

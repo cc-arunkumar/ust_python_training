@@ -13,7 +13,8 @@ const CreateTask = () => {
     assigned_to: "",
     assigned_by: localStorage.getItem("emp_id"),
     priority: "Medium",
-    status: "Pending",
+    // status: "TO_DO"
+
   });
 
   const loadEmployees = async () => {

@@ -6,41 +6,75 @@ import {
 } from "@hello-pangea/dnd";
 import { getTasks, updateTask } from "../services/taskService";
 
+// 🌈 Header colors
+const statusColors = {
+  TO_DO: "#A7C7E7",          // Light Blue
+  IN_PROGRESS: "#F7E7A1",    // Light Yellow
+  REVIEW: "#D7BDE2",         // Light Purple
+  COMPLETED: "#7DCEA0",      // Green
+};
+
+// 🌈 Column backgrounds
+const pastelColumnColors = {
+  TO_DO: "bg-[#DCEBFA] dark:bg-[#4A637A]",
+  IN_PROGRESS: "bg-[#FFF8CC] dark:bg-[#7A6F2A]",
+  REVIEW: "bg-[#F2E6FF] dark:bg-[#5A3A7A]",
+  COMPLETED: "bg-[#DFF5E1] dark:bg-[#2F6B3F]",
+};
+
+// 🌈 Card backgrounds
+const pastelCardColors = {
+  TO_DO: "bg-[#CFE2F3] border-[#A7C7E7]",
+  IN_PROGRESS: "bg-[#FFF2A8] border-[#F7E7A1]",
+  REVIEW: "bg-[#E8D9FF] border-[#D7BDE2]",
+  COMPLETED: "bg-[#C8EFD4] border-[#7DCEA0]",
+};
+
 const initialColumns = {
-  Pending: {
-    name: "Pending",
-    items: [],
-  },
-  "In Progress": {
-    name: "In Progress",
-    items: [],
-  },
-  Completed: {
-    name: "Completed",
-    items: [],
-  },
+  TO_DO: { name: "TO DO", items: [] },
+  IN_PROGRESS: { name: "IN PROGRESS", items: [] },
+  REVIEW: { name: "REVIEW", items: [] },
+  COMPLETED: { name: "COMPLETED", items: [] },
+};
+
+const isMoveAllowedFrontend = (role, from, to) => {
+  const employeeRules = {
+    TO_DO: ["IN_PROGRESS"],
+    IN_PROGRESS: ["REVIEW"],
+  };
+
+  const managerRules = {
+    ...employeeRules,
+    REVIEW: ["COMPLETED", "IN_PROGRESS"],
+  };
+
+  if (role === "Employee") return employeeRules[from]?.includes(to) || false;
+  if (role === "Manager" || role === "Admin")
+    return managerRules[from]?.includes(to) || false;
+
+  return false;
 };
 
 const KanbanBoard = () => {
   const [columns, setColumns] = useState(initialColumns);
+  const role = localStorage.getItem("role");
 
   const loadTasks = async () => {
     const res = await getTasks();
     const tasks = res.data;
 
-    const newColumns = {
-      Pending: { ...initialColumns.Pending, items: [] },
-      "In Progress": { ...initialColumns["In Progress"], items: [] },
-      Completed: { ...initialColumns.Completed, items: [] },
+    const newCols = {
+      TO_DO: { ...initialColumns.TO_DO, items: [] },
+      IN_PROGRESS: { ...initialColumns.IN_PROGRESS, items: [] },
+      REVIEW: { ...initialColumns.REVIEW, items: [] },
+      COMPLETED: { ...initialColumns.COMPLETED, items: [] },
     };
 
     tasks.forEach((task) => {
-      if (newColumns[task.status]) {
-        newColumns[task.status].items.push(task);
-      }
+      if (newCols[task.status]) newCols[task.status].items.push(task);
     });
 
-    setColumns(newColumns);
+    setColumns(newCols);
   };
 
   useEffect(() => {
@@ -51,56 +85,45 @@ const KanbanBoard = () => {
     const { source, destination } = result;
     if (!destination) return;
 
-    const sourceColId = source.droppableId;
-    const destColId = destination.droppableId;
+    const from = source.droppableId;
+    const to = destination.droppableId;
 
-    // Same column: reorder only
-    if (sourceColId === destColId) {
-      const column = columns[sourceColId];
-      const copiedItems = [...column.items];
-      const [removed] = copiedItems.splice(source.index, 1);
-      copiedItems.splice(destination.index, 0, removed);
+    if (from === to) {
+      const col = columns[from];
+      const items = [...col.items];
+      const [moved] = items.splice(source.index, 1);
+      items.splice(destination.index, 0, moved);
 
-      setColumns({
-        ...columns,
-        [sourceColId]: {
-          ...column,
-          items: copiedItems,
-        },
-      });
+      setColumns({ ...columns, [from]: { ...col, items } });
       return;
     }
 
-    // Different columns: move + update status
-    const sourceColumn = columns[sourceColId];
-    const destColumn = columns[destColId];
+    if (!isMoveAllowedFrontend(role, from, to)) {
+      alert(`You cannot move from ${from} → ${to}`);
+      return;
+    }
 
-    const sourceItems = [...sourceColumn.items];
-    const destItems = [...destColumn.items];
+    const sourceCol = columns[from];
+    const destCol = columns[to];
 
-    const [removed] = sourceItems.splice(source.index, 1);
-    removed.status = destColId;
+    const sourceItems = [...sourceCol.items];
+    const destItems = [...destCol.items];
 
-    destItems.splice(destination.index, 0, removed);
+    const [moved] = sourceItems.splice(source.index, 1);
+    moved.status = to;
+
+    destItems.splice(destination.index, 0, moved);
 
     setColumns({
       ...columns,
-      [sourceColId]: {
-        ...sourceColumn,
-        items: sourceItems,
-      },
-      [destColId]: {
-        ...destColumn,
-        items: destItems,
-      },
+      [from]: { ...sourceCol, items: sourceItems },
+      [to]: { ...destCol, items: destItems },
     });
 
-    // Persist change to backend
     try {
-      await updateTask(removed.task_id, { status: removed.status });
+      await updateTask(moved.task_id, { status: moved.status });
     } catch (err) {
-      console.error("Failed to update status", err);
-      // Optionally: reload to sync again
+      alert("Backend rejected this move. Reloading.");
       loadTasks();
     }
   };
@@ -108,20 +131,23 @@ const KanbanBoard = () => {
   return (
     <div className="flex gap-6 p-4 w-full">
       <DragDropContext onDragEnd={onDragEnd}>
-        {Object.entries(columns).map(([columnId, column]) => (
-          <div key={columnId} className="w-1/3">
-            <h2 className="text-xl font-bold text-blue-400 mb-4">
-              {column.name}
+        {Object.entries(columns).map(([colId, col]) => (
+          <div key={colId} className="w-1/4">
+            <h2
+              className="text-xl font-bold mb-4 p-2 rounded text-white"
+              style={{ backgroundColor: statusColors[colId] }}
+            >
+              {col.name}
             </h2>
 
-            <Droppable droppableId={columnId}>
+            <Droppable droppableId={colId}>
               {(provided) => (
                 <div
                   ref={provided.innerRef}
                   {...provided.droppableProps}
-                  className="bg-gray-800 p-4 rounded-lg min-h-[500px]"
+                  className={`${pastelColumnColors[colId]} p-4 rounded-lg min-h-[500px] transition-all duration-300`}
                 >
-                  {column.items.map((task, index) => (
+                  {col.items.map((task, index) => (
                     <Draggable
                       key={task.task_id}
                       draggableId={task.task_id.toString()}
@@ -132,24 +158,36 @@ const KanbanBoard = () => {
                           ref={provided.innerRef}
                           {...provided.draggableProps}
                           {...provided.dragHandleProps}
-                          className="bg-gray-700 p-4 rounded-lg mb-3 shadow hover:bg-gray-600 transition"
+                          className={`
+                            p-4 rounded-lg mb-3 shadow transition border
+                            ${pastelCardColors[colId]}
+                            dark:bg-gray-700 dark:border-gray-600
+                          `}
                         >
-                          <h3 className="font-bold text-white">
+                          <span
+                            className="text-white px-2 py-1 rounded text-xs font-semibold inline-block mb-2"
+                            style={{ backgroundColor: statusColors[task.status] }}
+                          >
+                            {task.status}
+                          </span>
+
+                          <h3 className="font-bold text-black dark:text-white">
                             {task.title}
                           </h3>
+
                           {task.description && (
-                            <p className="text-gray-300 text-sm mt-1">
+                            <p className="text-gray-700 dark:text-gray-300 text-sm mt-1">
                               {task.description}
                             </p>
                           )}
+
                           <p className="text-sm mt-2">
-                            <span className="text-blue-400">Priority:</span>{" "}
+                            <span className="text-blue-600 dark:text-blue-400">Priority:</span>{" "}
                             {task.priority}
                           </p>
+
                           <p className="text-sm">
-                            <span className="text-green-400">
-                              Assigned To:
-                            </span>{" "}
+                            <span className="text-green-600 dark:text-green-400">Assigned To:</span>{" "}
                             {task.assigned_to}
                           </p>
                         </div>

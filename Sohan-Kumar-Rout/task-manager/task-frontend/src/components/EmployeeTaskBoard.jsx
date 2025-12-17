@@ -13,8 +13,20 @@ const EmployeeTaskBoard = () => {
     loadTasks();
   }, []);
 
-  const updateStatus = async (task_id, status) => {
-    await updateTask(task_id, { status });
+  const updateStatus = async (task_id, currentStatus, newStatus) => {
+    // Enforce employee rules on frontend too
+    const allowed =
+      (currentStatus === "TO_DO" && newStatus === "IN_PROGRESS") ||
+      (currentStatus === "IN_PROGRESS" && newStatus === "REVIEW");
+
+    if (!allowed) {
+      alert(
+        `As an employee you can only move TO_DO -> IN_PROGRESS or IN_PROGRESS -> REVIEW`
+      );
+      return;
+    }
+
+    await updateTask(task_id, { status: newStatus });
     loadTasks();
   };
 
@@ -40,19 +52,34 @@ const EmployeeTaskBoard = () => {
               <td className="p-3">{task.status}</td>
 
               <td className="p-3 space-x-2">
-                <button
-                  onClick={() => updateStatus(task.task_id, "In Progress")}
-                  className="bg-yellow-600 px-3 py-1 rounded"
-                >
-                  In Progress
-                </button>
+                {task.status === "TO_DO" && (
+                  <button
+                    onClick={() =>
+                      updateStatus(task.task_id, task.status, "IN_PROGRESS")
+                    }
+                    className="bg-yellow-600 px-3 py-1 rounded"
+                  >
+                    Start (In Progress)
+                  </button>
+                )}
 
-                <button
-                  onClick={() => updateStatus(task.task_id, "Completed")}
-                  className="bg-green-600 px-3 py-1 rounded"
-                >
-                  Completed
-                </button>
+                {task.status === "IN_PROGRESS" && (
+                  <button
+                    onClick={() =>
+                      updateStatus(task.task_id, task.status, "REVIEW")
+                    }
+                    className="bg-blue-600 px-3 py-1 rounded"
+                  >
+                    Send to Review
+                  </button>
+                )}
+
+                {(task.status === "REVIEW" ||
+                  task.status === "COMPLETED") && (
+                  <span className="text-gray-400 text-sm">
+                    Waiting for manager review
+                  </span>
+                )}
               </td>
             </tr>
           ))}

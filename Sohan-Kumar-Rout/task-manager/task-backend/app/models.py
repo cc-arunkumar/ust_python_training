@@ -38,10 +38,11 @@ class Task(Base):
     title = Column(String(200), nullable=False)
     description = Column(Text, nullable=True)
 
+    # UPDATED STATUS ENUM: TO_DO → IN_PROGRESS → REVIEW → COMPLETED
     status = Column(
-        Enum("Pending", "In Progress", "Completed", name="task_status_enum"),
+        Enum("TO_DO", "IN_PROGRESS", "REVIEW", "COMPLETED", name="task_status_enum"),
         nullable=False,
-        server_default="Pending",
+        server_default="TO_DO",
     )
 
     assigned_to = Column(Integer, ForeignKey("employees.id"), nullable=False)

@@ -23,10 +23,10 @@ const SidebarAdmin = () => {
           Create Task
         </Link>
 
-        {/* ⭐ NEW: Kanban Board Link */}
-        <Link to="/admin/kanban" className="block bg-gray-800 p-3 rounded">
-          Kanban Board
-        </Link>
+<Link to="/admin/kanban" className="block bg-gray-800 p-3 rounded">
+  Kanban Board
+</Link>
+
       </nav>
 
       <button
