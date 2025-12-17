@@ -1,6 +1,18 @@
 from database.mysql_connection import SessionLocal, Employee
 from services.user_services import get_User_by_id
 
+def get_all_employees_for_admin():
+    try:
+        session = SessionLocal()
+        employees = session.query(Employee).all()      
+        session.close()
+        if not employees:
+            return {"detail":"No employees found"}
+        return employees
+    except Exception as e:
+        print("ERROR: ",e)
+    finally:
+        print("Completed")
 def get_all_employees(manager_id:int):
     try:
         session = SessionLocal()

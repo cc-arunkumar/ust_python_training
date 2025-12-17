@@ -24,21 +24,21 @@ const ChangeRoleModal = ({ token, employee, onClose, onSuccess }) => {
       setSelectedRoles(roles);
     } catch (err) {
       console.error('Error fetching user roles:', err);
-      setError('Failed to fetch current roles');
+      setError(err.message || 'Failed to fetch current roles');
     } finally {
       setFetchLoading(false);
     }
   };
 
   const handleRoleToggle = (role) => {
-    setSelectedRoles(prev => {
+    setSelectedRoles((prev) => {
       if (prev.includes(role)) {
         // Prevent removing all roles
         if (prev.length === 1) {
           setError('User must have at least one role');
           return prev;
         }
-        return prev.filter(r => r !== role);
+        return prev.filter((r) => r !== role);
       } else {
         setError('');
         return [...prev, role];
@@ -48,9 +48,14 @@ const ChangeRoleModal = ({ token, employee, onClose, onSuccess }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (selectedRoles.length === 0) {
       setError('Please select at least one role');
+      return;
+    }
+
+    if (!employee || employee.emp_id == null) {
+      setError('Invalid employee selected');
       return;
     }
 
@@ -58,8 +63,8 @@ const ChangeRoleModal = ({ token, employee, onClose, onSuccess }) => {
     setLoading(true);
 
     try {
-      // Send roles as array to backend
-      await api.updateUserRole(token, employee.emp_id, { role: selectedRoles });
+      // Send roles array; api.updateUserRole will send { role: roles }
+      await api.updateUserRole(token, employee.emp_id, selectedRoles);
       onSuccess();
     } catch (err) {
       console.error('Error updating roles:', err);
@@ -110,7 +115,7 @@ const ChangeRoleModal = ({ token, employee, onClose, onSuccess }) => {
                   Select Roles (can select multiple)
                 </label>
                 <div className="space-y-2">
-                  {availableRoles.map(role => (
+                  {availableRoles.map((role) => (
                     <label
                       key={role}
                       className="flex items-center p-3 border border-gray-300 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors"
@@ -147,9 +152,15 @@ const ChangeRoleModal = ({ token, employee, onClose, onSuccess }) => {
               <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg text-blue-700 text-sm mb-4">
                 <p className="font-semibold mb-1">Role Permissions:</p>
                 <ul className="list-disc list-inside space-y-1 text-xs">
-                  <li><strong>Admin:</strong> Full system access, manage all employees</li>
-                  <li><strong>Manager:</strong> Create tasks, manage team members</li>
-                  <li><strong>Developer:</strong> View and update assigned tasks</li>
+                  <li>
+                    <strong>Admin:</strong> Full system access, manage all employees
+                  </li>
+                  <li>
+                    <strong>Manager:</strong> Create tasks, manage team members
+                  </li>
+                  <li>
+                    <strong>Developer:</strong> View and update assigned tasks
+                  </li>
                 </ul>
               </div>
 

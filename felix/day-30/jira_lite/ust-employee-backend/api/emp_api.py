@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends
 from models.emp_model import Employee
-from services.employee_services import create_employee, get_all_employees, get_employee_by_id, update_employee, delete_employee
+from services.employee_services import create_employee, get_all_employees, get_employee_by_id, update_employee, delete_employee, get_all_employees_for_admin
 from services.user_services import update_user_role, create_User, get_User_by_id
 from models.user_model import UpdateRole,UserModel
 from auth.jwt_auth import get_current_user
@@ -28,6 +28,24 @@ def create_new_employee(employee: Employee,user: str = Depends(get_current_user)
         return new_emp
     except Exception as e:
         raise Exception(f"Error creating employee: {e}")
+@emp_router.get("/employees/admin",tags=["Employees"])
+def get_employees_for_admin(user: str = Depends(get_current_user)):
+    try:
+        emp_id = int(user)
+    
+        auth_user = get_User_by_id(emp_id)
+        if not auth_user:
+            raise HTTPException(status_code=401, detail="User not found")
+
+        # role stored as comma-separated string; allow creation only for admins
+        roles = auth_user.role
+        print("Roles of auth user:", roles)
+        if "admin" not in roles:
+            raise HTTPException(status_code=403, detail="Forbidden: admin role required to view all employees")
+
+        return get_all_employees_for_admin()
+    except Exception as e:
+        raise Exception(f"Error fetching employees for admin: {e}")
 
 @emp_router.get("/employees/{manager_id}",tags=["Employees"])
 def get_employee(manager_id: int,user: str = Depends(get_current_user)):

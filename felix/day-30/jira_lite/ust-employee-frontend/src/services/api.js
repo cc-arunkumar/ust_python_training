@@ -96,6 +96,14 @@ export const api = {
     if (!response.ok) throw new Error('Failed to fetch employees');
     return response.json();
   },
+
+  getEmployeesForAdmin: async (token) => {
+    const response = await fetch(`${API_BASE_URL}/employees/admin`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    if (!response.ok) throw new Error('Failed to fetch employees for admin');
+    return response.json();
+  },
   
   createEmployee: async (token, employeeData) => {
     const response = await fetch(`${API_BASE_URL}/employees`, {
@@ -111,6 +119,7 @@ export const api = {
   },
   
   updateEmployee: async (token, managerId, empId, employeeData) => {
+    console.log('Updating employee with data:', employeeData);
     const response = await fetch(`${API_BASE_URL}/employees/${managerId}/${empId}`, {
       method: 'PUT',
       headers: {

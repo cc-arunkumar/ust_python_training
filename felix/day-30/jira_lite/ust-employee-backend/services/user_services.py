@@ -107,7 +107,9 @@ def update_user_role(emp_id, new_role):
         
         # Update fields
         print("Current roles:", user.role)
-        user.role.append(new_role) # Append new role
+        # for role in new_role:
+        #     user.role.append(role) # Append new role
+        user.role = new_role
         print("Updated roles:", user.role)
         
         session.commit()

@@ -13,7 +13,7 @@ class UserUpdate(BaseModel):
     status: Literal["active","inactive"] = "active"
     
 class UpdateRole(BaseModel):
-    role: str
+    role: List[str]
     
 class LoginModel(BaseModel):
     emp_id: int

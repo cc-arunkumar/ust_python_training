@@ -7,7 +7,7 @@ const EditEmployeeModal = ({ token, employee, onClose, onSuccess }) => {
     emp_id: employee.emp_id || '',
     name: employee.name || '',
     email: employee.email || '',
-    position: employee.position || '',
+    designation: employee.designation || '',
     manager_id: employee.manager_id || '',
     status: employee.status || 'active',
     // optional UI-only fields
@@ -23,7 +23,7 @@ const EditEmployeeModal = ({ token, employee, onClose, onSuccess }) => {
       emp_id: employee.emp_id || '',
       name: employee.name || '',
       email: employee.email || '',
-      position: employee.position || '',
+      designation: employee.designation || '',
       manager_id: employee.manager_id || '',
       status: employee.status || 'active',
       department: employee.department || '',
@@ -39,41 +39,51 @@ const EditEmployeeModal = ({ token, employee, onClose, onSuccess }) => {
     }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError('');
-    setLoading(true);
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+  setError('');
+  setLoading(true);
 
-    try {
-      // Employee payload (matches backend Employee model)
-      const employeePayload = {
-        name: formData.name,
-        email: formData.email,
-        designation: formData.position,
-        manager_id: formData.manager_id
-      };
+  try {
+    // Employee payload (matches backend Employee model)
+    const employeePayload = {
+      name: formData.name,
+      email: formData.email,
+      designation: formData.designation,
+      manager_id: formData.manager_id,
+    };
 
-      // User update payload (matches backend UserUpdate model)
-      const userUpdatePayload = {
-        password: formData.password || '', // include if you allow password change
-        role: formData.role || ["developer"], // must be a list
-        status: formData.status
-      };
+    // If you don't have a full updateUser API, you can remove this for now
+    /*
+    const userUpdatePayload = {
+      password: formData.password || '',
+      role: formData.role || ['developer'],
+      status: formData.status,
+    };
+    */
 
-      // Update employee
-      await api.updateEmployee(token, formData.emp_id, employeePayload);
+    // 🔴 CURRENT (wrong): only 3 args → employeeData becomes undefined
+    // await api.updateEmployee(token, formData.emp_id, employeePayload);
 
-      // Update user account
-      await api.updateUser(token, formData.emp_id, userUpdatePayload);
+    // ✅ FIX: pass 4 args: token, managerId, empId, employeeData
+    await api.updateEmployee(
+      token,
+      formData.manager_id, // managerId for URL /employees/{managerId}/{empId}
+      formData.emp_id,     // empId
+      employeePayload      // employeeData (no longer undefined)
+    );
 
-      onSuccess();
-    } catch (err) {
-      console.error('Error updating employee:', err);
-      setError(err.message || 'Failed to update employee');
-    } finally {
-      setLoading(false);
-    }
-  };
+    // If you later add an updateUser API, call it here:
+    // await api.updateUser(token, formData.emp_id, userUpdatePayload);
+
+    onSuccess();
+  } catch (err) {
+    console.error('Error updating employee:', err);
+    setError(err.message || 'Failed to update employee');
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
@@ -139,12 +149,12 @@ const EditEmployeeModal = ({ token, employee, onClose, onSuccess }) => {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Position *
+                Designation *
               </label>
               <input
                 type="text"
-                name="position"
-                value={formData.position}
+                name="designation"
+                value={formData.designation}
                 onChange={handleChange}
                 required
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
