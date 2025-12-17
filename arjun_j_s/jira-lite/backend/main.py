@@ -7,6 +7,7 @@ from models.task import Task
 from routers.employees import emp_router
 from routers.task import task_router
 from routers.login import login_router
+from routers.user import router as user_router
 
 app = FastAPI(title="Jira Lite")
 
@@ -25,3 +26,4 @@ app.add_middleware(
 app.include_router(login_router)
 app.include_router(emp_router)
 app.include_router(task_router)
+app.include_router(user_router)

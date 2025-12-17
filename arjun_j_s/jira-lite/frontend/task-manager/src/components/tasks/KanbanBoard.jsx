@@ -4,6 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import ApiService from '../../services/api';
 import TaskModal from './TaskModal';
 import TaskDetailsModal from './TaskDetailsModal';
+import QuickStatusModal from './QuickStatusModal';
 import KanbanColumn from './KanbanColumn';
 import { TASK_STATUSES } from '../../utils/constants';
 
@@ -13,6 +14,7 @@ const KanbanBoard = () => {
   const [error, setError] = useState('');
   const [selectedTask, setSelectedTask] = useState(null);
   const [editingTask, setEditingTask] = useState(null);
+  const [quickStatusTask, setQuickStatusTask] = useState(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const { hasRole } = useAuth();
@@ -55,6 +57,10 @@ const KanbanBoard = () => {
 
   const handleView = (task) => {
     setSelectedTask(task);
+  };
+
+  const handleQuickStatus = (task) => {
+    setQuickStatusTask(task);
   };
 
   const handleModalClose = () => {
@@ -140,6 +146,7 @@ const KanbanBoard = () => {
               tasks={getTasksByStatus(status)}
               onTaskView={handleView}
               onTaskEdit={canEdit ? handleEdit : null}
+              onQuickStatus={canEdit ? handleQuickStatus : null}
               canEdit={canEdit}
             />
           ))}
@@ -151,6 +158,14 @@ const KanbanBoard = () => {
         <TaskDetailsModal
           task={selectedTask}
           onClose={() => setSelectedTask(null)}
+          onUpdate={fetchTasks}
+        />
+      )}
+      
+      {quickStatusTask && (
+        <QuickStatusModal
+          task={quickStatusTask}
+          onClose={() => setQuickStatusTask(null)}
           onUpdate={fetchTasks}
         />
       )}

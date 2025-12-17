@@ -3,6 +3,12 @@ import { X, Upload, AlertCircle, CheckCircle } from 'lucide-react';
 import ApiService from '../../services/api';
 import { TASK_STATUSES } from '../../utils/constants';
 
+const PRIORITY_COLORS = {
+  high: 'bg-red-600 text-red-100',
+  medium: 'bg-yellow-600 text-yellow-100',
+  low: 'bg-green-600 text-green-100'
+};
+
 const TaskDetailsModal = ({ task, onClose, onUpdate }) => {
   const [status, setStatus] = useState(task.status);
   const [review, setReview] = useState('');
@@ -56,7 +62,7 @@ const TaskDetailsModal = ({ task, onClose, onUpdate }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center p-4 z-50">
+    <div className="fixed inset-0 bg-black/50 transition-opacity z-50 flex items-center justify-center p-4">
       <div className="bg-gray-800 rounded-lg shadow-2xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto border border-gray-700">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold text-white">Task Details</h2>
@@ -141,6 +147,15 @@ const TaskDetailsModal = ({ task, onClose, onUpdate }) => {
                 Expected Closure
               </h3>
               <p className="text-white">{formatDate(task.expected_closure)}</p>
+            </div>
+
+            <div>
+              <h3 className="text-sm font-semibold text-gray-400 uppercase mb-1">
+                Priority
+              </h3>
+              <span className={`inline-block text-xs font-semibold px-2 py-1 rounded ${PRIORITY_COLORS[task.priority || 'medium']}`}>
+                {(task.priority || 'medium').toUpperCase()}
+              </span>
             </div>
           </div>
 

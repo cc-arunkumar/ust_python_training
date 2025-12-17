@@ -10,7 +10,7 @@ class TaskCreate(BaseModel):
     assigned_to: Optional[int] = None
     reviewer: Optional[int] = None
     priority: Optional[str] = None
-    status: Optional[str] = "OPEN"
+    status: Optional[str] = "TO_DO"
     expected_closure: Optional[datetime] = None
 
 
@@ -34,3 +34,6 @@ class TaskResponse(TaskCreate):
 
     class Config:
         from_attributes = True
+
+class TaskPriorityUpdate(BaseModel):
+    priority: str

@@ -1,7 +1,7 @@
 import React from 'react';
 import TaskCard from './TaskCard';
 
-const KanbanColumn = ({ status, tasks, onTaskView, onTaskEdit, canEdit }) => {
+const KanbanColumn = ({ status, tasks, onTaskView, onTaskEdit, onQuickStatus, canEdit }) => {
   const statusLabels = {
     TODO: 'TO DO',
     IN_PROGRESS: 'IN PROGRESS',
@@ -34,6 +34,7 @@ const KanbanColumn = ({ status, tasks, onTaskView, onTaskEdit, canEdit }) => {
               task={task}
               onView={onTaskView}
               onEdit={onTaskEdit}
+              onQuickStatus={onQuickStatus}
               canEdit={canEdit}
             />
           ))

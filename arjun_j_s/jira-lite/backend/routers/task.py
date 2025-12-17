@@ -305,3 +305,23 @@ async def upload_file(task_id: int,
         raise
     except Exception as e:
         raise HTTPException(500, f"Internal server error: {str(e)}")
+    
+@task_router.patch("/{task_id}/priority")
+def update_task_priority(
+    task_id: int,
+    payload: TaskPriorityUpdate,
+    db: Session = Depends(get_db),
+    current_user=Depends(get_current_user)
+):
+    task = db.query(Task).filter(Task.task_id == task_id).first()
+    if not task:
+        raise HTTPException(status_code=404, detail="Task not found")
+ 
+    return TaskService.update_priority(
+        db=db,
+        task=task,
+        priority=payload.priority,
+        current_user=current_user
+    )
+ 
+ 
