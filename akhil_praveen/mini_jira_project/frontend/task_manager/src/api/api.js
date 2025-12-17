@@ -1,7 +1,7 @@
 import { API_BASE } from '../utils/constants';
 
 class ApiService {
-  request(endpoint, options = {}) {
+  async request(endpoint, options = {}) {
     const token = localStorage.getItem('token');
     const headers = {
       'Content-Type': 'application/json',
@@ -9,59 +9,29 @@ class ApiService {
       ...options.headers,
     };
 
-    return fetch(`${API_BASE}${endpoint}`, {
+    const response = await fetch(`${API_BASE}${endpoint}`, {
       ...options,
       headers,
-    })
-      .then(response => {
-        if (response.status === 401) {
-          localStorage.removeItem('token');
-          localStorage.removeItem('role');
-          window.location.reload();
-          throw new Error('Unauthorized');
-        }
+    });
 
-        if (!response.ok) {
-          return response.json()
-            .then(error => {
-              console.error('API Error Response:', error);
-              
-              let errorMessage = 'Request failed';
-              
-              // Handle FastAPI validation errors (422)
-              if (response.status === 422 && error.detail) {
-                if (Array.isArray(error.detail)) {
-                  errorMessage = error.detail.map(err => 
-                    `${err.loc.join('.')}: ${err.msg}`
-                  ).join(', ');
-                } else {
-                  errorMessage = error.detail;
-                }
-              } else {
-                errorMessage = error.detail || error.message || `HTTP ${response.status}: ${response.statusText}`;
-              }
-              
-              throw new Error(errorMessage);
-            })
-            .catch(e => {
-              if (e instanceof Error) throw e;
-              throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-            });
-        }
+    if (response.status === 401) {
+      localStorage.removeItem('token');
+      localStorage.removeItem('role');
+      window.location.reload();
+      throw new Error('Unauthorized');
+    }
 
-        // Handle 204 No Content
-        if (response.status === 204) {
-          return null;
-        }
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.detail || 'Request failed');
+    }
 
-        return response.json();
-      })
-      .catch(error => {
-        if (error instanceof Error) {
-          throw error;
-        }
-        throw new Error(String(error));
-      });
+    // Handle 204 No Content
+    if (response.status === 204) {
+      return null;
+    }
+
+    return response.json();
   }
 
   // Auth
@@ -95,10 +65,17 @@ class ApiService {
     });
   }
 
-  updateTaskStatus(id, status, review) {
+  updateTaskStatus(id, status, review = null) {
+    const payload = { status };
+    
+    // Only add review if it's not null/empty
+    if (review && review.trim()) {
+      payload.review = review.trim();
+    }
+    
     return this.request(`/tasks/${id}/status`, {
       method: 'PATCH',
-      body: JSON.stringify({ status, review }),
+      body: JSON.stringify(payload),
     });
   }
 

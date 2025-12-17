@@ -66,9 +66,85 @@ function App() {
 
   const handleUpdateStatus = async (taskId, status, review) => {
     try {
-      console.log("Updating status to:", status);
-      await api.updateTaskStatus(taskId, status, review);
+      console.log("Updating task status:", {
+        taskId,
+        status,
+        review,
+        userRole: role,
+      });
+
+      // Call the API with the review
+      // prepare role-specific fields for remarks and include 'review' so backend stores it
+      const extra = {};
+      const username =
+        localStorage.getItem("username") ||
+        localStorage.getItem("user_name") ||
+        null;
+      const nowTs = new Date().toISOString();
+      let clientRemark = null;
+      if (review && review.trim()) {
+        const isManager =
+          (role || "").toUpperCase().includes("MANAGER") ||
+          (role || "").toUpperCase().includes("ADMIN");
+        if (isManager) {
+          extra.reviewer_review = review;
+          if (username) extra.reviewer_by = username;
+          extra.reviewer_ts = nowTs;
+          clientRemark = {
+            from: "reviewer",
+            text: review,
+            by: username || null,
+            ts: nowTs,
+          };
+        } else {
+          extra.developer_review = review;
+          if (username) extra.developer_by = username;
+          extra.developer_ts = nowTs;
+          clientRemark = {
+            from: "developer",
+            text: review,
+            by: username || null,
+            ts: nowTs,
+          };
+        }
+      }
+
+      // optimistic UI: add client remark to local tasks state so it appears immediately
+      if (clientRemark) {
+        setTasks((prev) =>
+          prev.map((t) =>
+            t.task_id === taskId
+              ? {
+                  ...t,
+                  _clientRemarks: [...(t._clientRemarks || []), clientRemark],
+                }
+              : t
+          )
+        );
+      }
+
+      // include 'review' field so backend inserts into reviews_collection
+      await api.updateTaskStatus(
+        taskId,
+        status,
+        review,
+        Object.keys(extra).length ? extra : undefined
+      );
+
+      // refresh from server then re-inject client remark (server may not include reviews in task payload)
       await loadData();
+      if (clientRemark) {
+        setTasks((prev) =>
+          prev.map((t) =>
+            t.task_id === taskId
+              ? {
+                  ...t,
+                  _clientRemarks: [...(t._clientRemarks || []), clientRemark],
+                }
+              : t
+          )
+        );
+      }
     } catch (err) {
       console.error("Failed to update status:", err);
       const errorMessage = err.message || "Unknown error occurred";
@@ -99,7 +175,7 @@ function App() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-xl text-gray-600">Loading...</div>
       </div>
     );

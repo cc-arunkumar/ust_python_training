@@ -1,55 +1,59 @@
-import React from 'react';
-import { LogOut, List, Users } from 'lucide-react';
+import React from "react";
+import { LogOut, List, Users } from "lucide-react";
 
-function Header({ role, activeTab, onTabChange, onLogout, canManageEmployees }) {
+function Header({
+  role,
+  activeTab,
+  onTabChange,
+  onLogout,
+  canManageEmployees,
+}) {
   return (
-    <header className="bg-gradient-to-r from-blue-600 to-blue-700 shadow-lg">
-      <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between py-4">
-          <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-bold text-white">Jira Lite</h1>
-            <span className="px-3 py-1 bg-blue-500 text-white text-xs rounded-full">
-              {role}
-            </span>
-          </div>
-
-          <div className="flex items-center gap-4">
-            <nav className="flex gap-2">
-              <button
-                onClick={() => onTabChange('tasks')}
-                className={`px-4 py-2 rounded-md text-sm font-medium transition flex items-center gap-2 ${
-                  activeTab === 'tasks'
-                    ? 'bg-white text-blue-600 shadow-sm'
-                    : 'text-gray-600 hover:text-gray-800'
-                }`}
-              >
-                <List size={18} />
-                Tasks
-              </button>
-              {canManageEmployees && (
-                <button
-                  onClick={() => onTabChange('employees')}
-                  className={`px-4 py-2 rounded-md text-sm font-medium transition flex items-center gap-2 ${
-                    activeTab === 'employees'
-                      ? 'bg-white text-blue-600 shadow-sm'
-                      : 'text-gray-600 hover:text-gray-800'
-                  }`}
-                >
-                  <Users size={18} />
-                  Employees
-                </button>
-              )}
-            </nav>
-
-            <button
-              onClick={onLogout}
-              className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 flex items-center gap-2 text-sm font-medium transition"
-            >
-              <LogOut size={18} />
-              Logout
-            </button>
-          </div>
+    <header className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md">
+      <div className="container mx-auto flex items-center justify-between py-4 px-6">
+        <div className="flex items-center gap-3">
+          <div className="text-xl font-semibold">Mini Jira</div>
+          <div className="text-sm opacity-90">Task management simplified</div>
         </div>
+
+        <nav className="flex items-center gap-3">
+          <button
+            onClick={() => onTabChange("tasks")}
+            className={`px-4 py-2 rounded-md font-medium transition ${
+              activeTab === "tasks"
+                ? "bg-white text-indigo-600"
+                : "hover:bg-white/10"
+            }`}
+          >
+            Tasks
+          </button>
+
+          {canManageEmployees && (
+            <button
+              onClick={() => onTabChange("employees")}
+              className={`px-4 py-2 rounded-md font-medium transition ${
+                activeTab === "employees"
+                  ? "bg-white text-indigo-600"
+                  : "hover:bg-white/10"
+              }`}
+            >
+              <Users size={14} className="inline mr-2" /> Employees
+            </button>
+          )}
+
+          <div className="ml-4 text-sm mr-4 opacity-90">
+            <div className="text-xs">Role</div>
+            <div className="font-medium">{role || "Guest"}</div>
+          </div>
+
+          <button
+            onClick={onLogout}
+            className="flex items-center gap-2 px-3 py-2 bg-white/20 hover:bg-white/30 rounded-md"
+            title="Logout"
+          >
+            <LogOut /> Logout
+          </button>
+        </nav>
       </div>
     </header>
   );
