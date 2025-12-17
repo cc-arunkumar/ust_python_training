@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends
+from typing import Optional
 from crud.employee_crud import add_employee, get_all_employees, get_by_employee_id, update_employee, delete_employee
-from models.employee import EmployeeReqRes
+from models.employee import EmployeeReqRes,EmployeeCreateReq
 from typing import List
 from utils.auth import get_current_user  # Assumed utility for authentication
 
@@ -22,14 +23,18 @@ def get_all(role: str, user=Depends(get_current_user)):
         raise HTTPException(status_code=500, detail=f"Internal Server Error: {str(e)}")
 
 @employee_router.post("/create")
-def add_new_employee(role: str, new_emp: EmployeeReqRes, user=Depends(get_current_user)):
+def add_new_employee(role: str,  payload: EmployeeCreateReq, user=Depends(get_current_user)):
     try:
         if role != "Admin":
             raise HTTPException(status_code=403, detail="Only Admin can create employees.")
         if role not in user.role:
             raise HTTPException(status_code=400,detail="you dont have the access of mentioned role")
         
-        new_employee = add_employee(new_emp, role, user)
+        new_employee = add_employee(
+            payload=payload,
+            role=role,
+            user=user
+        )
         return {"detail": "Employee Added Successfully", "employee": new_employee}
     except HTTPException as e:
         raise e

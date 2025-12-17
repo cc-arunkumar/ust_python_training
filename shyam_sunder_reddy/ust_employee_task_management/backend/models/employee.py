@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from typing import Optional
+from typing import Optional,List
 
 class EmployeeReqRes(BaseModel):
     e_id: Optional[int] = None  # Optional for creating, required for updating
@@ -11,3 +11,7 @@ class EmployeeReqRes(BaseModel):
     class Config:
         orm_mode = True  # Ensures compatibility with SQLAlchemy models
         from_attributes = True
+        
+class EmployeeCreateReq(BaseModel):
+    employee: EmployeeReqRes
+    assigning_role: List[str] = []

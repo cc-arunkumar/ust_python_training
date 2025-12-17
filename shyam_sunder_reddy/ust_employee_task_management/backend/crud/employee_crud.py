@@ -1,18 +1,20 @@
 from database.sql_db import get_connection
-from models.employee import EmployeeReqRes  # Pydantic Model
+from models.employee import EmployeeReqRes,EmployeeCreateReq  # Pydantic Model
 from models.user import UserReqRes
 from crud.users_crud import add_user
 from schema.employee_schema import EmployeeSchema
 from sqlalchemy.exc import SQLAlchemyError
 from fastapi import HTTPException
+from typing import List
 
 
-def add_employee(new_emp: EmployeeReqRes, role: str, user):
+
+def add_employee(payload: EmployeeCreateReq, role: str, user):
     try:
         # Only Admin can create employees
         if role != "Admin":
             raise HTTPException(status_code=403, detail="Only Admin can add employees.")
-        
+        new_emp = payload.employee
         session = get_connection()
         new_employee = EmployeeSchema(
             name=new_emp.name,
@@ -23,10 +25,12 @@ def add_employee(new_emp: EmployeeReqRes, role: str, user):
         session.add(new_employee)
         session.commit()
         session.refresh(new_employee)
+        if payload.assigning_role is None:
+            payload.assigning_role = []
         user_data = UserReqRes(
             e_id=new_employee.e_id,
             password="password123",
-            role=["Developer"],  # Empty roles list
+            role=payload.assigning_role,  # Empty roles list
             status="active"
         )
         add_user(user_data,role,user)  # Create the user
