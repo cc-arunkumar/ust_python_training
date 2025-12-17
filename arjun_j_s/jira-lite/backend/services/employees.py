@@ -12,14 +12,15 @@ class EmployeeService:
     def create(db: Session, data: dict) -> Employee:
         try:
             # Validate emp_id and manager_id
-            if data.get("manager_id") and data.get("emp_id"):
-                if data["emp_id"] == data["manager_id"]:
-                    raise ValueError("Employee ID and Manager ID cannot be the same")
-            
             emp = Employee(**data)
             db.add(emp)
             db.commit()
             db.refresh(emp)
+            # Now emp.emp_id exists
+            if emp.manager_id == emp.emp_id:
+                db.delete(emp)
+                db.commit()
+                raise HTTPException(400, "Employee cannot be their own manager")
             return emp
         except IntegrityError as e:
             db.rollback()

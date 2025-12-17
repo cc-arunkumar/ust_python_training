@@ -18,10 +18,6 @@ def create_employee(payload: EmployeeCreate,
         if "ADMIN" not in user.role:
             raise HTTPException(403, "Admin only")
         
-        # Validate emp_id and manager_id are not the same
-        if payload.manager_id and payload.emp_id == payload.manager_id:
-            raise HTTPException(400, "Employee ID and Manager ID cannot be the same")
-        
         # Validate manager exists if manager_id is provided
         if payload.manager_id:
             manager = EmployeeService.get_by_id(db, payload.manager_id)

@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
-import { LogOut, Users, CheckSquare, User, RefreshCw } from 'lucide-react';
+import { LogOut, Users, CheckSquare, User, RefreshCw, LayoutGrid, List } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import EmployeesPage from '../employees/EmployeesPage';
 import TasksPage from '../tasks/TasksPage';
+import KanbanBoard from '../tasks/KanbanBoard';
 
 const Layout = () => {
   const { user, activeRole, logout, changeRole, hasMultipleRoles } = useAuth();
   const [currentPage, setCurrentPage] = useState('tasks');
+  const [taskView, setTaskView] = useState('list'); // 'list' or 'board'
 
   const renderPage = () => {
     switch (currentPage) {
       case 'tasks':
-        return <TasksPage />;
+        return taskView === 'board' ? <KanbanBoard /> : <TasksPage />;
       case 'employees':
         return <EmployeesPage />;
       default:
@@ -42,7 +44,7 @@ const Layout = () => {
             <div className="flex space-x-8">
               <div className="flex items-center">
                 <h1 className="text-xl font-bold text-white">
-                  Task Manager
+                  JiraLite
                 </h1>
               </div>
               
@@ -70,6 +72,36 @@ const Layout = () => {
                   <Users size={18} className="inline mr-2" />
                   Employees
                 </button>
+
+                {/* Task View Toggle - Only show when on tasks page */}
+                {currentPage === 'tasks' && (
+                  <div className="flex items-center bg-gray-700 rounded-md ml-4">
+                    <button
+                      onClick={() => setTaskView('list')}
+                      className={`px-3 py-2 rounded-l-md text-sm font-medium transition flex items-center gap-1 ${
+                        taskView === 'list'
+                          ? 'bg-gray-600 text-white'
+                          : 'text-gray-300 hover:text-white'
+                      }`}
+                      title="List View"
+                    >
+                      <List size={16} />
+                      List
+                    </button>
+                    <button
+                      onClick={() => setTaskView('board')}
+                      className={`px-3 py-2 rounded-r-md text-sm font-medium transition flex items-center gap-1 ${
+                        taskView === 'board'
+                          ? 'bg-gray-600 text-white'
+                          : 'text-gray-300 hover:text-white'
+                      }`}
+                      title="Board View"
+                    >
+                      <LayoutGrid size={16} />
+                      Board
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
 
