@@ -7,6 +7,19 @@ import { AppSidebar } from "@/components/app-sidebar"
 import Home from "./components/Home"
 import Cia_section from "./components/Cia_section"
 import Stats from "./components/Stats"
+import { TaskTable } from "./components/TaskTable" 
+import { Routes, Route, Navigate } from "react-router-dom"
+import { CreateTaskForm } from "./components/CreateTaskForm"
+import { Login } from "./components/Login"
+import { CreateEmployeeForm } from "./components/CreateEmployeeForm"
+import { EmployeeTable } from "./components/EmployeeTable"
+
+// Helper: read role from localStorage
+const getUserRole = () => {
+  console.log(localStorage.getItem("role"))
+  return localStorage.getItem("role") || null
+
+}
 
 function Backdrop() {
   const { open, setOpen } = useSidebar()
@@ -20,29 +33,56 @@ function Backdrop() {
   )
 }
 
-function App() {
-  const [count, setCount] = useState(0)
+// Wrapper for protected routes
+function ProtectedRoute({ element, allowedRoles }) {
+  const role = getUserRole()
+  if (!role) {
+    // not logged in → redirect to login
+    return <Navigate to="/login" replace />
+  }
+  return allowedRoles.includes(role) ? element : <Navigate to="/" replace />
+}
 
+function App() {
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-       <div className="grid-background"></div>
+      <div className="grid-background"></div>
       <SidebarProvider>
-        {/* Overlay sidebar */}
         <AppSidebar />
-
         <Backdrop />
 
-        <main className="relative">
-          <div className="p-4">
+        <main className="">
+          <div className="p-4 mr-270">
             <SidebarTrigger />
           </div>
 
-          {/* Full-screen background image */}
-          {/* <div className="text-3xl text-center" >Hello from browser side</div>
-           */}
-           <Home/>
-           <Stats/>
-           <Cia_section/>
+          <Routes>
+            {/* Public routes */}
+            <Route path="/" element={
+              <>
+                <Home />
+                <Stats />
+                <Cia_section />
+              </>
+            } />
+            <Route path="/login" element={<Login />} />
+
+            {/* Accessible to all authenticated roles */}
+            <Route path="/show-task" element={
+              <ProtectedRoute element={ <TaskTable />} allowedRoles={["MANAGER","ADMIN"]}/>
+             } />
+
+            {/* Restricted routes */}
+            <Route path="/create-task" element={
+              <ProtectedRoute element={<CreateTaskForm />} allowedRoles={["ADMIN"]} />
+            } />
+            <Route path="/add-employee" element={
+              <ProtectedRoute element={<CreateEmployeeForm />} allowedRoles={["ADMIN"]} />
+            } />
+            <Route path="/all-employee" element={
+              <ProtectedRoute element={<EmployeeTable />} allowedRoles={["MANAGER","ADMIN"]} />
+            } />
+          </Routes>
         </main>
       </SidebarProvider>
     </ThemeProvider>

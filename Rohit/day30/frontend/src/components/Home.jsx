@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { Button } from "../components/ui/button"; // adjust path as needed
-// import banner2 from "../assets/banner2.jpeg"
-import front_image from "../assets/front_image.png";
+import banner2 from "../assets/banner2.jpeg"
+// import front_image from "../assets/front_image.png";
 const Home = () => {
   const imageRef = useRef(null);
 
@@ -24,14 +24,15 @@ const Home = () => {
   }, []);
 
   return (
-    <section className="w-full pt-5 md:pt-10 pb-10">
+    <section className="w-full -mr-20 pt-5 md:pt-10 pb-10">
         <div className="grid-background"></div>
       <div className="space-y-6 text-center">
         <div className="space-y-6 mx-auto">
-          <h1 className="text-3xl font-bold md:text-6xl lg:text-7xl xl:text-8xl gradient-title animate-gradient">
+          <h1 className="text-2xl font-bold md:text-6xl lg:text-7xl xl:text-8xl gradient-title animate-gradient">
             Jira Lite
             <br />
-            Simplify Your Project Management
+            
+            {/* <h1 className="text-3xl ">Simplify Your Project Management</h1> */}
           </h1>
           <p className="mx-auto max-w-150 text-muted-foreground md:text-xl">
             Manage tasks, track progress, and collaborate with your team — all in a
@@ -57,7 +58,7 @@ const Home = () => {
         <div className="hero-image-wrapper mt-5 md:mt-0">
           <div ref={imageRef} className="hero-image">
             <img
-              src={front_image}
+              src={banner2}
               width={1000}
               height={520}
               alt="Jira Lite Dashboard Preview"

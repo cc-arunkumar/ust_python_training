@@ -13,12 +13,18 @@ import {
 } from "@/components/ui/sidebar"
 
 const items = [
-  { title: "Login", url: "#", icon: Home },
-  { title: "Admin", url: "#", icon: Home },
-  { title: "Create Task", url: "#", icon: Inbox },
-  { title: "Add User", url: "#", icon: Calendar },
-  { title: "All Task", url: "#", icon: Search },
+  { title: "Login", url: "/login", icon: Home },
+  { title: "Admin", url: "", icon: Home },
+  { title: "Create Task", url: "/create-task", icon: Inbox },
+  { title: "Add Employee", url: "/add-employee", icon: Calendar },
+  { title: "All Task", url: "/show-task", icon: Search },
+  { title: "All Employee", url: "/all-employee", icon: Settings },
   { title: "Help", url: "#", icon: Settings },
+
+//   <Route path="/show-task" element={<TaskTable />} />
+//             <Route path="/create-task" element={<CreateTaskForm />} />
+//             <Route path="/login" element={<Login />} />
+
 ]
 
 export function AppSidebar() {
@@ -37,7 +43,9 @@ export function AppSidebar() {
           {/* Top menu */}
           <SidebarGroup>
             <SidebarGroupLabel >
-                <span className=" font-extrabold text-xl mb-2">Jira Lite</span>
+                <span className=" font-extrabold text-xl mb-2">
+                    <a href="/">Jira lite</a>
+                </span>
 
                 </SidebarGroupLabel>
             <SidebarGroupContent>
