@@ -43,6 +43,7 @@ def add_user(new_user: UserReqRes):
         session.close()
 
 
+
 def get_all_users():
     try:
         session = get_connection()

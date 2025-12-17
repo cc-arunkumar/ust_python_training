@@ -1,43 +1,119 @@
-from database.mongo_db import get_mongo_db
-from models.remark import RemarkReqRes
-from datetime import datetime
+from bson import ObjectId
 from fastapi import HTTPException
-from bson.objectid import ObjectId
+from datetime import datetime, timezone
+from database.sql_db import get_connection
+from database.mongo_db import remarks_collection
+from sqlalchemy.orm import Session
+from schema.task_schema import TaskSchema
+from utils.file_upload import save_file, delete_file
+from utils.mongo_serializer import serialize_mongo
 
 
-def add_remark(new_remark: RemarkReqRes):
+def _is_manager(user) -> bool:
+    return hasattr(user, "role") and ("Manager" in user.role if isinstance(user.role, list) else "Manager" in str(user.role))
+
+
+def _is_developer(user) -> bool:
+    return hasattr(user, "role") and ("Developer" in user.role if isinstance(user.role, list) else "Developer" in str(user.role))
+
+
+def add_remark(task_id: int, comment: str, e_id: int, file=None, role: str = None, user=None):
+    """Add a remark for a task with authorization checks based on task status and user role."""
+    session: Session = get_connection()
+
     try:
-        db = get_mongo_db()
-        doc = {
-            "task_id": new_remark.task_id,
-            "comment": new_remark.comment,
-            "created_by": new_remark.created_by,
-            "created_at": new_remark.created_at or datetime.utcnow()
+        task = session.query(TaskSchema).filter(TaskSchema.t_id == task_id).first()
+        if not task:
+            raise HTTPException(status_code=404, detail="Task not found")
+
+        task_status = (task.status or "").upper()
+
+        # Authorization based on task status
+        if task_status == "REVIEW":
+            if not _is_manager(user):
+                raise HTTPException(status_code=403, detail="Only managers can add remarks in the REVIEW phase.")
+        elif task_status == "IN_PROGRESS":
+            if not _is_developer(user):
+                raise HTTPException(status_code=403, detail="Only developers can add remarks in the IN_PROGRESS phase.")
+        else:
+            raise HTTPException(status_code=400, detail="Task phase does not allow adding remarks.")
+
+        # Handle file upload
+        file_id = None
+        file_name = None
+        if file:
+            file_id = save_file(file)
+            file_name = file.filename
+
+        remark = {
+            "task_id": task_id,
+            "comment": comment,
+            "created_by": e_id,
+            "file_id": file_id,
+            "file_name": file_name,
+            "created_at": datetime.now(timezone.utc),
         }
-        res = db.remarks.insert_one(doc)
-        doc["_id"] = str(res.inserted_id)
-        return doc
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"MongoDB error: {str(e)}")
+
+        result = remarks_collection.insert_one(remark)
+        remark["_id"] = result.inserted_id
+        return serialize_mongo(remark)
+
+    finally:
+        session.close()
 
 
-def get_remarks_for_task(task_id: int):
-    try:
-        db = get_mongo_db()
-        docs = list(db.remarks.find({"task_id": task_id}))
-        for d in docs:
-            d["_id"] = str(d.get("_id"))
-        return docs
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"MongoDB error: {str(e)}")
+def get_remarks_by_task(task_id: int):
+    docs = list(remarks_collection.find({"task_id": task_id}))
+    return [serialize_mongo(d) for d in docs]
 
 
-def delete_remark(remark_id: str):
-    try:
-        db = get_mongo_db()
-        res = db.remarks.delete_one({"_id": ObjectId(remark_id)})
-        if res.deleted_count == 0:
-            raise HTTPException(status_code=404, detail="Remark not found")
-        return {"detail": "Remark deleted"}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"MongoDB error: {str(e)}")
+def update_remark(remark_id: str, comment: str | None, file, e_id: int, role: str):
+    remark = remarks_collection.find_one({"_id": ObjectId(remark_id)})
+    if not remark:
+        raise HTTPException(status_code=404, detail="Remark not found")
+
+    # Only admin or owner can update
+    if not (role and role.upper() == "ADMIN") and remark.get("created_by") != e_id:
+        raise HTTPException(status_code=403, detail="Not allowed to update this remark")
+
+    update_data = {}
+    if comment:
+        update_data["comment"] = comment
+
+    if file:
+        if remark.get("file_id"):
+            try:
+                delete_file(remark["file_id"])
+            except Exception:
+                pass
+
+        file_id = save_file(file)
+        update_data["file_id"] = file_id
+        update_data["file_name"] = file.filename
+
+    if not update_data:
+        raise HTTPException(status_code=400, detail="Nothing to update")
+
+    update_data["updated_at"] = datetime.now(timezone.utc)
+    remarks_collection.update_one({"_id": ObjectId(remark_id)}, {"$set": update_data})
+    updated = remarks_collection.find_one({"_id": ObjectId(remark_id)})
+    return serialize_mongo(updated)
+
+
+def delete_remark_by_id(remark_id: str, role: str, user):
+    remark = remarks_collection.find_one({"_id": ObjectId(remark_id)})
+    if not remark:
+        raise HTTPException(status_code=404, detail="Remark not found")
+
+    # Only ADMIN or owner can delete
+    if not (role and role.upper() == "ADMIN") and remark.get("created_by") != getattr(user, "e_id", None):
+        raise HTTPException(status_code=403, detail="Not allowed to delete this remark")
+
+    if remark.get("file_id"):
+        try:
+            delete_file(str(remark["file_id"]))
+        except Exception:
+            pass
+
+    remarks_collection.delete_one({"_id": ObjectId(remark_id)})
+    return {"message": "Remark and file deleted successfully", "remark_id": remark_id}
