@@ -16,9 +16,26 @@ def verify_password(password: str, hashed: str) -> bool:
     except Exception:
         return False
 
-def create_access_token(subject: str, role: str, status: str, expires_delta: Optional[timedelta] = None) -> str:
-    expire = datetime.now(timezone.utc) + (expires_delta or timedelta(minutes=settings.access_token_expire_minutes))
-    to_encode: Dict[str, Any] = {"sub": subject, "role": role, "status": status, "exp": expire}
+def create_access_token(
+    subject: str,
+    role: str,
+    status: str,
+    employee_id: Optional[int] = None,
+    expires_delta: Optional[timedelta] = None
+) -> str:
+    """
+    Create a JWT access token embedding user_id (sub), role, status, and employee_id.
+    """
+    expire = datetime.now(timezone.utc) + (
+        expires_delta or timedelta(minutes=settings.access_token_expire_minutes)
+    )
+    to_encode: Dict[str, Any] = {
+        "sub": subject,
+        "role": role,
+        "status": status,
+        "employee_id": employee_id,   # ✅ include employee_id
+        "exp": expire
+    }
     return jwt.encode(to_encode, settings.secret_key, algorithm=settings.algorithm)
 
 def decode_token(token: str) -> Dict[str, Any]:
@@ -26,4 +43,7 @@ def decode_token(token: str) -> Dict[str, Any]:
         payload = jwt.decode(token, settings.secret_key, algorithms=[settings.algorithm])
         return payload
     except JWTError:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid token"
+        )

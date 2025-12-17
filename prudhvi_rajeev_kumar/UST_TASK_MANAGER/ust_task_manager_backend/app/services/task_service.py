@@ -21,12 +21,21 @@ class TaskService:
         return self.db.get(Task, task_id)
 
     def create(self, data: dict, actor_id: str | None = None) -> Task:
-        # Validate employees exist
-        for key in ["assigned_to", "assigned_by", "created_by"]:
+    # Validate employees exist
+        assigned_emp = self.db.get(Employee, data.get("assigned_to"))
+        if not assigned_emp:
+            raise ValueError("assigned_to employee not found")
+
+        # ✅ Manager restriction: assigned_by must be the manager of assigned employee
+        if actor_id:
+            manager_emp = self.db.get(Employee, int(actor_id))
+            if manager_emp and assigned_emp.manager_id != manager_emp.emp_id:
+                raise ValueError("Manager can only assign tasks to their own employees")
+
+        # Continue with existing validation
+        for key in ["assigned_by", "created_by"]:
             if self.db.get(Employee, data.get(key)) is None:
                 raise ValueError(f"{key} employee not found")
-        if data.get("reviewer") and self.db.get(Employee, data["reviewer"]) is None:
-            raise ValueError("reviewer not found")
 
         task = Task(**data)
         self.db.add(task)
@@ -34,6 +43,7 @@ class TaskService:
         self.db.refresh(task)
         self.log_service.log_event("INFO", f"Task created {task.taskid}", actor_id, "task_create")
         return task
+
 
     def update(self, task_id: int, data: dict, actor_id: str | None = None) -> Task:
         task = self.get(task_id)

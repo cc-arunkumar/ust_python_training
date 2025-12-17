@@ -15,3 +15,5 @@ admin_user = {
 db.users.insert_one(admin_user)
 print("Admin user created")
 
+
+

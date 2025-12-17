@@ -3,7 +3,8 @@ from app.schemas.user import UserCreate, UserLogin, UserUpdate, UserOut
 from app.schemas.common import Token
 from app.db.mongo import get_mongo_db
 from app.services.user_service import UserService
-from app.core.dependencies import require_admin, get_current_user, AuthUser
+from app.core.dependencies import require_admin, AuthUser
+from app.core.security import verify_password, create_access_token
 
 router = APIRouter(prefix="/api/users", tags=["users"])
 
@@ -13,14 +14,21 @@ router = APIRouter(prefix="/api/users", tags=["users"])
 @router.post("/login", response_model=Token)
 def login(body: UserLogin, db=Depends(get_mongo_db)):
     service = UserService(db)
-    try:
-        token = service.authenticate(body.user_id, body.password)
-        return {"access_token": token, "token_type": "bearer"}
-    except ValueError:
+    user = service.get(body.user_id)
+    if not user or not verify_password(body.password, user["Password"]):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid credentials"
         )
+
+    # ✅ include employee_id in JWT payload
+    token = create_access_token(
+        subject=user["UserId"],
+        role=user["role"],
+        status=user["status"],
+        employee_id=user.get("employee_id")
+    )
+    return {"access_token": token, "token_type": "bearer"}
 
 # -------------------------
 # CREATE USER (admin only)
@@ -33,7 +41,14 @@ def create_user(
 ):
     service = UserService(db)
     try:
-        user = service.create(body.user_id, body.password, body.role, body.status)
+        # ✅ allow passing employee_id when creating user
+        user = service.create(
+            body.user_id,
+            body.password,
+            body.role,
+            body.status,
+            employee_id=body.employee_id
+        )
         return user
     except ValueError as e:
         raise HTTPException(
@@ -53,7 +68,7 @@ def update_user(
 ):
     service = UserService(db)
     try:
-        user = service.update(user_id, body.role, body.status)
+        user = service.update(user_id, body.role, body.status, body.employee_id)
         return user
     except ValueError as e:
         raise HTTPException(
@@ -98,7 +113,8 @@ def get_user(
     return {
         "user_id": user["UserId"],
         "role": user["role"],
-        "status": user["status"]
+        "status": user["status"],
+        "employee_id": user.get("employee_id")
     }
 
 # -------------------------

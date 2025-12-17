@@ -6,7 +6,7 @@ from app.core.security import decode_token
 bearer_scheme = HTTPBearer()
 
 class AuthUser(dict):
-    """Wrapper for decoded JWT payload"""
+    """Wrapper for decoded JWT payload with role and employee_id"""
 
 def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(bearer_scheme)) -> AuthUser:
     """
@@ -15,6 +15,14 @@ def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(bearer_
     """
     token = credentials.credentials
     payload = decode_token(token)
+
+    # Ensure required fields exist
+    if "role" not in payload or "sub" not in payload:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid token payload"
+        )
+
     return AuthUser(payload)
 
 def require_admin(current_user: AuthUser = Depends(get_current_user)) -> AuthUser:
@@ -26,17 +34,31 @@ def require_admin(current_user: AuthUser = Depends(get_current_user)) -> AuthUse
     return current_user
 
 def require_manager(current_user: AuthUser = Depends(get_current_user)) -> AuthUser:
+    # ✅ Managers and admins are allowed
     if current_user.get("role") not in {"admin", "manager"}:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Manager privileges required"
         )
+    # Ensure employee_id is present for manager checks
+    if current_user.get("employee_id") is None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Manager account missing employee_id link"
+        )
     return current_user
 
 def require_employee(current_user: AuthUser = Depends(get_current_user)) -> AuthUser:
+    # ✅ Employees, managers, and admins are allowed
     if current_user.get("role") not in {"admin", "manager", "employee"}:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Employee privileges required"
+        )
+    # Ensure employee_id is present for employee checks
+    if current_user.get("employee_id") is None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Employee account missing employee_id link"
         )
     return current_user

@@ -1,5 +1,6 @@
 import uvicorn
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware   # ✅ import CORS middleware
 from app.core.config import settings
 from app.core.logging import get_logger
 from app.db.sql import Base, engine
@@ -12,6 +13,16 @@ def create_app() -> FastAPI:
     # Ensure SQL tables exist (for production use Alembic)
     Base.metadata.create_all(bind=engine)
 
+    # ✅ Add CORS middleware here
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["http://localhost:5173"],  # frontend dev server
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+
+    # Routers
     app.include_router(users.router)
     app.include_router(employees.router)
     app.include_router(tasks.router)
