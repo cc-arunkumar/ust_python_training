@@ -17,12 +17,12 @@ def _ensure_roles_list(roles):
     return [str(roles)]
 
 
-def add_user(new_user: UserReqRes):
+def add_user(new_user: UserReqRes,role,user):
     try:
         session = get_connection()
         user = UserSchema(
             e_id=new_user.e_id,
-            password=new_user.password or "defaultPass123",
+            password=new_user.password or "password123",
             role=_ensure_roles_list(new_user.role),
             status=new_user.status,
         )
@@ -48,6 +48,25 @@ def get_all_users():
     try:
         session = get_connection()
         users = session.query(UserSchema).all()
+        res = []
+        for u in users:
+            res.append(UserReqRes(
+                e_id=u.e_id,
+                password=u.password,
+                role=_ensure_roles_list(u.role),
+                status=u.status,
+            ))
+        return res
+    except SQLAlchemyError as e:
+        session.rollback()
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+    finally:
+        session.close()
+
+def get_user_by_role(role: str):
+    try:
+        session = get_connection()
+        users = session.query(UserSchema).filter(UserSchema.role.contains(role)).all()
         res = []
         for u in users:
             res.append(UserReqRes(

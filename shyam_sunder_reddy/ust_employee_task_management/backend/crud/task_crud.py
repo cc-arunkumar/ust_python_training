@@ -28,6 +28,7 @@ def add_task(new_task: TaskReqRes, role, user):
             actual_closure=None
         )
         # set assigned_at if assigned_to is present
+        q=None
         if task.assigned_to:
             q = get_user_by_id(task.assigned_to)
             if "Developer" not in q.role:
@@ -77,7 +78,7 @@ def get_all_tasks(role, user):
 
 
 # FIXED: Added user parameter
-def get_task_by_id(t_id: int, user):
+def get_task_by_id(t_id: int,role, user):
     try:
         session = get_connection()
         t = session.query(TaskSchema).filter(TaskSchema.t_id == t_id).first()
@@ -109,7 +110,7 @@ def get_task_by_status(status, role, user):
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
 
-def update_task(
+def update_task(user,
     t_id: int,
     title: str = None,
     description: str = None,
@@ -118,8 +119,7 @@ def update_task(
     status: str = None,
     reviewer: int = None,
     expected_closure: datetime = None,
-    role: str = None,
-    user= None
+    role: str = None
 ) :
     try:
         # Role-based access control
@@ -137,7 +137,7 @@ def update_task(
         if description:
             t.description = description
         if assigned_to:
-            assigned_user = get_user_by_id(assigned_to, session)
+            assigned_user = get_user_by_id(assigned_to)
             if not assigned_user:
                 raise HTTPException(status_code=404, detail="Assigned user not found")
             t.assigned_to = assigned_to
@@ -146,10 +146,9 @@ def update_task(
         if priority:
             t.priority = priority
         if status:
-            patch_status(t_id=t_id, status=status, role=role, user=user, session=session)
             t.status = status
         if reviewer:
-            reviewer_user = get_user_by_id(reviewer, session)
+            reviewer_user = get_user_by_id(reviewer)
             if not reviewer_user:
                 raise HTTPException(status_code=404, detail="Reviewer not found")
             t.reviewer = reviewer
@@ -279,7 +278,8 @@ def patch_status(t_id, status, role, user):
                 t.status = status
             else:
                 raise HTTPException(status_code=409, detail="Can only change status from TO_DO to IN_PROGRESS or from IN_PROGRESS to REVIEW")
-        
+        t.updated_at=datetime.now()
+        t.updated_by=user.e_id
         session.commit()
         session.refresh(t)
         return TaskReqRes.from_orm(t)

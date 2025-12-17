@@ -25,11 +25,11 @@ def add_employee(new_emp: EmployeeReqRes, role: str, user):
         session.refresh(new_employee)
         user_data = UserReqRes(
             e_id=new_employee.e_id,
-            password="defaultPass123",
-            role=[],  # Empty roles list
+            password="password123",
+            role=["Developer"],  # Empty roles list
             status="active"
         )
-        add_user(user_data)  # Create the user
+        add_user(user_data,role,user)  # Create the user
 
         return EmployeeReqRes.from_orm(new_employee)  # Convert to Pydantic model
     except SQLAlchemyError as e:
@@ -99,8 +99,6 @@ def update_employee(id: int, updated: EmployeeReqRes, role: str, user):
         emp.email=updated.email
         emp.designation=updated.designation
         emp.mgr_id=updated.mgr_id
-        for key, value in updated.items():
-            setattr(emp, key, value)
         
         session.commit()
         session.refresh(emp)

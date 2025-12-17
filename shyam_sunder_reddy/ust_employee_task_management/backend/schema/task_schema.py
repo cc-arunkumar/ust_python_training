@@ -5,7 +5,7 @@ class TaskSchema(Base):
     __tablename__ = "tasks"
     t_id = Column(Integer, primary_key=True, index=True)
     title = Column(String(100), nullable=False)
-    description=Column(String(250),unique=True,nullable=False)
+    description=Column(String(250),nullable=False)
     assigned_to= Column(Integer, ForeignKey("employees.e_id"))  
     assigned_by=Column(Integer, ForeignKey("employees.e_id"))
     assigned_at=Column(DateTime)
