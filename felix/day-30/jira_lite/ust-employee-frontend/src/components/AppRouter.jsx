@@ -1,7 +1,9 @@
 import React from 'react';
+import { Routes, Route } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import LoginPage from './auth/LoginPage';
 import Dashboard from './dashboard/Dashboard';
+import EmployeeManagement from './dashboard/EmployeeManagement'; // <-- import your component
 
 const AppRouter = () => {
   const { user, loading } = useAuth();
@@ -17,7 +19,19 @@ const AppRouter = () => {
     );
   }
 
-  return user ? <Dashboard /> : <LoginPage />;
+  return (
+    <Routes>
+      {!user ? (
+        <Route path="*" element={<LoginPage />} />
+      ) : (
+        <>
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/employees" element={<EmployeeManagement />} />
+          <Route path="*" element={<Dashboard />} /> {/* fallback */}
+        </>
+      )}
+    </Routes>
+  );
 };
 
 export default AppRouter;

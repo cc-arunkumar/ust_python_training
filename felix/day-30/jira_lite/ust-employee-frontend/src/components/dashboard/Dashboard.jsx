@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Search } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import { api } from '../../services/api';
 import Header from '../layout/Header';
 import TaskBoard from './TaskBoard';
@@ -8,23 +9,56 @@ import CreateTaskModal from '../modals/CreateTaskModal';
 
 const Dashboard = () => {
   const { user, token } = useAuth();
+  const navigate = useNavigate();
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterPriority, setFilterPriority] = useState('All');
+  const [userRoles, setUserRoles] = useState([]);
 
-  // 🔹 Track which view is active
-  const [currentView, setCurrentView] = useState(user?.roles?.[0] || 'developer');
+  // 🔹 Track which view is active - initialize with null, will be set after roles are fetched
+  const [currentView, setCurrentView] = useState(null);
+
+  // 🔹 Fetch user roles on mount
+  useEffect(() => {
+    const fetchUserRoles = async () => {
+      try {
+        const userData = await api.getUserById(token, user.emp_id);
+        
+        if (userData && Array.isArray(userData.role)) {
+          setUserRoles(userData.role);
+          // Set default view to first role
+          setCurrentView(userData.role[0] || 'developer');
+        } else {
+          setUserRoles(['developer']);
+          setCurrentView('developer');
+        }
+      } catch (err) {
+        console.error('Failed to fetch roles:', err);
+        setUserRoles(['developer']);
+        setCurrentView('developer');
+      }
+    };
+
+    fetchUserRoles();
+  }, [token, user.emp_id]);
 
   const canCreateTasks = ['admin', 'manager'].includes(currentView);
+  
+  console.log('User Roles:', userRoles);
+  console.log('Current View:', currentView);
 
   useEffect(() => {
-    loadTasks();
-  }, [currentView]); // reload tasks when view changes
+    // Only load tasks after currentView is set
+    if (currentView) {
+      loadTasks();
+    }
+  }, [currentView]);
 
   const loadTasks = async () => {
     try {
+      setLoading(true);
       const data = await api.getTasks(token, currentView, user.emp_id);
       setTasks(Array.isArray(data) ? data : []);
     } catch (error) {
@@ -61,12 +95,13 @@ const Dashboard = () => {
     return matchesSearch && matchesPriority;
   });
 
-  if (loading) {
+  // Show loading until currentView is set
+  if (loading || !currentView) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading tasks...</p>
+          <p className="text-gray-600">Loading...</p>
         </div>
       </div>
     );
@@ -74,8 +109,8 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-      {/* 🔹 Pass handler to Header */}
-      <Header onChangeView={setCurrentView} />
+      {/* 🔹 Pass handler and navigation to Header */}
+      <Header onChangeView={setCurrentView} onNavigate={navigate} />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Controls */}
@@ -107,7 +142,7 @@ const Dashboard = () => {
             </select>
           </div>
 
-          {canCreateTasks && (
+          {currentView !== "developer" && (
             <button
               onClick={() => setShowCreateModal(true)}
               className="flex items-center gap-2 px-6 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:shadow-lg transform hover:-translate-y-0.5 transition-all font-semibold"
@@ -122,7 +157,7 @@ const Dashboard = () => {
           tasks={filteredTasks}
           onStatusChange={handleStatusChange}
           onAddRemark={handleAddRemark}
-          userRole={currentView} // 🔹 use currentView here
+          userRole={currentView} // 🔹 pass currentView as userRole
         />
       </main>
 
