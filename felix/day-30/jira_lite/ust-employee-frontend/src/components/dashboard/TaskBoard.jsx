@@ -23,7 +23,11 @@ const TaskBoard = ({ tasks, onStatusChange, onAddRemark, userRole }) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       {Object.entries(tasksByStatus).map(([status, statusTasks]) => (
-        <div key={status} className={`rounded-xl border-2 ${STATUS_COLORS[status]} p-4`}>
+        <div
+          key={status}
+          className={`rounded-xl border-2 ${STATUS_COLORS[status]} p-4 flex flex-col`}
+        >
+          {/* Header */}
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               {statusIcons[status]}
@@ -33,8 +37,9 @@ const TaskBoard = ({ tasks, onStatusChange, onAddRemark, userRole }) => {
               {statusTasks.length}
             </span>
           </div>
-          
-          <div className="space-y-3 max-h-[calc(100vh-300px)] overflow-y-auto">
+
+          {/* Task list (flexible height, no scrollbars) */}
+          <div className="space-y-3">
             {statusTasks.length === 0 ? (
               <div className="text-center py-8 text-gray-400">
                 <Circle size={32} className="mx-auto mb-2 opacity-50" />

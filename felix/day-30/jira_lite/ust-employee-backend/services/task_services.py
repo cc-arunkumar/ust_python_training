@@ -44,7 +44,7 @@ def get_tasks_by_id(task_id:str):
 
 def get_all_tasks_by_employee(id:int):
     try:
-        all_tasks = tasks.find({},{"assigned_to":id})
+        all_tasks = tasks.find({"assigned_to":id})
         print(all_tasks)
         return all_tasks
     except Exception as e:
@@ -52,7 +52,7 @@ def get_all_tasks_by_employee(id:int):
 
 def get_all_tasks_by_manager(id:int):
     try:
-        all_tasks = tasks.find({},{"assigned_by":id})
+        all_tasks = tasks.find({"assigned_by":id})
         return all_tasks
     except Exception as e:
         raise Exception(e)

@@ -14,16 +14,18 @@ const Dashboard = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterPriority, setFilterPriority] = useState('All');
 
-  const userRole = user?.roles?.[0] || 'developer';
-  const canCreateTasks = ['admin', 'manager'].includes(userRole);
+  // 🔹 Track which view is active
+  const [currentView, setCurrentView] = useState(user?.roles?.[0] || 'developer');
+
+  const canCreateTasks = ['admin', 'manager'].includes(currentView);
 
   useEffect(() => {
     loadTasks();
-  }, []);
+  }, [currentView]); // reload tasks when view changes
 
   const loadTasks = async () => {
     try {
-      const data = await api.getTasks(token, userRole);
+      const data = await api.getTasks(token, currentView, user.emp_id);
       setTasks(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error('Error loading tasks:', error);
@@ -52,8 +54,9 @@ const Dashboard = () => {
   };
 
   const filteredTasks = tasks.filter(task => {
-    const matchesSearch = task.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         task.description.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch =
+      task.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      task.description.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesPriority = filterPriority === 'All' || task.priority === filterPriority;
     return matchesSearch && matchesPriority;
   });
@@ -71,14 +74,18 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-      <Header />
+      {/* 🔹 Pass handler to Header */}
+      <Header onChangeView={setCurrentView} />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Controls */}
         <div className="mb-6 flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
           <div className="flex flex-col sm:flex-row gap-3 flex-1 w-full sm:w-auto">
             <div className="relative flex-1 max-w-md">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+              <Search
+                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                size={18}
+              />
               <input
                 type="text"
                 placeholder="Search tasks..."
@@ -87,7 +94,7 @@ const Dashboard = () => {
                 className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
-            
+
             <select
               value={filterPriority}
               onChange={(e) => setFilterPriority(e.target.value)}
@@ -99,7 +106,7 @@ const Dashboard = () => {
               <option value="High">High</option>
             </select>
           </div>
-          
+
           {canCreateTasks && (
             <button
               onClick={() => setShowCreateModal(true)}
@@ -111,11 +118,11 @@ const Dashboard = () => {
           )}
         </div>
 
-        <TaskBoard 
+        <TaskBoard
           tasks={filteredTasks}
           onStatusChange={handleStatusChange}
           onAddRemark={handleAddRemark}
-          userRole={userRole}
+          userRole={currentView} // 🔹 use currentView here
         />
       </main>
 

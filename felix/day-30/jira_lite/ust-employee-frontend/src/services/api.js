@@ -11,14 +11,23 @@ export const api = {
     return response.json();
   },
   
-  getTasks: async (token, role) => {
-    const endpoints = {
-      admin: '/tasks',
-      manager: '/tasks/manager',
-      developer: '/tasks/employee'
-    };
-    const endpoint = endpoints[role] || '/tasks/employee';
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+  getTasks: async (token, role, empId) => {
+    let endpoint = '/tasks/employee';
+    let url = `${API_BASE_URL}${endpoint}`;
+    console.log(`role`,role,empId);
+    
+    if (role === 'admin') {
+      endpoint = '/tasks';
+      url = `${API_BASE_URL}${endpoint}`;
+    } else if (role === 'manager') {
+      endpoint = '/tasks/manager';
+      url = `${API_BASE_URL}${endpoint}`;
+    } else if (role === 'developer') {
+      endpoint = '/tasks/employee';
+      url = `${API_BASE_URL}${endpoint}?id=${empId}`;
+    }
+    console.log(`Fetching tasks from ${url} for role ${role}`);
+    const response = await fetch(url, {
       headers: { 'Authorization': `Bearer ${token}` }
     });
     if (!response.ok) throw new Error('Failed to fetch tasks');
@@ -32,6 +41,14 @@ export const api = {
     if (!response.ok) throw new Error('Failed to fetch task');
     return response.json();
   },
+
+  getUserById: async (token, empId) => {
+  const response = await fetch(`${API_BASE_URL}/users/${empId}`, {
+    headers: { 'Authorization': `Bearer ${token}` }
+  });
+  if (!response.ok) throw new Error('Failed to fetch user');
+  return response.json();
+},
   
   createTask: async (token, taskData) => {
     const response = await fetch(`${API_BASE_URL}/create_tasks`, {

@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from api.emp_api import emp_router
 from api.task_api import task_router
 from api.login_api import login_router
+from api.user_api import user_router
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(title="Jira Lite")
@@ -17,3 +18,4 @@ app.add_middleware(
 app.include_router(login_router, prefix="/api/v1/login")
 app.include_router(task_router, prefix="/api/v1")
 app.include_router(emp_router, prefix="/api/v1")
+app.include_router(user_router, prefix="/api/v1")

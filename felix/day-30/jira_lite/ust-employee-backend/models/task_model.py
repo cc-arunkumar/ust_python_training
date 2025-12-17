@@ -11,7 +11,7 @@ class Task(BaseModel):
     updated_by: int
     updated_at: datetime = datetime.now()
     priority: Literal['Low', 'Medium', 'High']
-    status: Literal['To Do', 'In Progress', 'Done']
+    status: Literal['To Do', 'In Progress','Review', 'Done']
     remarks: Optional[List[dict]] = None
     expected_completion_date: datetime
     actual_completion_date: Optional[datetime] = None
@@ -24,7 +24,7 @@ class TaskCreate(BaseModel):
     assigned_at: Optional[datetime] = None
     updated_by: int
     priority: Literal['Low', 'Medium', 'High'] = 'Low'
-    status: Literal['To Do', 'In Progress', 'Done']
+    status: Literal['To Do', 'In Progress','Review', 'Done']
     remarks: Optional[List[dict]] = None
     expected_completion_date: datetime
     actual_completion_date: Optional[datetime] = None
@@ -41,7 +41,7 @@ class TaskCreate(BaseModel):
         return value
 
 class TaskUpdate(BaseModel):
-    status: Optional[Literal['To Do', 'In Progress', 'Done']] = None
+    status: Optional[Literal['To Do', 'In Progress','Review', 'Done']] = None
     remarks: Optional[List[dict]] = None
     updated_by: int
     updated_at: datetime = datetime.now()
@@ -49,7 +49,7 @@ class TaskUpdate(BaseModel):
     priority: Optional[Literal['Low', 'Medium', 'High']] ='Low'
     
 class TaskStatusUpdate(BaseModel):
-    status: Literal['To Do', 'In Progress', 'Done']
+    status: Literal['To Do', 'In Progress','Review', 'Done']
     
 class TaskRemarksUpdate(BaseModel):
     remarks: str

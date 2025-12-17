@@ -11,26 +11,49 @@ from services.user_services import get_User_by_id
 task_router = APIRouter()
 
 @task_router.get("/tasks", tags=["Tasks"])
-def get_all_tasks_endpoint(user: str = Depends(get_current_user)):
+def get_tasks(user: str = Depends(get_current_user)):
     try:
+        print("Fetching tasks based on role")
+
         emp_id = int(user)
         auth_user = get_User_by_id(emp_id)
+
         if not auth_user:
             raise HTTPException(status_code=401, detail="User not found")
 
         roles = auth_user.role
         print("Roles of auth user:", roles)
-        if "admin" not in roles:
-            raise HTTPException(status_code=403, detail="Forbidden: admin role required to view all tasks")
 
-        all_tasks = get_all_tasks()
+        # ADMIN → get all tasks
+        if "admin" in roles:
+            all_tasks = get_all_tasks()
+
+        # MANAGER → get manager-specific tasks
+        elif "manager" in roles:
+            all_tasks = get_all_tasks_by_manager(emp_id)
+
+        # DEVELOPER → get employee-specific tasks
+        elif "developer" in roles:
+            all_tasks = get_all_tasks_by_employee(emp_id)
+
+        else:
+            raise HTTPException(
+                status_code=403,
+                detail="Forbidden: insufficient role permissions"
+            )
+
+        # Convert ObjectId to string
         tasks_list = []
         for task in all_tasks:
-            task['_id'] = str(task['_id'])
+            task["_id"] = str(task["_id"])
             tasks_list.append(task)
         return tasks_list
+
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
 
 
 @task_router.get("/tasks/{task_id}", tags=["Tasks"])
@@ -80,8 +103,9 @@ def create_new_task(task: TaskCreate, user: str = Depends(get_current_user)):
 
 
 @task_router.get("/tasks/employee", tags=["Tasks"])
-def get_tasks_of_employee(id: int, user: str = Depends(get_current_user)):
+def get_tasks_of_employee(user: str = Depends(get_current_user)):
     try:
+        print("Fetching tasks for employee")
         emp_id = int(user)
         auth_user = get_User_by_id(emp_id)
         if not auth_user:
@@ -105,6 +129,7 @@ def get_tasks_of_employee(id: int, user: str = Depends(get_current_user)):
 @task_router.get("/tasks/manager", tags=["Tasks"])
 def get_tasks_of_manager( user: str = Depends(get_current_user)):
     try:
+        print("Fetching tasks for manager")
         emp_id = int(user)
         auth_user = get_User_by_id(emp_id)
         if not auth_user:
