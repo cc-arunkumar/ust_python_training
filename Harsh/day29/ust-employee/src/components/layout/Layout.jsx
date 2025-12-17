@@ -1,5 +1,14 @@
 import React, { useState } from 'react';
-import { LogOut, Users, CheckSquare, User, RefreshCw, LayoutGrid, List } from 'lucide-react';
+import {
+  LogOut,
+  Users,
+  CheckSquare,
+  User,
+  RefreshCw,
+  LayoutGrid,
+  List,
+  Menu
+} from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import EmployeesPage from '../employees/EmployeesPage';
 import TasksPage from '../tasks/TasksPage';
@@ -8,147 +17,196 @@ import KanbanBoard from '../tasks/KanbanBoard';
 const Layout = () => {
   const { user, activeRole, logout, changeRole, hasMultipleRoles } = useAuth();
   const [currentPage, setCurrentPage] = useState('tasks');
-  const [taskView, setTaskView] = useState('list'); // 'list' or 'board'
+  const [taskView, setTaskView] = useState('list');
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const renderPage = () => {
-    switch (currentPage) {
-      case 'tasks':
-        return taskView === 'board' ? <KanbanBoard /> : <TasksPage />;
-      case 'employees':
-        return <EmployeesPage />;
-      default:
-        return <TasksPage />;
-    }
+    if (currentPage === 'employees') return <EmployeesPage />;
+    return taskView === 'board' ? <KanbanBoard /> : <TasksPage />;
   };
 
-  const getRoleBadgeColor = () => {
-    switch (activeRole) {
-      case 'ADMIN':
-        return 'bg-purple-600 text-purple-100';
-      case 'MANAGER':
-        return 'bg-blue-600 text-blue-100';
-      case 'DEVELOPER':
-        return 'bg-green-600 text-green-100';
-      default:
-        return 'bg-gray-600 text-gray-100';
-    }
+  const roleStyles = {
+    ADMIN: 'bg-purple-500/10 text-purple-700',
+    MANAGER: 'bg-blue-500/10 text-blue-700',
+    DEVELOPER: 'bg-green-500/10 text-green-700'
   };
 
   return (
-    <div className="min-h-screen bg-gray-900">
-      {/* Navigation Bar */}
-      <nav className="bg-gray-800 shadow-lg border-b border-gray-700">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
-            {/* Left side - Logo and Navigation */}
-            <div className="flex space-x-8">
-              <div className="flex items-center">
-                <h1 className="text-xl font-bold text-white">
-                  JiraLite
-                </h1>
+    <div className="min-h-screen flex bg-slate-100">
+
+      {/* SIDEBAR */}
+      <aside
+        className={`transition-all duration-300
+        ${sidebarOpen ? 'w-64' : 'w-16'}
+        bg-gradient-to-b from-indigo-600 to-indigo-800 text-white shadow-xl`}
+      >
+        <div className="h-16 flex items-center justify-between px-4">
+          {sidebarOpen && (
+            <h1 className="text-xl font-semibold tracking-wide">
+              TaskPro
+            </h1>
+          )}
+          <button
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+            className="p-2 rounded-lg hover:bg-white/10"
+          >
+            <Menu size={20} />
+          </button>
+        </div>
+
+        <nav className="mt-6 px-3 space-y-2">
+          <SidebarButton
+            icon={<CheckSquare size={18} />}
+            label="Tasks"
+            active={currentPage === 'tasks'}
+            open={sidebarOpen}
+            onClick={() => setCurrentPage('tasks')}
+          />
+          <SidebarButton
+            icon={<Users size={18} />}
+            label="Employees"
+            active={currentPage === 'employees'}
+            open={sidebarOpen}
+            onClick={() => setCurrentPage('employees')}
+          />
+        </nav>
+      </aside>
+
+      {/* MAIN */}
+      <div className="flex-1 flex flex-col">
+
+        {/* NAVBAR */}
+        <header className="bg-white/80 backdrop-blur shadow-md px-6 py-4 flex items-center justify-between">
+
+          {/* LEFT */}
+          <div className="flex items-center gap-4">
+            <span
+              className={`px-4 py-1.5 rounded-full text-xs font-semibold
+              ${roleStyles[activeRole]}`}
+            >
+              {activeRole}
+            </span>
+
+            {currentPage === 'tasks' && (
+              <div className="flex bg-slate-100 rounded-xl p-1">
+                <ViewButton
+                  active={taskView === 'list'}
+                  icon={<List size={14} />}
+                  label="List"
+                  onClick={() => setTaskView('list')}
+                />
+                <ViewButton
+                  active={taskView === 'board'}
+                  icon={<LayoutGrid size={14} />}
+                  label="Board"
+                  onClick={() => setTaskView('board')}
+                />
               </div>
-              
-              <div className="flex space-x-4 items-center">
+            )}
+          </div>
+
+          {/* RIGHT */}
+          <div className="flex items-center gap-3">
+
+            <div className="flex items-center gap-2 bg-slate-100 px-4 py-2 rounded-xl">
+              <User size={16} className="text-slate-500" />
+              <span className="text-sm font-medium text-slate-800">
+                {user?.email}
+              </span>
+            </div>
+
+            {hasMultipleRoles() && (
+              <div className="relative">
                 <button
-                  onClick={() => setCurrentPage('tasks')}
-                  className={`px-3 py-2 rounded-md text-sm font-medium transition ${
-                    currentPage === 'tasks'
-                      ? 'bg-blue-600 text-white'
-                      : 'text-gray-300 hover:bg-gray-700 hover:text-white'
-                  }`}
+                  onClick={() => setDropdownOpen(!dropdownOpen)}
+                  className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-slate-100 hover:bg-slate-200 transition"
                 >
-                  <CheckSquare size={18} className="inline mr-2" />
-                  Tasks
-                </button>
-                
-                <button
-                  onClick={() => setCurrentPage('employees')}
-                  className={`px-3 py-2 rounded-md text-sm font-medium transition ${
-                    currentPage === 'employees'
-                      ? 'bg-blue-600 text-white'
-                      : 'text-gray-300 hover:bg-gray-700 hover:text-white'
-                  }`}
-                >
-                  <Users size={18} className="inline mr-2" />
-                  Employees
+                  <RefreshCw size={16} />
+                  Switch Role
                 </button>
 
-                {/* Task View Toggle - Only show when on tasks page */}
-                {currentPage === 'tasks' && (
-                  <div className="flex items-center bg-gray-700 rounded-md ml-4">
-                    <button
-                      onClick={() => setTaskView('list')}
-                      className={`px-3 py-2 rounded-l-md text-sm font-medium transition flex items-center gap-1 ${
-                        taskView === 'list'
-                          ? 'bg-gray-600 text-white'
-                          : 'text-gray-300 hover:text-white'
-                      }`}
-                      title="List View"
-                    >
-                      <List size={16} />
-                      List
-                    </button>
-                    <button
-                      onClick={() => setTaskView('board')}
-                      className={`px-3 py-2 rounded-r-md text-sm font-medium transition flex items-center gap-1 ${
-                        taskView === 'board'
-                          ? 'bg-gray-600 text-white'
-                          : 'text-gray-300 hover:text-white'
-                      }`}
-                      title="Board View"
-                    >
-                      <LayoutGrid size={16} />
-                      Board
-                    </button>
+                {dropdownOpen && (
+                  <div className="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-xl shadow-lg z-50">
+                    {user.role.map((role) => (
+                      <button
+                        key={role}
+                        onClick={() => {
+                          changeRole(role);
+                          setDropdownOpen(false);
+                        }}
+                        className={`w-full text-left px-4 py-2 text-sm hover:bg-indigo-100 transition
+                          ${activeRole === role ? 'font-semibold text-indigo-700' : 'text-gray-700'}`}
+                      >
+                        {role}
+                      </button>
+                    ))}
                   </div>
                 )}
               </div>
-            </div>
+            )}
 
-            {/* Right side - User info and Actions */}
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-3 bg-gray-700 px-4 py-2 rounded-lg">
-                <User size={18} className="text-gray-400" />
-                <div className="text-sm">
-                  <p className="font-medium text-white">{user?.email}</p>
-                  <p className="text-xs text-gray-400">Role: {activeRole}</p>
-                </div>
-                <span className={`text-xs font-semibold px-2 py-1 rounded ${getRoleBadgeColor()}`}>
-                  {activeRole}
-                </span>
-              </div>
-
-              {/* Only show Switch Role button if user has multiple roles */}
-              {hasMultipleRoles() && (
-                <button
-                  onClick={changeRole}
-                  className="text-gray-300 hover:text-white hover:bg-gray-700 px-3 py-2 rounded-lg transition flex items-center gap-2"
-                  title="Change Role"
-                >
-                  <RefreshCw size={18} />
-                  <span className="text-sm font-medium">Switch Role</span>
-                </button>
-              )}
-              
-              <button
-                onClick={logout}
-                className="text-gray-300 hover:text-white hover:bg-gray-700 px-3 py-2 rounded-lg transition flex items-center gap-2"
-                title="Logout"
-              >
-                <LogOut size={18} />
-                <span className="text-sm font-medium">Logout</span>
-              </button>
-            </div>
+            <ActionButton
+              icon={<LogOut size={16} />}
+              label="Logout"
+              danger
+              onClick={logout}
+            />
           </div>
-        </div>
-      </nav>
+        </header>
 
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto">
-        {renderPage()}
-      </main>
+        {/* CONTENT */}
+        <main className="flex-1 p-6 overflow-y-auto">
+          <div className="bg-white rounded-2xl shadow-sm p-6 min-h-full">
+            {renderPage()}
+          </div>
+        </main>
+      </div>
     </div>
   );
 };
+
+/* ---------- COMPONENTS ---------- */
+
+const SidebarButton = ({ icon, label, active, open, onClick }) => (
+  <button
+    onClick={onClick}
+    className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium
+    transition-all
+    ${active
+      ? 'bg-white/20 shadow text-white'
+      : 'text-indigo-100 hover:bg-white/10'}`}
+  >
+    {icon}
+    {open && <span>{label}</span>}
+  </button>
+);
+
+const ViewButton = ({ icon, label, active, onClick }) => (
+  <button
+    onClick={onClick}
+    className={`flex items-center gap-1 px-4 py-1.5 rounded-lg text-sm transition
+    ${active
+      ? 'bg-white shadow font-medium'
+      : 'text-slate-500 hover:text-slate-700'}`}
+  >
+    {icon}
+    {label}
+  </button>
+);
+
+const ActionButton = ({ icon, label, onClick, danger }) => (
+  <button
+    onClick={onClick}
+    className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium
+    transition shadow-sm
+    ${danger
+      ? 'text-red-600 bg-red-50 hover:bg-red-100'
+      : 'text-slate-700 bg-slate-100 hover:bg-slate-200'}`}
+  >
+    {icon}
+    {label}
+  </button>
+);
 
 export default Layout;

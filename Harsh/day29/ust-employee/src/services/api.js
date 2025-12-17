@@ -11,41 +11,41 @@ class ApiService {
 
   static async request(endpoint, options = {}) {
     const token = localStorage.getItem(STORAGE_KEYS.TOKEN);
-    
+
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
       ...options,
       headers: this.getHeaders(token),
     });
 
+    // Do NOT redirect on 401. Just throw
     if (response.status === 401) {
-      localStorage.removeItem(STORAGE_KEYS.TOKEN);
-      localStorage.removeItem(STORAGE_KEYS.USER);
-      window.location.href = '/';
-      throw new Error('Unauthorized');
+      throw new Error('Invalid credentials'); // <- removed reload
     }
 
-    if (response.status === 204) {
-      return null;
-    }
+    if (response.status === 204) return null;
 
     const data = await response.json();
-    
+
     if (!response.ok) {
       throw new Error(data.detail || 'Request failed');
     }
-    
+
     return data;
   }
 
   // Auth APIs
   static async login(email, password) {
-    return this.request('/auth/login', {
-      method: 'POST',
-      body: JSON.stringify({ email, password }),
-    });
+    try {
+      return await this.request('/auth/login', {
+        method: 'POST',
+        body: JSON.stringify({ email, password }),
+      });
+    } catch (err) {
+      // Throw same error for LoginPage to catch
+      throw new Error('Invalid credentials');
+    }
   }
 
-  // Get current user info (you may need to create this endpoint in your backend)
   static async getCurrentUser() {
     return this.request('/auth/me');
   }
@@ -74,8 +74,8 @@ class ApiService {
   }
 
   static async deleteEmployee(id) {
-    return this.request(`/employees/${id}`, { 
-      method: 'DELETE' 
+    return this.request(`/employees/${id}`, {
+      method: 'DELETE',
     });
   }
 
@@ -104,10 +104,8 @@ class ApiService {
 
   static async updateTaskStatus(id, status, review = null) {
     const payload = { status };
-    if (review) {
-      payload.review = review;
-    }
-    
+    if (review) payload.review = review;
+
     return this.request(`/tasks/${id}/status`, {
       method: 'PATCH',
       body: JSON.stringify(payload),
@@ -121,8 +119,8 @@ class ApiService {
 
     const response = await fetch(`${API_BASE_URL}/tasks/${taskId}/upload`, {
       method: 'POST',
-      headers: { 
-        'Authorization': `Bearer ${token}` 
+      headers: {
+        'Authorization': `Bearer ${token}`,
       },
       body: formData,
     });
@@ -131,7 +129,7 @@ class ApiService {
       const data = await response.json();
       throw new Error(data.detail || 'Upload failed');
     }
-    
+
     return response.json();
   }
 }

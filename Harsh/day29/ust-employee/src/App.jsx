@@ -1,11 +1,10 @@
 import React from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import LoginPage from './components/auth/LoginPage';
-import RoleSelector from './components/auth/RoleSelector';
 import Layout from './components/layout/Layout';
 
 const AppContent = () => {
-  const { user, activeRole, loading, showRoleSelector } = useAuth();
+  const { user, activeRole, loading } = useAuth(); // Removed showRoleSelector
 
   if (loading) {
     return (
@@ -23,14 +22,9 @@ const AppContent = () => {
     return <LoginPage />;
   }
 
-  // Show role selector if user has multiple roles and needs to select one
-  if (showRoleSelector) {
-    return <RoleSelector />;
-  }
-
-  // Show main app if user is logged in and role is selected
+  // Show main app if user is logged in
   if (activeRole) {
-    return <Layout />;
+    return <Layout />; // Directly render Layout
   }
 
   // Fallback loading state

@@ -33,129 +33,143 @@ const TasksPage = () => {
     }
   };
 
-  const handleAdd = () => {
-    setEditingTask(null);
-    setShowModal(true);
-  };
-
-  const handleView = (task) => {
-    setSelectedTask(task);
-  };
-
   const formatDate = (dateString) => {
     if (!dateString) return 'No deadline';
     return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
       month: 'short',
-      day: 'numeric'
+      day: 'numeric',
+      year: 'numeric'
     });
   };
 
+  /* ---------- LOADING ---------- */
   if (loading) {
     return (
-      <div className="p-8 text-center">
-        <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
-        <p className="mt-2 text-gray-400">Loading tasks...</p>
+      <div className="flex flex-col items-center justify-center py-24">
+        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-500" />
+        <p className="mt-4 text-slate-500">Fetching tasks…</p>
       </div>
     );
   }
 
   return (
-    <div className="p-8">
-      <div className="flex justify-between items-center mb-6">
+    <div className="max-w-7xl mx-auto px-6 py-8">
+
+      {/* PAGE HEADER */}
+      <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-white">Tasks</h1>
-          <p className="text-gray-400 mt-1">Manage and track your team's tasks</p>
+          <h1 className="text-3xl font-semibold text-slate-800">
+            Task Overview
+          </h1>
+          <p className="text-slate-500 mt-1">
+            Monitor assignments and team progress
+          </p>
         </div>
+
         {canCreate && (
           <button
-            onClick={handleAdd}
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition flex items-center gap-2 shadow-lg"
+            onClick={() => {
+              setEditingTask(null);
+              setShowModal(true);
+            }}
+            className="flex items-center gap-2 bg-blue-600 text-white
+                       px-5 py-2.5 rounded-xl shadow-sm
+                       hover:bg-blue-700 transition"
           >
-            <Plus size={20} />
-            Create Task
+            <Plus size={18} />
+            New Task
           </button>
         )}
       </div>
 
+      {/* ERROR */}
       {error && (
-        <div className="bg-red-900 bg-opacity-50 border border-red-700 text-red-200 px-4 py-3 rounded mb-4 flex items-center gap-2">
-          <AlertCircle size={20} />
-          <span>{error}</span>
+        <div className="mb-6 flex items-center gap-2 bg-red-50
+                        text-red-600 px-4 py-3 rounded-xl">
+          <AlertCircle size={18} />
+          {error}
         </div>
       )}
 
+      {/* EMPTY */}
       {tasks.length === 0 ? (
-        <div className="bg-gray-800 rounded-lg shadow-xl border border-gray-700 p-8 text-center">
-          <p className="text-gray-400">No tasks found</p>
+        <div className="bg-white rounded-2xl shadow-sm p-12 text-center">
+          <p className="text-slate-500">No tasks have been created yet.</p>
           {canCreate && (
             <button
-              onClick={handleAdd}
-              className="mt-4 text-blue-400 hover:text-blue-300 font-medium"
+              onClick={() => setShowModal(true)}
+              className="mt-4 text-blue-600 font-medium hover:underline"
             >
               Create your first task
             </button>
           )}
         </div>
       ) : (
-        <div className="grid gap-4">
+        /* TASK CARDS */
+        <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
           {tasks.map((task) => (
             <div
               key={task.task_id}
-              className="bg-gray-800 rounded-lg shadow-xl border border-gray-700 hover:border-gray-600 transition-all p-6"
+              className="bg-white rounded-2xl shadow-sm
+                         hover:shadow-md transition p-6 flex flex-col"
             >
-              <div className="flex justify-between items-start">
-                <div className="flex-1">
-                  <div className="flex items-start justify-between mb-2">
-                    <h3 className="text-lg font-semibold text-white">
-                      {task.title}
-                    </h3>
-                    <span className={`px-3 py-1 rounded-full text-xs font-medium ml-4 ${STATUS_COLORS[task.status]}`}>
-                      {task.status.replace('_', ' ')}
-                    </span>
-                  </div>
-                  
-                  {task.description && (
-                    <p className="text-gray-400 mb-3 line-clamp-2">
-                      {task.description}
-                    </p>
-                  )}
-                  
-                  <div className="flex flex-wrap gap-4 text-sm text-gray-400">
-                    <div className="flex items-center gap-1">
-                      <User size={16} />
-                      <span>
-                        Assigned: {task.assigned_to ? `#${task.assigned_to}` : 'Unassigned'}
-                      </span>
-                    </div>
-                    
-                    {task.reviewer && (
-                      <div className="flex items-center gap-1">
-                        <User size={16} />
-                        <span>Reviewer: #{task.reviewer}</span>
-                      </div>
-                    )}
-                    
-                    <div className="flex items-center gap-1">
-                      <Calendar size={16} />
-                      <span>{formatDate(task.expected_closure)}</span>
-                    </div>
-                  </div>
-                </div>
-                
-                <button
-                  onClick={() => handleView(task)}
-                  className="ml-4 text-blue-400 hover:text-blue-300 transition p-2 hover:bg-gray-700 rounded-lg"
-                  title="View details"
+              {/* HEADER */}
+              <div className="flex items-start justify-between mb-3">
+                <h3 className="text-lg font-semibold text-slate-800 line-clamp-1">
+                  {task.title}
+                </h3>
+                <span
+                  className={`px-3 py-1 rounded-full text-xs font-medium
+                  ${STATUS_COLORS[task.status]}`}
                 >
-                  <Eye size={20} />
-                </button>
+                  {task.status.replace('_', ' ')}
+                </span>
               </div>
+
+              {/* DESC */}
+              {task.description && (
+                <p className="text-slate-500 text-sm line-clamp-2 mb-4">
+                  {task.description}
+                </p>
+              )}
+
+              {/* META */}
+              <div className="space-y-2 text-sm text-slate-500">
+                <div className="flex items-center gap-2">
+                  <User size={14} />
+                  Assigned: {task.assigned_to || 'Unassigned'}
+                </div>
+
+                {task.reviewer && (
+                  <div className="flex items-center gap-2">
+                    <User size={14} />
+                    Reviewer: {task.reviewer}
+                  </div>
+                )}
+
+                <div className="flex items-center gap-2">
+                  <Calendar size={14} />
+                  {formatDate(task.expected_closure)}
+                </div>
+              </div>
+
+              {/* ACTION */}
+              <button
+                onClick={() => setSelectedTask(task)}
+                className="mt-6 flex items-center justify-center gap-2
+                           text-blue-600 text-sm font-medium
+                           rounded-lg py-2
+                           hover:bg-blue-50 transition"
+              >
+                <Eye size={16} />
+                View details
+              </button>
             </div>
           ))}
         </div>
       )}
 
+      {/* MODALS */}
       {showModal && (
         <TaskModal
           task={editingTask}

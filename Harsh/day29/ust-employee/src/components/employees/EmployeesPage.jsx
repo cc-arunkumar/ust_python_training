@@ -31,10 +31,7 @@ const EmployeesPage = () => {
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this employee? This action cannot be undone.')) {
-      return;
-    }
-
+    if (!window.confirm('Are you sure you want to delete this employee?')) return;
     try {
       await ApiService.deleteEmployee(id);
       await fetchEmployees();
@@ -55,24 +52,24 @@ const EmployeesPage = () => {
 
   if (loading) {
     return (
-      <div className="p-8 text-center">
-        <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
-        <p className="mt-2 text-gray-400">Loading employees...</p>
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-spin h-10 w-10 border-b-2 border-blue-500 rounded-full"></div>
       </div>
     );
   }
 
   return (
-    <div className="p-8">
-      <div className="flex justify-between items-center mb-6">
+    <div className="p-6 bg-gray-50 min-h-screen">
+      {/* Header */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
         <div>
-          <h1 className="text-3xl font-bold text-white">Employees</h1>
-          <p className="text-gray-400 mt-1">Manage your team members</p>
+          <h1 className="text-3xl font-bold text-gray-900">Team Members</h1>
+          <p className="text-gray-500 mt-1">Overview of all employees</p>
         </div>
         {isAdmin && (
           <button
             onClick={handleAdd}
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition flex items-center gap-2 shadow-lg"
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition flex items-center gap-2 shadow"
           >
             <Plus size={20} />
             Add Employee
@@ -80,91 +77,56 @@ const EmployeesPage = () => {
         )}
       </div>
 
+      {/* Error */}
       {error && (
-        <div className="bg-red-900 bg-opacity-50 border border-red-700 text-red-200 px-4 py-3 rounded mb-4 flex items-center gap-2">
+        <div className="bg-red-100 border border-red-300 text-red-700 px-4 py-3 rounded mb-4 flex items-center gap-2">
           <AlertCircle size={20} />
           <span>{error}</span>
         </div>
       )}
 
+      {/* Employees Grid */}
       {employees.length === 0 ? (
-        <div className="bg-gray-800 rounded-lg shadow-xl border border-gray-700 p-8 text-center">
-          <p className="text-gray-400">No employees found</p>
+        <div className="text-center py-12 bg-white rounded-lg shadow">
+          <p className="text-gray-500">No employees found</p>
         </div>
       ) : (
-        <div className="bg-gray-800 rounded-lg shadow-xl overflow-hidden border border-gray-700">
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gray-900 border-b border-gray-700">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
-                    ID
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
-                    Name
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
-                    Email
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
-                    Designation
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
-                    Manager ID
-                  </th>
-                  {isAdmin && (
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
-                      Actions
-                    </th>
-                  )}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-700">
-                {employees.map((emp) => (
-                  <tr key={emp.emp_id} className="hover:bg-gray-750 transition">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-white">
-                      {emp.emp_id}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
-                      {emp.emp_name}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
-                      {emp.email}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
-                      {emp.designation}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
-                      {emp.manager_id || '-'}
-                    </td>
-                    {isAdmin && (
-                      <td className="px-6 py-4 whitespace-nowrap text-sm">
-                        <div className="flex gap-2">
-                          <button
-                            onClick={() => handleEdit(emp)}
-                            className="text-blue-400 hover:text-blue-300 transition p-1"
-                            title="Edit employee"
-                          >
-                            <Edit2 size={18} />
-                          </button>
-                          <button
-                            onClick={() => handleDelete(emp.emp_id)}
-                            className="text-red-400 hover:text-red-300 transition p-1"
-                            title="Delete employee"
-                          >
-                            <Trash2 size={18} />
-                          </button>
-                        </div>
-                      </td>
-                    )}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {employees.map((emp) => (
+            <div
+              key={emp.emp_id}
+              className="bg-white rounded-lg shadow p-4 flex flex-col justify-between hover:shadow-lg transition"
+            >
+              <div>
+                <h2 className="text-lg font-semibold text-gray-900">{emp.emp_name}</h2>
+                <p className="text-gray-500 text-sm">{emp.designation}</p>
+                <p className="text-gray-400 text-sm mt-1">{emp.email}</p>
+                <p className="text-gray-400 text-sm mt-1">Manager ID: {emp.manager_id || '-'}</p>
+                <p className="text-gray-400 text-sm mt-1">Employee ID: {emp.emp_id}</p>
+              </div>
+
+              {isAdmin && (
+                <div className="flex justify-end gap-2 mt-4">
+                  <button
+                    onClick={() => handleEdit(emp)}
+                    className="text-blue-500 hover:text-blue-700 transition"
+                  >
+                    <Edit2 size={18} />
+                  </button>
+                  <button
+                    onClick={() => handleDelete(emp.emp_id)}
+                    className="text-red-500 hover:text-red-700 transition"
+                  >
+                    <Trash2 size={18} />
+                  </button>
+                </div>
+              )}
+            </div>
+          ))}
         </div>
       )}
 
+      {/* Employee Modal */}
       {showModal && (
         <EmployeeModal
           employee={editingEmployee}
