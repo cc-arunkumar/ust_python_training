@@ -42,6 +42,10 @@ class ApiService {
     });
   }
 
+  getCurrentUser() {
+    return this.request(`/auth/me`);
+  }
+
   // Tasks
   getTasks() {
     return this.request("/tasks/");

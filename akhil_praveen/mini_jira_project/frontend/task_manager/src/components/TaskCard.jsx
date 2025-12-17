@@ -17,6 +17,7 @@ function TaskCard({
   userRole = "",
   onUpdateStatus,
   onEdit,
+  currentEmpId = null,
 }) {
   const [showStatusMenu, setShowStatusMenu] = useState(false);
   const [showReviewInput, setShowReviewInput] = useState(false);
@@ -69,11 +70,26 @@ function TaskCard({
     }
 
     // Always ask for review/remarks when changing to REVIEW, IN_PROGRESS or DONE
-    if (
-      newStatus === "REVIEW" ||
-      newStatus === "DONE" ||
-      newStatus === "IN_PROGRESS"
-    ) {
+    const isReviewer =
+      currentEmpId != null && Number(currentEmpId) === Number(task.reviewer);
+
+    // If reviewer-only remarks are required (REVIEW/DONE) and the current user is NOT the reviewer,
+    // skip showing the reviewer textarea and proceed without remarks (backend will enforce review writes).
+    if (newStatus === "REVIEW" || newStatus === "DONE") {
+      if (!isReviewer) {
+        // proceed without remarks
+        onUpdateStatus && onUpdateStatus(task.task_id, newStatus, null);
+        setShowStatusMenu(false);
+        return;
+      }
+      // current user is reviewer -> allow them to add reviewer remarks
+      setPendingStatus(newStatus);
+      setShowReviewInput(true);
+      setShowStatusMenu(false);
+      return;
+    }
+
+    if (newStatus === "IN_PROGRESS") {
       setPendingStatus(newStatus);
       setShowReviewInput(true);
       setShowStatusMenu(false);
@@ -92,6 +108,20 @@ function TaskCard({
       review: reviewText,
       userRole: userRole,
     });
+
+    const isReviewer =
+      currentEmpId != null && Number(currentEmpId) === Number(task.reviewer);
+
+    // If trying to submit reviewer remarks but not the designated reviewer, block here (server also enforces)
+    if (
+      reviewText &&
+      reviewText.trim() &&
+      (pendingStatus === "REVIEW" || pendingStatus === "DONE") &&
+      !isReviewer
+    ) {
+      alert("Only the designated reviewer can add reviewer remarks.");
+      return;
+    }
 
     // Call the update function with review text (even if empty)
     onUpdateStatus &&

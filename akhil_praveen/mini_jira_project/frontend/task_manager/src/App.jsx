@@ -8,6 +8,7 @@ import api from "./api/api";
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [role, setRole] = useState("");
+  const [currentEmpId, setCurrentEmpId] = useState(null);
   const [tasks, setTasks] = useState([]);
   const [employees, setEmployees] = useState([]);
   const [activeTab, setActiveTab] = useState("tasks");
@@ -26,6 +27,8 @@ function App() {
             .filter(Boolean)[0]
         : storedRole;
       setRole(active);
+      const empIdRaw = localStorage.getItem("emp_id");
+      if (empIdRaw) setCurrentEmpId(Number(empIdRaw));
     } else {
       setLoading(false);
     }
@@ -61,13 +64,18 @@ function App() {
   const handleLogin = (userRole) => {
     setIsAuthenticated(true);
     setRole(userRole);
+    const empIdRaw = localStorage.getItem("emp_id");
+    if (empIdRaw) setCurrentEmpId(Number(empIdRaw));
   };
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
+    localStorage.removeItem("roles");
+    localStorage.removeItem("emp_id");
     setIsAuthenticated(false);
     setRole("");
+    setCurrentEmpId(null);
     setActiveTab("tasks");
   };
 
@@ -220,6 +228,7 @@ function App() {
             onRefresh={loadData}
             canCreateTasks={canCreateTasks}
             userRole={role}
+            currentEmpId={currentEmpId}
             onUpdateStatus={handleUpdateStatus}
             onSaveTask={handleSaveTask}
           />

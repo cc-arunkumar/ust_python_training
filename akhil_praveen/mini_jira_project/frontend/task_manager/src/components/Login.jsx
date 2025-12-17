@@ -1,22 +1,34 @@
-import React, { useState } from 'react';
-import api from '../api/api';
+import React, { useState } from "react";
+import api from "../api/api";
 
 function Login({ onLogin }) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+    setError("");
     setLoading(true);
 
     try {
       const response = await api.login(email, password);
-      localStorage.setItem('token', response.access_token);
-      localStorage.setItem('role', response.role);
-      onLogin(response.role);
+      localStorage.setItem("token", response.access_token);
+      // fetch current user details (emp_id, roles, emp_name)
+      const me = await api.getCurrentUser();
+      const roles = Array.isArray(me.roles)
+        ? me.roles
+        : me.roles
+        ? [me.roles]
+        : [];
+      // store full roles list and active role
+      localStorage.setItem("roles", roles.join(","));
+      const active = roles.length ? roles[0] : response.role || "";
+      localStorage.setItem("role", active);
+      if (me.emp_name) localStorage.setItem("username", me.emp_name);
+      if (me.emp_id) localStorage.setItem("emp_id", String(me.emp_id));
+      onLogin(active);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -72,14 +84,16 @@ function Login({ onLogin }) {
             disabled={loading}
             className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed font-medium"
           >
-            {loading ? 'Signing in...' : 'Sign In'}
+            {loading ? "Signing in..." : "Sign In"}
           </button>
         </form>
 
         <div className="mt-6 text-center text-sm text-gray-600">
           <p>
-            Default password:{' '}
-            <span className="font-mono bg-gray-100 px-2 py-1 rounded">password</span>
+            Default password:{" "}
+            <span className="font-mono bg-gray-100 px-2 py-1 rounded">
+              password
+            </span>
           </p>
         </div>
       </div>

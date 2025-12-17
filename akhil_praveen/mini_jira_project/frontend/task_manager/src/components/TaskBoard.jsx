@@ -13,6 +13,7 @@ function TaskBoard({
   onUpdateStatus,
   onSaveTask,
   userRole = "",
+  currentEmpId = null,
 }) {
   const [showTaskForm, setShowTaskForm] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
@@ -24,6 +25,19 @@ function TaskBoard({
     const q = (searchQuery || "").trim().toLowerCase();
     return (tasks || []).filter((t) => {
       if (statusFilter !== "ALL" && t.status !== statusFilter) return false;
+      // Role-based visibility: developers see only tasks assigned to them,
+      // managers see only tasks where they are the reviewer. Other roles see all.
+      const roleUpper = (userRole || "").toUpperCase();
+      const isDeveloper = roleUpper.includes("DEVELOPER");
+      const isManager = roleUpper.includes("MANAGER");
+      if (isDeveloper) {
+        // If we don't know the current user's emp id, hide tasks for developer view
+        if (currentEmpId == null) return false;
+        if (Number(t.assigned_to) !== Number(currentEmpId)) return false;
+      } else if (isManager) {
+        if (currentEmpId == null) return false;
+        if (Number(t.reviewer) !== Number(currentEmpId)) return false;
+      }
       if (!q) return true;
       return (
         String(t.title || "")
@@ -156,6 +170,7 @@ function TaskBoard({
                         task={task}
                         employees={employees}
                         userRole={userRole}
+                        currentEmpId={currentEmpId}
                         onUpdateStatus={onUpdateStatus}
                         onEdit={(t) => handleEditTask(t)}
                       />
@@ -191,6 +206,7 @@ function TaskBoard({
             setShowTaskForm(true);
             setDetailTask(null);
           }}
+          currentEmpId={currentEmpId}
         />
       )}
     </div>
