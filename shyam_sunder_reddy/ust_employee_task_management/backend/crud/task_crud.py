@@ -109,7 +109,7 @@ def get_task_by_status(status, role, user):
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
 
-def update_task(t_id: int, updated: dict, role, user):
+def update_task(t_id: int, updated: TaskReqRes, role, user):
     try:
         if role not in ["Manager", "Admin"]:
             raise HTTPException(status_code=403, detail="Don't have access to update task")

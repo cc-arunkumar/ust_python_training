@@ -84,7 +84,7 @@ def get_by_employee_id(id: int, role: str, user):
         session.close()
 
 
-def update_employee(id: int, updated: dict, role: str, user):
+def update_employee(id: int, updated: EmployeeReqRes, role: str, user):
     try:
         # Only Admin can update employee details
         if role != "Admin":
@@ -95,7 +95,10 @@ def update_employee(id: int, updated: dict, role: str, user):
         
         if not emp:
             raise HTTPException(status_code=404, detail="Employee Not Found")
-        
+        emp.name=updated.name
+        emp.email=updated.email
+        emp.designation=updated.designation
+        emp.mgr_id=updated.mgr_id
         for key, value in updated.items():
             setattr(emp, key, value)
         
