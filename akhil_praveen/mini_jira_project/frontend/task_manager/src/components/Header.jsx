@@ -7,7 +7,15 @@ function Header({
   onTabChange,
   onLogout,
   canManageEmployees,
+  onRoleChange,
 }) {
+  const username = localStorage.getItem("username") || "User";
+  const storedRoles = (localStorage.getItem("role") || "")
+    .split(",")
+    .map((r) => r.trim())
+    .filter(Boolean);
+  const roles = storedRoles.length ? storedRoles : [role].filter(Boolean);
+  const activeRole = role;
   return (
     <header className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md">
       <div className="container mx-auto flex items-center justify-between py-4 px-6">
@@ -41,9 +49,29 @@ function Header({
             </button>
           )}
 
-          <div className="ml-4 text-sm mr-4 opacity-90">
-            <div className="text-xs">Role</div>
-            <div className="font-medium">{role || "Guest"}</div>
+          <div className="ml-4 text-sm mr-4 opacity-90 flex items-center gap-3">
+            <div className="text-left">
+              <div className="text-xs">{username}</div>
+              <div className="font-medium">{activeRole || "Guest"}</div>
+            </div>
+            {roles.length > 1 && (
+              <select
+                value={activeRole}
+                onChange={(e) => {
+                  const newRole = e.target.value;
+                  localStorage.setItem("role", newRole);
+                  onRoleChange && onRoleChange(newRole);
+                }}
+                className="px-2 py-1 rounded bg-white text-sm"
+                title="Switch role"
+              >
+                {roles.map((r) => (
+                  <option key={r} value={r}>
+                    {r}
+                  </option>
+                ))}
+              </select>
+            )}
           </div>
 
           <button

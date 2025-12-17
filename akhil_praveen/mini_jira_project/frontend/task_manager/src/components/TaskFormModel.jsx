@@ -10,7 +10,7 @@ function TaskFormModal({ task, employees = [], onClose, onSave }) {
     assigned_to: "",
     reviewer: "",
     priority: "MEDIUM",
-    status: "TODO",
+    status: "TO_DO",
     expected_closure: "",
   });
 
@@ -23,7 +23,7 @@ function TaskFormModal({ task, employees = [], onClose, onSave }) {
         assigned_to: task.assigned_to || "",
         reviewer: task.reviewer || "",
         priority: task.priority || "MEDIUM",
-        status: task.status || "TODO",
+        status: task.status || "TO_DO",
         expected_closure: task.expected_closure || "",
       });
     } else {
@@ -34,7 +34,7 @@ function TaskFormModal({ task, employees = [], onClose, onSave }) {
         assigned_to: "",
         reviewer: "",
         priority: "MEDIUM",
-        status: "TODO",
+        status: "TO_DO",
         expected_closure: "",
       });
     }
@@ -162,7 +162,9 @@ function TaskFormModal({ task, employees = [], onClose, onSave }) {
                   onChange={(e) =>
                     setFormData({
                       ...formData,
-                      assigned_to: e.target.value ? parseInt(e.target.value) : "",
+                      assigned_to: e.target.value
+                        ? parseInt(e.target.value)
+                        : "",
                     })
                   }
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400 bg-white"
@@ -170,7 +172,8 @@ function TaskFormModal({ task, employees = [], onClose, onSave }) {
                   <option value="">Select Employee</option>
                   {(employees || []).map((emp) => (
                     <option key={emp.emp_id} value={emp.emp_id}>
-                      {emp.emp_name} {emp.designation ? `(${emp.designation})` : ''}
+                      {emp.emp_name}{" "}
+                      {emp.designation ? `(${emp.designation})` : ""}
                     </option>
                   ))}
                 </select>
@@ -197,7 +200,8 @@ function TaskFormModal({ task, employees = [], onClose, onSave }) {
                       value={emp.emp_id}
                       disabled={formData.assigned_to === emp.emp_id}
                     >
-                      {emp.emp_name} {emp.designation ? `(${emp.designation})` : ''}
+                      {emp.emp_name}{" "}
+                      {emp.designation ? `(${emp.designation})` : ""}
                     </option>
                   ))}
                 </select>

@@ -7,6 +7,7 @@ class EmployeeCreate(BaseModel):
     email: EmailStr
     designation: Optional[str] = None
     manager_id: Optional[int] = "null"
+    status: Optional[str] = "ACTIVE"
 
 
 class EmployeeUpdate(BaseModel):
@@ -14,6 +15,7 @@ class EmployeeUpdate(BaseModel):
     email: Optional[EmailStr] = None
     designation: Optional[str] = None
     manager_id: Optional[int] = "null"
+    status: Optional[str] = None
 
 
 class EmployeeResponse(EmployeeCreate):

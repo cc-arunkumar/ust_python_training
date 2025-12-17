@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { X, Edit, Clock } from "lucide-react";
+import api from "../api/api";
 
 function normalizeRemarks(task = {}) {
   const remarks = [];
@@ -148,6 +149,29 @@ export default function TaskDetailModal({
   onEdit = () => {},
 }) {
   const [readRemarks, setReadRemarks] = useState(new Set());
+  const [serverReviews, setServerReviews] = useState([]);
+
+  useEffect(() => {
+    let mounted = true;
+    if (task && task.task_id) {
+      api
+        .getTaskReviews(task.task_id)
+        .then((res) => {
+          if (!mounted) return;
+          setServerReviews(res || []);
+        })
+        .catch((e) => {
+          if (!mounted) return;
+          console.error("Failed to load task reviews:", e);
+          setServerReviews([]);
+        });
+    } else {
+      setServerReviews([]);
+    }
+    return () => {
+      mounted = false;
+    };
+  }, [task.task_id]);
 
   useEffect(() => {
     // Load read remarks from localStorage
@@ -165,7 +189,20 @@ export default function TaskDetailModal({
   const assignee = employees.find((e) => e.emp_id === task.assigned_to);
   const reviewer = employees.find((e) => e.emp_id === task.reviewer);
 
-  const remarks = normalizeRemarks(task);
+  // combine normalized task remarks with server-stored reviews
+  const normalized = normalizeRemarks(task);
+  const serverMapped = (serverReviews || []).map((s) => ({
+    from: s.role || "reviewer",
+    text: s.review || s.message || s.comment,
+    by:
+      s.reviewed_by_name ||
+      s.reviewed_by_emp_id ||
+      s.reviewed_by_user_id ||
+      null,
+    ts: s.created_at || null,
+  }));
+
+  const remarks = [...normalized, ...serverMapped];
 
   // Separate remarks by role
   const devRemarks = remarks.filter(

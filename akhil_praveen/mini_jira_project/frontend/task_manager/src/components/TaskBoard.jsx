@@ -3,7 +3,7 @@ import { Plus, Search, Filter } from "lucide-react";
 import TaskCard from "./TaskCard";
 import TaskFormModal from "./TaskFormModel";
 import TaskDetailModal from "./TaskDetailModal";
-import { STATUS_CONFIG, STATUSES } from "../utils/constants";
+import { STATUS_CONFIG, STATUSES, PRIORITIES } from "../utils/constants";
 
 function TaskBoard({
   tasks = [],
@@ -40,7 +40,16 @@ function TaskBoard({
   }, [tasks, searchQuery, statusFilter]);
 
   const groupedTasks = STATUSES.reduce((acc, status) => {
-    acc[status] = filteredTasks.filter((t) => t.status === status);
+    // sort tasks within a status by priority (CRITICAL, HIGH, MEDIUM, LOW)
+    const list = filteredTasks.filter((t) => t.status === status);
+    const priorityOrder = [...PRIORITIES].reverse(); // ['CRITICAL','HIGH','MEDIUM','LOW']
+    const orderMap = priorityOrder.reduce((m, p, i) => ({ ...m, [p]: i }), {});
+    list.sort((a, b) => {
+      const ra = orderMap[a.priority] ?? orderMap["MEDIUM"] ?? 2;
+      const rb = orderMap[b.priority] ?? orderMap["MEDIUM"] ?? 2;
+      return ra - rb; // smaller index = higher priority (CRITICAL first)
+    });
+    acc[status] = list;
     return acc;
   }, {});
 

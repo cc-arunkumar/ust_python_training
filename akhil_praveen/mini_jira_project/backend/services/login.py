@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy import text
 from fastapi import HTTPException, status
 
 from models.employees import Employee
@@ -20,9 +21,17 @@ class LoginService:
                     "Email and password are required"
                 )
 
-            employee = db.query(Employee).filter(
-                Employee.email == payload.email
-            ).first()
+            try:
+                employee = db.query(Employee).filter(
+                    Employee.email == payload.email
+                ).first()
+            except SQLAlchemyError:
+                # Fallback raw query in case DB schema is missing 'status' column
+                row = db.execute(
+                    text("SELECT emp_id, emp_name, email, designation, manager_id FROM employees WHERE email = :email LIMIT 1"),
+                    {"email": payload.email},
+                ).mappings().first()
+                employee = dict(row) if row else None
 
             if not employee:
                 raise HTTPException(
@@ -30,8 +39,15 @@ class LoginService:
                     "Invalid credentials"
                 )
 
+            # employee may be a dict (fallback) or ORM object; normalize emp_id
+            emp_id = None
+            if hasattr(employee, "emp_id"):
+                emp_id = employee.emp_id
+            elif isinstance(employee, dict):
+                emp_id = employee.get("emp_id")
+
             user = db.query(User).filter(
-                User.emp_id == employee.emp_id
+                User.emp_id == emp_id
             ).first()
 
             if not user or user.password != payload.password:

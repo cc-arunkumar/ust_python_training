@@ -18,7 +18,14 @@ function App() {
     const storedRole = localStorage.getItem("role");
     if (token && storedRole) {
       setIsAuthenticated(true);
-      setRole(storedRole);
+      // if storedRole contains multiple roles (comma separated), pick the first as the active role
+      const active = storedRole.includes(",")
+        ? storedRole
+            .split(",")
+            .map((r) => r.trim())
+            .filter(Boolean)[0]
+        : storedRole;
+      setRole(active);
     } else {
       setLoading(false);
     }
@@ -62,6 +69,16 @@ function App() {
     setIsAuthenticated(false);
     setRole("");
     setActiveTab("tasks");
+  };
+
+  const handleRoleChange = async (newRole) => {
+    // update active role and reload data to reflect permissions
+    setRole(newRole);
+    try {
+      await loadData();
+    } catch (err) {
+      console.error("Failed to reload after role change", err);
+    }
   };
 
   const handleUpdateStatus = async (taskId, status, review) => {
@@ -192,6 +209,7 @@ function App() {
         onTabChange={setActiveTab}
         onLogout={handleLogout}
         canManageEmployees={canManageEmployees}
+        onRoleChange={handleRoleChange}
       />
 
       <main className="container mx-auto">

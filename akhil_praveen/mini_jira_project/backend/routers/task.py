@@ -6,6 +6,7 @@ from database.mysql import get_db
 from database.mongo import reviews_collection, audit_logs_collection, fs
 from schemas.task import *
 from models.task import Task
+from models.employees import Employee
 from services.task import TaskService
 from auth.auth import get_current_user
 from services.employees import EmployeeService
@@ -34,9 +35,9 @@ def list_tasks(db: Session = Depends(get_db),
         
         # DEVELOPER can only view tasks assigned to them or reviewed by them
         elif "DEVELOPER" in user.role:
+            # Developers should only see tasks assigned to them
             return db.query(Task).filter(
-                (Task.assigned_to == user.emp_id) |
-                (Task.reviewer == user.emp_id)
+                (Task.assigned_to == user.emp_id)
             ).all()
         
         else:
@@ -98,12 +99,16 @@ def create_task(payload: TaskCreate,
         if not any(r in user.role for r in ["ADMIN", "MANAGER"]):
             raise HTTPException(403, "Admin or Manager only")
 
-        # MANAGER can only assign tasks to employees under them
+        # MANAGER can only assign tasks to employees under them and reviewer should be the manager
         if "MANAGER" in user.role and "ADMIN" not in user.role:
             if payload.assigned_to:
                 subordinate_ids = EmployeeService.get_subordinate_ids(db, user.emp_id)
                 if payload.assigned_to not in subordinate_ids and payload.assigned_to != user.emp_id:
                     raise HTTPException(403, "You can only assign tasks to employees under you")
+            # force reviewer to be the manager when a manager creates a task
+            payload_dict = payload.dict()
+            payload_dict["reviewer"] = user.emp_id
+            payload = TaskCreate(**payload_dict)
 
         if payload.assigned_to and payload.reviewer and payload.assigned_to == payload.reviewer:
             raise HTTPException(400, "assigned_to and reviewer cannot be same")
@@ -191,6 +196,37 @@ def update_task(task_id: int,
         raise HTTPException(500, f"Internal server error: {str(e)}")
 
 
+@task_router.delete("/{task_id}")
+def delete_task(task_id: int,
+                db: Session = Depends(get_db),
+                user=Depends(get_current_user)):
+    try:
+        task = db.query(Task).filter(Task.task_id == task_id).first()
+        if not task:
+            raise HTTPException(404, "Task not found")
+
+        # ADMIN can delete any task
+        if "ADMIN" in user.role:
+            pass
+        # MANAGER can delete tasks they created or assigned to their team
+        elif "MANAGER" in user.role:
+            subordinate_ids = EmployeeService.get_subordinate_ids(db, user.emp_id)
+            if task.created_by != user.emp_id and task.assigned_to not in subordinate_ids:
+                raise HTTPException(403, "You can only delete tasks you created or assigned to your team")
+        else:
+            raise HTTPException(403, "Insufficient permissions")
+
+        db.delete(task)
+        db.commit()
+        return {"message": "Task deleted"}
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(500, f"Internal server error: {str(e)}")
+
+
 @task_router.patch("/{task_id}/status")
 def patch_status(task_id: int,
                  payload: TaskStatusPatch,
@@ -227,10 +263,22 @@ def patch_status(task_id: int,
         # Handle review and audit logs with error handling
         try:
             if payload.review:
+                # Only the designated reviewer may submit reviewer remarks.
+                # Enforce strict reviewer-only policy here.
+                reviewer_emp_id = task.reviewer
+                user_emp_id = getattr(user, "emp_id", None)
+                if reviewer_emp_id is None:
+                    raise HTTPException(400, "Task has no reviewer assigned")
+                if user_emp_id != reviewer_emp_id:
+                    raise HTTPException(403, "Only the designated reviewer can add review remarks")
+
+                # store reviewer metadata so we can return readable reviews later
                 reviews_collection.insert_one({
                     "task_id": task_id,
                     "review": payload.review,
-                    "reviewed_by": user.user_id,
+                    "reviewed_by_user_id": user.user_id,
+                    "reviewed_by_emp_id": user_emp_id,
+                    "role": "reviewer",
                     "created_at": datetime.utcnow()
                 })
 
@@ -301,6 +349,73 @@ async def upload_file(task_id: int,
         
         return {"message": "File uploaded", "filename": file.filename}
     
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(500, f"Internal server error: {str(e)}")
+
+
+@task_router.get("/{task_id}/reviews")
+def get_task_reviews(task_id: int,
+                     db: Session = Depends(get_db),
+                     user=Depends(get_current_user)):
+    try:
+        # authorization similar to get_task
+        task = db.query(Task).filter(Task.task_id == task_id).first()
+        if not task:
+            raise HTTPException(404, "Task not found")
+
+        # reuse same permission logic as get_task
+        if "ADMIN" in user.role:
+            pass
+        elif "MANAGER" in user.role:
+            subordinate_ids = EmployeeService.get_subordinate_ids(db, user.emp_id)
+            if not (
+                (task.assigned_to in subordinate_ids) or
+                (task.assigned_to == user.emp_id) or
+                (task.created_by == user.emp_id) or
+                (task.reviewer == user.emp_id)
+            ):
+                raise HTTPException(403, "You can only view reviews for tasks related to you or your team")
+        elif "DEVELOPER" in user.role:
+            if not (task.assigned_to == user.emp_id or task.reviewer == user.emp_id):
+                raise HTTPException(403, "You can only view reviews for tasks assigned to you")
+        else:
+            raise HTTPException(403, "Insufficient permissions")
+
+        # Fetch reviews from MongoDB
+        cursor = reviews_collection.find({"task_id": task_id}).sort("created_at", -1)
+        reviews = []
+        for doc in cursor:
+            # doc may be a Motor object; convert fields
+            r = {
+                "review": doc.get("review"),
+                "reviewed_by_user_id": doc.get("reviewed_by_user_id"),
+                "reviewed_by_emp_id": doc.get("reviewed_by_emp_id"),
+                "role": doc.get("role"),
+                "created_at": doc.get("created_at")
+            }
+            # enrich with employee name if available
+            if r["reviewed_by_emp_id"]:
+                emp = db.query(Employee).filter(Employee.emp_id == r["reviewed_by_emp_id"]).first()
+                r["reviewed_by_name"] = emp.emp_name if emp else None
+            else:
+                r["reviewed_by_name"] = None
+
+            # normalize created_at to ISO if datetime
+            ca = r.get("created_at")
+            try:
+                if hasattr(ca, "isoformat"):
+                    r["created_at"] = ca.isoformat()
+                else:
+                    r["created_at"] = str(ca)
+            except Exception:
+                r["created_at"] = None
+
+            reviews.append(r)
+
+        return reviews
+
     except HTTPException:
         raise
     except Exception as e:

@@ -1,10 +1,10 @@
-import { API_BASE } from '../utils/constants';
+import { API_BASE } from "../utils/constants";
 
 class ApiService {
   async request(endpoint, options = {}) {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     const headers = {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
       ...(token && { Authorization: `Bearer ${token}` }),
       ...options.headers,
     };
@@ -15,15 +15,15 @@ class ApiService {
     });
 
     if (response.status === 401) {
-      localStorage.removeItem('token');
-      localStorage.removeItem('role');
+      localStorage.removeItem("token");
+      localStorage.removeItem("role");
       window.location.reload();
-      throw new Error('Unauthorized');
+      throw new Error("Unauthorized");
     }
 
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.detail || 'Request failed');
+      throw new Error(error.detail || "Request failed");
     }
 
     // Handle 204 No Content
@@ -36,15 +36,15 @@ class ApiService {
 
   // Auth
   login(email, password) {
-    return this.request('/auth/login', {
-      method: 'POST',
+    return this.request("/auth/login", {
+      method: "POST",
       body: JSON.stringify({ email, password }),
     });
   }
 
   // Tasks
   getTasks() {
-    return this.request('/tasks/');
+    return this.request("/tasks/");
   }
 
   getTask(id) {
@@ -52,36 +52,46 @@ class ApiService {
   }
 
   createTask(data) {
-    return this.request('/tasks/', {
-      method: 'POST',
+    return this.request("/tasks/", {
+      method: "POST",
       body: JSON.stringify(data),
     });
   }
 
   updateTask(id, data) {
     return this.request(`/tasks/${id}`, {
-      method: 'PUT',
+      method: "PUT",
       body: JSON.stringify(data),
     });
   }
 
-  updateTaskStatus(id, status, review = null) {
+  updateTaskStatus(id, status, review = null, extraFields = undefined) {
     const payload = { status };
-    
+
     // Only add review if it's not null/empty
     if (review && review.trim()) {
       payload.review = review.trim();
     }
-    
+
+    // merge any extra fields (role-specific review fields)
+    if (extraFields && typeof extraFields === "object") {
+      Object.assign(payload, extraFields);
+    }
+
     return this.request(`/tasks/${id}/status`, {
-      method: 'PATCH',
+      method: "PATCH",
       body: JSON.stringify(payload),
     });
   }
 
+  // fetch reviews stored in Mongo for a task
+  getTaskReviews(id) {
+    return this.request(`/tasks/${id}/reviews`);
+  }
+
   // Employees
   getEmployees() {
-    return this.request('/employees/');
+    return this.request("/employees/");
   }
 
   getEmployee(id) {
@@ -89,22 +99,22 @@ class ApiService {
   }
 
   createEmployee(data) {
-    return this.request('/employees/', {
-      method: 'POST',
+    return this.request("/employees/", {
+      method: "POST",
       body: JSON.stringify(data),
     });
   }
 
   updateEmployee(id, data) {
     return this.request(`/employees/${id}`, {
-      method: 'PUT',
+      method: "PUT",
       body: JSON.stringify(data),
     });
   }
 
   deleteEmployee(id) {
     return this.request(`/employees/${id}`, {
-      method: 'DELETE',
+      method: "DELETE",
     });
   }
 }

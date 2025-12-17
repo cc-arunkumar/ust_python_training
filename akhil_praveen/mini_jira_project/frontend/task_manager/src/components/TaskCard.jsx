@@ -24,9 +24,9 @@ function TaskCard({
   const [reviewText, setReviewText] = useState("");
 
   const statusIcons = {
-    TODO: Clock,
+    TO_DO: Clock,
     IN_PROGRESS: PlayCircle,
-    IN_REVIEW: Pause,
+    REVIEW: Pause,
     DONE: CheckCircle,
     BLOCKED: AlertCircle,
   };
@@ -34,7 +34,21 @@ function TaskCard({
   const assignee = (employees || []).find((e) => e.emp_id === task.assigned_to);
   const reviewer = (employees || []).find((e) => e.emp_id === task.reviewer);
 
-  const statusCfg = STATUS_CONFIG[task.status] || STATUS_CONFIG.TODO;
+  const formatExpected = (dt) => {
+    if (!dt) return null;
+    try {
+      const d = new Date(dt);
+      if (isNaN(d)) return null;
+      return d.toLocaleDateString(undefined, {
+        day: "2-digit",
+        month: "short",
+      });
+    } catch (e) {
+      return null;
+    }
+  };
+
+  const statusCfg = STATUS_CONFIG[task.status] || STATUS_CONFIG.TO_DO;
   const priorityClasses = PRIORITY_COLORS[task.priority] || "text-gray-600";
 
   const canMarkDone =
@@ -54,8 +68,12 @@ function TaskCard({
       return;
     }
 
-    // Always ask for review/remarks when changing to IN_REVIEW or DONE
-    if (newStatus === "IN_REVIEW" || newStatus === "DONE") {
+    // Always ask for review/remarks when changing to REVIEW, IN_PROGRESS or DONE
+    if (
+      newStatus === "REVIEW" ||
+      newStatus === "DONE" ||
+      newStatus === "IN_PROGRESS"
+    ) {
       setPendingStatus(newStatus);
       setShowReviewInput(true);
       setShowStatusMenu(false);
@@ -72,16 +90,13 @@ function TaskCard({
       taskId: task.task_id,
       status: pendingStatus,
       review: reviewText,
-      userRole: userRole
+      userRole: userRole,
     });
 
     // Call the update function with review text (even if empty)
-    onUpdateStatus && onUpdateStatus(
-      task.task_id, 
-      pendingStatus, 
-      reviewText.trim() || null
-    );
-    
+    onUpdateStatus &&
+      onUpdateStatus(task.task_id, pendingStatus, reviewText.trim() || null);
+
     // Reset states
     setShowReviewInput(false);
     setPendingStatus(null);
@@ -119,6 +134,14 @@ function TaskCard({
 
       {/* Info Section */}
       <div className="space-y-1 text-xs text-gray-500 mb-3">
+        {task.expected_closure && (
+          <div className="flex items-center gap-1">
+            <span className="font-medium">Expected:</span>
+            <span className="text-gray-700">
+              {formatExpected(task.expected_closure)}
+            </span>
+          </div>
+        )}
         {task.dept_name && (
           <div className="flex items-center gap-1">
             <span className="font-medium">Dept:</span>
@@ -185,9 +208,7 @@ function TaskCard({
                     >
                       <Icon size={12} />
                       {cfg.label}
-                      {disabled && (
-                        <span className="ml-auto text-xs">🔒</span>
-                      )}
+                      {disabled && <span className="ml-auto text-xs">🔒</span>}
                     </button>
                   );
                 })}
@@ -223,15 +244,15 @@ function TaskCard({
             </p>
             <p className="text-xs text-gray-500">
               Add remarks as{" "}
-              <strong>
-                {canMarkDone ? "Reviewer" : "Developer"}
-              </strong>
+              <strong>{canMarkDone ? "Reviewer" : "Developer"}</strong>
             </p>
           </div>
           <textarea
             value={reviewText}
             onChange={(e) => setReviewText(e.target.value)}
-            placeholder={`Add ${canMarkDone ? 'reviewer' : 'developer'} remarks... (optional)`}
+            placeholder={`Add ${
+              canMarkDone ? "reviewer" : "developer"
+            } remarks... (optional)`}
             className="w-full px-2 py-1.5 border rounded text-xs mb-2 focus:ring-1 focus:ring-indigo-400 focus:outline-none"
             rows="3"
             autoFocus
@@ -241,7 +262,9 @@ function TaskCard({
               onClick={submitReview}
               className="flex-1 bg-indigo-600 text-white py-1.5 rounded text-xs font-medium hover:bg-indigo-700 transition"
             >
-              {reviewText.trim() ? 'Submit with Remarks' : 'Submit without Remarks'}
+              {reviewText.trim()
+                ? "Submit with Remarks"
+                : "Submit without Remarks"}
             </button>
             <button
               onClick={cancelReview}

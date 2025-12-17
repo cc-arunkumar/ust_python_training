@@ -10,6 +10,7 @@ class Employee(Base):
     email = Column(String(120), unique=True, nullable=False)
     designation = Column(String(100))
     manager_id = Column(Integer, ForeignKey("employees.emp_id"), nullable=True)
+    status = Column(String(20), default="ACTIVE")
 
     manager = relationship("Employee", remote_side=[emp_id])
     users = relationship("User", back_populates="employee")
