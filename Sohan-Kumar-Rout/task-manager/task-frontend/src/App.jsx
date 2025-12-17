@@ -1,94 +1,151 @@
-import React, { useState } from "react";
+import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Login from "./pages/Login";
-import ProtectedRoute from "./components/ProtectedRoute";
-import Sidebar from "./components/Sidebar";
+import KanbanBoard from "./components/KanbanBoard";
 
-import EmployeeForm from "./components/EmployeeForm";
+import SidebarAdmin from "./components/SidebarAdmin";
+import SidebarManager from "./components/SidebarManager";
+import SidebarEmployee from "./components/SidebarEmployee";
+
 import EmployeeList from "./components/EmployeeList";
-
-import CreateTask from "./components/CreateTask";
+import EmployeeForm from "./components/EmployeeForm";
 import TaskList from "./components/TaskList";
+import CreateTask from "./components/CreateTask";
+import EmployeeTaskBoard from "./components/EmployeeTaskBoard";
+
+const Layout = ({ sidebar, children }) => (
+  <div className="flex">
+    {sidebar}
+    <div className="flex-1 p-6 bg-gray-900 text-white">{children}</div>
+  </div>
+);
 
 function App() {
-  const [selectedEmployee, setSelectedEmployee] = useState(null);
-  const [selectedTask, setSelectedTask] = useState(null);
-
-  const withLayout = (content) => (
-    <ProtectedRoute>
-      <div className="flex min-h-screen bg-[#0A1A2F]">
-        <Sidebar />
-        <div className="flex-1 p-6">{content}</div>
-      </div>
-    </ProtectedRoute>
-  );
-
   return (
     <BrowserRouter>
       <Routes>
-
         {/* LOGIN */}
+        <Route path="/login" element={<Login />} />
+
+        {/* ---------------- ADMIN ROUTES ---------------- */}
+
+        {/* Admin → Employee List */}
         <Route
-          path="/login"
-          element={<Login onLogin={() => (window.location.href = "/")} />}
+          path="/admin/employees"
+          element={
+            <Layout sidebar={<SidebarAdmin />}>
+              <EmployeeList />
+            </Layout>
+          }
         />
 
-        {/* HOME — FORM + LIST */}
+        {/* Admin → Create Employee */}
         <Route
-          path="/"
-          element={withLayout(
-            <>
-              <EmployeeForm
-                selectedEmployee={selectedEmployee}
-                onSuccess={() => setSelectedEmployee(null)}
-              />
-              <EmployeeList onEdit={(emp) => setSelectedEmployee(emp)} />
-            </>
-          )}
+          path="/admin/employees/create"
+          element={
+            <Layout sidebar={<SidebarAdmin />}>
+              <EmployeeForm />
+            </Layout>
+          }
         />
 
-        {/* EMPLOYEES — ONLY LIST */}
+        {/* Admin → Task List */}
         <Route
-          path="/employees"
-          element={withLayout(
-            <EmployeeList onEdit={(emp) => setSelectedEmployee(emp)} />
-          )}
+          path="/admin/tasks"
+          element={
+            <Layout sidebar={<SidebarAdmin />}>
+              <TaskList />
+            </Layout>
+          }
         />
 
-        {/* EMPLOYEES/ADD — FORM + LIST */}
+        {/* Admin → Create Task */}
         <Route
-          path="/employees/add"
-          element={withLayout(
-            <>
-              <EmployeeForm
-                selectedEmployee={selectedEmployee}
-                onSuccess={() => setSelectedEmployee(null)}
-              />
-              <EmployeeList onEdit={(emp) => setSelectedEmployee(emp)} />
-            </>
-          )}
+          path="/admin/tasks/create"
+          element={
+            <Layout sidebar={<SidebarAdmin />}>
+              <CreateTask />
+            </Layout>
+          }
         />
 
-        {/* TASK LIST */}
+        {/* Admin → Kanban Board */}
         <Route
-          path="/tasks"
-          element={withLayout(
-            <TaskList onEdit={(task) => setSelectedTask(task)} />
-          )}
+          path="/admin/kanban"
+          element={
+            <Layout sidebar={<SidebarAdmin />}>
+              <KanbanBoard />
+            </Layout>
+          }
         />
 
-        {/* CREATE / UPDATE TASK */}
+        {/* ---------------- MANAGER ROUTES ---------------- */}
+
+        {/* Manager → Employees Under Him */}
         <Route
-          path="/tasks/create"
-          element={withLayout(
-            <CreateTask
-              selectedTask={selectedTask}
-              onSuccess={() => setSelectedTask(null)}
-            />
-          )}
+          path="/manager/employees"
+          element={
+            <Layout sidebar={<SidebarManager />}>
+              <EmployeeList />
+            </Layout>
+          }
         />
 
+        {/* Manager → Task List */}
+        <Route
+          path="/manager/tasks"
+          element={
+            <Layout sidebar={<SidebarManager />}>
+              <TaskList />
+            </Layout>
+          }
+        />
+
+        {/* Manager → Create Task */}
+        <Route
+          path="/manager/tasks/create"
+          element={
+            <Layout sidebar={<SidebarManager />}>
+              <CreateTask />
+            </Layout>
+          }
+        />
+
+        {/* Manager → Kanban Board */}
+        <Route
+          path="/manager/kanban"
+          element={
+            <Layout sidebar={<SidebarManager />}>
+              <KanbanBoard />
+            </Layout>
+          }
+        />
+
+        {/* ---------------- EMPLOYEE ROUTES ---------------- */}
+
+        {/* Employee → My Tasks */}
+        <Route
+          path="/employee/tasks"
+          element={
+            <Layout sidebar={<SidebarEmployee />}>
+              <EmployeeTaskBoard />
+            </Layout>
+          }
+        />
+
+        {/* Employee → Kanban Board */}
+        <Route
+          path="/employee/kanban"
+          element={
+            <Layout sidebar={<SidebarEmployee />}>
+              <KanbanBoard />
+            </Layout>
+          }
+        />
+
+        {/* DEFAULT ROUTE */}
+        <Route path="/" element={<Login />} />
       </Routes>
     </BrowserRouter>
   );

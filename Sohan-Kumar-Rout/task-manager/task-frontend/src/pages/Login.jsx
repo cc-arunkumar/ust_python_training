@@ -1,65 +1,56 @@
 import React, { useState } from "react";
-import { login } from "../services/employeeService";
+import { loginUser } from "../services/authService";
 
-const Login = ({ onLogin }) => {
-  const [email, setEmail] = useState("");
+const Login = () => {
+  const [emp_id, setEmpId] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
 
-  const handleSubmit = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    setError("");
 
     try {
-      const res = await login(email, password);
-      localStorage.setItem("token", res.token);
-      onLogin();
+      const res = await loginUser(emp_id, password);
+
+      localStorage.setItem("token", res.access_token);
+      localStorage.setItem("role", res.role);
+      localStorage.setItem("emp_id", res.emp_id);
+
+      if (res.role === "Admin") window.location.href = "/admin/employees";
+      if (res.role === "Manager") window.location.href = "/manager/tasks";
+      if (res.role === "Employee") window.location.href = "/employee/tasks";
     } catch (err) {
-      setError("Invalid email or password");
+      alert("Invalid credentials");
     }
   };
 
   return (
-    <div className="h-screen flex justify-center items-center bg-[#1C2333] px-4">
-      <div className="bg-[#242C3B] p-10 rounded-xl shadow-xl w-full max-w-md text-white">
-        <h2 className="text-3xl font-bold mb-6 text-center text-blue-400">
-          Admin Login
-        </h2>
+    <div className="h-screen flex items-center justify-center bg-gray-900">
+      <form
+        onSubmit={handleLogin}
+        className="bg-gray-800 p-8 rounded-xl text-white w-96"
+      >
+        <h2 className="text-2xl font-bold mb-6 text-blue-400">Login</h2>
 
-        {error && (
-          <p className="text-red-400 mb-4 text-center text-sm">{error}</p>
-        )}
+        <input
+          type="number"
+          placeholder="Employee ID"
+          value={emp_id}
+          onChange={(e) => setEmpId(e.target.value)}
+          className="w-full p-3 mb-4 bg-gray-700 rounded"
+        />
 
-        <form onSubmit={handleSubmit}>
-          {/* Email */}
-          <label className="block mb-1 text-sm font-medium">Email</label>
-          <input
-            type="email"
-            className="w-full p-3 mb-4 bg-[#1A2230] border border-[#2F3A4D] 
-            rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 
-            outline-none text-gray-200"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="w-full p-3 mb-4 bg-gray-700 rounded"
+        />
 
-          <label className="block mb-1 text-sm font-medium">Password</label>
-          <input
-            type="password"
-            className="w-full p-3 mb-6 bg-[#1A2230] border border-[#2F3A4D] 
-            rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 
-            outline-none text-gray-200"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-
-          <button
-            className="w-full bg-blue-600 py-3 rounded-lg font-semibold 
-            hover:bg-blue-700 transition text-white"
-          >
-            Login
-          </button>
-        </form>
-      </div>
+        <button className="w-full bg-blue-600 py-3 rounded hover:bg-blue-700">
+          Login
+        </button>
+      </form>
     </div>
   );
 };

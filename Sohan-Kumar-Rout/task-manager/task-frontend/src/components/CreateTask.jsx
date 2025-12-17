@@ -1,138 +1,99 @@
 import React, { useEffect, useState } from "react";
-import { createTask, updateTask } from "../services/taskService";
+import { createTask, updateTask, getTasks } from "../services/taskService";
+import { getEmployees } from "../services/employeeService";
 
-const CreateTask = ({ selectedTask, onSuccess }) => {
-  const [task, setTask] = useState({
+const CreateTask = () => {
+  const params = new URLSearchParams(window.location.search);
+  const editId = params.get("id");
+
+  const [employees, setEmployees] = useState([]);
+  const [form, setForm] = useState({
     title: "",
     description: "",
-    assignedTo: "",
-    assignedBy: "Admin",
-    assignedAt: new Date().toISOString().slice(0, 16),
-    updatedBy: "",
-    updatedAt: "",
-    priority: "",
-    status: "",
-    remark: "",
-    review: "",
+    assigned_to: "",
+    assigned_by: localStorage.getItem("emp_id"),
+    priority: "Medium",
+    status: "Pending",
   });
 
-  useEffect(() => {
-    if (selectedTask) {
-      setTask(selectedTask);
-    }
-  }, [selectedTask]);
-
-  const handleChange = (e) => {
-    setTask({ ...task, [e.target.name]: e.target.value });
+  const loadEmployees = async () => {
+    const res = await getEmployees();
+    setEmployees(res);
   };
+
+  const loadTask = async () => {
+    if (!editId) return;
+    const res = await getTasks();
+    const task = res.data.find((t) => t.task_id == editId);
+    if (task) setForm(task);
+  };
+
+  useEffect(() => {
+    loadEmployees();
+    loadTask();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (selectedTask) {
-      await updateTask(selectedTask.task_id, task);
-      alert("Task updated successfully");
+    if (editId) {
+      await updateTask(editId, form);
     } else {
-      await createTask(task);
-      alert("Task created successfully");
+      await createTask(form);
     }
 
-    onSuccess();
-    setTask({
-      title: "",
-      description: "",
-      assignedTo: "",
-      assignedBy: "Admin",
-      assignedAt: new Date().toISOString().slice(0, 16),
-      updatedBy: "",
-      updatedAt: "",
-      priority: "",
-      status: "",
-      remark: "",
-      review: "",
-    });
+    const role = localStorage.getItem("role");
+    if (role === "Admin") window.location.href = "/admin/tasks";
+    else window.location.href = "/manager/tasks";
   };
 
   return (
-    <div className="bg-[#1F2635] p-6 rounded-xl shadow-lg text-white max-w-2xl">
-      <h2 className="text-2xl font-bold mb-6 text-blue-400">
-        {selectedTask ? "Update Task" : "Create Task"}
+    <div className="bg-gray-800 p-6 rounded-xl text-white w-full">
+      <h2 className="text-2xl font-bold mb-4 text-blue-400">
+        {editId ? "Edit Task" : "Create Task"}
       </h2>
 
       <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Title */}
-        <div>
-          <label className="block mb-1 text-sm font-medium">Title</label>
-          <input
-            type="text"
-            name="title"
-            value={task.title}
-            className="w-full p-3 bg-[#1A2230] border border-[#2F3A4D] rounded outline-none"
-            onChange={handleChange}
-          />
-        </div>
+        <input
+          className="w-full p-3 bg-gray-700 rounded"
+          placeholder="Title"
+          value={form.title}
+          onChange={(e) => setForm({ ...form, title: e.target.value })}
+        />
 
-        {/* Description */}
-        <div>
-          <label className="block mb-1 text-sm font-medium">Description</label>
-          <textarea
-            name="description"
-            rows="3"
-            value={task.description}
-            className="w-full p-3 bg-[#1A2230] border border-[#2F3A4D] rounded outline-none"
-            onChange={handleChange}
-          />
-        </div>
+        <textarea
+          className="w-full p-3 bg-gray-700 rounded"
+          placeholder="Description"
+          value={form.description}
+          onChange={(e) => setForm({ ...form, description: e.target.value })}
+        />
 
-        {/* Assigned To */}
-        <div>
-          <label className="block mb-1 text-sm font-medium">Assigned To</label>
-          <input
-            type="text"
-            name="assignedTo"
-            value={task.assignedTo}
-            className="w-full p-3 bg-[#1A2230] border border-[#2F3A4D] rounded outline-none"
-            onChange={handleChange}
-          />
-        </div>
-
-        {/* Priority */}
-        <div>
-          <label className="block mb-1 text-sm font-medium">Priority</label>
-          <select
-            name="priority"
-            value={task.priority}
-            className="w-full p-3 bg-[#1A2230] border border-[#2F3A4D] rounded outline-none"
-            onChange={handleChange}
-          >
-            <option value="">Select Priority</option>
-            <option value="Low">Low</option>
-            <option value="Medium">Medium</option>
-            <option value="High">High</option>
-          </select>
-        </div>
-
-        {/* Status */}
-        <div>
-          <label className="block mb-1 text-sm font-medium">Status</label>
-          <select
-            name="status"
-            value={task.status}
-            className="w-full p-3 bg-[#1A2230] border border-[#2F3A4D] rounded outline-none"
-            onChange={handleChange}
-          >
-            <option value="">Select Status</option>
-            <option value="Pending">Pending</option>
-            <option value="In Progress">In Progress</option>
-            <option value="Completed">Completed</option>
-          </select>
-        </div>
-
-        <button
-          type="submit"
-          className="w-full bg-blue-600 py-3 rounded-lg font-semibold hover:bg-blue-700"
+        <select
+          className="w-full p-3 bg-gray-700 rounded"
+          value={form.assigned_to}
+          onChange={(e) => setForm({ ...form, assigned_to: e.target.value })}
         >
-          {selectedTask ? "Update Task" : "Create Task"}
+          <option value="">Assign To</option>
+          {employees.map((emp) => (
+            <option key={emp.id} value={emp.id}>
+              {emp.name}
+            </option>
+          ))}
+        </select>
+
+        <select
+          className="w-full p-3 bg-gray-700 rounded"
+          value={form.priority}
+          onChange={(e) => setForm({ ...form, priority: e.target.value })}
+        >
+          <option>Low</option>
+          <option>Medium</option>
+          <option>High</option>
+          <option>Critical</option>
+        </select>
+
+        <button className="bg-blue-600 px-4 py-2 rounded hover:bg-blue-700">
+          {editId ? "Update" : "Create"}
         </button>
       </form>
     </div>
