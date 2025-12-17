@@ -57,7 +57,8 @@ def add_remark(task_id: int, comment: str, e_id: int, file=None, role: str = Non
         result = remarks_collection.insert_one(remark)
         remark["_id"] = result.inserted_id
         return serialize_mongo(remark)
-
+    except Exception as e:
+        raise HTTPException(e)
     finally:
         session.close()
 

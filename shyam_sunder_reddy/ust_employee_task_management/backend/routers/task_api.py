@@ -1,8 +1,9 @@
 from fastapi import APIRouter, HTTPException, Depends
-from crud.task_crud import add_task, get_all_tasks, get_task_by_id, update_task, delete_task, get_task_by_status, patch_status
+from crud.task_crud import add_task, get_all_tasks, get_task_by_id, update_task, delete_task, get_task_by_status, patch_status,patch_priority
 from models.task import TaskReqRes
 from typing import List
 from utils.auth import get_current_user
+from datetime import datetime
 
 task_router = APIRouter(prefix="/Task", tags=["Task"])
 
@@ -57,17 +58,35 @@ def get_by_status(status: str, role: str, user=Depends(get_current_user)):
 
 
 @task_router.put("/update")
-def update_task_data(id: int, new_data: dict, role: str, user=Depends(get_current_user)):
+def update_task_data(t_id: int,role: str,
+    title: str = None,
+    description: str = None,
+    assigned_to: int = None,
+    priority: str = None,
+    status: str = None,
+    reviewer: int = None,
+    expected_closure: datetime = None, 
+    user=Depends(get_current_user),
+    ):
     try:
         if role not in user.role:
             raise HTTPException(status_code=409, detail="The user doesn't have the mentioned role")
         
         # FIXED: Check if 'status' key exists before accessing it
-        if role == "Admin" and new_data.get("status"):
-            raise HTTPException(status_code=409, detail="Admin cannot update the status of task")
         
-        updated = update_task(id, new_data, role, user)
-        return {"detail": "Task Updated Successfully", "task": updated}
+        updated_task = update_task(
+            t_id=t_id,
+            title=title,
+            description=description,
+            assigned_to=assigned_to,
+            priority=priority,
+            status=status,
+            reviewer=reviewer,
+            expected_closure=expected_closure,
+            role=role,
+            user=user
+        )
+        return {"detail": "Task Updated Successfully", "task": updated_task}
     except HTTPException as e:
         raise e
     except Exception as e:
@@ -88,6 +107,13 @@ def patch_stat(id: int, status: str, role: str, user=Depends(get_current_user)):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Internal Server Error: {str(e)}")
 
+@task_router.patch("/tasks/{t_id}/priority")
+async def update_task_priority(t_id: int, priority: str, role: str, user=Depends(get_current_user)):
+    # Call patch_priority function to handle priority change
+    try:
+        return patch_priority(t_id=t_id, priority=priority, role=role, user=user)
+    except HTTPException as e:
+        raise e
 
 @task_router.delete("/delete")
 def delete_task_by_id(id: int, role: str, user=Depends(get_current_user)):

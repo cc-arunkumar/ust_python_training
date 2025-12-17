@@ -5,16 +5,16 @@ from sqlalchemy.exc import SQLAlchemyError
 from fastapi import HTTPException
 
 
-def _roles_to_str(roles):
-    if isinstance(roles, list):
-        return ",".join(roles)
-    return str(roles)
-
-
-def _str_to_roles(s):
-    if not s:
+def _ensure_roles_list(roles):
+    if roles is None:
         return []
-    return [r.strip() for r in s.split(",") if r.strip()]
+    if isinstance(roles, list):
+        return [str(r) for r in roles]
+    # roles may be a comma separated string from older data
+    if isinstance(roles, str):
+        return [r.strip() for r in roles.split(',') if r.strip()]
+    # fallback
+    return [str(roles)]
 
 
 def add_user(new_user: UserReqRes):
@@ -23,8 +23,8 @@ def add_user(new_user: UserReqRes):
         user = UserSchema(
             e_id=new_user.e_id,
             password=new_user.password or "defaultPass123",
-            role=_roles_to_str(new_user.role),
-            status=new_user.status
+            role=_ensure_roles_list(new_user.role),
+            status=new_user.status,
         )
         session.add(user)
         session.commit()
@@ -32,8 +32,8 @@ def add_user(new_user: UserReqRes):
         res = UserReqRes(
             e_id=user.e_id,
             password=user.password,
-            role=_str_to_roles(user.role),
-            status=user.status
+            role=_ensure_roles_list(user.role),
+            status=user.status,
         )
         return res
     except SQLAlchemyError as e:
@@ -53,8 +53,8 @@ def get_all_users():
             res.append(UserReqRes(
                 e_id=u.e_id,
                 password=u.password,
-                role=_str_to_roles(u.role),
-                status=u.status
+                role=_ensure_roles_list(u.role),
+                status=u.status,
             ))
         return res
     except SQLAlchemyError as e:
@@ -70,7 +70,7 @@ def get_user_by_id(e_id: int):
         u = session.query(UserSchema).filter(UserSchema.e_id == e_id).first()
         if not u:
             raise HTTPException(status_code=404, detail="User Not Found")
-        return UserReqRes(e_id=u.e_id, password=u.password, role=_str_to_roles(u.role), status=u.status)
+        return UserReqRes(e_id=u.e_id, password=u.password, role=_ensure_roles_list(u.role), status=u.status)
     except SQLAlchemyError as e:
         session.rollback()
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
@@ -85,12 +85,13 @@ def update_user(e_id: int, updated: dict):
         if not u:
             raise HTTPException(status_code=404, detail="User Not Found")
         if "role" in updated:
-            updated["role"] = _roles_to_str(updated["role"]) if updated["role"] is not None else u.role
+            # Normalize roles into JSON list for storage
+            updated["role"] = _ensure_roles_list(updated["role"]) if updated["role"] is not None else u.role
         for key, value in updated.items():
             setattr(u, key, value)
         session.commit()
         session.refresh(u)
-        return UserReqRes(e_id=u.e_id, password=u.password, role=_str_to_roles(u.role), status=u.status)
+        return UserReqRes(e_id=u.e_id, password=u.password, role=_ensure_roles_list(u.role), status=u.status)
     except SQLAlchemyError as e:
         session.rollback()
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")

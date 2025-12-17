@@ -86,11 +86,11 @@ def get_task_by_id(t_id: int, user):
         
         # Optional: Add authorization check
         # Uncomment if you want to restrict access based on user role
-        # if "Admin" not in user.role:
-        #     if "Manager" in user.role and t.reviewer != user.e_id:
-        #         raise HTTPException(status_code=403, detail="Not authorized to view this task")
-        #     elif t.assigned_to != user.e_id:
-        #         raise HTTPException(status_code=403, detail="Not authorized to view this task")
+        if "Admin" not in user.role:
+            if "Manager" in user.role and t.reviewer != user.e_id:
+                raise HTTPException(status_code=403, detail="Not authorized to view this task")
+            elif t.assigned_to != user.e_id:
+                raise HTTPException(status_code=403, detail="Not authorized to view this task")
         
         return TaskReqRes.from_orm(t)
     except SQLAlchemyError as e:
@@ -109,43 +109,64 @@ def get_task_by_status(status, role, user):
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
 
-def update_task(t_id: int, updated: TaskReqRes, role, user):
+def update_task(
+    t_id: int,
+    title: str = None,
+    description: str = None,
+    assigned_to: int = None,
+    priority: str = None,
+    status: str = None,
+    reviewer: int = None,
+    expected_closure: datetime = None,
+    role: str = None,
+    user= None
+) :
     try:
+        # Role-based access control
         if role not in ["Manager", "Admin"]:
-            raise HTTPException(status_code=403, detail="Don't have access to update task")
-        session = get_connection()
+            raise HTTPException(status_code=403, detail="You don't have permission to update this task")
+        session=get_connection()
+        # Retrieve task
         t = session.query(TaskSchema).filter(TaskSchema.t_id == t_id).first()
         if not t:
-            raise HTTPException(status_code=404, detail="Task Not Found")
-        if "status" in updated:
-            raise HTTPException(status_code=400, detail="Use the patch endpoint to update the status of task")
+            raise HTTPException(status_code=404, detail="Task not found")
 
-        excluded_fields = ["assigned_by", "assigned_at", "updated_by", "updated_at", "created_by"]
-
-        for key, value in updated.items():
-            if key not in excluded_fields:
-                setattr(t, key, value)
-
-        # handle assignment timestamp
-        if "assigned_to" in updated:
-            assigned_user = get_user_by_id(updated.get("assigned_to"))
+        # Update fields if provided
+        if title:
+            t.title = title
+        if description:
+            t.description = description
+        if assigned_to:
+            assigned_user = get_user_by_id(assigned_to, session)
             if not assigned_user:
                 raise HTTPException(status_code=404, detail="Assigned user not found")
-            if "Developer" not in assigned_user.role:
-                assigned_user.role.append("Developer")
-            t.assigned_at = datetime.now()
+            t.assigned_to = assigned_to
+            t.assigned_at = datetime.now()  # Update assignment timestamp
             t.assigned_by = user.e_id
+        if priority:
+            t.priority = priority
+        if status:
+            patch_status(t_id=t_id, status=status, role=role, user=user, session=session)
+            t.status = status
+        if reviewer:
+            reviewer_user = get_user_by_id(reviewer, session)
+            if not reviewer_user:
+                raise HTTPException(status_code=404, detail="Reviewer not found")
+            t.reviewer = reviewer
+        if expected_closure:
+            t.expected_closure = expected_closure
 
-        if "reviewer" in updated:
-            q = get_user_by_id(updated.get("reviewer"))
-            if "Manager" not in q.role:
-                q.role.append("Manager")
-
+        # Update timestamps
         t.updated_by = user.e_id
         t.updated_at = datetime.now()
+
+        # Commit the transaction
         session.commit()
         session.refresh(t)
+
+        # Return updated task as a response
         return TaskReqRes.from_orm(t)
+
     except SQLAlchemyError as e:
         session.rollback()
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
@@ -153,6 +174,86 @@ def update_task(t_id: int, updated: TaskReqRes, role, user):
         session.close()
 
 
+# def update_task(t_id: int, updated: TaskReqRes, role, user):
+#     try:
+#         if role not in ["Manager", "Admin"]:
+#             raise HTTPException(status_code=403, detail="Don't have access to update task")
+#         session = get_connection()
+#         t = session.query(TaskSchema).filter(TaskSchema.t_id == t_id).first()
+#         if not t:
+#             raise HTTPException(status_code=404, detail="Task Not Found")
+#         if "status" in updated:
+#             patch_status(updated["status"])
+#         excluded_fields = ["assigned_by", "assigned_at", "updated_by", "updated_at", "created_by"]
+
+#         for key, value in updated.items():
+#             if key not in excluded_fields:
+#                 setattr(t, key, value)
+
+#         # handle assignment timestamp
+#         if "assigned_to" in updated:
+#             assigned_user = get_user_by_id(updated.get("assigned_to"))
+#             if not assigned_user:
+#                 raise HTTPException(status_code=404, detail="Assigned user not found")
+#             if "Developer" not in assigned_user.role:
+#                 assigned_user.role.append("Developer")
+#             t.assigned_at = datetime.now()
+#             t.assigned_by = user.e_id
+
+#         if "reviewer" in updated:
+#             q = get_user_by_id(updated.get("reviewer"))
+#             if "Manager" not in q.role:
+#                 q.role.append("Manager")
+
+#         t.updated_by = user.e_id
+#         t.updated_at = datetime.now()
+#         session.commit()
+#         session.refresh(t)
+#         return TaskReqRes.from_orm(t)
+#     except SQLAlchemyError as e:
+#         session.rollback()
+#         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+#     finally:
+#         session.close()
+
+## patch the priority
+def patch_priority(t_id: int, priority: str, role: str, user):
+    try:
+        # Retrieve task
+        session=get_connection()
+        t = session.query(TaskSchema).filter(TaskSchema.t_id == t_id).first()
+        if not t:
+            raise HTTPException(status_code=404, detail="Task not found")
+
+        # Check if the user has permission to change the priority
+        if role not in ["Manager", "Admin"]:
+            raise HTTPException(status_code=403, detail="You do not have permission to change the priority of this task")
+
+        # Ensure the user is the manager of the task if they are not an Admin
+        if role == "Manager":
+            if user.e_id != t.reviewer:  # Assuming `reviewer` is the manager of the task
+                raise HTTPException(status_code=403, detail="You are not the manager of this task")
+
+        # Update the priority of the task
+        t.priority = priority
+        t.updated_by = user.e_id
+        t.updated_at = datetime.now()
+
+        # Commit transaction
+        session.commit()
+        session.refresh(t)
+
+        # Return updated task as a response
+        return TaskReqRes.from_orm(t)
+
+    except SQLAlchemyError as e:
+        session.rollback()
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+    finally:
+        session.close()
+
+
+## patch the status
 def patch_status(t_id, status, role, user):
     try:
         session = get_connection()
