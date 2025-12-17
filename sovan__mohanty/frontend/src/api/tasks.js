@@ -10,3 +10,7 @@ export const createTask = async ({ title, description, assigned_to, priority }) 
 
 export const updateTaskStatus = async (task_id, status) =>
   (await api.put(`/tasks/${task_id}/status`, null, { params: { status } })).data;
+
+// ✅ New: update task priority (MANAGER/ADMIN only)
+export const updateTaskPriority = async (task_id, priority) =>
+  (await api.put(`/tasks/${task_id}/priority`, null, { params: { priority } })).data;

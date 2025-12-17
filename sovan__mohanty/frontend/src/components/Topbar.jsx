@@ -44,14 +44,16 @@ export default function Topbar() {
 
   return (
     <div className="h-16 bg-white dark:bg-gray-900 shadow flex items-center justify-between px-6">
-      <div className="text-lg font-semibold text-gray-800 dark:text-gray-200">
+      {/* App title */}
+      <div className="text-2xl font-bold text-gray-800 dark:text-gray-200">
         Jira Lite
       </div>
-      <div className="flex items-center space-x-4">
+
+      <div className="flex items-center space-x-6">
         {user && (
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-3">
             {/* Circular avatar */}
-            <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-gray-300 dark:border-gray-600">
+            <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-gray-300 dark:border-gray-600">
               <img
                 src={roleAvatar(user.role)}
                 alt={`${user.role} avatar`}
@@ -60,7 +62,7 @@ export default function Topbar() {
             </div>
             {/* Role badge */}
             <span
-              className={`px-2 py-1 rounded text-xs font-medium ${roleBadge(
+              className={`px-3 py-1 rounded text-base font-semibold ${roleBadge(
                 user.role
               )}`}
             >
@@ -69,9 +71,10 @@ export default function Topbar() {
           </div>
         )}
 
+        {/* Logout button */}
         <button
           onClick={onLogout}
-          className="text-sm text-blue-600 dark:text-blue-400 hover:underline"
+          className="text-base font-medium text-blue-600 dark:text-blue-400 hover:underline"
         >
           Logout
         </button>

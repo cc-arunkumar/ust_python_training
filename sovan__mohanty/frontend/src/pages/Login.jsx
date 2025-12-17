@@ -26,11 +26,11 @@ export default function Login() {
   };
 
   return (
-    <div className="flex items-center justify-center h-screen relative bg-gray-800 dark:bg-gray-900 overflow-hidden">
-      {/* Decorative background pattern */}
+    <div className="flex items-center justify-center h-screen relative bg-white overflow-hidden">
+      {/* Decorative background pattern in sidebar colors */}
       <div className="absolute inset-0">
         <svg
-          className="absolute w-full h-full opacity-10"
+          className="absolute w-full h-full opacity-10 animate-pulse"
           xmlns="http://www.w3.org/2000/svg"
         >
           <defs>
@@ -43,20 +43,32 @@ export default function Login() {
               <path
                 d="M 40 0 L 0 0 0 40"
                 fill="none"
-                stroke="white"
+                stroke="#2b384bff"
                 strokeWidth="0.5"
               />
             </pattern>
           </defs>
           <rect width="100%" height="100%" fill="url(#grid)" />
         </svg>
-        {/* Gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-br from-gray-800 via-gray-900 to-black opacity-70"></div>
+
+        {/* Gradient overlay with animation */}
+        <div className="absolute inset-0 bg-gradient-to-br from-gray-100 via-gray-200 to-gray-300 opacity-30 animate-gradient"></div>
+
+        {/* Floating circles */}
+        <div className="absolute top-1/4 left-1/3 w-32 h-32 bg-gray-800 rounded-full opacity-10 animate-bounce-slow"></div>
+        <div className="absolute bottom-1/4 right-1/4 w-24 h-24 bg-gray-900 rounded-full opacity-10 animate-bounce-slower"></div>
+
+        {/* Welcome message in background */}
+        <div className="absolute top-12 w-full text-center">
+          <h1 className="text-4xl font-extrabold text-teal-800 opacity-20 tracking-wide animate-fade-in">
+            Welcome to Jira Lite
+          </h1>
+        </div>
       </div>
 
       {/* Login card */}
-      <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg w-96 relative z-10">
-        <h2 className="text-xl font-bold mb-4 text-center text-gray-800 dark:text-gray-100">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-96 relative z-10">
+        <h2 className="text-xl font-semibold mb-4 text-center text-gray-800">
           Login
         </h2>
         <div className="space-y-3">

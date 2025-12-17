@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { listTasks, updateTaskStatus, createTask } from "../api/tasks";
+import { listTasks, updateTaskStatus, createTask, updateTaskPriority } from "../api/tasks"; 
 import { getUser } from "../api/users";
 import toast from "react-hot-toast";
 
@@ -9,6 +9,9 @@ const STATUS_COLUMNS = [
   { key: "REVIEW", label: "REVIEW", color: "bg-purple-200 text-purple-800 dark:bg-purple-900 dark:text-purple-200" },
   { key: "DONE", label: "DONE", color: "bg-green-200 text-green-800 dark:bg-green-900 dark:text-green-200" },
 ];
+
+// Priority order mapping
+const priorityOrder = { HIGH: 1, MEDIUM: 2, LOW: 3 };
 
 export default function Tasks() {
   const [tasks, setTasks] = useState([]);
@@ -32,6 +35,12 @@ export default function Tasks() {
   const grouped = useMemo(() => {
     const g = { TO_DO: [], IN_PROGRESS: [], REVIEW: [], DONE: [] };
     visibleTasks.forEach((t) => g[t.status]?.push(t));
+
+    // sort each column by priority order
+    Object.keys(g).forEach((status) => {
+      g[status].sort((a, b) => priorityOrder[a.priority] - priorityOrder[b.priority]);
+    });
+
     return g;
   }, [visibleTasks]);
 
@@ -42,6 +51,16 @@ export default function Tasks() {
       toast.success("Task status updated!");
     } catch {
       toast.error("Failed to update status");
+    }
+  };
+
+  const handlePriorityChange = async (taskId, priority) => {
+    try {
+      const updated = await updateTaskPriority(taskId, priority);
+      setTasks((prev) => prev.map((t) => (t.id === taskId ? updated : t)));
+      toast.success("Task priority updated!");
+    } catch {
+      toast.error("Failed to update priority");
     }
   };
 
@@ -107,17 +126,29 @@ export default function Tasks() {
                 <div key={t.id} className="bg-white dark:bg-gray-900 p-3 rounded shadow">
                   <div className="flex items-center justify-between">
                     <p className="font-medium text-gray-800 dark:text-gray-200">{t.title}</p>
-                    <span
-                      className={`text-xs px-2 py-1 rounded ${
-                        t.priority === "HIGH"
-                          ? "bg-red-100 text-red-600 dark:bg-red-900 dark:text-red-300"
-                          : t.priority === "MEDIUM"
-                          ? "bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300"
-                          : "bg-green-100 text-green-600 dark:bg-green-900 dark:text-green-300"
-                      }`}
-                    >
-                      {t.priority}
-                    </span>
+                    {current?.role === "EMPLOYEE" ? (
+                      <span
+                        className={`text-xs px-2 py-1 rounded ${
+                          t.priority === "HIGH"
+                            ? "bg-red-100 text-red-600 dark:bg-red-900 dark:text-red-300"
+                            : t.priority === "MEDIUM"
+                            ? "bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300"
+                            : "bg-green-100 text-green-600 dark:bg-green-900 dark:text-green-300"
+                        }`}
+                      >
+                        {t.priority}
+                      </span>
+                    ) : (
+                      <select
+                        value={t.priority}
+                        onChange={(e) => handlePriorityChange(t.id, e.target.value)}
+                        className="text-xs border rounded p-1 dark:bg-gray-700 dark:text-gray-200"
+                      >
+                        <option value="HIGH">HIGH</option>
+                        <option value="MEDIUM">MEDIUM</option>
+                        <option value="LOW">LOW</option>
+                      </select>
+                    )}
                   </div>
                   <p className="text-xs text-gray-500 dark:text-gray-400">Assignee emp_id: {t.assigned_to}</p>
                   <div className="mt-2">
