@@ -220,10 +220,17 @@ from auth import LoginRequest,create_access_token,ACCESS_TOKEN_EXPIRE_MINUTES,us
 from models import TaskModelCreate,TaskModelUpdate,TaskModel
 from mysql_db_connection import create_task,get_all_tasks,get_task_by_id,update_task_by_id,delete_task_by_id
 from mongo_logger import logg,Log
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(title="UST Task Manager")
 
-
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],  # React dev server
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 
