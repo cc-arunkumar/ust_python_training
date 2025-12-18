@@ -3,14 +3,14 @@ from sqlalchemy.orm import Session
 from datetime import datetime
 import asyncio
 import json
-from fastapi import File, UploadFile
+from fastapi import File, UploadFile, Response
 import re
-
+import os
 from database.connection import get_db
-from database.mongodb import log_activity
+from database.mongodb import log_activity,get_file_by_id
 from utils.auth import role_guard
 from models.users import UserDB
-
+from bson import ObjectId
 from schemas.task import (
     TaskBase,
     TaskAssign,
@@ -32,6 +32,13 @@ from utils.notifications import notify_task_created
 
 router = APIRouter(prefix="/api/tasks", tags=["Tasks"])
 
+ALLOWED_IMAGE_MIME_TYPES = {
+    "image/jpeg",
+    "image/png",
+    "image/webp",
+}
+
+ALLOWED_IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp"}
 
 # ---------- Get ----------
 @router.get("/", response_model=list[TaskResponse])
@@ -253,8 +260,6 @@ def update_status(
     }
 
 
-
-
 # ---------- File upload for task (GridFS) ----------
 @router.post("/{task_id}/upload")
 async def upload_task_file(
@@ -263,23 +268,80 @@ async def upload_task_file(
     db: Session = Depends(get_db),
     current=Depends(role_guard(["Admin", "Manager", "Employee"]))
 ):
-    # verify task exists
+    # Verify task exists
     task = get_task_by_id(db, task_id)
     if not task:
-        raise HTTPException(404, "Task not found")
+        raise HTTPException(status_code=404, detail="Task not found")
+
+    # ---- Validate file type ----
+    ext = os.path.splitext(file.filename)[1].lower()
+
+    if file.content_type not in ALLOWED_IMAGE_MIME_TYPES:
+        raise HTTPException(
+            status_code=400,
+            detail="Only image files (JPG, PNG, WEBP) are allowed"
+        )
+
+    if ext not in ALLOWED_IMAGE_EXTENSIONS:
+        raise HTTPException(
+            status_code=400,
+            detail="Invalid image file extension"
+        )
 
     try:
         content = await file.read()
-        file_id = save_task_file_bytes(task_id, file.filename, content, file.content_type)
+
+        if not content:
+            raise HTTPException(400, "Empty file")
+
+        file_id = save_task_file_bytes(
+            task_id=task_id,
+            filename=file.filename,
+            content=content,
+            content_type=file.content_type
+        )
+
         if not file_id:
-            raise HTTPException(500, "Failed to save file")
+            raise HTTPException(500, "Failed to save image")
 
-        # log and return file id
-        log_activity(current["user"].emp_id, "upload_file", task_id)
-        return {"file_id": str(file_id), "filename": file.filename}
+        log_activity(current["user"].emp_id, "upload_image", task_id)
+
+        return {
+            "file_id": str(file_id),
+            "filename": file.filename,
+            "content_type": file.content_type
+        }
+
+    except HTTPException:
+        raise
     except Exception as e:
-        raise HTTPException(500, f"Upload failed: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Upload failed: {str(e)}")
+    
+# ---------- Get task file (GridFS) ----------
+@router.get("/tasks/file/{file_id}")
+async def get_task_file(
+    file_id: str,
+    current=Depends(role_guard(["Admin", "Manager", "Employee"]))
+):
+    if not ObjectId.is_valid(file_id):
+        raise HTTPException(status_code=400, detail="Invalid file id")
 
+    file_data = get_file_by_id(file_id)
+
+    if not file_data:
+        raise HTTPException(status_code=404, detail="Image not found")
+
+    grid_out = file_data["stream"]
+
+    return Response(
+        content=grid_out.read(),
+        media_type=file_data["content_type"] or "image/jpeg",
+        headers={
+            # inline = show in browser (NOT download)
+            "Content-Disposition": f'inline; filename="{file_data["filename"]}"',
+            "Content-Length": str(file_data["length"]),
+        }
+    )
 
 # ---------- Send to Review ----------
 @router.patch("/{task_id}/send-to-review")

@@ -27,6 +27,7 @@ import {
   Clock,
   MessageSquare,
   ArrowRight,
+  Eye,
 } from "lucide-react";
 import { format } from "date-fns";
 
@@ -466,9 +467,6 @@ const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
 
           {canChangeStatus && (
             <div className="p-4 rounded-lg bg-muted/50 space-y-3">
-              <h4 className="text-sm font-medium text-foreground">
-                Update Status
-              </h4>
               {getNextStatus() && (
                 <Button
                   onClick={() => handleStatusChange(getNextStatus()!)}
@@ -504,6 +502,18 @@ const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
             <div className="space-y-2 max-h-40 overflow-y-auto">
               {taskRemarks.map((remark) => {
                 const author = getEmployeeById(remark.created_by);
+                // detect embedded file marker in remark.comment of form: [file:<file_id>:<filename>]
+                const fileMatch = remark.comment.match(
+                  /\[file:([^:\]]+):([^\]]+)\]/
+                );
+                const fileId = fileMatch ? fileMatch[1] : null;
+                const fileName = fileMatch ? fileMatch[2] : null;
+
+                // remove marker from displayed text
+                const displayComment = remark.comment
+                  .replace(fileMatch?.[0] ?? "", "")
+                  .trim();
+
                 return (
                   <div
                     key={remark.id}
@@ -517,7 +527,54 @@ const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
                         {format(new Date(remark.created_at), "MMM d, HH:mm")}
                       </span>
                     </div>
-                    <p className="text-muted-foreground">{remark.comment}</p>
+
+                    <div className="flex items-start justify-between gap-4">
+                      <p className="text-muted-foreground flex-1">
+                        {displayComment ||
+                          (fileName ? `Attached: ${fileName}` : "")}
+                      </p>
+
+                      {fileId && (
+                        <div className="ml-2">
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={async () => {
+                              try {
+                                const res = await api.get(
+                                  `/api/tasks/tasks/file/${fileId}`,
+                                  {
+                                    responseType: "blob",
+                                  }
+                                );
+                                const blob = new Blob([res.data], {
+                                  type:
+                                    res.headers["content-type"] ||
+                                    "application/octet-stream",
+                                });
+                                const url = URL.createObjectURL(blob);
+                                window.open(url, "_blank");
+                                setTimeout(
+                                  () => URL.revokeObjectURL(url),
+                                  60_000
+                                );
+                              } catch (err) {
+                                console.error("Failed to fetch file", err);
+                                // best-effort toast if sonner is available
+                                try {
+                                  (window as any).toast?.error?.(
+                                    "Failed to fetch file"
+                                  );
+                                } catch {}
+                              }
+                            }}
+                            className="h-8 w-8 p-0"
+                          >
+                            <Eye className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 );
               })}

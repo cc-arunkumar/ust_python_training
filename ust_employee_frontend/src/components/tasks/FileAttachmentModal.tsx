@@ -12,6 +12,7 @@ import api from "@/services/api";
 import { useTasks } from "@/contexts/TaskContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import { Eye } from "lucide-react";
 
 interface Props {
   task: Task;
@@ -22,6 +23,10 @@ const FileAttachmentModal: React.FC<Props> = ({ task, onClose }) => {
   const [remark, setRemark] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [uploadedInfo, setUploadedInfo] = useState<null | {
+    file_id: string;
+    filename: string;
+  }>(null);
   const { addRemark } = useTasks();
   const { user } = useAuth();
 
@@ -55,23 +60,30 @@ const FileAttachmentModal: React.FC<Props> = ({ task, onClose }) => {
         });
         uploadedInfo = res.data;
         toast.success(`Uploaded ${uploadedInfo.filename}`);
+        // store uploaded info so user can preview immediately
+        setUploadedInfo(uploadedInfo);
       }
 
       // Compose remark text to include file reference when present
       let finalRemark = remark.trim();
       if (uploadedInfo) {
         const fname = uploadedInfo.filename || file?.name || "file";
-        finalRemark = `${finalRemark}${
-          finalRemark ? "\n" : ""
-        }[file attached: ${fname}]`;
+        // embed file id so TaskDetailModal can render a preview button: [file:<file_id>:<filename>]
+        finalRemark = `${finalRemark}${finalRemark ? "\n" : ""}[file:${
+          uploadedInfo.file_id
+        }:${fname}]`;
       }
 
       // Add remark locally (TaskContext currently keeps remarks in-memory)
       addRemark(task.t_id, finalRemark, user?.e_id || "");
 
+      // If file was uploaded, keep modal open and allow user to preview it.
+      // Clear remark and file selection but keep uploadedInfo available for preview.
       setRemark("");
       setFile(null);
-      onClose();
+      if (!uploadedInfo) {
+        onClose();
+      }
     } catch (err: any) {
       console.error("Upload failed", err);
       let msg = "Upload failed";
@@ -80,6 +92,24 @@ const FileAttachmentModal: React.FC<Props> = ({ task, onClose }) => {
       toast.error(msg);
     } finally {
       setUploading(false);
+    }
+  };
+
+  const viewUploadedFile = async (fileId: string) => {
+    try {
+      const res = await api.get(`/api/tasks/tasks/file/${fileId}`, {
+        responseType: "blob",
+      });
+      const blob = new Blob([res.data], {
+        type: res.headers["content-type"] || "application/octet-stream",
+      });
+      const url = URL.createObjectURL(blob);
+      window.open(url, "_blank");
+      // release object URL after some time
+      setTimeout(() => URL.revokeObjectURL(url), 60_000);
+    } catch (err: any) {
+      console.error("Failed to fetch file", err);
+      toast.error("Failed to fetch file");
     }
   };
 
@@ -112,7 +142,26 @@ const FileAttachmentModal: React.FC<Props> = ({ task, onClose }) => {
               onChange={handleFileChange}
               accept="image/*,application/pdf"
             />
-            {file && <div className="text-sm mt-2">Selected: {file.name}</div>}
+            {file && (
+              <div className="text-sm mt-2 flex items-center gap-2">
+                <span>Selected: {file.name}</span>
+              </div>
+            )}
+
+            {uploadedInfo && (
+              <div className="text-sm mt-2 flex items-center gap-2">
+                <span className="font-medium">Uploaded:</span>
+                <span>{uploadedInfo.filename}</span>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => viewUploadedFile(uploadedInfo.file_id)}
+                  className="h-8 w-8 p-0"
+                >
+                  <Eye className="h-4 w-4" />
+                </Button>
+              </div>
+            )}
           </div>
 
           <div className="flex gap-2 justify-end">
