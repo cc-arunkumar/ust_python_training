@@ -59,6 +59,37 @@ def patch_status(db: Session, task_id: int, status: str, role: str | None = None
     if getattr(task, "status", None) == "DONE":
         raise ValueError("Cannot change status of a completed task")
 
+    # normalize role
+    role_norm = (role or "").strip().lower()
+
+    # Admins are not allowed to change task status via this endpoint
+    if role_norm == "admin":
+        raise ValueError("You do not have permissions to change task status")
+
+    # Define allowed transitions per role
+    # Manager: REVIEW -> IN_PROGRESS or REVIEW -> DONE
+    # Employee: TO_DO -> IN_PROGRESS, IN_PROGRESS -> REVIEW
+    current_status = getattr(task, "status", None)
+
+    allowed = False
+    if role_norm == "manager":
+        if current_status == "REVIEW" and normalized_status in ("IN_PROGRESS", "DONE"):
+            allowed = True
+
+    elif role_norm == "employee":
+        if current_status == "TO_DO" and normalized_status == "IN_PROGRESS":
+            allowed = True
+        if current_status == "IN_PROGRESS" and normalized_status == "REVIEW":
+            allowed = True
+
+    else:
+        # Unknown/other roles: deny
+        allowed = False
+
+    if not allowed:
+        raise ValueError("You do not have permissions to change task status")
+
+    # perform update
     task.status = normalized_status
     db.commit()
     db.refresh(task)

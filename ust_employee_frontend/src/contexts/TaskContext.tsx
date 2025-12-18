@@ -15,11 +15,18 @@ import { CreateTaskInput } from "@/types";
 interface TaskContextType {
   tasks: Task[];
   remarks: Remark[];
+  updatingTasks: string[];
   updateTaskStatus: (
     taskId: string,
     newStatus: TaskStatus,
     updatedBy: string,
     remark?: string
+  ) => void;
+  reviewDecision: (
+    taskId: string,
+    action: "APPROVE" | "REJECT",
+    remarks?: string,
+    updatedBy?: string
   ) => void;
   updateTaskPriority: (
     taskId: string,
@@ -52,67 +59,70 @@ export const TaskProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [remarks, setRemarks] = useState<Remark[]>([]);
+  const [updatingTasks, setUpdatingTasks] = useState<string[]>([]);
 
-  /* -------------------- Fetch Tasks -------------------- */
+  /* -------------------- Fetch / Refresh Tasks -------------------- */
+  const refreshTasks = useCallback(async () => {
+    try {
+      const res = await api.get("/api/tasks/");
+
+      if (Array.isArray(res.data)) {
+        const mapped: Task[] = res.data.map((t: any) => {
+          return {
+            t_id: t.t_id || `T${String(t.id).padStart(3, "0")}`,
+            title: t.title,
+            description: t.description,
+            created_by:
+              t.created_by ||
+              (t.created_by_id
+                ? `E${String(t.created_by_id).padStart(3, "0")}`
+                : undefined),
+            assigned_to:
+              t.assigned_to ||
+              (t.assigned_to_id
+                ? `E${String(t.assigned_to_id).padStart(3, "0")}`
+                : undefined),
+            assigned_by:
+              t.assigned_by ||
+              (t.assigned_by_id
+                ? `E${String(t.assigned_by_id).padStart(3, "0")}`
+                : undefined),
+            assigned_at: t.assigned_at,
+            updated_at: t.updated_at,
+            updated_by:
+              t.updated_by ||
+              (t.updated_by_id
+                ? `E${String(t.updated_by_id).padStart(3, "0")}`
+                : undefined),
+            priority: t.priority || "medium",
+            status: t.status || "TO_DO",
+            reviewer: t.reviewer
+              ? `E${String(t.reviewer).padStart(3, "0")}`
+              : undefined,
+            expected_closure: t.expected_closure,
+            actual_closure: t.actual_closure,
+          };
+        });
+
+        setTasks(mapped);
+      }
+    } catch (err) {
+      console.error("Failed to fetch tasks", err);
+      toast.error("Failed to load tasks");
+    }
+  }, []);
 
   useEffect(() => {
     let mounted = true;
-
-    const fetchTasks = async () => {
-      try {
-        const res = await api.get("/api/tasks/");
-
-        if (mounted && Array.isArray(res.data)) {
-          const mapped: Task[] = res.data.map((t: any) => {
-            return {
-              t_id: t.t_id || `T${String(t.id).padStart(3, "0")}`,
-              title: t.title,
-              description: t.description,
-              created_by:
-                t.created_by ||
-                (t.created_by_id
-                  ? `E${String(t.created_by_id).padStart(3, "0")}`
-                  : undefined),
-              assigned_to:
-                t.assigned_to ||
-                (t.assigned_to_id
-                  ? `E${String(t.assigned_to_id).padStart(3, "0")}`
-                  : undefined),
-              assigned_by:
-                t.assigned_by ||
-                (t.assigned_by_id
-                  ? `E${String(t.assigned_by_id).padStart(3, "0")}`
-                  : undefined),
-              assigned_at: t.assigned_at,
-              updated_at: t.updated_at,
-              updated_by:
-                t.updated_by ||
-                (t.updated_by_id
-                  ? `E${String(t.updated_by_id).padStart(3, "0")}`
-                  : undefined),
-              priority: t.priority || "medium",
-              status: t.status || "TO_DO",
-              reviewer: t.reviewer
-                ? `E${String(t.reviewer).padStart(3, "0")}`
-                : undefined,
-              expected_closure: t.expected_closure,
-              actual_closure: t.actual_closure,
-            };
-          });
-
-          setTasks(mapped);
-        }
-      } catch (err) {
-        console.error("Failed to fetch tasks", err);
-        toast.error("Failed to load tasks");
-      }
-    };
-
-    fetchTasks();
+    // initial load
+    (async () => {
+      if (!mounted) return;
+      await refreshTasks();
+    })();
     return () => {
       mounted = false;
     };
-  }, []);
+  }, [refreshTasks]);
 
   /* -------------------- Update Reviewer (Admin / Manager) -------------------- */
   const updateTaskReviewer = useCallback(
@@ -202,7 +212,15 @@ export const TaskProvider: React.FC<{ children: React.ReactNode }> = ({
           const payload: any = { status: newStatus };
           if (remark) payload.remark = remark;
 
-          const res = await api.patch(`/api/tasks/${taskIdNum}`, payload);
+          // If moving to REVIEW, prefer the dedicated send-to-review endpoint
+          // which is guarded specifically for Employee role and contains
+          // business logic for sending an IN_PROGRESS task to REVIEW.
+          let res;
+          if (newStatus === "REVIEW") {
+            res = await api.patch(`/api/tasks/${taskIdNum}/send-to-review`);
+          } else {
+            res = await api.patch(`/api/tasks/${taskIdNum}`, payload);
+          }
 
           const updated = res.data;
 
@@ -437,6 +455,104 @@ export const TaskProvider: React.FC<{ children: React.ReactNode }> = ({
 
   /* -------------------- Remarks -------------------- */
 
+  /* -------------------- Review Decision (Manager / Reviewer) -------------------- */
+  const reviewDecision = useCallback(
+    (
+      taskId: string,
+      action: "APPROVE" | "REJECT",
+      remarksText?: string,
+      updatedBy?: string
+    ) => {
+      (async () => {
+        try {
+          const stripDigits = (s?: string | number) => {
+            if (s == null) return "";
+            return String(s).replace(/\D/g, "");
+          };
+
+          const taskIdNum = Number(stripDigits(taskId));
+          if (!Number.isFinite(taskIdNum)) {
+            toast.error("Invalid task id");
+            return;
+          }
+
+          const payload: any = { action };
+          if (remarksText) payload.remarks = remarksText;
+
+          // mark as updating (optimistic UI)
+          setUpdatingTasks((s) => Array.from(new Set([...s, taskId])));
+
+          const res = await api.patch(
+            `/api/tasks/${taskIdNum}/review-decision`,
+            payload
+          );
+
+          const updated = res.data;
+
+          setTasks((prev) =>
+            prev.map((task) =>
+              task.t_id === taskId
+                ? {
+                    ...task,
+                    status:
+                      updated.status ||
+                      (action === "APPROVE" ? "DONE" : "IN_PROGRESS"),
+                    reviewer: updated.reviewer
+                      ? `E${String(updated.reviewer).padStart(3, "0")}`
+                      : task.reviewer,
+                    actual_closure:
+                      updated.actual_closure || task.actual_closure,
+                    updated_by: updated.updated_by
+                      ? `E${String(updated.updated_by).padStart(3, "0")}`
+                      : updatedBy || task.updated_by,
+                    updated_at: updated.updated_at || new Date().toISOString(),
+                  }
+                : task
+            )
+          );
+
+          if (remarksText) {
+            // append remark locally (avoid depending on addRemark)
+            const newRemark: Remark = {
+              id: `R${String(remarks.length + 1).padStart(3, "0")}`,
+              task_id: taskId,
+              comment: remarksText,
+              created_by: updatedBy || "",
+              created_at: new Date().toISOString(),
+            };
+            setRemarks((prev) => [...prev, newRemark]);
+          }
+
+          // refresh tasks from server to ensure board reflects canonical state
+          try {
+            await refreshTasks();
+          } catch (e) {
+            // ignore refresh errors — we already optimistically updated local state
+          }
+
+          toast.success(`Review decision recorded: ${action}`);
+        } catch (err: any) {
+          console.error("Review decision failed:", err);
+          let msg = "Failed to record review decision";
+          const data = err?.response?.data;
+          if (data) {
+            if (typeof data === "string") msg = data;
+            else if (data?.detail) msg = String(data.detail);
+            else if (data?.message) msg = String(data.message);
+            else msg = JSON.stringify(data);
+          } else if (err?.message) {
+            msg = String(err.message);
+          }
+          toast.error(msg);
+        } finally {
+          // clear updating flag
+          setUpdatingTasks((s) => s.filter((id) => id !== taskId));
+        }
+      })();
+    },
+    [refreshTasks, remarks.length]
+  );
+
   const addRemark = useCallback(
     (taskId: string, comment: string, createdBy: string) => {
       const newRemark: Remark = {
@@ -472,6 +588,8 @@ export const TaskProvider: React.FC<{ children: React.ReactNode }> = ({
         tasks,
         remarks,
         updateTaskStatus,
+        reviewDecision,
+        updatingTasks,
         createTask,
         assignTask,
         updateTaskPriority,

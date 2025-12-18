@@ -10,6 +10,8 @@ interface KanbanColumnProps {
   onTaskClick: (task: Task) => void;
   canAdd?: boolean;
   onAdd?: () => void;
+  viewMode?: string; // 'admin' | 'manager' | 'employee'
+  updatingTasks?: string[];
 }
 
 const statusConfig: Record<
@@ -44,8 +46,30 @@ const KanbanColumn: React.FC<KanbanColumnProps> = ({
   onTaskClick,
   canAdd,
   onAdd,
+  viewMode,
+  updatingTasks,
 }) => {
   const config = statusConfig[status];
+
+  // determine if tasks in this column are movable by the current user role
+  const allowedTargetsForRole = (role?: string, fromStatus?: TaskStatus) => {
+    const r = (role || "").toLowerCase();
+    if (r === "manager") {
+      // manager can only move REVIEW -> IN_PROGRESS|DONE
+      if (fromStatus === "REVIEW")
+        return ["IN_PROGRESS", "DONE"] as TaskStatus[];
+      return [] as TaskStatus[];
+    }
+    if (r === "employee") {
+      if (fromStatus === "TO_DO") return ["IN_PROGRESS"] as TaskStatus[];
+      if (fromStatus === "IN_PROGRESS") return ["REVIEW"] as TaskStatus[];
+      return [] as TaskStatus[];
+    }
+    // admin and others: no moves allowed
+    return [] as TaskStatus[];
+  };
+
+  const outboundAllowed = allowedTargetsForRole(viewMode, status).length > 0;
 
   return (
     <div className={`kanban-column ${config.columnClass}`}>
@@ -77,28 +101,38 @@ const KanbanColumn: React.FC<KanbanColumnProps> = ({
                 : ""
             }`}
           >
-            {tasks.map((task, index) => (
-              <Draggable
-                key={task.t_id}
-                draggableId={task.t_id}
-                index={index}
-                isDragDisabled={task.status === "DONE"}
-              >
-                {(provided, snapshot) => (
-                  <div
-                    ref={provided.innerRef}
-                    {...provided.draggableProps}
-                    {...provided.dragHandleProps}
-                  >
-                    <TaskCard
-                      task={task}
-                      isDragging={snapshot.isDragging}
-                      onClick={() => onTaskClick(task)}
-                    />
-                  </div>
-                )}
-              </Draggable>
-            ))}
+            {tasks.map((task, index) => {
+              const isUpdating = (updatingTasks || []).includes(task.t_id);
+              return (
+                <Draggable
+                  key={task.t_id}
+                  draggableId={task.t_id}
+                  index={index}
+                  // disable dragging for completed tasks or if the current role has no allowed outbound transitions
+                  isDragDisabled={task.status === "DONE" || !outboundAllowed}
+                >
+                  {(provided, snapshot) => (
+                    <div
+                      ref={provided.innerRef}
+                      {...provided.draggableProps}
+                      {...provided.dragHandleProps}
+                      className="relative"
+                    >
+                      <TaskCard
+                        task={task}
+                        isDragging={snapshot.isDragging}
+                        onClick={() => onTaskClick(task)}
+                      />
+                      {isUpdating && (
+                        <div className="absolute right-2 top-2 bg-yellow-100 text-yellow-800 text-xs px-2 py-0.5 rounded">
+                          Updating...
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </Draggable>
+              );
+            })}
             {provided.placeholder}
             {tasks.length === 0 && !snapshot.isDraggingOver && (
               <div className="flex items-center justify-center h-32 text-muted-foreground text-sm">

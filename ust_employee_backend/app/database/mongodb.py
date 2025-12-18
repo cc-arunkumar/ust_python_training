@@ -13,6 +13,9 @@ db = client["ust_employee_db"]
 collection = db["logs"]
 fs = gridfs.GridFS(db, collection="files")
 
+# Remarks collection (separate from activity logs)
+remarks_collection = db["remarks"]
+
 
 def log_activity(emp_id: Optional[int], action: str, task_id: int):
     """Insert a simple activity log document into MongoDB.
@@ -65,5 +68,23 @@ def get_file_by_id(file_id: str):
             "stream": grid_out,
             "metadata": grid_out.metadata,
         }
+    except Exception:
+        return None
+
+
+def save_remark(task_id: int, comment: str, created_by: Optional[int]):
+    """Save a remark document linked to a task in the `remarks` collection.
+
+    Returns the inserted document id or None on failure.
+    """
+    try:
+        doc = {
+            "task_id": int(task_id),
+            "comment": comment,
+            "created_by": created_by,
+            "created_at": datetime.now(),
+        }
+        res = remarks_collection.insert_one(doc)
+        return res.inserted_id
     except Exception:
         return None

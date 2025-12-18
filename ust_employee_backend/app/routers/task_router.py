@@ -27,7 +27,7 @@ from services.task_service import (
     update_task,
     patch_status
 )
-from database.mongodb import save_task_file_bytes
+from database.mongodb import save_task_file_bytes, save_remark
 from utils.notifications import notify_task_created
 
 router = APIRouter(prefix="/api/tasks", tags=["Tasks"])
@@ -285,7 +285,7 @@ async def upload_task_file(
 def send_to_review(
     task_id: int,
     db: Session = Depends(get_db),
-    current=Depends(role_guard(["Employee"]))
+    current=Depends(role_guard(["Admin","Employee"]))
 ):
     task = get_task_by_id(db, task_id)
 
@@ -422,7 +422,7 @@ def review_decision(
     task_id: int,
     data: TaskReviewDecision,
     db: Session = Depends(get_db),
-    current=Depends(role_guard(["Manager"]))
+    current=Depends(role_guard(["Admin","Manager"]))
 ):
     task = get_task_by_id(db, task_id)
 
@@ -449,6 +449,24 @@ def review_decision(
     db.refresh(task)
 
     log_activity(current["user"].emp_id, f"review_{data.action.lower()}", task_id)
+
+    # Save remark to MongoDB (best-effort)
+    try:
+        if data.remarks:
+            # created_by stored as integer emp id where possible
+            try:
+                created_by_digits = re.sub(r"\D", "", str(current.get("user").emp_id))
+                created_by = int(created_by_digits) if created_by_digits else None
+            except Exception:
+                created_by = None
+
+            try:
+                save_remark(task_id, data.remarks, created_by)
+            except Exception:
+                # best-effort: do not fail the request
+                pass
+    except Exception:
+        pass
 
     return {
         "task_id": task.id,

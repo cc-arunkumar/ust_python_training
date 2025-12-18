@@ -13,7 +13,7 @@ interface TaskBoardProps {
 }
 
 const TaskBoard: React.FC<TaskBoardProps> = ({ viewMode }) => {
-  const { tasks, updateTaskStatus } = useTasks();
+  const { tasks, updateTaskStatus, reviewDecision, updatingTasks } = useTasks();
   const { user, isAdmin, isManager } = useAuth();
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -57,26 +57,24 @@ const TaskBoard: React.FC<TaskBoardProps> = ({ viewMode }) => {
     from: TaskStatus,
     to: TaskStatus
   ): boolean => {
-    const isDev = viewMode === "employee";
-    const isMgr = viewMode === "manager";
-    const isReviewer = task.reviewer === user?.e_id;
+    const r = (viewMode || "").toLowerCase();
 
-    // Developer can only move from IN_PROGRESS to REVIEW
-    if (isDev && !isMgr) {
-      return from === "IN_PROGRESS" && to === "REVIEW";
+    // Admins cannot move tasks at all
+    if (r === "admin") return false;
+
+    // Manager: only REVIEW -> IN_PROGRESS or REVIEW -> DONE
+    if (r === "manager") {
+      return from === "REVIEW" && (to === "IN_PROGRESS" || to === "DONE");
     }
 
-    // Admin can't review (move from REVIEW to DONE)
-    if (viewMode === "admin" && from === "REVIEW" && to === "DONE") {
+    // Employee: TO_DO -> IN_PROGRESS, IN_PROGRESS -> REVIEW
+    if (r === "employee") {
+      if (from === "TO_DO" && to === "IN_PROGRESS") return true;
+      if (from === "IN_PROGRESS" && to === "REVIEW") return true;
       return false;
     }
 
-    // Only reviewer can move from REVIEW to DONE or back to IN_PROGRESS
-    if (from === "REVIEW") {
-      return isReviewer;
-    }
-
-    return true;
+    return false;
   };
 
   const handleDragEnd = (result: DropResult) => {
@@ -111,6 +109,16 @@ const TaskBoard: React.FC<TaskBoardProps> = ({ viewMode }) => {
       return;
     }
 
+    // If moving REVIEW -> DONE (approve) as manager/reviewer, call reviewDecision
+    if (fromStatus === "REVIEW" && toStatus === "DONE") {
+      try {
+        reviewDecision(draggableId, "APPROVE", undefined, user?.e_id || "");
+        return;
+      } catch (e) {
+        // fallback to generic update
+      }
+    }
+
     updateTaskStatus(draggableId, toStatus, user?.e_id || "");
   };
 
@@ -135,22 +143,30 @@ const TaskBoard: React.FC<TaskBoardProps> = ({ viewMode }) => {
             tasks={tasksByStatus.TO_DO}
             onTaskClick={setSelectedTask}
             canAdd={canCreateTask}
+            viewMode={viewMode}
             onAdd={() => setShowCreateModal(true)}
+            updatingTasks={updatingTasks}
           />
           <KanbanColumn
             status="IN_PROGRESS"
             tasks={tasksByStatus.IN_PROGRESS}
             onTaskClick={setSelectedTask}
+            viewMode={viewMode}
+            updatingTasks={updatingTasks}
           />
           <KanbanColumn
             status="REVIEW"
             tasks={tasksByStatus.REVIEW}
             onTaskClick={setSelectedTask}
+            viewMode={viewMode}
+            updatingTasks={updatingTasks}
           />
           <KanbanColumn
             status="DONE"
             tasks={tasksByStatus.DONE}
             onTaskClick={setSelectedTask}
+            viewMode={viewMode}
+            updatingTasks={updatingTasks}
           />
         </div>
       </DragDropContext>

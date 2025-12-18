@@ -67,15 +67,24 @@ def role_guard(required: Union[str, list[str]]):
     - Only explicitly allowed roles can access
     """
     def _guard(current_user: Dict[str, Any] = Depends(get_current_user)):
-        roles = current_user.get("roles", []) or []
-        # Normalize roles to lowercase for case-insensitive matching
+        roles_raw = current_user.get("roles", []) or []
+        # Normalize roles to a list (handle string or other types) and lowercase
+        if isinstance(roles_raw, str):
+            roles_list = [roles_raw]
+        else:
+            try:
+                roles_list = list(roles_raw)
+            except Exception:
+                roles_list = []
+
         try:
-            roles_lower = [str(r).lower() for r in roles]
+            roles_lower = [str(r).lower() for r in roles_list]
         except Exception:
             roles_lower = []
 
         if isinstance(required, str):
-            if required.lower() not in roles_lower:
+            req_lower = required.lower()
+            if req_lower not in roles_lower:
                 raise HTTPException(
                     status_code=status.HTTP_403_FORBIDDEN,
                     detail=f"Only {required} role authorized"

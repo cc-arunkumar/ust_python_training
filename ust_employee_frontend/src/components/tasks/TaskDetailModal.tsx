@@ -48,6 +48,7 @@ const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
     deleteTask,
     updateTaskPriority,
     updateTaskReviewer,
+    reviewDecision,
   } = useTasks();
   const { user } = useAuth();
   const [newRemark, setNewRemark] = useState("");
@@ -136,9 +137,13 @@ const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
 
   const isReviewer = task.reviewer === user?.e_id;
   // Disallow any status change when task is DONE
+  // Only allow status change when:
+  // - Employee: can move IN_PROGRESS -> REVIEW
+  // - Reviewer (could be Manager or designated reviewer): can act on REVIEW
   const canChangeStatus =
     task.status !== "DONE" &&
-    (viewMode !== "employee" || task.status === "IN_PROGRESS");
+    ((viewMode === "employee" && task.status === "IN_PROGRESS") ||
+      (isReviewer && task.status === "REVIEW"));
   const canAssign = viewMode === "admin" || viewMode === "manager";
   const canDelete = viewMode === "admin";
 
@@ -157,12 +162,40 @@ const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
     ) {
       return;
     }
-    updateTaskStatus(
-      task.t_id,
-      newStatus,
-      user?.e_id || "",
-      newRemark || undefined
-    );
+    // For manager/reviewer actions on REVIEW tasks, use the review-decision
+    // endpoint which records remarks and reviewer identity.
+    if (
+      task.status === "REVIEW" &&
+      (newStatus === "IN_PROGRESS" || newStatus === "DONE") &&
+      (isReviewer || viewMode === "manager")
+    ) {
+      // REJECT -> IN_PROGRESS, APPROVE -> DONE
+      const action = newStatus === "DONE" ? "APPROVE" : "REJECT";
+      // call reviewDecision from context
+      try {
+        reviewDecision(
+          task.t_id,
+          action,
+          newRemark || undefined,
+          user?.e_id || ""
+        );
+      } catch (e) {
+        // fallback to generic update
+        updateTaskStatus(
+          task.t_id,
+          newStatus,
+          user?.e_id || "",
+          newRemark || undefined
+        );
+      }
+    } else {
+      updateTaskStatus(
+        task.t_id,
+        newStatus,
+        user?.e_id || "",
+        newRemark || undefined
+      );
+    }
     setNewRemark("");
   };
 
