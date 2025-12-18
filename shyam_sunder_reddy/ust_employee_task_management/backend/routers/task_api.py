@@ -3,6 +3,7 @@ from crud.task_crud import add_task, get_all_tasks, get_task_by_id, update_task,
 from models.task import TaskReqRes
 from typing import List
 from utils.auth import get_current_user
+from crud.users_crud import normalize_role_param
 from datetime import datetime
 
 task_router = APIRouter(prefix="/Task", tags=["Task"])
@@ -11,10 +12,13 @@ task_router = APIRouter(prefix="/Task", tags=["Task"])
 @task_router.get("/getall", response_model=List[TaskReqRes])
 def get_all(role: str, user=Depends(get_current_user)):
     try:
-        if role not in user.role:
+        role_clean = normalize_role_param(role)
+        if not role_clean:
+            raise HTTPException(status_code=400, detail="Invalid role parameter")
+        if role_clean not in user.role:
             raise HTTPException(status_code=400,detail="you dont have the access of mentioned role")
-        
-        tasks = get_all_tasks(role, user)
+
+        tasks = get_all_tasks(role_clean, user)
         if not tasks:
             raise HTTPException(status_code=404, detail="No tasks found")
         return tasks
@@ -27,9 +31,10 @@ def get_all(role: str, user=Depends(get_current_user)):
 @task_router.post("/create")
 def add_new_task(role: str, new_task: TaskReqRes, user=Depends(get_current_user)):
     try:
-        if role not in user.role:
+        role_clean = normalize_role_param(role)
+        if not role_clean or role_clean not in user.role:
             raise HTTPException(status_code=409, detail="The user doesn't have the mentioned role")
-        t = add_task(new_task, role, user)
+        t = add_task(new_task, role_clean, user)
         return {"detail": "Task Added Successfully", "task": t}
     except HTTPException as e:
         raise e
@@ -40,10 +45,13 @@ def add_new_task(role: str, new_task: TaskReqRes, user=Depends(get_current_user)
 @task_router.get("/get", response_model=TaskReqRes)
 def get_by_id(id: int,role, user=Depends(get_current_user)):
     try:
-        if role not in user.role:
+        role_clean = normalize_role_param(role)
+        if not role_clean:
+            raise HTTPException(status_code=400, detail="Invalid role parameter")
+        if role_clean not in user.role:
             raise HTTPException(status_code=400,detail="you dont have the access of mentioned role")
-        
-        t = get_task_by_id(id,role, user)  # FIXED: Pass user parameter
+
+        t = get_task_by_id(id, role_clean, user)  # FIXED: Pass user parameter
         return t
     except HTTPException as e:
         raise e
@@ -54,9 +62,10 @@ def get_by_id(id: int,role, user=Depends(get_current_user)):
 @task_router.get("/getbystatus", response_model=List[TaskReqRes])
 def get_by_status(status: str, role: str, user=Depends(get_current_user)):
     try:
-        if role not in user.role:
+        role_clean = normalize_role_param(role)
+        if not role_clean or role_clean not in user.role:
             raise HTTPException(status_code=409, detail="The user doesn't have the mentioned role")
-        return get_task_by_status(status, role, user)
+        return get_task_by_status(status, role_clean, user)
     except HTTPException as e:
         raise e
     except Exception as e:
@@ -75,7 +84,8 @@ def update_task_data(t_id: int,role: str,
     user=Depends(get_current_user),
     ):
     try:
-        if role not in user.role:
+        role_clean = normalize_role_param(role)
+        if not role_clean or role_clean not in user.role:
             raise HTTPException(status_code=409, detail="The user doesn't have the mentioned role")
         
         # FIXED: Check if 'status' key exists before accessing it
@@ -89,7 +99,7 @@ def update_task_data(t_id: int,role: str,
             status=status,
             reviewer=reviewer,
             expected_closure=expected_closure,
-            role=role,
+            role=role_clean,
             user=user
         )
         return {"detail": "Task Updated Successfully", "task": updated_task}
@@ -103,10 +113,11 @@ def update_task_data(t_id: int,role: str,
 def patch_stat(id: int, status: str, role: str, user=Depends(get_current_user)):
     try:
         # FIXED: Changed 'and' to 'or' for proper validation
-        if role not in user.role or role.upper() == "ADMIN":
+        role_clean = normalize_role_param(role)
+        if not role_clean or role_clean not in user.role or role_clean.upper() == "ADMIN":
             raise HTTPException(status_code=409, detail="The user doesn't have the mentioned role or Admin cannot change the status of task")
-        
-        patched = patch_status(id, status, role, user)
+
+        patched = patch_status(id, status, role_clean, user)
         return {"detail": "Patched the task", "task": patched}
     except HTTPException as e:
         raise e
@@ -117,10 +128,11 @@ def patch_stat(id: int, status: str, role: str, user=Depends(get_current_user)):
 async def update_task_priority(t_id: int, priority: str, role: str, user=Depends(get_current_user)):
     # Call patch_priority function to handle priority change
     try:
-        if role not in user.role:
+        role_clean = normalize_role_param(role)
+        if not role_clean or role_clean not in user.role:
             raise HTTPException(status_code=400,detail="you dont have the access of mentioned role")
-        
-        return patch_priority(t_id=t_id, priority=priority, role=role, user=user)
+
+        return patch_priority(t_id=t_id, priority=priority, role=role_clean, user=user)
     except HTTPException as e:
         raise e
 
@@ -128,15 +140,16 @@ async def update_task_priority(t_id: int, priority: str, role: str, user=Depends
 def delete_task_by_id(id: int, role: str, user=Depends(get_current_user)):
     try:
         # FIXED: Simplified logic - only Admin can delete
-        if role not in user.role:
+        role_clean = normalize_role_param(role)
+        if not role_clean or role_clean not in user.role:
             raise HTTPException(status_code=400,detail="you dont have the access of mentioned role")
-        
-        if role.upper() != "ADMIN":
+
+        if role_clean.upper() != "ADMIN":
             raise HTTPException(status_code=403, detail="Only Admin can delete tasks")
-        
+
         if "Admin" not in user.role:
             raise HTTPException(status_code=403, detail="User doesn't have Admin role")
-        
+
         resp = delete_task(id, user)  # FIXED: Pass user parameter
         return resp
     except HTTPException as e:

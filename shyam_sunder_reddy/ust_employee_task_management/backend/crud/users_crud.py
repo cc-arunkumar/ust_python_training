@@ -3,18 +3,61 @@ from schema.user_schema import UserSchema
 from models.user import UserReqRes
 from sqlalchemy.exc import SQLAlchemyError
 from fastapi import HTTPException
+import json
 
 
 def _ensure_roles_list(roles):
+    """Normalize various role representations into a clean list of role strings.
+
+    Handles:
+    - actual Python list -> returns list of str
+    - JSON-encoded list strings: '["Developer","Manager"]'
+    - comma separated strings: 'Developer,Manager'
+    - single role string: 'Developer'
+    """
     if roles is None:
         return []
+    # Already a list
     if isinstance(roles, list):
-        return [str(r) for r in roles]
-    # roles may be a comma separated string from older data
+        # Normalize each entry to a canonical form (e.g. 'Developer', 'Manager', 'Admin')
+        return [str(r).strip().strip('\"').strip("'").title() for r in roles if r is not None]
+    # If it's a string, try JSON parse first (handles ["A","B"]) then fallback to comma split
     if isinstance(roles, str):
-        return [r.strip() for r in roles.split(',') if r.strip()]
-    # fallback
-    return [str(roles)]
+        s = roles.strip()
+        # Try JSON array
+        try:
+            parsed = json.loads(s)
+            if isinstance(parsed, list):
+                return [str(r).strip() for r in parsed if r is not None]
+        except Exception:
+            pass
+    # Fallback: remove surrounding brackets if any and split by comma
+    s_clean = s.strip('[]')
+    parts = [p.strip().strip('\"').strip("'") for p in s_clean.split(',') if p.strip()]
+    # Normalize casing
+    return [p.title() for p in parts]
+    # Fallback for other types
+    return [str(roles).strip().strip('\"').strip("'").title()]
+
+
+def normalize_role_param(role_value):
+    """Normalize incoming role parameter (which may be a JSON string, comma list or single value)
+
+    Returns the first role as canonical string (title-cased), or empty string if none.
+    """
+    if role_value is None:
+        return ""
+    # If it's a list, take first
+    if isinstance(role_value, list) and len(role_value) > 0:
+        return str(role_value[0]).strip().strip('\"').strip("'").title()
+    # If it's already a string, try to reuse _ensure_roles_list logic
+    if isinstance(role_value, str):
+        lst = _ensure_roles_list(role_value)
+        if lst:
+            return lst[0]
+        return ""
+    # Other types
+    return str(role_value).strip().strip('\"').strip("'").title()
 
 
 def add_user(new_user: UserReqRes,role,user):
@@ -62,6 +105,7 @@ def get_all_users():
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
     finally:
         session.close()
+
 
 def get_user_by_role(role: str):
     try:

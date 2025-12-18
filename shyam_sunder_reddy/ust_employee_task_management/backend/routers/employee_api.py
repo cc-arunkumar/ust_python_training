@@ -4,16 +4,18 @@ from crud.employee_crud import add_employee, get_all_employees, get_by_employee_
 from models.employee import EmployeeReqRes,EmployeeCreateReq
 from typing import List
 from utils.auth import get_current_user  # Assumed utility for authentication
+from crud.users_crud import normalize_role_param
 
 employee_router = APIRouter(prefix="/Employee", tags=["Employee"])
 
 @employee_router.get("/getall", response_model=List[EmployeeReqRes])
 def get_all(role: str, user=Depends(get_current_user)):
     try:
-        if role not in user.role:
+        role_clean = normalize_role_param(role)
+        if not role_clean or role_clean not in user.role:
             raise HTTPException(status_code=400,detail="you dont have the access of mentioned role")
-        
-        employees = get_all_employees(role, user)
+
+        employees = get_all_employees(role_clean, user)
         if not employees:
             raise HTTPException(status_code=404, detail="No employees found")
         return employees
@@ -25,14 +27,15 @@ def get_all(role: str, user=Depends(get_current_user)):
 @employee_router.post("/create")
 def add_new_employee(role: str,  payload: EmployeeCreateReq, user=Depends(get_current_user)):
     try:
-        if role != "Admin":
+        role_clean = normalize_role_param(role)
+        if role_clean != "Admin":
             raise HTTPException(status_code=403, detail="Only Admin can create employees.")
-        if role not in user.role:
+        if role_clean not in user.role:
             raise HTTPException(status_code=400,detail="you dont have the access of mentioned role")
         
         new_employee = add_employee(
             payload=payload,
-            role=role,
+            role=role_clean,
             user=user
         )
         return {"detail": "Employee Added Successfully", "employee": new_employee}
@@ -44,10 +47,11 @@ def add_new_employee(role: str,  payload: EmployeeCreateReq, user=Depends(get_cu
 @employee_router.get("/get", response_model=EmployeeReqRes)
 def get_by_id(id: int, role: str, user=Depends(get_current_user)):
     try:
-        if role not in user.role:
+        role_clean = normalize_role_param(role)
+        if not role_clean or role_clean not in user.role:
             raise HTTPException(status_code=400,detail="you dont have the access of mentioned role")
-        
-        emp = get_by_employee_id(id, role, user)
+
+        emp = get_by_employee_id(id, role_clean, user)
         return emp
     except HTTPException as e:
         raise e
@@ -57,10 +61,11 @@ def get_by_id(id: int, role: str, user=Depends(get_current_user)):
 @employee_router.put("/update")
 def update_employee_data(id: int, new_data: EmployeeReqRes, role: str, user=Depends(get_current_user)):
     try:
-        if role not in user.role:
+        role_clean = normalize_role_param(role)
+        if not role_clean or role_clean not in user.role:
             raise HTTPException(status_code=400,detail="you dont have the access of mentioned role")
-        
-        updated_emp = update_employee(id, new_data, role, user)
+
+        updated_emp = update_employee(id, new_data, role_clean, user)
         return {"detail": "Employee Updated Successfully", "employee": updated_emp}
     except HTTPException as e:
         raise e
@@ -70,10 +75,11 @@ def update_employee_data(id: int, new_data: EmployeeReqRes, role: str, user=Depe
 @employee_router.delete("/delete")
 def delete_employee_by_id(id: int, role: str, user=Depends(get_current_user)):
     try:
-        if role not in user.role:
+        role_clean = normalize_role_param(role)
+        if not role_clean or role_clean not in user.role:
             raise HTTPException(status_code=400,detail="you dont have the access of mentioned role")
-        
-        delete_response = delete_employee(id, role, user)
+
+        delete_response = delete_employee(id, role_clean, user)
         return delete_response
     except HTTPException as e:
         raise e

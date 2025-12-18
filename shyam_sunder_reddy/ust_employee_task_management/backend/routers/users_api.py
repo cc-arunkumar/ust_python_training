@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException,Depends
-from crud.users_crud import add_user, get_all_users, get_user_by_id, update_user, delete_user,get_user_by_role
+from crud.users_crud import add_user, get_all_users, get_user_by_id, update_user, delete_user, get_user_by_role, normalize_role_param
 from models.user import UserReqRes
 from typing import List
 from utils.auth import get_current_user  # Assumed utility for authentication
@@ -9,10 +9,11 @@ users_router = APIRouter(prefix="/Users", tags=["Users"])
 @users_router.get("/getall", response_model=List[UserReqRes])
 def get_all(role: str, user=Depends(get_current_user)):
     try:
-        if role not in user.role:
+        role_clean = normalize_role_param(role)
+        if not role_clean or role_clean not in user.role:
             raise HTTPException(status_code=400,detail="you dont have the access of mentioned role")
-        
-        if role != "Admin":
+
+        if role_clean != "Admin":
             raise HTTPException(status_code=403, detail="Only Admin can access all users.")
         
         users = get_all_users()
@@ -27,11 +28,12 @@ def get_all(role: str, user=Depends(get_current_user)):
 @users_router.post("/create")
 def add_new_user(new_user: UserReqRes, role: str, user=Depends(get_current_user)):
     try:
-        if role not in user.role:
+        role_clean = normalize_role_param(role)
+        if not role_clean or role_clean not in user.role:
             raise HTTPException(status_code=400,detail="you dont have the access of mentioned role")
-        if role !="Admin":
+        if role_clean != "Admin":
             raise HTTPException(status_code=400,detail="Only Admin can create the user")
-        u = add_user(new_user,role,user)
+        u = add_user(new_user, role_clean, user)
         return {"detail": "User Added Successfully", "user": u}
     except HTTPException as e:
         raise e
@@ -41,7 +43,8 @@ def add_new_user(new_user: UserReqRes, role: str, user=Depends(get_current_user)
 @users_router.get("/get", response_model=UserReqRes)
 def get_by_id(id: int, role: str, user=Depends(get_current_user)):
     try:
-        if role not in user.role:
+        role_clean = normalize_role_param(role)
+        if not role_clean or role_clean not in user.role:
             raise HTTPException(status_code=400,detail="you dont have the access of mentioned role")
         
         # if role != "Admin" and id != user.e_id:
@@ -56,9 +59,10 @@ def get_by_id(id: int, role: str, user=Depends(get_current_user)):
 @users_router.get("/getbyrole", response_model=List[UserReqRes])
 def get_by_role(role: str, user=Depends(get_current_user)):
     try:
-        if role not in user.role:
+        role_clean = normalize_role_param(role)
+        if not role_clean or role_clean not in user.role:
             raise HTTPException(status_code=400,detail="you dont have the access of mentioned role")
-        users = get_user_by_role(role)
+        users = get_user_by_role(role_clean)
         return users
     except HTTPException as e:
         raise e
@@ -68,7 +72,8 @@ def get_by_role(role: str, user=Depends(get_current_user)):
 @users_router.put("/update")
 def update_user_data(id: int, new_data: dict, role: str, user=Depends(get_current_user)):
     try:
-        if role not in user.role:
+        role_clean = normalize_role_param(role)
+        if not role_clean or role_clean not in user.role:
             raise HTTPException(status_code=400,detail="you dont have the access of mentioned role")
         
         updated = update_user(id, new_data)
@@ -81,10 +86,11 @@ def update_user_data(id: int, new_data: dict, role: str, user=Depends(get_curren
 @users_router.delete("/delete")
 def delete_user_by_id(id: int, role: str, user=Depends(get_current_user)):
     try:
-        if role not in user.role:
+        role_clean = normalize_role_param(role)
+        if not role_clean or role_clean not in user.role:
             raise HTTPException(status_code=400,detail="you dont have the access of mentioned role")
-        
-        if role != "Admin" and id != user.e_id:
+
+        if role_clean != "Admin" and id != user.e_id:
             raise HTTPException(status_code=403, detail="You can only delete your own account.")
         resp = delete_user(id)
         return resp

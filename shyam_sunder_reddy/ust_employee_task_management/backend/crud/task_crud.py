@@ -1,7 +1,7 @@
 from database.sql_db import get_connection
 from schema.task_schema import TaskSchema
 from models.task import TaskReqRes
-from crud.users_crud import get_user_by_id
+from crud.users_crud import get_user_by_id, normalize_role_param
 from sqlalchemy.exc import SQLAlchemyError
 from fastapi import HTTPException
 from datetime import datetime
@@ -9,7 +9,11 @@ from datetime import datetime
 
 def add_task(new_task: TaskReqRes, role, user):
     try:
-        if role not in ["Manager", "Admin"]:
+        # Allow create if the authenticated user has Manager or Admin role regardless
+        # of the 'role' query param the frontend sent. This prevents failures when
+        # frontend passes the first role (e.g., 'Developer') but the user also has
+        # Manager in their roles list.
+        if not ("Manager" in user.role or "Admin" in user.role):
             raise HTTPException(status_code=403, detail="Only Manager and Admin can create a new task")
         session = get_connection()
         task = TaskSchema(
@@ -77,28 +81,81 @@ def get_all_tasks(role, user):
         session.close()
 
 
-# FIXED: Added user parameter
-def get_task_by_id(t_id: int,role, user):
+
+def get_task_by_id(t_id: int, role, user):
+    """
+    Fetch a single task with **explicit role-based access control**.
+
+    The behaviour depends on the role the frontend passed in the query param:
+
+    - Admin    → can always view any task
+    - Manager  → can view tasks where they are the reviewer
+    - Other    → treated as \"Developer\" style access and can view tasks where they
+                 are the assignee (assigned_to == current user)
+
+    This fixes the bug where a user who has multiple roles (e.g. Developer + Manager)
+    would always go through the \"Manager\" branch and be blocked from viewing tasks
+    that they are assigned to but do not review when they select the Developer role
+    in the UI.
+    """
     try:
         session = get_connection()
         t = session.query(TaskSchema).filter(TaskSchema.t_id == t_id).first()
         if not t:
             raise HTTPException(status_code=404, detail="Task Not Found")
-        
-        # Optional: Add authorization check
-        # Uncomment if you want to restrict access based on user role
-        if "Admin" not in user.role:
-            if "Manager" in user.role and t.reviewer != user.e_id:
+
+        # Normalise role coming from the query param / frontend
+        normalized_role = normalize_role_param(role)
+
+        # Admin can always view any task as long as they actually have Admin role
+        if normalized_role == "Admin":
+            if "Admin" not in user.role:
                 raise HTTPException(status_code=403, detail="Not authorized to view this task")
-            elif t.assigned_to != user.e_id:
+
+        # Manager view: must actually have Manager role AND be the reviewer
+        elif normalized_role == "Manager":
+            if "Manager" not in user.role or t.reviewer != user.e_id:
                 raise HTTPException(status_code=403, detail="Not authorized to view this task")
-        
+
+        # Developer / other roles: can view tasks where they are the assignee
+        else:
+            # Ensure the user really has this role (if provided)
+            if normalized_role and normalized_role not in user.role:
+                raise HTTPException(status_code=403, detail="Not authorized to view this task")
+
+            if t.assigned_to != user.e_id:
+                raise HTTPException(status_code=403, detail="Not authorized to view this task")
+
         return TaskReqRes.from_orm(t)
     except SQLAlchemyError as e:
         session.rollback()
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
     finally:
         session.close()
+
+#versio 1
+# # FIXED: Added user parameter
+# def get_task_by_id(t_id: int,role, user):
+#     try:
+#         session = get_connection()
+#         t = session.query(TaskSchema).filter(TaskSchema.t_id == t_id).first()
+#         if not t:
+#             raise HTTPException(status_code=404, detail="Task Not Found")
+        
+#         # Optional: Add authorization check
+#         # Uncomment if you want to restrict access based on user role
+#         if "Admin" not in user.role:
+#             if "Manager" in user.role and t.reviewer != user.e_id:
+#                 raise HTTPException(status_code=403, detail="Not authorized to view this task")
+#             elif t.assigned_to != user.e_id:
+#                 raise HTTPException(status_code=403, detail="Not authorized to view this task")
+        
+#         return TaskReqRes.from_orm(t)
+#     except SQLAlchemyError as e:
+#         session.rollback()
+#         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+#     finally:
+#         session.close()
 
 
 def get_task_by_status(status, role, user):
@@ -109,28 +166,25 @@ def get_task_by_status(status, role, user):
     except SQLAlchemyError as e:
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
-
-def update_task(user,
-    t_id: int,
-    title: str = None,
-    description: str = None,
-    assigned_to: int = None,
-    priority: str = None,
-    status: str = None,
-    reviewer: int = None,
-    expected_closure: datetime = None,
-    role: str = None
-) :
+def update_task(user, t_id: int, title: str = None, description: str = None, assigned_to: int = None, 
+                priority: str = None, status: str = None, reviewer: int = None, expected_closure: datetime = None, 
+                role: str = None):
     try:
-        # Role-based access control
-        if role not in ["Manager", "Admin"]:
-            raise HTTPException(status_code=403, detail="You don't have permission to update this task")
-        session=get_connection()
+        session = get_connection()
         # Retrieve task
         t = session.query(TaskSchema).filter(TaskSchema.t_id == t_id).first()
         if not t:
             raise HTTPException(status_code=404, detail="Task not found")
 
+        # Check if the user is authorized to update the task
+        if "Admin" in user.role:
+            pass  # Admin can always update any task
+        elif "Manager" in user.role:
+            if t.reviewer != user.e_id:
+                raise HTTPException(status_code=403, detail="You are not the reviewer for this task")
+        elif t.assigned_to != user.e_id:
+            raise HTTPException(status_code=403, detail="You are not assigned to this task")
+        
         # Update fields if provided
         if title:
             t.title = title
@@ -171,6 +225,70 @@ def update_task(user,
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
     finally:
         session.close()
+
+
+
+# def update_task(user,
+#     t_id: int,
+#     title: str = None,
+#     description: str = None,
+#     assigned_to: int = None,
+#     priority: str = None,
+#     status: str = None,
+#     reviewer: int = None,
+#     expected_closure: datetime = None,
+#     role: str = None
+# ) :
+#     try:
+#         # Role-based access control
+#         if role not in ["Manager", "Admin"]:
+#             raise HTTPException(status_code=403, detail="You don't have permission to update this task")
+#         session=get_connection()
+#         # Retrieve task
+#         t = session.query(TaskSchema).filter(TaskSchema.t_id == t_id).first()
+#         if not t:
+#             raise HTTPException(status_code=404, detail="Task not found")
+
+#         # Update fields if provided
+#         if title:
+#             t.title = title
+#         if description:
+#             t.description = description
+#         if assigned_to:
+#             assigned_user = get_user_by_id(assigned_to)
+#             if not assigned_user:
+#                 raise HTTPException(status_code=404, detail="Assigned user not found")
+#             t.assigned_to = assigned_to
+#             t.assigned_at = datetime.now()  # Update assignment timestamp
+#             t.assigned_by = user.e_id
+#         if priority:
+#             t.priority = priority
+#         if status:
+#             t.status = status
+#         if reviewer:
+#             reviewer_user = get_user_by_id(reviewer)
+#             if not reviewer_user:
+#                 raise HTTPException(status_code=404, detail="Reviewer not found")
+#             t.reviewer = reviewer
+#         if expected_closure:
+#             t.expected_closure = expected_closure
+
+#         # Update timestamps
+#         t.updated_by = user.e_id
+#         t.updated_at = datetime.now()
+
+#         # Commit the transaction
+#         session.commit()
+#         session.refresh(t)
+
+#         # Return updated task as a response
+#         return TaskReqRes.from_orm(t)
+
+#     except SQLAlchemyError as e:
+#         session.rollback()
+#         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+#     finally:
+#         session.close()
 
 
 # def update_task(t_id: int, updated: TaskReqRes, role, user):
