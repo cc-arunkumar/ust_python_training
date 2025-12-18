@@ -42,3 +42,10 @@ export const updateTaskStatus = async (id, payload) => {
   const res = await API.patch(`/tasks/${id}/status`, payload);
   return res.data;
 };
+
+export const updateTaskPriority = async (id, priority) => {
+  const res = await API.patch(`/tasks/${id}/priority`, null, {
+    params: { priority },
+  });
+  return res.data;
+};

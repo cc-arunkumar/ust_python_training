@@ -1,173 +1,51 @@
-// import { useState } from "react";
-// import { updateTaskStatus } from "../api/task.api";
-// import { useNavigate } from "react-router-dom";
-
-// const priorityColors = {
-//   HIGH: "border-red-500 text-red-600",
-//   MEDIUM: "border-yellow-500 text-yellow-600",
-//   LOW: "border-green-500 text-green-600",
-// };
-
-// export default function TaskCard({ task, role, refresh }) {
-//   const navigate = useNavigate();
-
-//   const [status, setStatus] = useState(task.status);
-//   const [remarks, setRemarks] = useState("");
-//   const [showRemarks, setShowRemarks] = useState(false);
-//   const [loading, setLoading] = useState(false);
-
-//   /* 🔹 CLICK CARD → EDIT TASK */
-//   const handleCardClick = () => {
-//     if (role === "ADMIN" || role === "MANAGER") {
-//       navigate(`/tasks/${task.t_id}/edit`);
-//     }
-//   };
-
-//   const handleStatusChange = async (newStatus) => {
-//     // Manager reviewing
-//     if (role === "MANAGER" && task.status === "REVIEW") {
-//       setShowRemarks(true);
-//       setStatus(newStatus);
-//       return;
-//     }
-//     await updateStatus(newStatus);
-//   };
-
-//   const updateStatus = async (newStatus) => {
-//     try {
-//       setLoading(true);
-//       await updateTaskStatus(task.t_id, {
-//         status: newStatus,
-//         remarks: remarks || null,
-//       });
-//       refresh(); // 🔥 realtime update
-//     } finally {
-//       setLoading(false);
-//       setShowRemarks(false);
-//       setRemarks("");
-//     }
-//   };
-
-//   return (
-//     <div
-//       onClick={handleCardClick}
-//       className={`bg-white rounded-lg shadow p-4 space-y-2 cursor-pointer
-//         ${
-//           role === "DEVELOPER"
-//             ? "cursor-not-allowed opacity-90"
-//             : "hover:shadow-md transition"
-//         }`}
-//     >
-//       {/* Task ID + Priority */}
-//       <div className="flex justify-between items-center">
-//         <span className="text-xs text-gray-500">
-//           TASK-{task.t_id}
-//         </span>
-
-//         <span
-//           className={`text-xs font-semibold px-2 py-1 rounded border ${
-//             priorityColors[task.priority]
-//           }`}
-//         >
-//           {task.priority}
-//         </span>
-//       </div>
-
-//       {/* Title */}
-//       <h3 className="font-semibold text-gray-800">
-//         {task.title}
-//       </h3>
-
-//       {/* Description */}
-//       <p className="text-sm text-gray-600 line-clamp-3">
-//         {task.description}
-//       </p>
-
-//       {/* STOP PROPAGATION FOR STATUS */}
-//       <div onClick={(e) => e.stopPropagation()}>
-//         <select
-//           value={status}
-//           onChange={(e) => handleStatusChange(e.target.value)}
-//           disabled={loading}
-//           className="w-full border rounded px-2 py-1 text-sm"
-//         >
-//           <option value="TO_DO">TO DO</option>
-//           <option value="IN_PROGRESS">IN PROGRESS</option>
-//           <option value="REVIEW">REVIEW</option>
-//           {role === "MANAGER" && (
-//             <option value="DONE">DONE</option>
-//           )}
-//         </select>
-//       </div>
-
-//       {/* Manager Review Box */}
-//       {showRemarks && role === "MANAGER" && (
-//         <div
-//           className="space-y-2"
-//           onClick={(e) => e.stopPropagation()}
-//         >
-//           <textarea
-//             placeholder="Add review remarks (optional)"
-//             className="w-full border rounded p-2 text-sm"
-//             value={remarks}
-//             onChange={(e) => setRemarks(e.target.value)}
-//           />
-
-//           <div className="flex justify-end gap-2">
-//             <button
-//               onClick={() => setShowRemarks(false)}
-//               className="text-sm px-3 py-1 border rounded"
-//             >
-//               Cancel
-//             </button>
-
-//             <button
-//               onClick={() => updateStatus(status)}
-//               className="text-sm px-3 py-1 bg-blue-600 text-white rounded"
-//             >
-//               Submit Review
-//             </button>
-//           </div>
-//         </div>
-//       )}
-//     </div>
-//   );
-// }
-
 import { useState } from "react";
-import { updateTaskStatus, deleteTask } from "../api/task.api";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+import {
+  updateTaskStatus,
+  deleteTask,
+  updateTaskPriority,
+} from "../api/task.api";
 
-const priorityColors = {
+/* 🎨 Priority styles */
+const priorityStyles = {
   HIGH: "border-red-500 text-red-600",
   MEDIUM: "border-yellow-500 text-yellow-600",
   LOW: "border-green-500 text-green-600",
 };
 
 export default function TaskCard({ task, role, refresh }) {
+  const navigate = useNavigate();
+
   const [status, setStatus] = useState(task.status);
+  const [priority, setPriority] = useState(task.priority);
   const [remarks, setRemarks] = useState("");
   const [showRemarks, setShowRemarks] = useState(false);
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
 
+  /* 🔁 STATUS CHANGE */
   const handleStatusChange = async (newStatus) => {
+    // Manager review → show remark box
     if (role === "MANAGER" && task.status === "REVIEW") {
-      setShowRemarks(true);
       setStatus(newStatus);
+      setShowRemarks(true);
       return;
     }
-    await updateStatus(newStatus);
+
+    await submitStatus(newStatus);
   };
 
-  const updateStatus = async (newStatus) => {
+  const submitStatus = async (newStatus) => {
     try {
       setLoading(true);
       await updateTaskStatus(task.t_id, {
         status: newStatus,
         remarks: remarks || null,
       });
+      toast.success(`Task moved to ${newStatus.replace("_", " ")}`);
       refresh();
+    } catch {
+      toast.error("Failed to update status");
     } finally {
       setLoading(false);
       setShowRemarks(false);
@@ -175,64 +53,99 @@ export default function TaskCard({ task, role, refresh }) {
     }
   };
 
-  // ✅ DELETE TASK
-  const handleDelete = async () => {
-    const confirm = window.confirm(
-      `Delete TASK-${task.t_id}? This cannot be undone.`
-    );
-    if (!confirm) return;
+  /* 🔁 PRIORITY CHANGE */
+  const handlePriorityChange = async (newPriority) => {
+    try {
+      setPriority(newPriority);
+      await updateTaskPriority(task.t_id, newPriority);
+      toast.success(`Priority set to ${newPriority}`);
+      refresh();
+    } catch {
+      toast.error("Failed to update priority");
+    }
+  };
 
-    await deleteTask(task.t_id);
-    refresh();
+  /* ❌ DELETE TASK */
+  const handleDelete = async () => {
+    if (!window.confirm(`Delete TASK-${task.t_id}? This cannot be undone.`))
+      return;
+
+    try {
+      await deleteTask(task.t_id);
+      toast.success(`TASK-${task.t_id} deleted`);
+      refresh();
+    } catch {
+      toast.error("Failed to delete task");
+    }
   };
 
   return (
-    <div className="bg-white rounded-lg shadow p-4 space-y-2">
-      {/* Task ID + Priority */}
-      <div className="flex justify-between items-center">
+    <div
+      className="bg-white rounded-lg shadow p-4 space-y-2 cursor-pointer
+                 hover:ring-1 hover:ring-gray-300 transition"
+      onClick={() => navigate(`/tasks/${task.t_id}/edit`)}
+    >
+      {/* 🔹 TASK ID + PRIORITY */}
+      <div
+        className="flex justify-between items-center"
+        onClick={(e) => e.stopPropagation()}
+      >
         <span className="text-xs text-gray-500">
           TASK-{task.t_id}
         </span>
 
-        <span
-          className={`text-xs font-semibold px-2 py-1 rounded border ${
-            priorityColors[task.priority]
-          }`}
-        >
-          {task.priority}
-        </span>
+        {(role === "ADMIN" || role === "MANAGER") ? (
+          <select
+            value={priority}
+            onChange={(e) => handlePriorityChange(e.target.value)}
+            className={`text-xs font-semibold px-2 py-1 rounded border ${priorityStyles[priority]}`}
+          >
+            <option value="HIGH">HIGH</option>
+            <option value="MEDIUM">MEDIUM</option>
+            <option value="LOW">LOW</option>
+          </select>
+        ) : (
+          <span
+            className={`text-xs font-semibold px-2 py-1 rounded border ${priorityStyles[priority]}`}
+          >
+            {priority}
+          </span>
+        )}
       </div>
 
-      {/* Click to Edit */}
-      <div
-        onClick={() => navigate(`/tasks/${task.t_id}/edit`)}
-        className="cursor-pointer"
-      >
-        <h3 className="font-semibold text-gray-800">
-          {task.title}
-        </h3>
+      {/* 🔹 TITLE */}
+      <h3 className="font-semibold text-gray-800">
+        {task.title}
+      </h3>
 
-        <p className="text-sm text-gray-600">
-          {task.description}
-        </p>
-      </div>
+      {/* 🔹 DESCRIPTION */}
+      <p className="text-sm text-gray-600 line-clamp-3">
+        {task.description}
+      </p>
 
-      {/* Status */}
+      {/* 🔹 STATUS DROPDOWN */}
       <select
         value={status}
         onChange={(e) => handleStatusChange(e.target.value)}
         disabled={loading}
+        onClick={(e) => e.stopPropagation()}
         className="w-full border rounded px-2 py-1 text-sm"
       >
         <option value="TO_DO">TO DO</option>
         <option value="IN_PROGRESS">IN PROGRESS</option>
         <option value="REVIEW">REVIEW</option>
-        {role === "MANAGER" && <option value="DONE">DONE</option>}
+
+        {(role === "MANAGER" || role === "ADMIN") && (
+          <option value="DONE">DONE</option>
+        )}
       </select>
 
-      {/* Manager Remarks */}
+      {/* 🔹 MANAGER REVIEW BOX */}
       {showRemarks && role === "MANAGER" && (
-        <div className="space-y-2">
+        <div
+          className="space-y-2"
+          onClick={(e) => e.stopPropagation()}
+        >
           <textarea
             placeholder="Add review remarks (optional)"
             className="w-full border rounded p-2 text-sm"
@@ -242,14 +155,17 @@ export default function TaskCard({ task, role, refresh }) {
 
           <div className="flex justify-end gap-2">
             <button
-              onClick={() => setShowRemarks(false)}
+              onClick={() => {
+                setShowRemarks(false);
+                setStatus(task.status);
+              }}
               className="text-sm px-3 py-1 border rounded"
             >
               Cancel
             </button>
 
             <button
-              onClick={() => updateStatus(status)}
+              onClick={() => submitStatus(status)}
               className="text-sm px-3 py-1 bg-blue-600 text-white rounded"
             >
               Submit Review
@@ -258,13 +174,30 @@ export default function TaskCard({ task, role, refresh }) {
         </div>
       )}
 
-      {/* 🔴 DELETE BUTTON */}
+      {/* 🔴 DELETE ICON */}
       {(role === "ADMIN" || role === "MANAGER") && (
         <button
-          onClick={handleDelete}
-          className="text-xs text-red-600 hover:underline mt-2"
+          onClick={(e) => {
+            e.stopPropagation(); // 🔑 critical
+            handleDelete();
+          }}
+          title="Delete task"
+          className="mt-2 text-red-500 hover:text-red-700 transition"
         >
-          Delete Task
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="w-4 h-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M9 7h6m-7 0V5a1 1 0 011-1h4a1 1 0 011 1v2"
+            />
+          </svg>
         </button>
       )}
     </div>

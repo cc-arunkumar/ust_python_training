@@ -249,10 +249,10 @@ def delete_task(
     db: Session = Depends(get_db),
     user=Depends(get_current_user)
 ):
-    if user["active_role"] != "ADMIN":
+    if user["active_role"] not in ["ADMIN", "MANAGER"]:
         raise HTTPException(
             status_code=403,
-            detail="Only Admin can delete tasks"
+            detail="Only Admin or Manager can delete tasks"
         )
 
     task = db.query(Task).filter(Task.t_id == task_id).first()
@@ -272,3 +272,35 @@ def delete_task(
     )
 
     return {"message": "Task deleted successfully"}
+
+# -------------------------------------------------
+# UPDATE TASK PRIORITY (MANAGER / DEVELOPER ONLY)
+# -------------------------------------------------
+@router.patch("/{task_id}/priority")
+def update_task_priority(
+    task_id: int,
+    priority: str,
+    db: Session = Depends(get_db),
+    user=Depends(get_current_user)
+):
+    if user["active_role"] not in ["ADMIN", "MANAGER"]:
+        raise HTTPException(status_code=403, detail="Not allowed")
+
+    task = db.query(Task).filter(Task.t_id == task_id).first()
+    if not task:
+        raise HTTPException(status_code=404, detail="Task not found")
+
+    if priority not in ["LOW", "MEDIUM", "HIGH"]:
+        raise HTTPException(status_code=400, detail="Invalid priority")
+
+    task.priority = priority
+    task.updated_at = datetime.utcnow()
+    db.commit()
+
+    log_action(
+        user["emp_id"],
+        "UPDATE_PRIORITY",
+        f"TASK-{task_id} → {priority}"
+    )
+
+    return {"message": "Priority updated"}
