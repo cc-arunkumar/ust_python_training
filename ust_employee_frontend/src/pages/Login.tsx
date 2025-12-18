@@ -45,7 +45,7 @@ const Login: React.FC = () => {
       <div className="w-full max-w-md space-y-6 animate-slide-in">
         <div className="text-center">
           <div className="inline-flex items-center justify-center h-14 w-14 rounded-xl bg-primary mb-4">
-            <LayoutDashboard className="h-7 w-7 text-primary-foreground" />
+            <img src="/favicon.ico" alt="UST" className="h-7 w-7" />
           </div>
           <h1 className="text-2xl font-bold text-foreground">
             UST Task Manager

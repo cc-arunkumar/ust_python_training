@@ -8,7 +8,18 @@ import {
   LayoutDashboard,
   Sun,
   Moon,
+  Bell,
+  Menu,
 } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+} from "@/components/ui/dropdown-menu";
+import { useTasks } from "@/contexts/TaskContext";
+import { useEmployees } from "@/contexts/EmployeesContext";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -18,12 +29,19 @@ type ViewMode = "admin" | "manager" | "employee";
 interface HeaderProps {
   currentView: ViewMode;
   onViewChange: (view: ViewMode) => void;
+  onToggleSidebar?: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ currentView, onViewChange }) => {
+const Header: React.FC<HeaderProps> = ({
+  currentView,
+  onViewChange,
+  onToggleSidebar,
+}) => {
   const { user, logout, isAdmin, isManager } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const { tasks } = useTasks();
+  const { getEmployeeById } = useEmployees();
 
   const handleLogout = () => {
     logout();
@@ -37,6 +55,90 @@ const Header: React.FC<HeaderProps> = ({ currentView, onViewChange }) => {
       .join("")
       .toUpperCase();
   };
+
+  // track read notification ids (persisted in localStorage)
+  const [readNotifications, setReadNotifications] = React.useState<string[]>(
+    () => {
+      try {
+        const raw = localStorage.getItem("readNotifications");
+        return raw ? JSON.parse(raw) : [];
+      } catch (e) {
+        return [];
+      }
+    }
+  );
+
+  const notificationItems = React.useMemo(() => {
+    const items: any[] = [];
+    try {
+      tasks.forEach((t: any) => {
+        if (!user) return;
+        const uid = user?.e_id;
+        if (isAdmin) {
+          if (t.assigned_to) {
+            const assignee =
+              getEmployeeById(String(t.assigned_to))?.name ||
+              String(t.assigned_to);
+            items.push({
+              id: t.t_id + "-assigned",
+              title: `Assigned to ${assignee}`,
+              desc: t.title,
+              t_id: t.t_id,
+            });
+          }
+          if (t.status === "REVIEW")
+            items.push({
+              id: t.t_id + "-review",
+              title: `In review`,
+              desc: t.title,
+              t_id: t.t_id,
+            });
+        } else if (isManager) {
+          if (t.created_by === uid)
+            items.push({
+              id: t.t_id + "-created",
+              title: `You created task`,
+              desc: t.title,
+              t_id: t.t_id,
+            });
+          if (t.assigned_to === uid)
+            items.push({
+              id: t.t_id + "-assigned-to-you",
+              title: `Assigned to you`,
+              desc: t.title,
+              t_id: t.t_id,
+            });
+          if (t.reviewer === uid && t.status === "REVIEW")
+            items.push({
+              id: t.t_id + "-review",
+              title: `Needs review`,
+              desc: t.title,
+              t_id: t.t_id,
+            });
+        } else {
+          if (t.assigned_to === uid)
+            items.push({
+              id: t.t_id + "-assigned-to-you",
+              title: `Assigned to you`,
+              desc: t.title,
+              t_id: t.t_id,
+            });
+          if (t.reviewer === uid && t.status === "REVIEW")
+            items.push({
+              id: t.t_id + "-review",
+              title: `Ready for review`,
+              desc: t.title,
+              t_id: t.t_id,
+            });
+        }
+      });
+    } catch (e) {
+      // ignore
+    }
+
+    // filter out read notifications
+    return items.filter((it) => !readNotifications.includes(it.id));
+  }, [tasks, user, isAdmin, isManager, getEmployeeById, readNotifications]);
 
   const [theme, setTheme] = React.useState<"light" | "dark">(() => {
     try {
@@ -69,20 +171,23 @@ const Header: React.FC<HeaderProps> = ({ currentView, onViewChange }) => {
   const toggleTheme = () => setTheme((t) => (t === "dark" ? "light" : "dark"));
 
   return (
+    // Header spans full width at the top. Sidebar will start below it.
     <header className="sticky top-0 z-50 w-full border-b border-border bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/60">
       <div className="flex h-16 items-center justify-between px-6">
         <div className="flex items-center gap-6">
+          <button
+            // Always show hamburger on the left so users can toggle sidebar
+            className="p-2 rounded hover:bg-muted/60"
+            onClick={() => onToggleSidebar && onToggleSidebar()}
+            aria-label="Toggle sidebar"
+            title="Toggle sidebar"
+          >
+            <Menu className="h-5 w-5" />
+          </button>
+
           <div className="flex items-center gap-3">
             <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
               <LayoutDashboard className="h-5 w-5 text-primary-foreground" />
-            </div>
-            <div>
-              <h1 className="text-lg font-semibold text-foreground">
-                UST Task Manager
-              </h1>
-              <p className="text-xs text-muted-foreground">
-                Employee Management System
-              </p>
             </div>
           </div>
 
@@ -128,6 +233,62 @@ const Header: React.FC<HeaderProps> = ({ currentView, onViewChange }) => {
         </div>
 
         <div className="flex items-center gap-4">
+          {/* Notifications dropdown */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button
+                className="relative p-2 rounded hover:bg-muted/60"
+                aria-label="Notifications"
+              >
+                <Bell className="h-5 w-5" />
+                {/* badge (only show unread notifications count) */}
+                {notificationItems.length > 0 ? (
+                  <span className="absolute -top-1 -right-1 inline-flex items-center justify-center rounded-full bg-rose-600 text-white text-[10px] px-1.5 py-0.5">
+                    {notificationItems.length}
+                  </span>
+                ) : null}
+              </button>
+            </DropdownMenuTrigger>
+
+            <DropdownMenuContent align="end" className="w-80">
+              <DropdownMenuLabel>Notifications</DropdownMenuLabel>
+              <div className="max-h-64 overflow-auto">
+                {notificationItems && notificationItems.length > 0 ? (
+                  notificationItems.map((it) => (
+                    <DropdownMenuItem
+                      key={it.id}
+                      onSelect={() => {
+                        // mark as read (persist locally) then navigate to tasks board
+                        try {
+                          const next = Array.from(
+                            new Set([...readNotifications, it.id])
+                          );
+                          localStorage.setItem(
+                            "readNotifications",
+                            JSON.stringify(next)
+                          );
+                          setReadNotifications(next);
+                        } catch (e) {
+                          // ignore
+                        }
+                        navigate("/dashboard/tasks");
+                      }}
+                      className="flex flex-col items-start gap-1"
+                    >
+                      <div className="text-sm font-medium">{it.title}</div>
+                      <div className="text-xs text-muted-foreground line-clamp-2">
+                        {it.desc}
+                      </div>
+                    </DropdownMenuItem>
+                  ))
+                ) : (
+                  <div className="p-3 text-sm text-muted-foreground">
+                    No notifications
+                  </div>
+                )}
+              </div>
+            </DropdownMenuContent>
+          </DropdownMenu>
           <div className="hidden sm:flex flex-col items-end">
             <span className="text-sm font-medium text-foreground">
               {user?.employee?.name}

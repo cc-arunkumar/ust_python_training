@@ -1,4 +1,5 @@
 import React from "react";
+import { toast } from "sonner";
 import { Task, Priority } from "@/types";
 import { useEmployees } from "@/contexts/EmployeesContext";
 import { Calendar, User, Flag, MessageSquare, Paperclip } from "lucide-react";
@@ -48,22 +49,39 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, isDragging, onClick }) => {
 
   return (
     <div
-      className={`task-card ${
+      className={`relative pt-4 task-card ${
         isDragging ? "task-card-dragging" : ""
       } animate-card-enter`}
       // keep the card clickable for opening details; we handle attach button separately
-      onClick={onClick}
+      onClick={() => {
+        // show a lightweight in-app notification when a task card is opened
+        try {
+          toast(`${task.t_id} — ${task.title} • ${task.status}`);
+        } catch (e) {
+          // ignore
+        }
+        if (onClick) onClick();
+      }}
     >
-      <div className="flex items-start justify-between gap-2 mb-3">
+      {/* id (left) and priority (right next to id) on same top row; title below */}
+      <div className="flex items-center justify-between gap-2 mb-2">
+        <div className="flex items-center gap-2">
+          <span className="text-[10px] font-mono text-muted-foreground bg-muted px-1 py-0.5 rounded">
+            {task.t_id}
+          </span>
+          <span
+            className={`flex items-center gap-1 text-[10px] font-medium ${priority.class}`}
+          >
+            <Flag className="h-3 w-3" />
+            {priority.label}
+          </span>
+        </div>
+      </div>
+
+      <div className="mb-2">
         <h4 className="font-medium text-foreground text-sm leading-tight line-clamp-2">
           {task.title}
         </h4>
-        <span
-          className={`flex items-center gap-1 text-xs font-medium ${priority.class}`}
-        >
-          <Flag className="h-3 w-3" />
-          {priority.label}
-        </span>
       </div>
 
       <p className="text-xs text-muted-foreground mb-3 line-clamp-2">
@@ -101,10 +119,6 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, isDragging, onClick }) => {
           >
             <Paperclip className="h-4 w-4" />
           </button>
-
-          <span className="text-[10px] font-mono text-muted-foreground bg-muted px-1.5 py-0.5 rounded">
-            {task.t_id}
-          </span>
         </div>
       </div>
     </div>

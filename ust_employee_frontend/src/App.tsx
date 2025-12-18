@@ -9,6 +9,9 @@ import { EmployeesProvider } from "@/contexts/EmployeesContext";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
+import TasksPage from "./pages/Tasks";
+import EmployeesPage from "./pages/Employees";
+import SettingsPage from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -26,6 +29,12 @@ const App = () => (
                 <Route path="/" element={<Index />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/dashboard/tasks" element={<TasksPage />} />
+                <Route
+                  path="/dashboard/employees"
+                  element={<EmployeesPage />}
+                />
+                <Route path="/dashboard/settings" element={<SettingsPage />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </BrowserRouter>
