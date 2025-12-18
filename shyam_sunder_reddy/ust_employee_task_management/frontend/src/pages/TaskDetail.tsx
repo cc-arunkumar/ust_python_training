@@ -155,23 +155,25 @@ const TaskDetail = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
           <div className="card">
-            <div className="flex items-start justify-between mb-4">
-              <div className="flex-1">
+            <div className="flex items-start justify-between mb-4 min-w-0">
+              <div className="flex-1 min-w-0">
                 <h1 className="text-3xl font-bold text-gray-800 mb-2">
                   {task.title}
                 </h1>
-                <div className="flex items-center gap-2 flex-wrap">
+                <div className="flex flex-col items-start gap-2">
                   <span
-                    className={`px-3 py-1 rounded-lg text-sm font-medium border ${getStatusColor(
+                    className={`inline-flex items-center whitespace-nowrap px-3 py-1 rounded-lg text-sm font-medium border ${getStatusColor(
                       task.status
                     )}`}
+                    style={{ maxWidth: "18rem" }}
                   >
                     {task.status || "TO_DO"}
                   </span>
                   <span
-                    className={`px-3 py-1 rounded-lg text-sm font-medium border ${getPriorityColor(
+                    className={`inline-flex items-center whitespace-nowrap px-3 py-1 rounded-lg text-sm font-medium border ${getPriorityColor(
                       task.priority
                     )}`}
+                    style={{ maxWidth: "10rem" }}
                   >
                     {task.priority}
                   </span>
@@ -445,4 +447,3 @@ const RemarkModal: React.FC<{
 };
 
 export default TaskDetail;
-

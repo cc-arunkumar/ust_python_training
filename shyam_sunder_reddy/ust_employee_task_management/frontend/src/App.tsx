@@ -1,17 +1,24 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider, useAuth } from './context/AuthContext';
-import Login from './pages/Login';
-import Dashboard from './pages/Dashboard';
-import Tasks from './pages/Tasks';
-import TaskDetail from './pages/TaskDetail';
-import Employees from './pages/Employees';
-import Users from './pages/Users';
-import Layout from './components/Layout';
-import ConnectionTest from './components/ConnectionTest';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+import { AuthProvider, useAuth } from "./context/AuthContext";
+import Login from "./pages/Login";
+import Dashboard from "./pages/Dashboard";
+import Tasks from "./pages/Tasks";
+import TaskDetail from "./pages/TaskDetail";
+import Employees from "./pages/Employees";
+import Users from "./pages/Users";
+import Layout from "./components/LayoutNew";
+import ConnectionTest from "./components/ConnectionTest";
 
-const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const { isAuthenticated, isLoading } = useAuth();
-  
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -19,13 +26,13 @@ const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => 
       </div>
     );
   }
-  
+
   return isAuthenticated ? <>{children}</> : <Navigate to="/login" />;
 };
 
 const LoginRoute: React.FC = () => {
   const { isAuthenticated, isLoading } = useAuth();
-  
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -33,7 +40,7 @@ const LoginRoute: React.FC = () => {
       </div>
     );
   }
-  
+
   return isAuthenticated ? <Navigate to="/" /> : <Login />;
 };
 
@@ -71,4 +78,3 @@ function App() {
 }
 
 export default App;
-
