@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { taskAPI } from "../services/api";
-import { Plus, Search } from "lucide-react";
-import { remarkAPI } from "../services/api";
+import { Plus, Search, X as XIcon, MessageSquare } from "lucide-react";
+import { employeeAPI, userAPI, remarkAPI } from "../services/api";
 import { useNavigate } from "react-router-dom";
 import type { Task, User } from "../types";
 
@@ -135,6 +135,9 @@ const Tasks = () => {
 
   // Inline editor state
   const [editingTask, setEditingTask] = useState<Task | null>(null);
+  // Remark modal state
+  const [showRemarkModal, setShowRemarkModal] = useState(false);
+  const [remarkTask, setRemarkTask] = useState<Task | null>(null);
 
   const handlePriorityChange = async (task: Task, newPriority: string) => {
     if (!activeRole || !task.t_id) return;
@@ -145,6 +148,19 @@ const Tasks = () => {
       console.error("Error updating priority:", error);
       alert("Failed to update priority");
     }
+  };
+
+  const handleAddRemark = async (task: Task) => {
+    if (!task.t_id) return;
+    // Only allow when task is IN_PROGRESS or REVIEW
+    const status = normalizeStatus(task.status);
+    if (!(status === "IN_PROGRESS" || status === "REVIEW")) {
+      alert("Remarks can only be added when task is In Progress or in Review.");
+      return;
+    }
+    // Open remark modal for in-place remark creation
+    setRemarkTask(task);
+    setShowRemarkModal(true);
   };
 
   const handleStatusChange = async (task: Task, newStatus: string) => {
@@ -245,6 +261,7 @@ const Tasks = () => {
           getPriorityColor={getPriorityColor}
           onPriorityChange={handlePriorityChange}
           onStatusChange={handleStatusChange}
+          onAddRemark={handleAddRemark}
           draggedTask={draggedTask}
           setDraggedTask={setDraggedTask}
           onEditClick={(t: Task) => setEditingTask(t)}
@@ -262,6 +279,7 @@ const Tasks = () => {
           getPriorityColor={getPriorityColor}
           onPriorityChange={handlePriorityChange}
           onStatusChange={handleStatusChange}
+          onAddRemark={handleAddRemark}
           draggedTask={draggedTask}
           setDraggedTask={setDraggedTask}
           onEditClick={(t: Task) => setEditingTask(t)}
@@ -279,6 +297,7 @@ const Tasks = () => {
           getPriorityColor={getPriorityColor}
           onPriorityChange={handlePriorityChange}
           onStatusChange={handleStatusChange}
+          onAddRemark={handleAddRemark}
           draggedTask={draggedTask}
           setDraggedTask={setDraggedTask}
           onEditClick={(t: Task) => setEditingTask(t)}
@@ -296,6 +315,7 @@ const Tasks = () => {
           getPriorityColor={getPriorityColor}
           onPriorityChange={handlePriorityChange}
           onStatusChange={handleStatusChange}
+          onAddRemark={handleAddRemark}
           draggedTask={draggedTask}
           setDraggedTask={setDraggedTask}
           onEditClick={(t: Task) => setEditingTask(t)}
@@ -325,6 +345,24 @@ const Tasks = () => {
           }}
         />
       )}
+
+      {showRemarkModal && remarkTask && (
+        <RemarkModal
+          task={remarkTask}
+          onClose={() => {
+            setShowRemarkModal(false);
+            setRemarkTask(null);
+          }}
+          onSuccess={() => {
+            setShowRemarkModal(false);
+            setRemarkTask(null);
+            // small feedback; parent can refresh if needed
+            alert("Remark added.");
+          }}
+          user={user}
+          activeRole={activeRole}
+        />
+      )}
     </div>
   );
 };
@@ -340,6 +378,7 @@ interface TaskColumnProps {
   getPriorityColor: (priority: string) => string;
   onPriorityChange: (task: Task, newPriority: string) => void;
   onStatusChange: (task: Task, newStatus: string) => void;
+  onAddRemark?: (task: Task) => void;
   draggedTask: Task | null;
   setDraggedTask: (task: Task | null) => void;
   onEditClick?: (task: Task) => void;
@@ -359,6 +398,7 @@ const TaskColumn = ({
   draggedTask,
   setDraggedTask,
   onEditClick,
+  onAddRemark,
 }: TaskColumnProps) => {
   return (
     <div
@@ -421,24 +461,48 @@ const TaskColumn = ({
                 <div className="flex flex-col items-end gap-1">
                   <div className="flex flex-col items-end gap-1">
                     {/* status pill removed as requested */}
-                    <button
-                      className={`inline-flex items-center whitespace-nowrap px-2 py-0.5 rounded-full text-[11px] font-medium border ${getPriorityColor(
-                        task.priority
-                      )}`}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        const next =
-                          task.priority === "high"
-                            ? "medium"
-                            : task.priority === "medium"
-                            ? "low"
-                            : "high";
-                        onPriorityChange(task, next);
-                      }}
-                      title="Click to change priority"
-                    >
-                      {task.priority}
-                    </button>
+                    <div className="flex items-center gap-2">
+                      <button
+                        className={`inline-flex items-center whitespace-nowrap px-2 py-0.5 rounded-full text-[11px] font-medium border ${getPriorityColor(
+                          task.priority
+                        )}`}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          const next =
+                            task.priority === "high"
+                              ? "medium"
+                              : task.priority === "medium"
+                              ? "low"
+                              : "high";
+                          onPriorityChange(task, next);
+                        }}
+                        title="Click to change priority"
+                      >
+                        {task.priority}
+                      </button>
+
+                      {/* remark icon: active only for IN_PROGRESS or REVIEW */}
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onAddRemark && onAddRemark(task);
+                        }}
+                        className={`p-1 rounded-full text-gray-500 hover:bg-gray-100 transition-colors ${
+                          (task.status || "TO_DO") === "IN_PROGRESS" ||
+                          (task.status || "TO_DO") === "REVIEW"
+                            ? "cursor-pointer"
+                            : "opacity-40 pointer-events-none"
+                        }`}
+                        title={
+                          (task.status || "TO_DO") === "IN_PROGRESS" ||
+                          (task.status || "TO_DO") === "REVIEW"
+                            ? "Add remark"
+                            : "Remarks disabled for this status"
+                        }
+                      >
+                        <MessageSquare size={14} />
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -472,6 +536,20 @@ const CreateTaskModal: React.FC<{
   onSuccess: () => void;
 }> = ({ onClose, onSuccess }) => {
   const { user, activeRole } = useAuth();
+  const [employees, setEmployees] = useState<
+    {
+      e_id?: number;
+      name?: string;
+    }[]
+  >([]);
+
+  const [managers, setManagers] = useState<
+    {
+      e_id?: number;
+      name?: string;
+    }[]
+  >([]);
+
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -510,16 +588,135 @@ const CreateTaskModal: React.FC<{
     }
   };
 
+  useEffect(() => {
+    let mounted = true;
+    // fetch users for Assigned To and Reviewer via userAPI, then resolve names
+    (async () => {
+      try {
+        let devUsers = await userAPI.getByRole("Developer");
+        if (!mounted) return;
+        // If backend route didn't return developers, fall back to fetching all users
+        // and filtering client-side (handles cases where roles are stored as JSON strings)
+        if (!devUsers || devUsers.length === 0) {
+          try {
+            const all = await userAPI.getAll("");
+            if (!mounted) return;
+            const roleIncludes = (r: any, target: string) => {
+              if (Array.isArray(r)) return r.includes(target);
+              if (typeof r === "string") {
+                const trimmed = r.trim();
+                if (trimmed.startsWith("[") && trimmed.endsWith("]")) {
+                  try {
+                    const parsed = JSON.parse(trimmed);
+                    return Array.isArray(parsed) && parsed.includes(target);
+                  } catch (_e) {
+                    return trimmed.includes(target);
+                  }
+                }
+                return trimmed.includes(target);
+              }
+              return false;
+            };
+            devUsers = all.filter((u: any) =>
+              roleIncludes((u as any).role, "Developer")
+            );
+          } catch (_e) {
+            /* ignore fallback errors */
+          }
+        }
+        // resolve names from Employee table when available
+        const devs = await Promise.all(
+          devUsers.map(async (u) => {
+            try {
+              const emp = await employeeAPI.getById(u.e_id, "Developer");
+              return { e_id: u.e_id, name: emp?.name };
+            } catch (_e) {
+              return { e_id: u.e_id, name: undefined };
+            }
+          })
+        );
+        if (!mounted) return;
+        setEmployees(devs || []);
+
+        let mgrUsers = await userAPI.getByRole("Manager");
+        if (!mounted) return;
+        if (!mgrUsers || mgrUsers.length === 0) {
+          try {
+            const all = await userAPI.getAll("");
+            if (!mounted) return;
+            const roleIncludes = (r: any, target: string) => {
+              if (Array.isArray(r)) return r.includes(target);
+              if (typeof r === "string") {
+                const trimmed = r.trim();
+                if (trimmed.startsWith("[") && trimmed.endsWith("]")) {
+                  try {
+                    const parsed = JSON.parse(trimmed);
+                    return Array.isArray(parsed) && parsed.includes(target);
+                  } catch (_e) {
+                    return trimmed.includes(target);
+                  }
+                }
+                return trimmed.includes(target);
+              }
+              return false;
+            };
+            mgrUsers = all.filter((u: any) =>
+              roleIncludes((u as any).role, "Manager")
+            );
+          } catch (_e) {
+            /* ignore fallback errors */
+          }
+        }
+        const mgrs = await Promise.all(
+          mgrUsers.map(async (u) => {
+            try {
+              const emp = await employeeAPI.getById(u.e_id, "Manager");
+              return { e_id: u.e_id, name: emp?.name };
+            } catch (_e) {
+              return { e_id: u.e_id, name: undefined };
+            }
+          })
+        );
+        if (!mounted) return;
+        setManagers(mgrs || []);
+      } catch (err) {
+        console.debug("failed to load users for dropdowns:", err);
+      }
+    })();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 animate-fade-in">
-      <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto animate-scale-in">
-        <div className="p-6 border-b border-gray-200">
-          <h2 className="text-2xl font-bold text-gray-800">Create New Task</h2>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div
+        className="absolute inset-0 bg-black/30 backdrop-blur-sm"
+        onClick={onClose}
+      />
+      <div
+        className="relative z-10 bg-white rounded-lg shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto animate-scale-in"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex items-center justify-between px-4 py-3 border-b">
+          <h2 className="text-lg font-medium text-gray-800">Create Task</h2>
+          <button
+            type="button"
+            onClick={onClose}
+            className="text-gray-500 hover:text-gray-700 p-1 rounded"
+            aria-label="Close"
+          >
+            <XIcon size={16} />
+          </button>
         </div>
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+        <form
+          onSubmit={handleSubmit}
+          className="flex-1 overflow-y-auto px-3 py-2 space-y-2 text-xs"
+        >
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Title *
+            <label className="block font-medium text-gray-600 mb-0.5">
+              Title
             </label>
             <input
               type="text"
@@ -528,12 +725,13 @@ const CreateTaskModal: React.FC<{
               onChange={(e) =>
                 setFormData({ ...formData, title: e.target.value })
               }
-              className="input-field"
+              className="input-field h-8 px-2 py-1 text-xs"
             />
           </div>
+
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Description *
+            <label className="block font-medium text-gray-600 mb-0.5">
+              Description
             </label>
             <textarea
               required
@@ -541,44 +739,63 @@ const CreateTaskModal: React.FC<{
               onChange={(e) =>
                 setFormData({ ...formData, description: e.target.value })
               }
-              className="input-field"
-              rows={4}
+              className="input-field px-2 py-1 text-xs"
+              rows={3}
             />
           </div>
-          <div className="grid grid-cols-2 gap-4">
+
+          <div className="grid grid-cols-4 gap-1.5">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-xs font-medium text-gray-600 mb-0.5">
                 Assigned To
               </label>
-              <input
-                type="number"
+              <select
                 value={formData.assigned_to}
                 onChange={(e) =>
                   setFormData({ ...formData, assigned_to: e.target.value })
                 }
-                className="input-field"
-                placeholder="Employee ID"
-              />
+                className="input-field h-8 px-2 py-1 text-xs"
+              >
+                <option value="">-- Unassigned --</option>
+                {employees.map((emp) => (
+                  <option key={emp.e_id} value={String(emp.e_id)}>
+                    {emp.name
+                      ? String(emp.name)
+                          .replace(/[.,\s]+$/g, "")
+                          .trim()
+                      : `#${emp.e_id}`}
+                  </option>
+                ))}
+              </select>
             </div>
+
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-xs font-medium text-gray-600 mb-0.5">
                 Reviewer
               </label>
-              <input
-                type="number"
+              <select
                 value={formData.reviewer}
                 onChange={(e) =>
                   setFormData({ ...formData, reviewer: e.target.value })
                 }
-                className="input-field"
-                placeholder="Employee ID"
-              />
+                className="input-field h-8 px-2 py-1 text-xs"
+              >
+                <option value="">-- Select reviewer --</option>
+                {managers.map((m) => (
+                  <option key={m.e_id} value={String(m.e_id)}>
+                    {m.name
+                      ? String(m.name)
+                          .replace(/[.,\s]+$/g, "")
+                          .trim()
+                      : `#${m.e_id}`}
+                  </option>
+                ))}
+              </select>
             </div>
-          </div>
-          <div className="grid grid-cols-2 gap-4">
+
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Priority *
+              <label className="block text-xs font-medium text-gray-600 mb-0.5">
+                Priority
               </label>
               <select
                 required
@@ -586,37 +803,61 @@ const CreateTaskModal: React.FC<{
                 onChange={(e) =>
                   setFormData({ ...formData, priority: e.target.value })
                 }
-                className="input-field"
+                className="input-field h-8 px-2 py-1 text-xs"
               >
                 <option value="low">Low</option>
                 <option value="medium">Medium</option>
                 <option value="high">High</option>
               </select>
             </div>
+
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Expected Closure *
+              <label className="block text-xs font-medium text-gray-600 mb-0.5">
+                Status
               </label>
-              <input
-                type="datetime-local"
-                required
-                value={formData.expected_closure}
+              <select
+                value={formData.status}
                 onChange={(e) =>
-                  setFormData({ ...formData, expected_closure: e.target.value })
+                  setFormData({ ...formData, status: e.target.value })
                 }
-                className="input-field"
-              />
+                className="input-field h-8 px-2 py-1 text-xs"
+              >
+                <option value="TO_DO">To Do</option>
+                <option value="IN_PROGRESS">In Progress</option>
+                <option value="REVIEW">Review</option>
+                <option value="DONE">Done</option>
+              </select>
             </div>
           </div>
-          <div className="flex gap-3 pt-4">
+
+          <div>
+            <label className="block font-medium text-gray-600 mb-0.5">
+              Expected Closure
+            </label>
+            <input
+              type="datetime-local"
+              required
+              value={formData.expected_closure}
+              onChange={(e) =>
+                setFormData({ ...formData, expected_closure: e.target.value })
+              }
+              className="input-field h-8 px-2 py-1 text-xs"
+            />
+          </div>
+
+          <div className="flex gap-2 pt-2">
             <button
               type="submit"
-              className="btn-primary flex-1"
+              className="btn-primary flex-1 text-xs h-8"
               disabled={isSubmitting}
             >
-              {isSubmitting ? "Creating..." : "Create Task"}
+              {isSubmitting ? "Creating..." : "Create"}
             </button>
-            <button type="button" onClick={onClose} className="btn-secondary">
+            <button
+              type="button"
+              onClick={onClose}
+              className="btn-secondary text-xs h-8"
+            >
               Cancel
             </button>
           </div>
@@ -633,6 +874,19 @@ const EditTaskInline: React.FC<{
   activeRole: string | null;
   user: User | null;
 }> = ({ task, onClose, onSaved, activeRole, user }) => {
+  const [employees, setEmployees] = useState<
+    {
+      e_id?: number;
+      name?: string;
+    }[]
+  >([]);
+
+  const [managers, setManagers] = useState<
+    {
+      e_id?: number;
+      name?: string;
+    }[]
+  >([]);
   const [formData, setFormData] = useState<{
     title: string;
     description: string;
@@ -653,9 +907,6 @@ const EditTaskInline: React.FC<{
       : "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [remarkText, setRemarkText] = useState("");
-  const [remarkFile, setRemarkFile] = useState<File | null>(null);
-  const [isAddingRemark, setIsAddingRemark] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -696,163 +947,290 @@ const EditTaskInline: React.FC<{
     }
   };
 
-  const handleAddRemark = async () => {
-    if (!task.t_id) return;
-    if (!remarkText && !remarkFile) {
-      alert("Please enter a comment or attach a file for the remark.");
-      return;
-    }
-    setIsAddingRemark(true);
-    try {
-      const roleToUse = user?.role?.includes("Manager")
-        ? "Manager"
-        : activeRole || user?.role?.[0] || "";
-      await remarkAPI.create(
-        task.t_id,
-        remarkText,
-        roleToUse,
-        remarkFile || undefined
-      );
-      setRemarkText("");
-      setRemarkFile(null);
-      alert("Remark added.");
-    } catch (err) {
-      console.error("Failed to add remark:", err);
-      alert("Failed to add remark. See console for details.");
-    } finally {
-      setIsAddingRemark(false);
-    }
-  };
+  // const handleAddRemark = async () => {
+  //   if (!task.t_id) return;
+  //   if (!remarkText && !remarkFile) {
+  //     alert("Please enter a comment or attach a file for the remark.");
+  //     return;
+  //   }
+  //   setIsAddingRemark(true);
+  //   try {
+  //     const roleToUse = user?.role?.includes("Manager")
+  //       ? "Manager"
+  //       : activeRole || user?.role?.[0] || "";
+  //     await remarkAPI.create(
+  //       task.t_id,
+  //       remarkText,
+  //       roleToUse,
+  //       remarkFile || undefined
+  //     );
+  //     setRemarkText("");
+  //     setRemarkFile(null);
+  //     alert("Remark added.");
+  //   } catch (err) {
+  //     console.error("Failed to add remark:", err);
+  //     alert("Failed to add remark. See console for details.");
+  //   } finally {
+  //     setIsAddingRemark(false);
+  //   }
+  // };
+  useEffect(() => {
+    let mounted = true;
+    // fetch users via userAPI.getByRole then resolve display names from Employee table
+    (async () => {
+      try {
+        let devUsers = await userAPI.getByRole("Developer");
+        if (!mounted) return;
+        if (!devUsers || devUsers.length === 0) {
+          try {
+            const all = await userAPI.getAll("");
+            if (!mounted) return;
+            const roleIncludes = (r: any, target: string) => {
+              if (Array.isArray(r)) return r.includes(target);
+              if (typeof r === "string") {
+                const trimmed = r.trim();
+                if (trimmed.startsWith("[") && trimmed.endsWith("]")) {
+                  try {
+                    const parsed = JSON.parse(trimmed);
+                    return Array.isArray(parsed) && parsed.includes(target);
+                  } catch (_e) {
+                    return trimmed.includes(target);
+                  }
+                }
+                return trimmed.includes(target);
+              }
+              return false;
+            };
+            devUsers = all.filter((u: any) =>
+              roleIncludes((u as any).role, "Developer")
+            );
+          } catch (_e) {
+            /* ignore fallback errors */
+          }
+        }
+
+        const devs = await Promise.all(
+          devUsers.map(async (u) => {
+            try {
+              const emp = await employeeAPI.getById(u.e_id, "Developer");
+              return { e_id: u.e_id, name: emp?.name };
+            } catch (_e) {
+              return { e_id: u.e_id, name: undefined };
+            }
+          })
+        );
+        if (!mounted) return;
+        setEmployees(devs || []);
+
+        let mgrUsers = await userAPI.getByRole("Manager");
+        if (!mounted) return;
+        if (!mgrUsers || mgrUsers.length === 0) {
+          try {
+            const all = await userAPI.getAll("");
+            if (!mounted) return;
+            const roleIncludes = (r: any, target: string) => {
+              if (Array.isArray(r)) return r.includes(target);
+              if (typeof r === "string") {
+                const trimmed = r.trim();
+                if (trimmed.startsWith("[") && trimmed.endsWith("]")) {
+                  try {
+                    const parsed = JSON.parse(trimmed);
+                    return Array.isArray(parsed) && parsed.includes(target);
+                  } catch (_e) {
+                    return trimmed.includes(target);
+                  }
+                }
+                return trimmed.includes(target);
+              }
+              return false;
+            };
+            mgrUsers = all.filter((u: any) =>
+              roleIncludes((u as any).role, "Manager")
+            );
+          } catch (_e) {
+            /* ignore fallback errors */
+          }
+        }
+
+        const mgrs = await Promise.all(
+          mgrUsers.map(async (u) => {
+            try {
+              const emp = await employeeAPI.getById(u.e_id, "Manager");
+              return { e_id: u.e_id, name: emp?.name };
+            } catch (_e) {
+              return { e_id: u.e_id, name: undefined };
+            }
+          })
+        );
+        if (!mounted) return;
+        setManagers(mgrs || []);
+      } catch (err) {
+        console.debug("failed to load users for dropdowns:", err);
+      }
+    })();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
-  <div className="bg-white w-full max-w-md rounded-lg shadow-md border border-gray-200 flex flex-col max-h-[90vh]">
-
-    {/* Header */}
-    <div className="flex items-center justify-between px-3 py-2 border-b">
-      <h3 className="text-sm font-semibold">
-        Edit Task {task.t_id}
-      </h3>
-      {/* <button onClick={onClose} className="text-xs text-gray-500">
-        Close
-      </button> */}
-    </div>
-
-    {/* Scrollable Body */}
-    <form
-      onSubmit={handleSubmit}
-      className="flex-1 overflow-y-auto px-3 py-2 space-y-2 text-xs"
-    >
-      <div>
-        <label className="block font-medium text-gray-600 mb-0.5">
-          Title
-        </label>
-        <input
-          value={formData.title}
-          onChange={(e) =>
-            setFormData({ ...formData, title: e.target.value })
-          }
-          className="input-field h-8 px-2 py-1 text-xs"
-        />
-      </div>
-
-      <div>
-        <label className="block font-medium text-gray-600 mb-0.5">
-          Description
-        </label>
-        <textarea
-          value={formData.description}
-          onChange={(e) =>
-            setFormData({ ...formData, description: e.target.value })
-          }
-          className="input-field px-2 py-1 text-xs"
-          rows={3}
-        />
-      </div>
-
-      <div className="grid grid-cols-4 gap-1.5">
-        <div>
-          <label className="block text-xs font-medium text-gray-600 mb-0.5">
-            Assigned To
-          </label>
-          <input
-            value={formData.assigned_to}
-            onChange={(e) =>
-              setFormData({ ...formData, assigned_to: e.target.value })
-            }
-            className="input-field h-8 px-2 py-1 text-xs"
-            type="number"
-          />
-        </div>
-
-        <div>
-          <label className="block text-xs font-medium text-gray-600 mb-0.5">
-            Reviewer
-          </label>
-          <input
-            value={formData.reviewer}
-            onChange={(e) =>
-              setFormData({ ...formData, reviewer: e.target.value })
-            }
-            className="input-field h-8 px-2 py-1 text-xs"
-            type="number"
-          />
-        </div>
-
-        <div>
-          <label className="block text-xs font-medium text-gray-600 mb-0.5">
-            Priority
-          </label>
-          <select
-            value={formData.priority}
-            onChange={(e) =>
-              setFormData({
-                ...formData,
-                priority: e.target.value as Task["priority"],
-              })
-            }
-            className="input-field h-8 px-2 py-1 text-xs"
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div
+        className="absolute inset-0 bg-black/30 backdrop-blur-sm"
+        onClick={onClose}
+      />
+      <div
+        className="relative z-10 bg-white w-full max-w-md rounded-lg shadow-md border border-gray-200 flex flex-col max-h-[90vh]"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Header */}
+        <div className="flex items-center justify-between px-3 py-2 border-b">
+          <h3 className="text-sm font-semibold">Edit Task {task.t_id}</h3>
+          <button
+            onClick={onClose}
+            className="text-gray-500 hover:text-gray-700 p-1 rounded"
+            aria-label="Close"
           >
-            <option value="low">Low</option>
-            <option value="medium">Medium</option>
-            <option value="high">High</option>
-          </select>
+            <XIcon size={16} />
+          </button>
         </div>
 
-        <div>
-          <label className="block text-xs font-medium text-gray-600 mb-0.5">
-            Status
-          </label>
-          <select
-            value={formData.status}
-            onChange={(e) =>
-              setFormData({ ...formData, status: e.target.value })
-            }
-            className="input-field h-8 px-2 py-1 text-xs"
-          >
-            <option value="TO_DO">To Do</option>
-            <option value="IN_PROGRESS">In Progress</option>
-            <option value="REVIEW">Review</option>
-            <option value="DONE">Done</option>
-          </select>
-        </div>
-      </div>
+        {/* Scrollable Body */}
+        <form
+          onSubmit={handleSubmit}
+          className="flex-1 overflow-y-auto px-3 py-2 space-y-2 text-xs"
+        >
+          <div>
+            <label className="block font-medium text-gray-600 mb-0.5">
+              Title
+            </label>
+            <input
+              value={formData.title}
+              onChange={(e) =>
+                setFormData({ ...formData, title: e.target.value })
+              }
+              className="input-field h-8 px-2 py-1 text-xs"
+            />
+          </div>
 
-      <div>
-        <label className="block font-medium text-gray-600 mb-0.5">
-          Expected Closure
-        </label>
-        <input
-          value={formData.expected_closure}
-          onChange={(e) =>
-            setFormData({ ...formData, expected_closure: e.target.value })
-          }
-          className="input-field h-8 px-2 py-1 text-xs"
-          type="datetime-local"
-        />
-      </div>
+          <div>
+            <label className="block font-medium text-gray-600 mb-0.5">
+              Description
+            </label>
+            <textarea
+              value={formData.description}
+              onChange={(e) =>
+                setFormData({ ...formData, description: e.target.value })
+              }
+              className="input-field px-2 py-1 text-xs"
+              rows={3}
+            />
+          </div>
 
-      {/* Remarks */}
+          <div className="grid grid-cols-4 gap-1.5">
+            <div>
+              <label className="block text-xs font-medium text-gray-600 mb-0.5">
+                Assigned To
+              </label>
+              <select
+                value={formData.assigned_to}
+                onChange={(e) =>
+                  setFormData({ ...formData, assigned_to: e.target.value })
+                }
+                className="input-field h-8 px-2 py-1 text-xs"
+              >
+                <option value="">-- Unassigned --</option>
+                {employees.map((emp) => (
+                  <option key={emp.e_id} value={String(emp.e_id)}>
+                    {emp.name
+                      ? String(emp.name)
+                          .replace(/[.,\s]+$/g, "")
+                          .trim()
+                      : `#${emp.e_id}`}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-xs font-medium text-gray-600 mb-0.5">
+                Reviewer
+              </label>
+              <select
+                value={formData.reviewer}
+                onChange={(e) =>
+                  setFormData({ ...formData, reviewer: e.target.value })
+                }
+                className="input-field h-8 px-2 py-1 text-xs"
+              >
+                <option value="">-- Select reviewer --</option>
+                {managers.map((m) => (
+                  <option key={m.e_id} value={String(m.e_id)}>
+                    {m.name
+                      ? String(m.name)
+                          .replace(/[.,\s]+$/g, "")
+                          .trim()
+                      : `#${m.e_id}`}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-xs font-medium text-gray-600 mb-0.5">
+                Priority
+              </label>
+              <select
+                value={formData.priority}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    priority: e.target.value as Task["priority"],
+                  })
+                }
+                className="input-field h-8 px-2 py-1 text-xs"
+              >
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-xs font-medium text-gray-600 mb-0.5">
+                Status
+              </label>
+              <select
+                value={formData.status}
+                onChange={(e) =>
+                  setFormData({ ...formData, status: e.target.value })
+                }
+                className="input-field h-8 px-2 py-1 text-xs"
+              >
+                <option value="TO_DO">To Do</option>
+                <option value="IN_PROGRESS">In Progress</option>
+                <option value="REVIEW">Review</option>
+                <option value="DONE">Done</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label className="block font-medium text-gray-600 mb-0.5">
+              Expected Closure
+            </label>
+            <input
+              value={formData.expected_closure}
+              onChange={(e) =>
+                setFormData({ ...formData, expected_closure: e.target.value })
+              }
+              className="input-field h-8 px-2 py-1 text-xs"
+              type="datetime-local"
+            />
+          </div>
+
+          {/* Remarks
       <div className="pt-1">
         <label className="block font-medium text-gray-600 mb-0.5">
           Add Remark
@@ -891,29 +1269,132 @@ const EditTaskInline: React.FC<{
             Clear
           </button>
         </div>
-      </div>
+      </div> */}
 
-      {/* Footer buttons */}
-      <div className="flex gap-2 pt-2">
-        <button
-          type="submit"
-          className="btn-primary flex-1 text-xs h-8"
-          disabled={isSubmitting}
-        >
-          {isSubmitting ? "Saving..." : "Save"}
-        </button>
-        <button
-          type="button"
-          onClick={onClose}
-          className="btn-secondary text-xs h-8"
-        >
-          Cancel
-        </button>
+          {/* Footer buttons */}
+          <div className="flex gap-2 pt-2">
+            <button
+              type="submit"
+              className="btn-primary flex-1 text-xs h-8"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Saving..." : "Save"}
+            </button>
+            <button
+              type="button"
+              onClick={onClose}
+              className="btn-secondary text-xs h-8"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
       </div>
-    </form>
-  </div>
-</div>
+    </div>
+  );
+};
 
+const RemarkModal: React.FC<{
+  task: Task;
+  onClose: () => void;
+  onSuccess: () => void;
+  activeRole: string | null;
+  user: User | null;
+}> = ({ task, onClose, onSuccess, activeRole, user }) => {
+  const [comment, setComment] = useState("");
+  const [file, setFile] = useState<File | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!task.t_id) return;
+    if (!comment && !file) {
+      alert("Please enter a comment or attach a file.");
+      return;
+    }
+    setIsSubmitting(true);
+    try {
+      const roleToUse = user?.role?.includes("Manager")
+        ? "Manager"
+        : activeRole || user?.role?.[0] || "";
+      await remarkAPI.create(task.t_id, comment, roleToUse, file || undefined);
+      onSuccess();
+    } catch (err) {
+      console.error("Failed to add remark:", err);
+      alert("Failed to add remark. See console for details.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div
+        className="absolute inset-0 bg-black/30 backdrop-blur-sm"
+        onClick={onClose}
+      />
+      <div
+        className="relative z-10 bg-white rounded-lg shadow-xl w-full max-w-md max-h-[80vh] overflow-y-auto animate-scale-in"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex items-center justify-between px-4 py-3 border-b">
+          <h2 className="text-lg font-medium text-gray-800">Add Remark</h2>
+          <button
+            type="button"
+            onClick={onClose}
+            className="text-gray-500 hover:text-gray-700 p-1 rounded"
+            aria-label="Close"
+          >
+            <XIcon size={16} />
+          </button>
+        </div>
+
+        <form onSubmit={handleSubmit} className="px-4 py-3 space-y-3 text-sm">
+          <div>
+            <label className="block text-xs font-medium text-gray-600 mb-1">
+              Comment
+            </label>
+            <textarea
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+              rows={4}
+              className="input-field w-full text-sm px-2 py-1"
+              placeholder="Write a remark..."
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-medium text-gray-600 mb-1">
+              Attachment (optional)
+            </label>
+            <input
+              type="file"
+              onChange={(e) =>
+                setFile(e.target.files ? e.target.files[0] : null)
+              }
+              className="text-xs"
+            />
+          </div>
+
+          <div className="flex gap-2 pt-2">
+            <button
+              type="submit"
+              className="btn-primary flex-1 text-xs h-8"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Adding..." : "Add Remark"}
+            </button>
+            <button
+              type="button"
+              onClick={onClose}
+              className="btn-secondary text-xs h-8"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
   );
 };
 
