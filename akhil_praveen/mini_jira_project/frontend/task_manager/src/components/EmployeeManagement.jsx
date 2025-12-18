@@ -1,9 +1,17 @@
-import React, { useState } from 'react';
-import { Plus, Edit2, Trash2 } from 'lucide-react';
-import EmployeeFormModal from './EmployeeFormModel';
-import api from '../api/api';
+import React, { useState } from "react";
+import {
+  Plus,
+  Edit2,
+  Trash2,
+  Users,
+  Mail,
+  Briefcase,
+  UserCheck,
+} from "lucide-react";
+import EmployeeFormModal from "./EmployeeFormModel";
+import api from "../api/api";
 
-function EmployeeManagement({ employees, onRefresh }) {
+function EmployeeManagement({ employees, onRefresh, role }) {
   const [showForm, setShowForm] = useState(false);
   const [editingEmployee, setEditingEmployee] = useState(null);
 
@@ -12,13 +20,9 @@ function EmployeeManagement({ employees, onRefresh }) {
     setShowForm(true);
   };
 
-  const handleDelete = async (empId) => {
-    if (!window.confirm('Are you sure you want to delete this employee?')) {
-      return;
-    }
-    
+  const handleStatusChange = async (empId, newStatus) => {
     try {
-      await api.deleteEmployee(empId);
+      await api.updateEmployee(empId, { status: newStatus });
       onRefresh();
     } catch (err) {
       alert(err.message);
@@ -47,83 +51,152 @@ function EmployeeManagement({ employees, onRefresh }) {
 
   return (
     <div className="p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold">Employees</h2>
+      {/* Header */}
+      <div className="flex justify-between items-center mb-6 bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+        <div className="flex items-center gap-3">
+          <div className="p-3 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl shadow-md">
+            <Users className="text-white" size={24} />
+          </div>
+          <div>
+            <h2 className="text-2xl font-bold text-gray-800">
+              Employee Management
+            </h2>
+            <p className="text-sm text-gray-600">Manage your team members</p>
+          </div>
+        </div>
         <button
           onClick={() => setShowForm(true)}
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-blue-700"
+          className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-5 py-3 rounded-xl flex items-center gap-2 hover:shadow-lg hover:scale-105 active:scale-95 transition-all font-semibold"
         >
           <Plus size={20} />
           Add Employee
         </button>
       </div>
 
-      <div className="bg-white rounded-lg shadow overflow-hidden">
-        <table className="w-full">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                ID
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Name
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Email
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Designation
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Manager
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {employees.map((emp) => {
-              const manager = employees.find((e) => e.emp_id === emp.manager_id);
-              return (
-                <tr key={emp.emp_id}>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {emp.emp_id}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {emp.emp_name}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {emp.email}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {emp.designation || '-'}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {manager?.emp_name || '-'}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    <button
-                      onClick={() => handleEdit(emp)}
-                      className="text-blue-600 hover:text-blue-800 mr-3"
-                      title="Edit"
+      {/* Employee Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        {employees.map((emp) => {
+          const manager = employees.find((e) => e.emp_id === emp.manager_id);
+
+          return (
+            <div
+              key={emp.emp_id}
+              className="bg-white rounded-2xl p-6 shadow-md hover:shadow-xl transition-all border border-gray-100 group hover:scale-105"
+            >
+              {/* Employee Avatar & ID */}
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-md">
+                    {emp.emp_name.charAt(0).toUpperCase()}
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-gray-800 text-lg">
+                      {emp.emp_name}
+                    </h3>
+                    <span className="text-xs text-gray-500 font-medium">
+                      ID: {emp.emp_id}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity items-center">
+                  <button
+                    onClick={() => handleEdit(emp)}
+                    className="p-2 rounded-lg text-blue-600 hover:bg-blue-50 transition-colors"
+                    title="Edit"
+                  >
+                    <Edit2 size={18} />
+                  </button>
+                  {/* Admins can change status via dropdown instead of deleting */}
+                  {role && role.includes("ADMIN") && (
+                    <select
+                      value={emp.status || "ACTIVE"}
+                      onChange={(e) =>
+                        handleStatusChange(emp.emp_id, e.target.value)
+                      }
+                      className="p-2 rounded-lg border-gray-200 bg-white text-sm"
+                      title="Change status"
                     >
-                      <Edit2 size={18} />
-                    </button>
-                    <button
-                      onClick={() => handleDelete(emp.emp_id)}
-                      className="text-red-600 hover:text-red-800"
-                      title="Delete"
-                    >
-                      <Trash2 size={18} />
-                    </button>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+                      <option value="ACTIVE">Active</option>
+                      <option value="INACTIVE">Inactive</option>
+                    </select>
+                  )}
+                </div>
+              </div>
+
+              {/* Employee Details */}
+              <div className="space-y-3">
+                <div className="flex items-center gap-2 text-sm">
+                  <Mail size={16} className="text-gray-400" />
+                  <span className="text-gray-700">{emp.email}</span>
+                </div>
+
+                {emp.designation && (
+                  <div className="flex items-center gap-2 text-sm">
+                    <Briefcase size={16} className="text-gray-400" />
+                    <span className="text-gray-700 font-medium">
+                      {emp.designation}
+                    </span>
+                  </div>
+                )}
+
+                {/* Status badge */}
+                <div className="mt-2">
+                  <span
+                    className={`inline-block px-2 py-1 text-xs rounded-full font-medium ${
+                      (emp.status || "ACTIVE") === "ACTIVE"
+                        ? "bg-green-100 text-green-800"
+                        : "bg-gray-100 text-gray-600"
+                    }`}
+                  >
+                    {(emp.status || "ACTIVE").toUpperCase()}
+                  </span>
+                </div>
+
+                {manager && (
+                  <div className="flex items-center gap-2 text-sm">
+                    <UserCheck size={16} className="text-gray-400" />
+                    <span className="text-gray-600">
+                      Reports to:{" "}
+                      <span className="font-medium text-gray-800">
+                        {manager.emp_name}
+                      </span>
+                    </span>
+                  </div>
+                )}
+
+                {!manager && (
+                  <div className="flex items-center gap-2 text-sm text-gray-400">
+                    <UserCheck size={16} />
+                    <span>No manager assigned</span>
+                  </div>
+                )}
+              </div>
+            </div>
+          );
+        })}
       </div>
+
+      {/* Empty State */}
+      {employees.length === 0 && (
+        <div className="text-center py-16 bg-white rounded-2xl border-2 border-dashed border-gray-200">
+          <Users size={48} className="mx-auto text-gray-300 mb-4" />
+          <h3 className="text-xl font-bold text-gray-600 mb-2">
+            No Employees Yet
+          </h3>
+          <p className="text-gray-500 mb-4">
+            Start by adding your first team member
+          </p>
+          <button
+            onClick={() => setShowForm(true)}
+            className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-5 py-2 rounded-lg inline-flex items-center gap-2 hover:shadow-lg transition-all"
+          >
+            <Plus size={18} />
+            Add First Employee
+          </button>
+        </div>
+      )}
 
       {showForm && (
         <EmployeeFormModal

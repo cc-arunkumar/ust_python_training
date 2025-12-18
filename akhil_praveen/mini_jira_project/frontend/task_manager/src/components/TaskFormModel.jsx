@@ -1,8 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { X } from "lucide-react";
+import { X, Calendar, Tag, User, UserCheck, AlertCircle } from "lucide-react";
 import { PRIORITIES } from "../utils/constants";
 
-function TaskFormModal({ task, employees = [], onClose, onSave }) {
+function TaskFormModal({
+  task,
+  employees = [],
+  onClose,
+  onSave,
+  userRole = "",
+  currentEmpId = null,
+}) {
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -40,6 +47,60 @@ function TaskFormModal({ task, employees = [], onClose, onSave }) {
     }
   }, [task]);
 
+  // compute visible employees based on role and currentEmpId
+  const visibleEmployees = React.useMemo(() => {
+    const roleUpper = (userRole || "").toUpperCase();
+    if (roleUpper.includes("ADMIN")) return employees || [];
+    if (roleUpper.includes("MANAGER")) {
+      if (currentEmpId == null) return [];
+      return (employees || []).filter((e) => {
+        try {
+          return (
+            Number(e.manager_id) === Number(currentEmpId) ||
+            Number(e.emp_id) === Number(currentEmpId)
+          );
+        } catch (ex) {
+          return false;
+        }
+      });
+    }
+    // For developers or others, only show themselves (sensible fallback)
+    if (currentEmpId == null) return [];
+    return (employees || []).filter(
+      (e) => Number(e.emp_id) === Number(currentEmpId)
+    );
+  }, [employees, userRole, currentEmpId]);
+
+  // if manager creating new task, default reviewer to the manager
+  useEffect(() => {
+    const roleUpper = (userRole || "").toUpperCase();
+    if (!task && roleUpper.includes("MANAGER") && currentEmpId != null) {
+      setFormData((f) => ({ ...f, reviewer: Number(currentEmpId) }));
+    }
+  }, [task, userRole, currentEmpId]);
+
+  // compute visible reviewers and whether reviewer select should be locked
+  const visibleReviewers = React.useMemo(() => {
+    const roleUpper = (userRole || "").toUpperCase();
+    // If manager (and not admin), restrict reviewer to the manager themself
+    if (roleUpper.includes("MANAGER") && !roleUpper.includes("ADMIN")) {
+      if (currentEmpId == null) return [];
+      return (employees || []).filter(
+        (e) => Number(e.emp_id) === Number(currentEmpId)
+      );
+    }
+    // Admins and others can choose from all employees
+    return employees || [];
+  }, [employees, userRole, currentEmpId]);
+
+  const lockReviewer = React.useMemo(() => {
+    const roleUpper = (userRole || "").toUpperCase();
+    // lock only when a manager (not admin) is creating a new task
+    return (
+      roleUpper.includes("MANAGER") && !roleUpper.includes("ADMIN") && !task
+    );
+  }, [userRole, task]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -62,29 +123,43 @@ function TaskFormModal({ task, employees = [], onClose, onSave }) {
     await onSave(dataToSend);
   };
 
+  const priorityColors = {
+    LOW: "bg-gray-100 text-gray-700 border-gray-300",
+    MEDIUM: "bg-amber-100 text-amber-700 border-amber-300",
+    HIGH: "bg-red-100 text-red-700 border-red-300",
+  };
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-      <div className="w-full max-w-3xl bg-white rounded-xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+      <div className="w-full max-w-3xl bg-white rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col animate-fadeIn">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b bg-gradient-to-r from-indigo-50 to-purple-50">
-          <h2 className="text-lg font-bold text-gray-800">
-            {task ? "Edit Task" : "Create New Task"}
-          </h2>
+        <div className="flex items-center justify-between px-8 py-6 bg-gradient-to-r from-indigo-50 to-purple-50 border-b border-gray-100">
+          <div>
+            <h2 className="text-2xl font-bold text-gray-800">
+              {task ? "Edit Task" : "Create New Task"}
+            </h2>
+            <p className="text-sm text-gray-600 mt-1">
+              {task
+                ? "Update task details below"
+                : "Fill in the details to create a new task"}
+            </p>
+          </div>
           <button
             onClick={onClose}
-            className="p-2 rounded-lg hover:bg-white/50 transition"
+            className="p-2 rounded-xl hover:bg-white/50 transition-all"
           >
-            <X size={20} />
+            <X size={24} className="text-gray-600" />
           </button>
         </div>
 
         {/* Form Content */}
-        <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6">
-          <div className="space-y-4">
+        <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-8">
+          <div className="space-y-6">
             {/* Title */}
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Title <span className="text-red-500">*</span>
+              <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
+                <span>Task Title</span>
+                <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
@@ -93,14 +168,14 @@ function TaskFormModal({ task, employees = [], onClose, onSave }) {
                   setFormData({ ...formData, title: e.target.value })
                 }
                 required
-                placeholder="Enter task title..."
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent"
+                placeholder="Enter a clear, concise task title..."
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all text-gray-800 font-medium"
               />
             </div>
 
             {/* Description */}
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-sm font-bold text-gray-700 mb-2">
                 Description
               </label>
               <textarea
@@ -109,15 +184,16 @@ function TaskFormModal({ task, employees = [], onClose, onSave }) {
                   setFormData({ ...formData, description: e.target.value })
                 }
                 rows="4"
-                placeholder="Add task description..."
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent resize-none"
+                placeholder="Add detailed task description, requirements, or notes..."
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none transition-all text-gray-700"
               />
             </div>
 
-            {/* Department and Priority */}
+            {/* Department and Priority Row */}
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
+                  <Tag size={16} />
                   Department
                 </label>
                 <input
@@ -126,35 +202,40 @@ function TaskFormModal({ task, employees = [], onClose, onSave }) {
                   onChange={(e) =>
                     setFormData({ ...formData, dept_name: e.target.value })
                   }
-                  placeholder="e.g., Engineering"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent"
+                  placeholder="e.g., Engineering, Marketing"
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
+                  <AlertCircle size={16} />
                   Priority
                 </label>
-                <select
-                  value={formData.priority}
-                  onChange={(e) =>
-                    setFormData({ ...formData, priority: e.target.value })
-                  }
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400 bg-white"
-                >
+                <div className="grid grid-cols-3 gap-2">
                   {PRIORITIES.map((p) => (
-                    <option key={p} value={p}>
+                    <button
+                      key={p}
+                      type="button"
+                      onClick={() => setFormData({ ...formData, priority: p })}
+                      className={`px-4 py-3 rounded-xl font-semibold text-sm border-2 transition-all ${
+                        formData.priority === p
+                          ? priorityColors[p] + " scale-105 shadow-md"
+                          : "bg-white border-gray-200 text-gray-600 hover:border-gray-300"
+                      }`}
+                    >
                       {p}
-                    </option>
+                    </button>
                   ))}
-                </select>
+                </div>
               </div>
             </div>
 
-            {/* Assignee and Reviewer */}
+            {/* Assignee and Reviewer Row */}
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
+                  <User size={16} />
                   Assign To
                 </label>
                 <select
@@ -167,10 +248,10 @@ function TaskFormModal({ task, employees = [], onClose, onSave }) {
                         : "",
                     })
                   }
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400 bg-white"
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white cursor-pointer appearance-none font-medium text-gray-700"
                 >
                   <option value="">Select Employee</option>
-                  {(employees || []).map((emp) => (
+                  {(visibleEmployees || []).map((emp) => (
                     <option key={emp.emp_id} value={emp.emp_id}>
                       {emp.emp_name}{" "}
                       {emp.designation ? `(${emp.designation})` : ""}
@@ -180,7 +261,8 @@ function TaskFormModal({ task, employees = [], onClose, onSave }) {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
+                  <UserCheck size={16} />
                   Reviewer
                 </label>
                 <select
@@ -191,10 +273,11 @@ function TaskFormModal({ task, employees = [], onClose, onSave }) {
                       reviewer: e.target.value ? parseInt(e.target.value) : "",
                     })
                   }
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400 bg-white"
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white cursor-pointer appearance-none font-medium text-gray-700"
+                  disabled={lockReviewer}
                 >
                   <option value="">Select Reviewer</option>
-                  {(employees || []).map((emp) => (
+                  {(visibleReviewers || []).map((emp) => (
                     <option
                       key={emp.emp_id}
                       value={emp.emp_id}
@@ -205,12 +288,19 @@ function TaskFormModal({ task, employees = [], onClose, onSave }) {
                     </option>
                   ))}
                 </select>
+                {lockReviewer && (
+                  <p className="text-xs text-gray-500 mt-1">
+                    Reviewer is set to you (manager) and cannot be changed when
+                    creating a task.
+                  </p>
+                )}
               </div>
             </div>
 
-            {/* Expected Closure */}
+            {/* Expected Closure Date */}
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
+                <Calendar size={16} />
                 Expected Closure Date
               </label>
               <input
@@ -219,23 +309,23 @@ function TaskFormModal({ task, employees = [], onClose, onSave }) {
                 onChange={(e) =>
                   setFormData({ ...formData, expected_closure: e.target.value })
                 }
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
               />
             </div>
           </div>
 
           {/* Action Buttons */}
-          <div className="flex justify-end gap-3 pt-6 border-t mt-6">
+          <div className="flex justify-end gap-3 pt-8 border-t-2 border-gray-100 mt-8">
             <button
               type="button"
               onClick={onClose}
-              className="px-6 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium transition"
+              className="px-6 py-3 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold transition-all"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-6 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-medium transition"
+              className="px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:shadow-lg text-white font-semibold transition-all hover:scale-105 active:scale-95"
             >
               {task ? "Update Task" : "Create Task"}
             </button>

@@ -27,10 +27,18 @@ class TaskUpdate(BaseModel):
 class TaskStatusPatch(BaseModel):
     status: Literal["TO_DO", "IN_PROGRESS", "REVIEW", "DONE"]
     review: Optional[str] = None
+    # allow developer/reviewer specific review payloads
+    developer_review: Optional[str] = None
+    developer_by: Optional[str] = None
+    developer_ts: Optional[str] = None
+    reviewer_review: Optional[str] = None
+    reviewer_by: Optional[str] = None
+    reviewer_ts: Optional[str] = None
 
 
 class TaskResponse(TaskCreate):
     task_id: int
+    actual_closure: Optional[datetime] = None
 
     class Config:
         from_attributes = True

@@ -3,6 +3,7 @@ from sqlalchemy.exc import SQLAlchemyError, IntegrityError
 from fastapi import HTTPException
 from models.user import User
 from models.employees import Employee
+from services.employees import EmployeeService
 from passlib.context import CryptContext
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -14,8 +15,8 @@ class UserService:
     @staticmethod
     def create_if_not_exists(db: Session, emp_id: int, role: str):
         try:
-            # Validate employee exists
-            employee = db.query(Employee).filter(Employee.emp_id == emp_id).first()
+            # Validate employee exists (use EmployeeService which has fallbacks for missing columns)
+            employee = EmployeeService.get_by_id(db, emp_id)
             if not employee:
                 raise HTTPException(404, f"Employee with ID {emp_id} not found")
             

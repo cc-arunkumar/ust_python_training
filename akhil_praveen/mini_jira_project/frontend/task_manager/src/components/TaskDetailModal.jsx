@@ -153,23 +153,33 @@ export default function TaskDetailModal({
 
   useEffect(() => {
     let mounted = true;
-    if (task && task.task_id) {
-      api
-        .getTaskReviews(task.task_id)
-        .then((res) => {
-          if (!mounted) return;
-          setServerReviews(res || []);
-        })
-        .catch((e) => {
-          if (!mounted) return;
-          console.error("Failed to load task reviews:", e);
-          setServerReviews([]);
-        });
-    } else {
-      setServerReviews([]);
-    }
+    let intervalId = null;
+
+    const fetchReviews = async () => {
+      if (!task || !task.task_id) {
+        if (mounted) setServerReviews([]);
+        return;
+      }
+      try {
+        const res = await api.getTaskReviews(task.task_id);
+        if (!mounted) return;
+        setServerReviews(res || []);
+      } catch (e) {
+        if (!mounted) return;
+        console.error("Failed to load task reviews:", e);
+        setServerReviews([]);
+      }
+    };
+
+    // initial fetch
+    fetchReviews();
+
+    // poll for new reviews while modal is open (every 5s)
+    intervalId = setInterval(fetchReviews, 5000);
+
     return () => {
       mounted = false;
+      if (intervalId) clearInterval(intervalId);
     };
   }, [task.task_id]);
 
@@ -202,19 +212,37 @@ export default function TaskDetailModal({
     ts: s.created_at || null,
   }));
 
-  const remarks = [...normalized, ...serverMapped];
+  // merge normalized client-side remarks with server-stored reviews
+  const remarks = [...normalized, ...serverMapped]
+    // ensure we have a consistent ts string for sorting
+    .map((r) => ({ ...r, ts: r.ts ? String(r.ts) : null }));
 
-  // Separate remarks by role
+  // sort remarks chronologically (oldest first). Remarks without ts go last
+  remarks.sort((a, b) => {
+    if (!a.ts && !b.ts) return 0;
+    if (!a.ts) return 1;
+    if (!b.ts) return -1;
+    const ta = Date.parse(a.ts);
+    const tb = Date.parse(b.ts);
+    if (isNaN(ta) && isNaN(tb)) return 0;
+    if (isNaN(ta)) return 1;
+    if (isNaN(tb)) return -1;
+    return ta - tb;
+  });
+
+  // Separate remarks by role while preserving chronological order
   const devRemarks = remarks.filter(
     (r) =>
-      String(r.from).toLowerCase().includes("dev") ||
-      String(r.from).toLowerCase() === "developer"
+      String(r.from || "")
+        .toLowerCase()
+        .includes("dev") || String(r.from || "").toLowerCase() === "developer"
   );
 
   const reviewerRemarks = remarks.filter(
     (r) =>
-      String(r.from).toLowerCase().includes("review") ||
-      String(r.from).toLowerCase() === "reviewer"
+      String(r.from || "")
+        .toLowerCase()
+        .includes("review") || String(r.from || "").toLowerCase() === "reviewer"
   );
 
   const otherRemarks = remarks.filter(

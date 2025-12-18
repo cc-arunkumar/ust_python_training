@@ -24,7 +24,8 @@ def create_employee(payload: EmployeeCreate,
             if not manager:
                 raise HTTPException(404, f"Manager with ID {payload.manager_id} not found")
        
-        return EmployeeService.create(db, payload.dict())
+        emp = EmployeeService.create(db, payload.dict())
+        return emp
    
     except HTTPException:
         raise
@@ -63,6 +64,28 @@ def list_employees(db: Session = Depends(get_db),
         else:
             raise HTTPException(403, "Insufficient permissions")
    
+    except HTTPException:
+        raise
+    except SQLAlchemyError as e:
+        raise HTTPException(500, f"Database error: {str(e)}")
+    except Exception as e:
+        raise HTTPException(500, f"Internal server error: {str(e)}")
+
+
+@emp_router.get("/under/{manager_id}", response_model=list[EmployeeResponse])
+def get_employees_under_manager(manager_id: int,
+                                db: Session = Depends(get_db),
+                                user=Depends(get_current_user)):
+    try:
+        # Admins can query for any manager's team; managers can only query their own team
+        if "ADMIN" in user.role:
+            # Admins should be able to see all employees (including INACTIVE) under the manager
+            return EmployeeService.get_all_employees_under_manager(db, manager_id)
+        if "MANAGER" in user.role:
+            if int(manager_id) != int(user.emp_id):
+                raise HTTPException(403, "Managers can only view their own team")
+            return EmployeeService.get_employees_under_manager(db, manager_id)
+        raise HTTPException(403, "Insufficient permissions")
     except HTTPException:
         raise
     except SQLAlchemyError as e:
@@ -132,7 +155,8 @@ def update_employee(emp_id: int, payload: EmployeeUpdate,
             if not manager:
                 raise HTTPException(404, f"Manager with ID {update_data['manager_id']} not found")
  
-        return EmployeeService.update(db, emp, update_data)
+        updated = EmployeeService.update(db, emp, update_data)
+        return updated
    
     except HTTPException:
         raise
@@ -163,6 +187,7 @@ def delete_employee(emp_id: int,
             raise HTTPException(404, "Employee not found")
  
         EmployeeService.delete(db, emp)
+        return
    
     except HTTPException:
         raise

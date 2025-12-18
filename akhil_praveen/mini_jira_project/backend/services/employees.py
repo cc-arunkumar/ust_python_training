@@ -70,12 +70,13 @@ class EmployeeService:
         """
         try:
             # Get direct reports
+            # By default only return ACTIVE employees for manager views
             employees = db.query(Employee).filter(
                 or_(
                     Employee.manager_id == manager_id,
                     Employee.emp_id == manager_id
                 )
-            ).all()
+            ).filter(Employee.status == 'ACTIVE').all()
             return employees
         except SQLAlchemyError as e:
             # Fallback raw query excluding status

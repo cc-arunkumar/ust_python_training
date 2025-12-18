@@ -125,7 +125,9 @@ def create_task(payload: TaskCreate,
             })
         except PyMongoError as e:
             print(f"Failed to log audit: {str(e)}")
-        
+
+        # notify connected clients about the new task (no-op: realtime removed)
+
         return task
     
     except HTTPException:
@@ -172,6 +174,11 @@ def update_task(task_id: int,
             raise HTTPException(403, "Developers cannot update tasks. Use status patch endpoint instead.")
 
         data = payload.dict(exclude_unset=True)
+
+        # Disallow changing status via the general update endpoint.
+        # Status must be changed only via the /tasks/{id}/status patch endpoint
+        if "status" in data:
+            raise HTTPException(400, "Change task status only via the /tasks/{id}/status endpoint")
         
         # Get current values or new values
         assigned_to = data.get("assigned_to", task.assigned_to)
@@ -181,7 +188,9 @@ def update_task(task_id: int,
         if assigned_to and reviewer and assigned_to == reviewer:
             raise HTTPException(400, "assigned_to and reviewer cannot be same")
 
-        return TaskService.update(db, task, data, user)
+        updated = TaskService.update(db, task, data, user)
+        # realtime removed: no broadcast
+        return updated
     
     except HTTPException:
         raise
@@ -263,14 +272,19 @@ def patch_status(task_id: int,
         # Handle review and audit logs with error handling
         try:
             if payload.review:
-                # Only the designated reviewer may submit reviewer remarks.
-                # Enforce strict reviewer-only policy here.
+                # Allow the designated reviewer to submit reviewer remarks.
+                # Additionally, allow users with MANAGER or ADMIN roles to add reviewer remarks
+                # so managers' comments can appear in the reviewer remarks timeline.
                 reviewer_emp_id = task.reviewer
                 user_emp_id = getattr(user, "emp_id", None)
                 if reviewer_emp_id is None:
                     raise HTTPException(400, "Task has no reviewer assigned")
-                if user_emp_id != reviewer_emp_id:
-                    raise HTTPException(403, "Only the designated reviewer can add review remarks")
+
+                # allow if user is the designated reviewer OR the user has MANAGER/ADMIN role
+                allowed_roles = ["MANAGER","DEVELOPER"]
+                has_manager_role = any(r in user.role for r in allowed_roles)
+                if user_emp_id != reviewer_emp_id and not has_manager_role:
+                    raise HTTPException(403, "Only the designated reviewer or Managers/Developer can add review remarks")
 
                 # store reviewer metadata so we can return readable reviews later
                 reviews_collection.insert_one({
@@ -278,9 +292,11 @@ def patch_status(task_id: int,
                     "review": payload.review,
                     "reviewed_by_user_id": user.user_id,
                     "reviewed_by_emp_id": user_emp_id,
-                    "role": "reviewer",
+                    "role": user.role,
                     "created_at": datetime.utcnow()
                 })
+
+            
 
             audit_logs_collection.insert_one({
                 "action": "STATUS_UPDATED",
@@ -290,6 +306,9 @@ def patch_status(task_id: int,
             })
         except PyMongoError as e:
             print(f"Failed to log to MongoDB: {str(e)}")
+
+        # notify clients about status change
+        # realtime removed: no broadcast
 
         return {"message": "Status updated"}
     

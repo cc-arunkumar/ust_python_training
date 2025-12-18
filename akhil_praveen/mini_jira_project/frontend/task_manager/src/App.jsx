@@ -19,7 +19,6 @@ function App() {
     const storedRole = localStorage.getItem("role");
     if (token && storedRole) {
       setIsAuthenticated(true);
-      // if storedRole contains multiple roles (comma separated), pick the first as the active role
       const active = storedRole.includes(",")
         ? storedRole
             .split(",")
@@ -40,6 +39,51 @@ function App() {
     }
   }, [isAuthenticated]);
 
+  // WebSocket for realtime updates
+  useEffect(() => {
+    if (!isAuthenticated) return undefined;
+
+    const protocol = window.location.protocol === "https:" ? "wss" : "ws";
+    const host = window.location.hostname || "localhost";
+    const port = 8000;
+    const url = `${protocol}://${host}:${port}/ws/updates`;
+    let ws;
+    try {
+      ws = new WebSocket(url);
+    } catch (e) {
+      console.warn("WebSocket connection failed:", e);
+      return undefined;
+    }
+
+    ws.onopen = () => console.log("Realtime: connected to", url);
+    ws.onclose = () => console.log("Realtime: disconnected");
+    ws.onerror = (e) => console.warn("Realtime: websocket error", e);
+    ws.onmessage = (ev) => {
+      try {
+        const msg = JSON.parse(ev.data);
+        const interesting = [
+          "task_created",
+          "task_updated",
+          "task_status_updated",
+          "employee_created",
+          "employee_updated",
+          "employee_deleted",
+        ];
+        if (interesting.includes(msg.type)) {
+          setTimeout(() => loadData().catch((e) => console.error(e)), 200);
+        }
+      } catch (err) {
+        // ignore parse errors
+      }
+    };
+
+    return () => {
+      try {
+        ws.close();
+      } catch (e) {}
+    };
+  }, [isAuthenticated]);
+
   const loadData = async () => {
     setLoading(true);
     try {
@@ -50,7 +94,6 @@ function App() {
 
       console.log("Loaded tasks:", tasksData);
 
-      // Normalize any legacy 'CRITICAL' priorities to 'HIGH' since CRITICAL was removed
       const normalized = (tasksData || []).map((t) => ({
         ...t,
         priority: t.priority === "CRITICAL" ? "HIGH" : t.priority,
@@ -85,7 +128,6 @@ function App() {
   };
 
   const handleRoleChange = async (newRole) => {
-    // update active role and reload data to reflect permissions
     setRole(newRole);
     try {
       await loadData();
@@ -96,85 +138,97 @@ function App() {
 
   const handleUpdateStatus = async (taskId, status, review) => {
     try {
-      console.log("Updating task status:", {
+      console.log("App.handleUpdateStatus:", {
         taskId,
         status,
         review,
         userRole: role,
+        currentEmpId,
       });
 
-      // Call the API with the review
-      // prepare role-specific fields for remarks and include 'review' so backend stores it
-      const extra = {};
-      const username =
-        localStorage.getItem("username") ||
-        localStorage.getItem("user_name") ||
-        null;
+      // Find the task to check if current user is the reviewer
+      const task = tasks.find((t) => t.task_id === taskId);
+      const isReviewer = task && currentEmpId != null && Number(currentEmpId) === Number(task.reviewer);
+      
+      const username = localStorage.getItem("username") || null;
       const nowTs = new Date().toISOString();
-      let clientRemark = null;
+      const roleUpper = (role || "").toUpperCase();
+      const isManagerRole = roleUpper.includes("MANAGER") || roleUpper.includes("ADMIN");
+
+      // Prepare extra fields for role-specific remarks
+      const extra = {};
+      const clientRemarksToInject = [];
+
       if (review && review.trim()) {
-        const isManager =
-          (role || "").toUpperCase().includes("MANAGER") ||
-          (role || "").toUpperCase().includes("ADMIN");
-        if (isManager) {
-          extra.reviewer_review = review;
+        // Determine if this is a reviewer remark or developer remark
+        // Manager/Admin OR designated reviewer = reviewer remarks
+        // Otherwise = developer remarks
+        const isReviewerRemark = isManagerRole || isReviewer;
+
+        if (isReviewerRemark) {
+          // Store as reviewer remarks
+          extra.reviewer_review = review.trim();
           if (username) extra.reviewer_by = username;
           extra.reviewer_ts = nowTs;
-          clientRemark = {
+
+          // Optimistic UI update
+          clientRemarksToInject.push({
             from: "reviewer",
-            text: review,
-            by: username || null,
+            text: review.trim(),
+            by: username,
             ts: nowTs,
-          };
+          });
+
+          console.log("Storing as REVIEWER remarks:", extra);
         } else {
-          extra.developer_review = review;
+          // Store as developer remarks
+          extra.developer_review = review.trim();
           if (username) extra.developer_by = username;
           extra.developer_ts = nowTs;
-          clientRemark = {
+
+          // Optimistic UI update
+          clientRemarksToInject.push({
             from: "developer",
-            text: review,
-            by: username || null,
+            text: review.trim(),
+            by: username,
             ts: nowTs,
-          };
+          });
+
+          console.log("Storing as DEVELOPER remarks:", extra);
         }
       }
 
-      // optimistic UI: add client remark to local tasks state so it appears immediately
-      if (clientRemark) {
+      // Optimistic UI: add client remarks immediately
+      if (clientRemarksToInject.length) {
         setTasks((prev) =>
           prev.map((t) =>
             t.task_id === taskId
               ? {
                   ...t,
-                  _clientRemarks: [...(t._clientRemarks || []), clientRemark],
+                  _clientRemarks: [
+                    ...(t._clientRemarks || []),
+                    ...clientRemarksToInject,
+                  ],
                 }
               : t
           )
         );
       }
 
-      // include 'review' field so backend inserts into reviews_collection
+      // Call API with the review field (for backend to store in reviews collection)
+      // AND the extra fields (for role-specific storage)
       await api.updateTaskStatus(
         taskId,
         status,
-        review,
+        review && review.trim() ? review.trim() : null,
         Object.keys(extra).length ? extra : undefined
       );
 
-      // refresh from server then re-inject client remark (server may not include reviews in task payload)
+      console.log("API call completed, reloading data...");
+
+      // Reload data from server
       await loadData();
-      if (clientRemark) {
-        setTasks((prev) =>
-          prev.map((t) =>
-            t.task_id === taskId
-              ? {
-                  ...t,
-                  _clientRemarks: [...(t._clientRemarks || []), clientRemark],
-                }
-              : t
-          )
-        );
-      }
+
     } catch (err) {
       console.error("Failed to update status:", err);
       const errorMessage = err.message || "Unknown error occurred";
@@ -225,7 +279,7 @@ function App() {
         onRoleChange={handleRoleChange}
       />
 
-      <main className="container mx-auto">
+      <main className="container mx-auto bg-gray-200">
         {activeTab === "tasks" ? (
           <TaskBoard
             tasks={tasks}
@@ -238,7 +292,11 @@ function App() {
             onSaveTask={handleSaveTask}
           />
         ) : (
-          <EmployeeManagement employees={employees} onRefresh={loadData} />
+          <EmployeeManagement
+            employees={employees}
+            onRefresh={loadData}
+            role={role}
+          />
         )}
       </main>
     </div>

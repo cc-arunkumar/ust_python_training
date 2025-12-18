@@ -1,5 +1,5 @@
 import React from "react";
-import { LogOut, List, Users } from "lucide-react";
+import { LogOut, List, Users, Sparkles } from "lucide-react";
 
 function Header({
   role,
@@ -10,7 +10,6 @@ function Header({
   onRoleChange,
 }) {
   const username = localStorage.getItem("username") || "User";
-  // roles are stored under 'roles' as comma-separated list; active role stored under 'role'
   const storedRolesRaw =
     localStorage.getItem("roles") || localStorage.getItem("role") || "";
   const storedRoles = storedRolesRaw
@@ -21,44 +20,68 @@ function Header({
   const activeRole = localStorage.getItem("role") || role;
 
   return (
-    <header className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md">
-      <div className="container mx-auto flex items-center justify-between py-4 px-6">
+    <header className="bg-white border-b border-gray-200 shadow-sm sticky top-0 z-50 backdrop-blur-lg bg-white/95">
+      <div className="container mx-auto flex items-center justify-between py-2.5 px-4">
+        {/* Logo Section */}
         <div className="flex items-center gap-3">
-          <div className="text-xl font-semibold">Mini Jira</div>
-          <div className="text-sm opacity-90">Task management simplified</div>
+          <div className="flex items-center gap-2 group">
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-lg blur opacity-75 group-hover:opacity-100 transition"></div>
+              <div className="relative bg-gradient-to-r from-indigo-600 to-purple-600 p-1.5 rounded-lg">
+                <Sparkles className="text-white" size={18} />
+              </div>
+            </div>
+            <div>
+              <div className="text-base font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                Jira Lite
+              </div>
+              <div className="text-[10px] text-gray-500">Task Management</div>
+            </div>
+          </div>
         </div>
 
-        <nav className="flex items-center gap-3">
+        {/* Navigation */}
+        <nav className="flex items-center gap-2">
           <button
             onClick={() => onTabChange("tasks")}
-            className={`px-4 py-2 rounded-md font-medium transition ${
+            className={`px-3 py-1.5 rounded-lg font-medium transition-all text-sm ${
               activeTab === "tasks"
-                ? "bg-white text-indigo-600"
-                : "hover:bg-white/10"
+                ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md"
+                : "hover:bg-gray-100 text-gray-700"
             }`}
           >
+            <List size={14} className="inline mr-1.5" />
             Tasks
           </button>
 
           {canManageEmployees && (
             <button
               onClick={() => onTabChange("employees")}
-              className={`px-4 py-2 rounded-md font-medium transition ${
+              className={`px-3 py-1.5 rounded-lg font-medium transition-all text-sm ${
                 activeTab === "employees"
-                  ? "bg-white text-indigo-600"
-                  : "hover:bg-white/10"
+                  ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md"
+                  : "hover:bg-gray-100 text-gray-700"
               }`}
             >
-              <Users size={14} className="inline mr-2" /> Employees
+              <Users size={14} className="inline mr-1.5" />
+              Employees
             </button>
           )}
 
-          <div className="ml-4 text-sm mr-4 opacity-90 flex items-center gap-3">
-            <div className="flex items-center gap-3 bg-white/90 text-indigo-900 rounded-md px-3 py-1 shadow-sm">
-              <div className="text-left">
-                <div className="text-xs opacity-80">{username}</div>
-                <div className="font-medium text-sm">
-                  {activeRole || "Guest"}
+          {/* User Info */}
+          <div className="ml-3 flex items-center gap-2">
+            <div className="flex items-center gap-2 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-lg px-3 py-1.5 border border-indigo-100">
+              <div className="flex items-center gap-2">
+                <div className="w-7 h-7 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-xs shadow-sm">
+                  {username.charAt(0).toUpperCase()}
+                </div>
+                <div className="text-left">
+                  <div className="text-xs font-semibold text-gray-800">
+                    {username}
+                  </div>
+                  <div className="text-[10px] text-gray-600">
+                    {activeRole || "Guest"}
+                  </div>
                 </div>
               </div>
               {roles.length > 1 && (
@@ -69,26 +92,27 @@ function Header({
                     localStorage.setItem("role", newRole);
                     onRoleChange && onRoleChange(newRole);
                   }}
-                  className="px-2 py-1 rounded bg-white text-xs border text-indigo-700"
+                  className="px-2 py-1 rounded-md bg-white text-[10px] border border-indigo-200 text-indigo-700 font-medium hover:border-indigo-300 transition cursor-pointer"
                   title="Switch role"
                 >
                   {roles.map((r) => (
-                    <option key={r} value={r} className="text-sm">
+                    <option key={r} value={r} className="text-xs">
                       {r}
                     </option>
                   ))}
                 </select>
               )}
             </div>
-          </div>
 
-          <button
-            onClick={onLogout}
-            className="flex items-center gap-2 px-3 py-2 bg-white/20 hover:bg-white/30 rounded-md"
-            title="Logout"
-          >
-            <LogOut /> Logout
-          </button>
+            <button
+              onClick={onLogout}
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-100 hover:bg-red-50 hover:text-red-600 text-gray-700 rounded-lg transition-all font-medium text-sm"
+              title="Logout"
+            >
+              <LogOut size={14} />
+              Logout
+            </button>
+          </div>
         </nav>
       </div>
     </header>
