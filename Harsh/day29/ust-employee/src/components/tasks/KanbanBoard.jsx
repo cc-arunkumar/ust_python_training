@@ -23,7 +23,7 @@ const KanbanBoard = () => {
   const [selectedTask, setSelectedTask] = useState(null);
   const [editingTask, setEditingTask] = useState(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
-  const [sortOption, setSortOption] = useState('priority'); // default sort
+  const [sortOption, setSortOption] = useState('priority');
 
   useEffect(() => {
     fetchTasks();
@@ -51,27 +51,37 @@ const KanbanBoard = () => {
     }
   };
 
-  // Restrict movement: only ON_PROCESS <-> REVIEW
+  /* =========================
+     STATUS MOVEMENT RULES
+     ========================= */
   const canMove = (from, to) => {
-    return (from === 'ON_PROCESS' && to === 'REVIEW') ||
-           (from === 'REVIEW' && to === 'ON_PROCESS');
+    const allowedTransitions = {
+      TODO: ['ON_PROCESS'],
+      ON_PROCESS: ['REVIEW'],
+      REVIEW: ['ON_PROCESS', 'DONE'],
+      DONE: []
+    };
+
+    return allowedTransitions[from]?.includes(to);
   };
 
   const onDragEnd = async (result) => {
     const { source, destination, draggableId } = result;
-    if (!destination || source.droppableId === destination.droppableId) return;
+
+    if (!destination) return;
+    if (source.droppableId === destination.droppableId) return;
 
     const fromStatus = source.droppableId;
     const toStatus = destination.droppableId;
 
     if (!canMove(fromStatus, toStatus)) {
-      toast.error('Tasks can only move between ON_PROCESS and REVIEW');
+      toast.error(`Cannot move task from ${fromStatus} to ${toStatus}`);
       return;
     }
 
     try {
       await ApiService.updateTaskStatus(draggableId, toStatus);
-      toast.success(`Task moved to ${toStatus}`);
+      toast.success(`Task moved to ${toStatus.replace('_', ' ')}`);
       fetchTasks();
     } catch {
       toast.error('Failed to update task');
@@ -87,13 +97,12 @@ const KanbanBoard = () => {
         if (sortOption === 'priority') {
           const aPriority = a.priority ? PRIORITY_ORDER[a.priority.toLowerCase()] || 0 : 0;
           const bPriority = b.priority ? PRIORITY_ORDER[b.priority.toLowerCase()] || 0 : 0;
-          return bPriority - aPriority; // high → low
-        } else if (sortOption === 'date') {
+          return bPriority - aPriority;
+        } else {
           const aDate = a.expected_closure ? new Date(a.expected_closure) : new Date(0);
           const bDate = b.expected_closure ? new Date(b.expected_closure) : new Date(0);
-          return aDate - bDate; // earliest first
+          return aDate - bDate;
         }
-        return 0;
       });
   });
 
@@ -110,7 +119,6 @@ const KanbanBoard = () => {
         <h1 className="text-xl font-semibold">Task Board</h1>
 
         <div className="flex gap-4 items-center">
-          {/* Sort dropdown */}
           <select
             value={sortOption}
             onChange={(e) => setSortOption(e.target.value)}

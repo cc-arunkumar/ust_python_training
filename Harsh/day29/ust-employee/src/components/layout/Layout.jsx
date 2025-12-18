@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   LogOut,
   Users,
@@ -7,49 +7,174 @@ import {
   RefreshCw,
   LayoutGrid,
   List,
-  Menu
-} from 'lucide-react';
-import { useAuth } from '../../context/AuthContext';
-import EmployeesPage from '../employees/EmployeesPage';
-import TasksPage from '../tasks/TasksPage';
-import KanbanBoard from '../tasks/KanbanBoard';
+  Menu,
+  ClipboardList,
+  TrendingUp,
+} from "lucide-react";
+
+import { useAuth } from "../../context/AuthContext";
+import EmployeesPage from "../employees/EmployeesPage";
+import TasksPage from "../tasks/TasksPage";
+import KanbanBoard from "../tasks/KanbanBoard";
+import ApiService from "../../services/api";
 
 const Layout = () => {
   const { user, activeRole, logout, changeRole, hasMultipleRoles } = useAuth();
-  const [currentPage, setCurrentPage] = useState('tasks');
-  const [taskView, setTaskView] = useState('list');
+
+  const [currentPage, setCurrentPage] = useState("tasks");
+  const [taskView, setTaskView] = useState("list");
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
+  const [tasks, setTasks] = useState([]);
+  const [employees, setEmployees] = useState([]);
+
+  useEffect(() => {
+    loadDashboardData();
+  }, [activeRole, user?.email]);
+
+  const loadDashboardData = async () => {
+    try {
+      const allTasks = await ApiService.getTasks();
+      const allEmployees = await ApiService.getEmployees();
+
+      // sanity guards: ensure arrays
+      const tasksArr = Array.isArray(allTasks) ? allTasks : [];
+      const employeesArr = Array.isArray(allEmployees) ? allEmployees : [];
+
+      // Admin can see all tasks and all employees
+      if (activeRole === "ADMIN") {
+        setTasks(tasksArr);
+        setEmployees(employeesArr);
+        return;
+      }
+
+      // Manager can see tasks assigned to their team and employees under them
+      if (activeRole === "MANAGER") {
+        // employees data shape uses emp_id and manager_id (see EmployeesPage)
+        // Try to locate the manager's employee record by matching email -> emp_id
+        const currentManager = employeesArr.find(
+          (emp) => emp.email === user?.email
+        );
+
+        // If we found the manager's employee record, use emp_id to find direct reports.
+        // Otherwise, fallback to zero team members.
+        const managerEmpId = currentManager
+          ? Number(currentManager.emp_id)
+          : null;
+
+        const teamEmployees = managerEmpId
+          ? employeesArr.filter(
+              (emp) => Number(emp.manager_id) === managerEmpId
+            )
+          : [];
+
+        const teamIds = teamEmployees
+          .map((e) => Number(e.emp_id))
+          .filter(Boolean);
+
+        // Tasks use assigned_to as Employee ID (number). Include tasks assigned to manager (if we have id)
+        // or any team member. If we don't have managerEmpId, just include tasks assigned to any teamIds (empty)
+        const managerTasks = tasksArr.filter((task) => {
+          const assignedToRaw = task?.assigned_to;
+          const assignedTo =
+            assignedToRaw == null ? null : Number(assignedToRaw);
+
+          return (
+            (managerEmpId != null && assignedTo === managerEmpId) ||
+            (assignedTo != null && teamIds.includes(assignedTo))
+          );
+        });
+
+        // Dev helper: log derived values (safe in dev only)
+        // eslint-disable-next-line no-console
+        console.debug(
+          "[Dashboard] managerEmpId=",
+          managerEmpId,
+          "teamIds=",
+          teamIds,
+          "managerTasks=",
+          managerTasks.length
+        );
+
+        setTasks(managerTasks);
+        setEmployees(teamEmployees);
+        return;
+      }
+
+      // Developer can only see tasks assigned to them
+      if (activeRole === "DEVELOPER") {
+        // Find the developer's employee record to get emp_id (tasks use employee IDs)
+        const currentEmp = employeesArr.find(
+          (emp) => emp.email === user?.email
+        );
+        const devEmpId = currentEmp ? Number(currentEmp.emp_id) : null;
+
+        const devTasks = tasksArr.filter((task) => {
+          const assignedToRaw = task?.assigned_to;
+          const assignedTo =
+            assignedToRaw == null ? null : Number(assignedToRaw);
+          return (
+            devEmpId != null && assignedTo != null && assignedTo === devEmpId
+          );
+        });
+
+        // Dev helper: log derived values
+        // eslint-disable-next-line no-console
+        console.debug(
+          "[Dashboard] developerEmpId=",
+          devEmpId,
+          "devTasks=",
+          devTasks.length
+        );
+
+        setTasks(devTasks);
+        setEmployees([]); // Developers don't see other employees
+        return;
+      }
+      // fallback: clear
+      setTasks([]);
+      setEmployees([]);
+    } catch (err) {
+      // fail safe - log and clear state
+      // eslint-disable-next-line no-console
+      console.error("Failed to load dashboard data", err);
+      setTasks([]);
+      setEmployees([]);
+    }
+  };
+
+  const totalTasks = tasks.length;
+  const completedTasks = tasks.filter((t) => t.status === "DONE").length;
+  const progress =
+    totalTasks === 0 ? 0 : Math.round((completedTasks / totalTasks) * 100);
+
   const renderPage = () => {
-    if (currentPage === 'employees') return <EmployeesPage />;
-    return taskView === 'board' ? <KanbanBoard /> : <TasksPage />;
+    if (currentPage === "employees") return <EmployeesPage />;
+    return taskView === "board" ? <KanbanBoard /> : <TasksPage />;
   };
 
   const roleStyles = {
-    ADMIN: 'bg-purple-500/10 text-purple-700',
-    MANAGER: 'bg-blue-500/10 text-blue-700',
-    DEVELOPER: 'bg-green-500/10 text-green-700'
+    ADMIN: "bg-purple-100 text-purple-700",
+    MANAGER: "bg-blue-100 text-blue-700",
+    DEVELOPER: "bg-green-100 text-green-700",
   };
 
   return (
-    <div className="min-h-screen flex bg-slate-100">
-
+    <div className="min-h-screen flex bg-gradient-to-br from-slate-100 to-slate-200">
       {/* SIDEBAR */}
       <aside
-        className={`transition-all duration-300
-        ${sidebarOpen ? 'w-64' : 'w-16'}
-        bg-gradient-to-b from-indigo-600 to-indigo-800 text-white shadow-xl`}
+        className={`${
+          sidebarOpen ? "w-64" : "w-16"
+        } bg-indigo-700 text-white transition-all duration-300 ease-in-out border-r border-indigo-500`}
       >
         <div className="h-16 flex items-center justify-between px-4">
           {sidebarOpen && (
-            <h1 className="text-xl font-semibold tracking-wide">
-              TaskPro
-            </h1>
+            <h1 className="text-xl font-semibold animate-fade-in">TaskPro</h1>
           )}
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="p-2 rounded-lg hover:bg-white/10"
+            className="hover:scale-110 transition-transform"
           >
             <Menu size={20} />
           </button>
@@ -59,75 +184,70 @@ const Layout = () => {
           <SidebarButton
             icon={<CheckSquare size={18} />}
             label="Tasks"
-            active={currentPage === 'tasks'}
+            active={currentPage === "tasks"}
             open={sidebarOpen}
-            onClick={() => setCurrentPage('tasks')}
+            onClick={() => setCurrentPage("tasks")}
           />
           <SidebarButton
             icon={<Users size={18} />}
             label="Employees"
-            active={currentPage === 'employees'}
+            active={currentPage === "employees"}
             open={sidebarOpen}
-            onClick={() => setCurrentPage('employees')}
+            onClick={() => setCurrentPage("employees")}
           />
         </nav>
       </aside>
 
       {/* MAIN */}
       <div className="flex-1 flex flex-col">
-
         {/* NAVBAR */}
-        <header className="bg-white/80 backdrop-blur shadow-md px-6 py-4 flex items-center justify-between">
-
-          {/* LEFT */}
+        <header className="bg-white/80 backdrop-blur border-b border-slate-200 px-6 py-4 flex justify-between animate-slide-down">
           <div className="flex items-center gap-4">
+            <div className="w-9 h-9 rounded-full border border-slate-300 shadow-sm flex items-center justify-center bg-white text-slate-700 font-semibold uppercase">
+              {user?.email?.charAt(0)}
+            </div>
+
             <span
-              className={`px-4 py-1.5 rounded-full text-xs font-semibold
-              ${roleStyles[activeRole]}`}
+              className={`px-4 py-1 rounded-full text-xs font-semibold border ${roleStyles[activeRole]}`}
             >
               {activeRole}
             </span>
 
-            {currentPage === 'tasks' && (
-              <div className="flex bg-slate-100 rounded-xl p-1">
+            {currentPage === "tasks" && (
+              <div className="flex bg-slate-100 rounded-lg p-1 border border-slate-200">
                 <ViewButton
-                  active={taskView === 'list'}
+                  active={taskView === "list"}
                   icon={<List size={14} />}
                   label="List"
-                  onClick={() => setTaskView('list')}
+                  onClick={() => setTaskView("list")}
                 />
                 <ViewButton
-                  active={taskView === 'board'}
+                  active={taskView === "board"}
                   icon={<LayoutGrid size={14} />}
                   label="Board"
-                  onClick={() => setTaskView('board')}
+                  onClick={() => setTaskView("board")}
                 />
               </div>
             )}
           </div>
 
-          {/* RIGHT */}
           <div className="flex items-center gap-3">
-
-            <div className="flex items-center gap-2 bg-slate-100 px-4 py-2 rounded-xl">
-              <User size={16} className="text-slate-500" />
-              <span className="text-sm font-medium text-slate-800">
-                {user?.email}
-              </span>
+            <div className="flex items-center gap-2 bg-slate-100 px-4 py-2 rounded-lg border border-slate-200">
+              <User size={16} />
+              <span className="text-sm">{user?.email}</span>
             </div>
 
             {hasMultipleRoles() && (
               <div className="relative">
                 <button
                   onClick={() => setDropdownOpen(!dropdownOpen)}
-                  className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-slate-100 hover:bg-slate-200 transition"
+                  className="bg-slate-100 px-3 py-2 rounded-lg border border-slate-200 hover:rotate-180 transition-transform duration-300"
                 >
                   <RefreshCw size={16} />
-                  Switch Role
                 </button>
 
                 {dropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-xl shadow-lg z-50">
+                  <div className="absolute right-0 mt-2 bg-white border border-slate-200 rounded-lg shadow animate-scale-in w-40">
                     {user.role.map((role) => (
                       <button
                         key={role}
@@ -135,8 +255,7 @@ const Layout = () => {
                           changeRole(role);
                           setDropdownOpen(false);
                         }}
-                        className={`w-full text-left px-4 py-2 text-sm hover:bg-indigo-100 transition
-                          ${activeRole === role ? 'font-semibold text-indigo-700' : 'text-gray-700'}`}
+                        className="w-full text-left px-4 py-2 hover:bg-slate-100 text-sm transition-colors"
                       >
                         {role}
                       </button>
@@ -156,8 +275,31 @@ const Layout = () => {
         </header>
 
         {/* CONTENT */}
-        <main className="flex-1 p-6 overflow-y-auto">
-          <div className="bg-white rounded-2xl shadow-sm p-6 min-h-full">
+        <main className="flex-1 p-6 animate-fade-in">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+            <StatCard
+              title="Total Tasks"
+              value={totalTasks}
+              icon={<ClipboardList className="text-indigo-600" />}
+            />
+
+            {activeRole !== "DEVELOPER" && (
+              <StatCard
+                title="Total Employees"
+                value={employees.length}
+                icon={<Users className="text-emerald-600" />}
+              />
+            )}
+
+            <StatCard
+              title="Progress"
+              value={`${progress}%`}
+              icon={<TrendingUp className="text-blue-600" />}
+              progress={progress}
+            />
+          </div>
+
+          <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm animate-slide-up">
             {renderPage()}
           </div>
         </main>
@@ -166,47 +308,67 @@ const Layout = () => {
   );
 };
 
-/* ---------- COMPONENTS ---------- */
+/* COMPONENTS */
 
 const SidebarButton = ({ icon, label, active, open, onClick }) => (
   <button
     onClick={onClick}
-    className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium
-    transition-all
-    ${active
-      ? 'bg-white/20 shadow text-white'
-      : 'text-indigo-100 hover:bg-white/10'}`}
+    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
+      active ? "bg-white/20 border border-white/30" : "hover:bg-white/10"
+    }`}
   >
     {icon}
-    {open && <span>{label}</span>}
+    {open && <span className="animate-fade-in">{label}</span>}
   </button>
 );
 
 const ViewButton = ({ icon, label, active, onClick }) => (
   <button
     onClick={onClick}
-    className={`flex items-center gap-1 px-4 py-1.5 rounded-lg text-sm transition
-    ${active
-      ? 'bg-white shadow font-medium'
-      : 'text-slate-500 hover:text-slate-700'}`}
+    className={`px-4 py-1.5 rounded-lg text-sm flex items-center gap-1 transition-all ${
+      active
+        ? "bg-white border border-slate-200 shadow"
+        : "text-slate-500 hover:text-slate-700"
+    }`}
   >
-    {icon}
-    {label}
+    {icon} {label}
   </button>
 );
 
 const ActionButton = ({ icon, label, onClick, danger }) => (
   <button
     onClick={onClick}
-    className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium
-    transition shadow-sm
-    ${danger
-      ? 'text-red-600 bg-red-50 hover:bg-red-100'
-      : 'text-slate-700 bg-slate-100 hover:bg-slate-200'}`}
+    className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm border transition-all hover:scale-105 ${
+      danger
+        ? "bg-red-50 text-red-600 border-red-200 hover:bg-red-100"
+        : "bg-slate-100 border-slate-200"
+    }`}
   >
-    {icon}
-    {label}
+    {icon} {label}
   </button>
+);
+
+const StatCard = ({ title, value, icon, progress }) => (
+  <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1">
+    <div className="flex justify-between items-center">
+      <div>
+        <p className="text-sm text-slate-500">{title}</p>
+        <h2 className="text-3xl font-semibold">{value}</h2>
+      </div>
+      <div className="p-3 bg-slate-100 rounded-xl">{icon}</div>
+    </div>
+
+    {progress !== undefined && (
+      <div className="mt-4">
+        <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
+          <div
+            className="h-full bg-blue-600 rounded-full transition-all duration-700"
+            style={{ width: `${progress}%` }}
+          />
+        </div>
+      </div>
+    )}
+  </div>
 );
 
 export default Layout;
