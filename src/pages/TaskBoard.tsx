@@ -24,6 +24,7 @@ import { useAuth } from "@/context/AuthContext";
 import { employeeService } from "@/services/employeeService";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
+import { remarkService } from "@/services/remarkService";
 import {
   Search,
   Filter,
@@ -119,9 +120,50 @@ const TaskBoard: React.FC = () => {
       return undefined;
     }
   };
+
   const [searchQuery, setSearchQuery] = useState("");
   const [priorityFilter, setPriorityFilter] = useState<Priority | "all">("all");
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+  const [remarks, setRemarks] = useState<any[]>([]);
+  const [loadingRemarks, setLoadingRemarks] = useState(false);
+  const [newRemark, setNewRemark] = useState("");
+  const [remarkFile, setRemarkFile] = useState<File | null>(null);
+
+  // When a task is selected, ensure we populate employee names and load remarks
+  useEffect(() => {
+    if (!selectedTask) return;
+    (async () => {
+      if (selectedTask.assignedTo) {
+        await getEmployeeName(selectedTask.assignedTo);
+      }
+      if (selectedTask.reviewer) {
+        await getEmployeeName(selectedTask.reviewer);
+      }
+    })();
+
+    const loadRemarks = async () => {
+      try {
+        setLoadingRemarks(true);
+        const backendRoleMap: { [k: string]: string } = {
+          admin: "Admin",
+          manager: "Manager",
+          developer: "Developer",
+        };
+        const backendRole = backendRoleMap[currentRole] || "Developer";
+        const r = await remarkService.getRemarksByTask(
+          parseInt(selectedTask.id, 10),
+          backendRole
+        );
+        setRemarks(r || []);
+      } catch (err) {
+        console.error("Failed to load remarks", err);
+        setRemarks([]);
+      } finally {
+        setLoadingRemarks(false);
+      }
+    };
+    loadRemarks();
+  }, [selectedTask]);
 
   // Filter tasks (simplified: do not expose created/assigned/reviewer/all filters)
   const filteredTasks = tasks.filter((task) => {
@@ -487,7 +529,7 @@ const TaskBoard: React.FC = () => {
 
       {/* Task Detail Dialog */}
       <Dialog open={!!selectedTask} onOpenChange={() => setSelectedTask(null)}>
-        <DialogContent className="max-w-lg">
+        <DialogContent className="max-w-lg max-h-[80vh] overflow-y-auto">
           {selectedTask && (
             <>
               <DialogHeader>
@@ -567,6 +609,124 @@ const TaskBoard: React.FC = () => {
                     </span>
                   </div>
                 )}
+                {/* Remarks */}
+                <div className="pt-4">
+                  <h4 className="text-sm font-medium mb-2">Remarks</h4>
+                  {loadingRemarks ? (
+                    <p className="text-sm text-muted-foreground">
+                      Loading remarks...
+                    </p>
+                  ) : remarks.length === 0 ? (
+                    <p className="text-sm text-muted-foreground">
+                      No remarks yet
+                    </p>
+                  ) : (
+                    <div className="space-y-2 max-h-40 overflow-auto">
+                      {remarks.map((r: any) => (
+                        <div
+                          key={r._id || r.id}
+                          className="p-2 border rounded-md bg-muted/5"
+                        >
+                          <div className="text-sm">
+                            {r.comment || r.content}
+                          </div>
+                          <div className="text-xs text-muted-foreground mt-1">
+                            {r.created_at || r.createdAt}
+                            {r.created_by
+                              ? ` • by ${
+                                  employeeNames[String(r.created_by)] ||
+                                  r.created_by
+                                }`
+                              : ""}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {isEditingTask && (
+                    <div className="mt-3 space-y-2">
+                      <textarea
+                        className="w-full border rounded p-2 text-sm"
+                        placeholder="Add a remark..."
+                        value={newRemark}
+                        onChange={(e) => setNewRemark(e.target.value)}
+                      />
+                      <input
+                        type="file"
+                        onChange={(e) =>
+                          setRemarkFile(e.target.files?.[0] || null)
+                        }
+                      />
+                      <div className="flex gap-2">
+                        <Button
+                          size="sm"
+                          onClick={async () => {
+                            if (!selectedTask) return;
+                            if (!newRemark.trim()) {
+                              toast({
+                                title: "Validation",
+                                description: "Remark cannot be empty",
+                                variant: "destructive",
+                              });
+                              return;
+                            }
+                            try {
+                              const backendRoleMap: { [k: string]: string } = {
+                                admin: "Admin",
+                                manager: "Manager",
+                                developer: "Developer",
+                              };
+                              const backendRole =
+                                backendRoleMap[currentRole] || "Developer";
+                              await remarkService.createRemark(
+                                {
+                                  task_id: parseInt(selectedTask.id, 10),
+                                  comment: newRemark,
+                                },
+                                backendRole,
+                                remarkFile || undefined
+                              );
+                              // reload remarks
+                              const r = await remarkService.getRemarksByTask(
+                                parseInt(selectedTask.id, 10),
+                                backendRole
+                              );
+                              setRemarks(r || []);
+                              setNewRemark("");
+                              setRemarkFile(null);
+                              toast({
+                                title: "Success",
+                                description: "Remark added",
+                              });
+                            } catch (err: any) {
+                              console.error("Failed to add remark", err);
+                              toast({
+                                title: "Error",
+                                description:
+                                  err?.response?.data?.detail ||
+                                  "Failed to add remark",
+                                variant: "destructive",
+                              });
+                            }
+                          }}
+                        >
+                          Add Remark
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => {
+                            setNewRemark("");
+                            setRemarkFile(null);
+                          }}
+                        >
+                          Cancel
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
 
               {/* Actions */}

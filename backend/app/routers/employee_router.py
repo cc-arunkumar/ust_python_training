@@ -5,6 +5,20 @@ from typing import List
 from app.core.security import get_current_user  # Assumed utility for authentication
 employee_router = APIRouter(prefix="/Employee", tags=["Employee"])
 
+@employee_router.get("/assignable", response_model=List[EmployeeReqRes])
+def get_assignable(role: str, user=Depends(get_current_user)):
+    try:
+        from app.crud.employee_crud import get_assignable_employees
+
+        emps = get_assignable_employees(role, user)
+        if not emps:
+            raise HTTPException(status_code=404, detail="No assignable employees found")
+        return emps
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Internal Server Error: {str(e)}")
+
 @employee_router.get("/getall", response_model=List[EmployeeReqRes])
 def get_all(role: str, user=Depends(get_current_user)):
     try:
@@ -18,12 +32,12 @@ def get_all(role: str, user=Depends(get_current_user)):
         raise HTTPException(status_code=500, detail=f"Internal Server Error: {str(e)}")
 
 @employee_router.post("/create")
-def add_new_employee(role: str, new_emp: EmployeeReqRes, user=Depends(get_current_user)):
+def add_new_employee(role: str, new_emp: EmployeeReqRes, initial_role: str | None = None, user=Depends(get_current_user)):
     try:
         if role != "Admin":
             raise HTTPException(status_code=403, detail="Only Admin can create employees.")
-        
-        new_employee = add_employee(new_emp, role, user)
+
+        new_employee = add_employee(new_emp, role, user, initial_role)
         return {"detail": "Employee Added Successfully", "employee": new_employee}
     except HTTPException as e:
         raise e  # Re-raise the specific HTTPException

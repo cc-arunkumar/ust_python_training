@@ -4,27 +4,44 @@ from app.schemas.schemas import EmployeeSchema
 from sqlalchemy.exc import SQLAlchemyError, IntegrityError
 from fastapi import HTTPException
 from app.models.models import UserReqRes
-from app.crud.users_crud import add_user
+from app.crud.users_crud import add_user, normalize_role_param
+from app.crud.users_crud import get_user_by_id
 
-def add_employee(new_emp: EmployeeReqRes, role: str, user):
+def add_employee(new_emp: EmployeeReqRes, role: str, user, initial_role: str | None = None):
     session = None
     try:
         if role != "Admin":
             raise HTTPException(status_code=403, detail="Only Admin can add employees.")
         session = get_connection()
+        # If no manager provided, default to the creating user's e_id (Admin creating employee)
+        assigned_mgr = new_emp.mgr_id if getattr(new_emp, 'mgr_id', None) is not None else getattr(user, 'e_id', None)
+        if assigned_mgr is None:
+            # As a last resort, default to 0 (should not happen for proper auth flows)
+            assigned_mgr = 0
+
         new_employee = EmployeeSchema(
             name=new_emp.name,
             email=new_emp.email,
             designation=new_emp.designation,
-            mgr_id=new_emp.mgr_id
+            mgr_id=assigned_mgr
         )
         session.add(new_employee)
         session.commit()
         session.refresh(new_employee)
+        # Create an associated user in users table. Use initial_role if provided,
+        # otherwise default to Developer.
+        # Normalize incoming role (e.g. 'developer' -> 'Developer') so Pydantic/DB accept it.
+        if initial_role:
+            nr = normalize_role_param(initial_role)
+            assigned_roles = [nr] if nr else ["Developer"]
+        else:
+            assigned_roles = ["Developer"]
+
+        # Build UserReqRes with normalized roles
         user_data = UserReqRes(
             e_id=new_employee.e_id,
             password="password123",
-            roles=["Developer"],  # Empty roles list
+            roles=assigned_roles,
             status="active"
         )
         add_user(user_data)
@@ -86,6 +103,44 @@ def get_by_employee_id(id: int, role: str, user):
         #         raise HTTPException(status_code=403, detail="Manager can only view their own team.")
             
         return EmployeeReqRes.model_validate(emp)  # Convert to Pydantic model
+    except SQLAlchemyError as e:
+        if session:
+            session.rollback()
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+    finally:
+        if session:
+            session.close()
+
+
+def get_assignable_employees(role: str, user):
+    """Return all employees that can be assigned tasks (exclude users who have Admin role)."""
+    session = None
+    try:
+        session = get_connection()
+        # Permission: Manager or Admin may request this
+        if role == "Manager":
+            if "Manager" not in user.roles:
+                raise HTTPException(status_code=403, detail="Only Manager can access assignable employees")
+        elif role == "Admin":
+            if "Admin" not in user.roles:
+                raise HTTPException(status_code=403, detail="Only Admin can access assignable employees")
+        else:
+            raise HTTPException(status_code=403, detail="Unauthorized access.")
+
+        all_emps = session.query(EmployeeSchema).all()
+        assignable = []
+        for emp in all_emps:
+            try:
+                u = get_user_by_id(emp.e_id)
+                # get_user_by_id returns UserReqRes which has roles list
+                if "Admin" in (u.roles or []):
+                    continue
+            except Exception:
+                # If user record isn't found, treat as non-admin (assignable)
+                pass
+            assignable.append(emp)
+
+        return [EmployeeReqRes.model_validate(emp) for emp in assignable]
     except SQLAlchemyError as e:
         if session:
             session.rollback()

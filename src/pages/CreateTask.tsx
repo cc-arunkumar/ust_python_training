@@ -76,12 +76,21 @@ const CreateTask: React.FC = () => {
           developer: "Developer",
         };
         const backendRole = currentRole ? roleMap[currentRole] : undefined;
-        const response = await employeeService.getEmployees(
-          1,
-          100,
-          backendRole
-        );
-        setEmployees(response.data || []);
+        // Use the new assignable endpoint to get all non-admin employees.
+        if (backendRole) {
+          const list = await employeeService.getAssignableEmployees(
+            backendRole
+          );
+          setEmployees(list || []);
+        } else {
+          // fallback to previous approach (may be restricted)
+          const response = await employeeService.getEmployees(
+            1,
+            100,
+            backendRole
+          );
+          setEmployees(response.data || []);
+        }
       } catch (error: any) {
         console.error("Error fetching employees:", error);
         // Don't show a destructive toast popup for managers — fall back to empty list silently.
@@ -201,14 +210,20 @@ const CreateTask: React.FC = () => {
         description: formData.description.trim(),
         priority: formData.priority,
         expected_closure: new Date(formData.expected_closure).toISOString(),
-        ...(formData.assigned_to && { assigned_to: formData.assigned_to }),
-        ...(formData.reviewer && { reviewer: formData.reviewer }),
-        // include who assigned the task (current user) if available
-        ...(formData.assigned_to &&
-          user?.id && {
-            assigned_by: parseInt(user.id, 10),
-            assigned_at: new Date().toISOString(),
-          }),
+        // include assigned_to if it was explicitly set (could be 0-ish values)
+        ...(formData.assigned_to !== undefined
+          ? { assigned_to: formData.assigned_to }
+          : {}),
+        ...(formData.reviewer !== undefined
+          ? { reviewer: formData.reviewer }
+          : {}),
+        // include who assigned the task (current user) if available and assignment was made
+        ...(formData.assigned_to !== undefined && user?.id
+          ? {
+              assigned_by: parseInt(user.id, 10),
+              assigned_at: new Date().toISOString(),
+            }
+          : {}),
       };
 
       await taskService.createTask(taskData, backendRole);

@@ -1,9 +1,9 @@
 from fastapi import APIRouter, HTTPException, Depends, UploadFile, File, Form
 from typing import List, Optional
-from models.models import RemarkReqRes
+from app.models.models import RemarkReqRes
 from app.core.security import get_current_user
-from crud.remark_crud import add_remark, get_remarks_by_task, delete_remark_by_id, update_remark
-from crud.users_crud import normalize_role_param
+from app.crud.remark_crud import add_remark, get_remarks_by_task, delete_remark_by_id, update_remark
+from app.crud.users_crud import normalize_role_param
 
 remark_router = APIRouter(prefix="/Remark", tags=["Remark"])
 

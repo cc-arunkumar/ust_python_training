@@ -6,7 +6,9 @@ const THEME_KEY = "tw_theme";
 
 const applyTheme = (theme: "light" | "dark") => {
   try {
-    document.documentElement.setAttribute("data-theme", theme);
+    // Project CSS toggles based on a `.dark` class on the root element
+    if (theme === "dark") document.documentElement.classList.add("dark");
+    else document.documentElement.classList.remove("dark");
   } catch (e) {
     // noop for SSR or environments without document
   }

@@ -26,6 +26,7 @@ interface FormState {
   email: string;
   designation: string;
   mgr_id?: number;
+  role?: string;
 }
 
 const AddEmployee: React.FC = () => {
@@ -40,6 +41,7 @@ const AddEmployee: React.FC = () => {
     email: "",
     designation: "",
     mgr_id: undefined,
+    role: "developer",
   });
   const [managers, setManagers] = useState<Employee[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -146,7 +148,8 @@ const AddEmployee: React.FC = () => {
             designation: form.designation.trim(),
             mgr_id: form.mgr_id,
           },
-          backendRole
+          backendRole,
+          form.role
         );
         toast({
           title: "Success",
@@ -226,6 +229,25 @@ const AddEmployee: React.FC = () => {
                 </SelectContent>
               </Select>
             </div>
+
+            {currentRole === "admin" && (
+              <div>
+                <Label>Assign Role</Label>
+                <Select
+                  value={form.role}
+                  onValueChange={(v) => handleChange("role", v)}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select role for user" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="developer">Developer</SelectItem>
+                    <SelectItem value="manager">Manager</SelectItem>
+                    <SelectItem value="admin">Admin</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
 
             <div className="flex gap-3 pt-4">
               <Button type="submit" disabled={isSubmitting}>

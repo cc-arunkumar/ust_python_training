@@ -50,7 +50,7 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
   const RoleIcon = roleIcons[currentRole];
 
   return (
-    <header className="h-16 border-b border-border bg-card px-4 lg:px-6 flex items-center justify-between sticky top-0 z-40">
+    <header className="h-16 border-b border-border bg-card px-4 lg:px-6 flex items-center justify-between sticky top-0 z-40 cool-header">
       <div className="flex items-center gap-4">
         <Button
           variant="ghost"
@@ -66,7 +66,7 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
           <input
             type="text"
             placeholder="Search tasks..."
-            className="h-10 w-64 rounded-lg bg-secondary pl-10 pr-4 text-sm outline-none focus:ring-2 focus:ring-primary transition-all"
+            className="h-10 w-64 rounded-lg bg-secondary/10 pl-10 pr-4 text-sm outline-none focus:ring-2 focus:ring-primary transition-all"
           />
         </div>
       </div>

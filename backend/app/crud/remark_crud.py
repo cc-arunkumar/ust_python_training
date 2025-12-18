@@ -1,24 +1,40 @@
 from bson import ObjectId
 from fastapi import HTTPException
 from datetime import datetime, timezone
-from database.mysql_connection import get_connection
-from database.mongodb_connection import remarks_collection
+from app.database.mysql_connection import get_connection
+from app.database.mongodb_connection import remarks_collection
 from sqlalchemy.orm import Session
-from schemas.schemas import TaskSchema
-from utils.file_upload import save_file, delete_file
-from utils.mongo_serializer import serialize_mongo
+from app.schemas.schemas import TaskSchema
+from app.utils.file_upload import save_file, delete_file
+from app.utils.mongo_serializer import serialize_mongo
 
 
-def _is_manager(user) -> bool:
-    return hasattr(user, "role") and ("Manager" in user.role if isinstance(user.role, list) else "Manager" in str(user.role))
-
-
-def _is_developer(user) -> bool:
-    return hasattr(user, "role") and ("Developer" in user.role if isinstance(user.role, list) else "Developer" in str(user.role))
+def _has_role(user, role_name: str) -> bool:
+    """Return True if user has role_name. Checks both `roles` (list) and `role` (string) attributes."""
+    if not user:
+        return False
+    roles = getattr(user, "roles", None)
+    if roles and isinstance(roles, (list, tuple)):
+        return any(str(r).strip().lower() == role_name.strip().lower() for r in roles)
+    # fallback to single attribute `role` or `role` string inside object
+    single = getattr(user, "role", None)
+    if single:
+        return str(single).strip().lower() == role_name.strip().lower() or (
+            isinstance(single, str) and role_name.strip().lower() in str(single).strip().lower()
+        )
+    return False
 
 
 def add_remark(task_id: int, comment: str, e_id: int, file=None, role: str = None, user=None):
-    """Add a remark for a task with authorization checks based on task status and user role."""
+    """Add a remark for a task.
+
+    Authorization rules (implemented):
+    - Admin: can add remarks to any task.
+    - Manager: can add remarks for tasks they created or tasks they are reviewer for or tasks assigned to them.
+    - Developer: can add remarks for tasks assigned to them.
+
+    This relaxes phase-only restrictions and bases permissions on relationship to the task.
+    """
     session: Session = get_connection()
 
     try:
@@ -26,17 +42,26 @@ def add_remark(task_id: int, comment: str, e_id: int, file=None, role: str = Non
         if not task:
             raise HTTPException(status_code=404, detail="Task not found")
 
-        task_status = (task.status or "").upper()
+        user_eid = getattr(user, "e_id", None)
 
-        # Authorization based on task status
-        if task_status == "REVIEW":
-            if not _is_manager(user):
-                raise HTTPException(status_code=403, detail="Only managers can add remarks in the REVIEW phase.")
-        elif task_status == "IN_PROGRESS":
-            if not _is_developer(user):
-                raise HTTPException(status_code=403, detail="Only developers can add remarks in the IN_PROGRESS phase.")
+        # Admins can always add remarks
+        if _has_role(user, "Admin"):
+            allowed = True
+        # Managers may add remarks if they created the task, are reviewer, or are assigned
+        elif _has_role(user, "Manager"):
+            allowed = (
+                (task.created_by is not None and task.created_by == user_eid)
+                or (task.reviewer is not None and task.reviewer == user_eid)
+                or (task.assigned_to is not None and task.assigned_to == user_eid)
+            )
+        # Developers may add remarks if they are assigned to the task
+        elif _has_role(user, "Developer"):
+            allowed = task.assigned_to is not None and task.assigned_to == user_eid
         else:
-            raise HTTPException(status_code=400, detail="Task phase does not allow adding remarks.")
+            allowed = False
+
+        if not allowed:
+            raise HTTPException(status_code=403, detail="Not allowed to add remark for this task")
 
         # Handle file upload
         file_id = None
@@ -57,8 +82,10 @@ def add_remark(task_id: int, comment: str, e_id: int, file=None, role: str = Non
         result = remarks_collection.insert_one(remark)
         remark["_id"] = result.inserted_id
         return serialize_mongo(remark)
+    except HTTPException:
+        raise
     except Exception as e:
-        raise HTTPException(e)
+        raise HTTPException(status_code=500, detail=str(e))
     finally:
         session.close()
 

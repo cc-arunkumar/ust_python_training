@@ -185,15 +185,27 @@ const Employees: React.FC = () => {
                       </TableCell>
                       <TableCell>
                         <div className="flex flex-wrap gap-1">
-                          {roles.map((role) => (
-                            <Badge
-                              key={role}
-                              variant="secondary"
-                              className={roleColors[role]}
-                            >
-                              {role}
-                            </Badge>
-                          ))}
+                          {roles && roles.length > 0 ? (
+                            roles.map((role) => {
+                              const key = String(role).toLowerCase();
+                              const display = String(role)
+                                .toLowerCase()
+                                .replace(/^(.)/, (m) => m.toUpperCase());
+                              return (
+                                <Badge
+                                  key={key}
+                                  variant="secondary"
+                                  className={roleColors[key]}
+                                >
+                                  {display}
+                                </Badge>
+                              );
+                            })
+                          ) : (
+                            <span className="text-sm text-muted-foreground">
+                              -
+                            </span>
+                          )}
                         </div>
                       </TableCell>
                       <TableCell>

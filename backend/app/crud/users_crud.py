@@ -45,6 +45,26 @@ def _ensure_roles_list(roles):
     return [str(roles)]
 
 
+# def normalize_role_param(role_value):
+#     """Normalize incoming role parameter (which may be a JSON string, comma list or single value)
+
+#     Returns the first role as canonical string (title-cased), or empty string if none.
+#     """
+#     if role_value is None:
+#         return ""
+#     # If it's a list, take first
+#     if isinstance(role_value, list) and len(role_value) > 0:
+#         return str(role_value[0]).strip().strip('\"').strip("'").title()
+#     # If it's already a string, try to reuse _ensure_roles_list logic
+#     if isinstance(role_value, str):
+#         lst = _ensure_roles_list(role_value)
+#         if lst:
+#             return lst[0]
+#         return ""
+#     # Other types
+#     return str(role_value).strip().strip('\"').strip("'").title()
+
+
 def add_user(new_user: UserReqRes):
     try:
         session = get_connection()
@@ -184,3 +204,20 @@ def add_role_to_user(e_id: int, role: str):
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
     finally:
         session.close()
+
+
+def normalize_role_param(role: str) -> str | None:
+    """Normalize a role string to canonical form or return None for invalid.
+
+    Examples: 'admin' -> 'Admin', 'MANAGER' -> 'Manager', 'dev' -> 'Developer'
+    """
+    if not role:
+        return None
+    r = str(role).strip().lower()
+    if r == "admin":
+        return "Admin"
+    if r == "manager":
+        return "Manager"
+    if r in ("developer", "dev"):
+        return "Developer"
+    return None

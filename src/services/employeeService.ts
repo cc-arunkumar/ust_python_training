@@ -42,6 +42,14 @@ export const employeeService = {
     };
   },
 
+  // Get assignable employees (exclude Admin users). role must be provided (Admin/Manager) to validate permissions.
+  getAssignableEmployees: async (role: string): Promise<Employee[]> => {
+    const url = `/Employee/assignable?role=${encodeURIComponent(role)}`;
+    const response = await api.get(url);
+    const data: Employee[] = response.data || [];
+    return data;
+  },
+
   // Get employee by ID. Pass backend role (e.g. 'Admin'|'Manager'|'Developer') as required by backend.
   getEmployeeById: async (e_id: number, role: string): Promise<Employee> => {
     // Backend has GET /Employee/get?id=<e_id>&role=<role>
@@ -67,11 +75,16 @@ export const employeeService = {
   // Create new employee
   createEmployee: async (
     employee: EmployeeCreateRequest,
-    role?: string
+    role?: string,
+    initialRole?: string
   ): Promise<Employee> => {
     const url = role
-      ? `/Employee/create?role=${encodeURIComponent(role)}`
-      : `/Employee/create`;
+      ? `/Employee/create?role=${encodeURIComponent(role)}${
+          initialRole ? `&initial_role=${encodeURIComponent(initialRole)}` : ""
+        }`
+      : `/Employee/create${
+          initialRole ? `?initial_role=${encodeURIComponent(initialRole)}` : ""
+        }`;
     const response = await api.post(url, employee);
     return response.data;
   },

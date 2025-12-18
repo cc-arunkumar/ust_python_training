@@ -24,7 +24,8 @@ def add_task(new_task: TaskReqRes, role, user):
             updated_by=new_task.updated_by,
             updated_at=None,
             priority=new_task.priority,
-            status="TO_DO",
+            # Use incoming status if provided (Pydantic default is 'to_do'), otherwise default to 'to_do'
+            status=new_task.status if getattr(new_task, 'status', None) else "to_do",
             reviewer=new_task.reviewer,
             created_by=user.e_id,
             expected_closure=new_task.expected_closure,
