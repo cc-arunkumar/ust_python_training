@@ -16,7 +16,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const login = useCallback(
     async (e_id: string, password: string): Promise<boolean> => {
       try {
-        const emp_id = parseInt(e_id, 10); // convert string to number
+        // Allow entering IDs like 'E001' or '001' — strip non-digits first
+        const numeric = String(e_id || "").replace(/\D/g, "");
+        const emp_id = parseInt(numeric, 10);
         if (isNaN(emp_id)) return false;
 
         const res = await api.post("/api/auth/login", {
@@ -25,10 +27,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         });
 
         const { access_token, user } = res.data;
-        localStorage.setItem("token", access_token);
-        localStorage.setItem("currentUser", JSON.stringify(user));
+        // normalize user object so top-level e_id is available (many components expect user.e_id)
+        const normalizedUser = {
+          ...user,
+          e_id: user?.employee?.e_id || user?.e_id || undefined,
+        };
 
-        setUser(user);
+        // store the raw token string used by axios interceptor
+        localStorage.setItem("token", access_token);
+        localStorage.setItem("currentUser", JSON.stringify(normalizedUser));
+
+        setUser(normalizedUser as any);
         return true;
       } catch {
         return false;

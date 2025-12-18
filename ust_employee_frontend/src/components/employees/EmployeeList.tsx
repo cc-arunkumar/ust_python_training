@@ -14,7 +14,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Search, Users, Plus, Mail, Briefcase, UserCircle } from "lucide-react";
+import {
+  Search,
+  Users,
+  Plus,
+  Mail,
+  Briefcase,
+  UserCircle,
+  Edit,
+  Trash,
+} from "lucide-react";
 
 interface EmployeeListProps {
   viewMode: Role;
@@ -40,16 +49,29 @@ const AddEmployeeForm: React.FC<{
   useEffect(() => {
     (async () => {
       try {
-        const res = await api.get("/api/employees");
-        const all = res.data || [];
+        // Fetch from users endpoint — managers may exist as user records with a Manager role
+        const res = await api.get("/api/users");
+        const all = Array.isArray(res.data) ? res.data : [];
         setManagersList(
           all
-            .filter((e: any) => e.designation.toLowerCase().includes("manager"))
-            .map((e: any) => ({
-              emp_id: e.emp_id,
-              name: e.name,
-              e_id: `E${String(e.emp_id).padStart(3, "0")}`,
-            }))
+            .filter((u: any) => {
+              const roles = u.roles || u.role || [];
+              return Array.isArray(roles)
+                ? roles.some((r: any) =>
+                    String(r).toLowerCase().includes("manager")
+                  )
+                : String(roles).toLowerCase().includes("manager");
+            })
+            .map((u: any) => {
+              const empId = u.emp_id != null ? u.emp_id : u.id;
+              return {
+                emp_id: empId,
+                name: u.name || u.username || u.email || `User ${empId}`,
+                e_id: empId
+                  ? `E${String(empId).padStart(3, "0")}`
+                  : u.e_id || "",
+              };
+            })
         );
       } catch (error) {
         console.error("Failed fetching managers", error);
@@ -139,10 +161,141 @@ const AddEmployeeForm: React.FC<{
   );
 };
 
+// Edit form modal — single form that also displays/edits roles from users table
+const EditEmployeeForm: React.FC<{
+  employee: Employee;
+  usersList: any[];
+  onUpdated: (emp: Employee) => void;
+  onClose: () => void;
+}> = ({ employee, usersList, onUpdated, onClose }) => {
+  const [name, setName] = useState(employee.name);
+  const [email, setEmail] = useState(employee.email);
+  const [designation, setDesignation] = useState(employee.designation);
+  const [manager, setManager] = useState(employee.mgr_id || "");
+
+  // derive available roles from usersList (robust to `role` or `roles` field)
+  const allRoles = Array.from(
+    new Set(usersList.flatMap((u) => u.roles || u.role || []))
+  );
+
+  // find corresponding user record (match by e_id or emp_id)
+  const digits = String(employee.e_id).replace(/\D/g, "");
+  const userRecord = usersList.find(
+    (u) =>
+      String(u.e_id) === employee.e_id ||
+      String(u.emp_id) === digits ||
+      String(u.id) === digits
+  );
+
+  const [selectedRoles, setSelectedRoles] = useState<string[]>(
+    userRecord ? userRecord.roles || userRecord.role || [] : []
+  );
+
+  const toggleRole = (r: string) => {
+    setSelectedRoles((prev) =>
+      prev.includes(r) ? prev.filter((x) => x !== r) : [...prev, r]
+    );
+  };
+
+  const handleSubmit = async () => {
+    try {
+      const idNum = Number(digits);
+      if (!Number.isFinite(idNum)) throw new Error("Invalid employee id");
+
+      const payload = {
+        name,
+        email,
+        designation,
+        manager_id: manager ? Number(String(manager).replace(/\D/g, "")) : null,
+      };
+
+      const res = await api.put(`/api/employees/${idNum}`, payload);
+      const updated = res.data;
+
+      const mapped: Employee = {
+        e_id: `E${String(updated.emp_id).padStart(3, "0")}`,
+        name: updated.name,
+        email: updated.email,
+        designation: updated.designation,
+        mgr_id: updated.manager_id
+          ? `E${String(updated.manager_id).padStart(3, "0")}`
+          : undefined,
+      };
+
+      // update roles on users table if we have a user id
+      if (userRecord && (userRecord.id || userRecord.emp_id)) {
+        try {
+          const userId = userRecord.id || userRecord.emp_id;
+          // send as PATCH with roles; backend accepts UserUpdate on PUT
+          await api.put(`/api/users/${userId}`, { roles: selectedRoles });
+        } catch (uerr) {
+          console.warn("Failed to update user roles", uerr);
+          // continue — employee update succeeded
+        }
+      }
+
+      onUpdated(mapped);
+      onClose();
+    } catch (err) {
+      console.error("Failed to update employee", err);
+      alert("Failed to update employee");
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50 p-4">
+      <div className="bg-white p-6 rounded-lg w-full max-w-md">
+        <h3 className="text-lg font-bold mb-4">Edit Employee</h3>
+
+        <label className="block mb-2">Name</label>
+        <input
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          className="w-full mb-3 border rounded px-2 py-1"
+        />
+
+        <label className="block mb-2">Email</label>
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="w-full mb-3 border rounded px-2 py-1"
+        />
+
+        <label className="block mb-2">Designation</label>
+        <input
+          type="text"
+          value={designation}
+          onChange={(e) => setDesignation(e.target.value)}
+          className="w-full mb-3 border rounded px-2 py-1"
+        />
+
+        <label className="block mb-2">Manager</label>
+        <input
+          type="text"
+          value={manager}
+          onChange={(e) => setManager(e.target.value)}
+          placeholder="E001 or numeric id"
+          className="w-full mb-3 border rounded px-2 py-1"
+        />
+
+        <div className="flex justify-end gap-2 mt-4">
+          <Button onClick={handleSubmit}>Save</Button>
+          <Button variant="outline" onClick={onClose}>
+            Cancel
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const EmployeeList: React.FC<EmployeeListProps> = ({ viewMode }) => {
   const { user } = useAuth();
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [usersList, setUsersList] = useState<any[]>([]);
+  const [editingEmployee, setEditingEmployee] = useState<Employee | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(1);
   const [showAddForm, setShowAddForm] = useState(false);
@@ -188,10 +341,7 @@ const EmployeeList: React.FC<EmployeeListProps> = ({ viewMode }) => {
   const filteredEmployees = useMemo(() => {
     let employeesLocal = employees;
 
-    // Manager only sees employees under them
-    if (viewMode === "manager") {
-      employeesLocal = employeesLocal.filter((e) => e.mgr_id === user?.e_id);
-    }
+    // Managers should see all employees (no filtering) but actions are admin-only
 
     if (searchTerm) {
       const term = searchTerm.toLowerCase();
@@ -213,25 +363,26 @@ const EmployeeList: React.FC<EmployeeListProps> = ({ viewMode }) => {
 
   const totalPages = Math.ceil(filteredEmployees.length / limit);
 
-  const getRoleBadge = (empId: string) => {
-    const userRecord = usersList.find((u) => u.e_id === empId);
-    if (!userRecord) return null;
-    return userRecord.role.map((r: string) => (
-      <Badge
-        key={r}
-        variant="outline"
-        className={`text-xs nav-button-${
-          r === "admin" ? "admin" : r === "manager" ? "manager" : "developer"
-        }`}
-      >
-        {r}
-      </Badge>
-    ));
-  };
-
   const getEmployeeByIdLocal = (id?: string) => {
     if (!id) return undefined;
     return employees.find((e) => e.e_id === id);
+  };
+
+  const handleDelete = async (emp: Employee) => {
+    if (!confirm(`Delete employee ${emp.name}? This cannot be undone.`)) return;
+    try {
+      const idNum = Number(String(emp.e_id).replace(/\D/g, ""));
+      if (!Number.isFinite(idNum)) throw new Error("Invalid employee id");
+      await api.delete(`/api/employees/${idNum}`);
+      setEmployees((prev) => prev.filter((e) => e.e_id !== emp.e_id));
+    } catch (err) {
+      console.error("Failed to delete employee", err);
+      alert("Failed to delete employee");
+    }
+  };
+
+  const handleEdit = (emp: Employee) => {
+    setEditingEmployee(emp);
   };
 
   return (
@@ -261,6 +412,19 @@ const EmployeeList: React.FC<EmployeeListProps> = ({ viewMode }) => {
           onClose={() => setShowAddForm(false)}
         />
       )}
+      {editingEmployee && (
+        <EditEmployeeForm
+          employee={editingEmployee}
+          usersList={usersList}
+          onUpdated={(updated) => {
+            setEmployees((prev) =>
+              prev.map((p) => (p.e_id === updated.e_id ? updated : p))
+            );
+            setEditingEmployee(null);
+          }}
+          onClose={() => setEditingEmployee(null)}
+        />
+      )}
 
       <Card>
         <CardHeader className="pb-4">
@@ -287,7 +451,8 @@ const EmployeeList: React.FC<EmployeeListProps> = ({ viewMode }) => {
                 <TableHead>Employee</TableHead>
                 <TableHead>Designation</TableHead>
                 <TableHead>Manager</TableHead>
-                <TableHead>Roles</TableHead>
+
+                {viewMode === "admin" && <TableHead>Actions</TableHead>}
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -326,9 +491,27 @@ const EmployeeList: React.FC<EmployeeListProps> = ({ viewMode }) => {
                         <span className="text-sm text-muted-foreground">—</span>
                       )}
                     </TableCell>
-                    <TableCell>
-                      <div className="flex gap-1">{getRoleBadge(emp.e_id)}</div>
-                    </TableCell>
+
+                    {viewMode === "admin" && (
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleEdit(emp)}
+                          >
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            onClick={() => handleDelete(emp)}
+                          >
+                            <Trash className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    )}
                   </TableRow>
                 );
               })}

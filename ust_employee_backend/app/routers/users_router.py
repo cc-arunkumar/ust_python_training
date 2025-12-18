@@ -17,7 +17,7 @@ def create(user: UserCreate, db: Session = Depends(get_db),current=Depends(role_
 
 
 @router.get("/", response_model=list[UserResponse])
-def get_all(skip: int = 0, limit: int = 10, db: Session = Depends(get_db),current=Depends(role_guard(["Admin"]))):
+def get_all(skip: int = 0, limit: int = 10, db: Session = Depends(get_db),current=Depends(role_guard(["Admin", "Manager"]))):
     """Get paginated users. Use query params `skip` and `limit`.
 
     Example: /users?skip=0&limit=20
@@ -25,7 +25,7 @@ def get_all(skip: int = 0, limit: int = 10, db: Session = Depends(get_db),curren
     return get_users(db, skip=skip, limit=limit)
 
 @router.get("/{user_id}", response_model=UserResponse)
-def get_by_id(user_id: int, db: Session = Depends(get_db),current=Depends(role_guard(["Admin"]))):
+def get_by_id(user_id: int, db: Session = Depends(get_db),current=Depends(role_guard(["Admin", "Manager"]))):
     user = get_user_by_id(db, user_id)
     if not user:
         raise HTTPException(404, "User not found")

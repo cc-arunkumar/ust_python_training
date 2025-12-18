@@ -21,6 +21,16 @@ interface TaskContextType {
     updatedBy: string,
     remark?: string
   ) => void;
+  updateTaskPriority: (
+    taskId: string,
+    priority: string,
+    updatedBy: string
+  ) => void;
+  updateTaskReviewer: (
+    taskId: string,
+    reviewer: string,
+    updatedBy: string
+  ) => void;
   createTask: (task: CreateTaskInput) => void;
   assignTask: (
     taskId: string,
@@ -104,6 +114,68 @@ export const TaskProvider: React.FC<{ children: React.ReactNode }> = ({
     };
   }, []);
 
+  /* -------------------- Update Reviewer (Admin / Manager) -------------------- */
+  const updateTaskReviewer = useCallback(
+    (taskId: string, reviewer: string, updatedBy: string) => {
+      (async () => {
+        try {
+          const stripDigits = (s?: string | number) => {
+            if (s == null) return "";
+            return String(s).replace(/\D/g, "");
+          };
+
+          const taskIdNum = Number(stripDigits(taskId));
+          const reviewerId = Number(stripDigits(reviewer));
+          if (!Number.isFinite(taskIdNum) || !Number.isFinite(reviewerId)) {
+            toast.error("Invalid task id or reviewer id");
+            return;
+          }
+
+          const payload: any = { reviewer_id: reviewerId };
+          const res = await api.put(
+            `/api/tasks/${taskIdNum}/reviewer`,
+            payload
+          );
+
+          const updated = res.data;
+
+          setTasks((prev) =>
+            prev.map((task) =>
+              task.t_id === taskId
+                ? {
+                    ...task,
+                    reviewer: updated.reviewer
+                      ? `E${String(updated.reviewer).padStart(3, "0")}`
+                      : task.reviewer,
+                    assigned_to: updated.assigned_to_id
+                      ? `E${String(updated.assigned_to_id).padStart(3, "0")}`
+                      : task.assigned_to,
+                    assigned_at: updated.assigned_at || task.assigned_at,
+                  }
+                : task
+            )
+          );
+
+          toast.success("Reviewer assigned");
+        } catch (err: any) {
+          console.error("Failed to assign reviewer", err);
+          let msg = "Failed to assign reviewer";
+          const data = err?.response?.data;
+          if (data) {
+            if (typeof data === "string") msg = data;
+            else if (data?.detail) msg = String(data.detail);
+            else if (data?.message) msg = String(data.message);
+            else msg = JSON.stringify(data);
+          } else if (err?.message) {
+            msg = String(err.message);
+          }
+          toast.error(msg);
+        }
+      })();
+    },
+    []
+  );
+
   /* -------------------- Update Status (UI only) -------------------- */
 
   const updateTaskStatus = useCallback(
@@ -113,27 +185,127 @@ export const TaskProvider: React.FC<{ children: React.ReactNode }> = ({
       updatedBy: string,
       remark?: string
     ) => {
-      setTasks((prev) =>
-        prev.map((task) =>
-          task.t_id === taskId
-            ? {
-                ...task,
-                status: newStatus,
-                updated_by: updatedBy,
-                updated_at: new Date().toISOString(),
-                ...(newStatus === "DONE"
-                  ? { actual_closure: new Date().toISOString() }
-                  : {}),
-              }
-            : task
-        )
-      );
+      (async () => {
+        try {
+          // Call backend to change status — backend enforces DONE immutability
+          const stripDigits = (s?: string | number) => {
+            if (s == null) return "";
+            return String(s).replace(/\D/g, "");
+          };
 
-      if (remark) {
-        addRemark(taskId, remark, updatedBy);
-      }
+          const taskIdNum = Number(stripDigits(taskId));
+          if (!Number.isFinite(taskIdNum)) {
+            toast.error("Invalid task id");
+            return;
+          }
 
-      toast.success(`Task moved to ${newStatus.replace("_", " ")}`);
+          const payload: any = { status: newStatus };
+          if (remark) payload.remark = remark;
+
+          const res = await api.patch(`/api/tasks/${taskIdNum}`, payload);
+
+          const updated = res.data;
+
+          setTasks((prev) =>
+            prev.map((task) =>
+              task.t_id === taskId
+                ? {
+                    ...task,
+                    status: updated.status || newStatus,
+                    updated_by: updated.updated_by
+                      ? `E${String(updated.updated_by).padStart(3, "0")}`
+                      : updatedBy,
+                    updated_at: updated.updated_at || new Date().toISOString(),
+                    ...(updated.status === "DONE"
+                      ? {
+                          actual_closure:
+                            updated.actual_closure || new Date().toISOString(),
+                        }
+                      : {}),
+                  }
+                : task
+            )
+          );
+
+          if (remark) {
+            addRemark(taskId, remark, updatedBy);
+          }
+
+          toast.success(`Task moved to ${newStatus.replace("_", " ")}`);
+        } catch (err: any) {
+          // If backend reports validation / immutability, extract a string message
+          console.error("Status update failed:", err);
+          let msg = "Failed to update status";
+          const data = err?.response?.data;
+          if (data) {
+            if (typeof data === "string") msg = data;
+            else if (data?.detail) msg = String(data.detail);
+            else if (data?.message) msg = String(data.message);
+            else msg = JSON.stringify(data);
+          } else if (err?.message) {
+            msg = String(err.message);
+          }
+
+          toast.error(msg);
+        }
+      })();
+    },
+    []
+  );
+
+  /* -------------------- Update Priority -------------------- */
+  const updateTaskPriority = useCallback(
+    (taskId: string, priority: string, updatedBy: string) => {
+      (async () => {
+        try {
+          const stripDigits = (s?: string | number) => {
+            if (s == null) return "";
+            return String(s).replace(/\D/g, "");
+          };
+
+          const taskIdNum = Number(stripDigits(taskId));
+          if (!Number.isFinite(taskIdNum)) {
+            toast.error("Invalid task id");
+            return;
+          }
+
+          const payload = { priority };
+          const res = await api.patch(
+            `/api/tasks/${taskIdNum}/priority`,
+            payload
+          );
+
+          const updated = res.data;
+
+          setTasks((prev) =>
+            prev.map((task) =>
+              task.t_id === taskId
+                ? {
+                    ...task,
+                    priority: updated.priority || priority,
+                    updated_by: updated.updated_by || task.updated_by,
+                    updated_at: updated.updated_at || new Date().toISOString(),
+                  }
+                : task
+            )
+          );
+
+          toast.success("Priority updated");
+        } catch (err: any) {
+          console.error("Failed to update priority", err);
+          let msg = "Failed to update priority";
+          const data = err?.response?.data;
+          if (data) {
+            if (typeof data === "string") msg = data;
+            else if (data?.detail) msg = String(data.detail);
+            else if (data?.message) msg = String(data.message);
+            else msg = JSON.stringify(data);
+          } else if (err?.message) {
+            msg = String(err.message);
+          }
+          toast.error(msg);
+        }
+      })();
     },
     []
   );
@@ -192,29 +364,73 @@ export const TaskProvider: React.FC<{ children: React.ReactNode }> = ({
   }, []);
 
   /* -------------------- Assign Task (UI only) -------------------- */
-
   const assignTask = useCallback(
-    (
+    async (
       taskId: string,
       assignedTo: string,
       assignedBy: string,
       reviewer?: string
     ) => {
-      setTasks((prev) =>
-        prev.map((task) =>
-          task.t_id === taskId
-            ? {
-                ...task,
-                assigned_to: assignedTo,
-                assigned_by: assignedBy,
-                assigned_at: new Date().toISOString(),
-                reviewer: reviewer || task.reviewer,
-              }
-            : task
-        )
-      );
+      try {
+        const stripDigits = (s?: string | number) => {
+          if (s == null) return "";
+          return String(s).replace(/\D/g, "");
+        };
 
-      toast.success("Task assigned successfully");
+        const taskIdNum = Number(stripDigits(taskId)); // T002 → 2 or '2' -> 2
+        const assignedToId = Number(stripDigits(assignedTo)); // E003 or '3' -> 3
+
+        if (!Number.isFinite(taskIdNum) || !Number.isFinite(assignedToId)) {
+          console.error("Invalid taskId or assignedToId", {
+            taskId,
+            assignedTo,
+          });
+          toast.error("Invalid assignee or task id");
+          return;
+        }
+
+        const payload: any = { assigned_to_id: assignedToId };
+        if (reviewer) {
+          const reviewerId = Number(stripDigits(reviewer));
+          if (Number.isFinite(reviewerId)) payload.reviewer = reviewerId;
+        }
+
+        const res = await api.put(`/api/tasks/${taskIdNum}/assign`, payload);
+
+        const updatedTask = res.data;
+
+        setTasks((prev) =>
+          prev.map((task) =>
+            task.t_id === taskId
+              ? {
+                  ...task,
+                  assigned_to: updatedTask.assigned_to_id
+                    ? `E${String(updatedTask.assigned_to_id).padStart(3, "0")}`
+                    : task.assigned_to,
+                  assigned_by: assignedBy
+                    ? `E${String(Number(stripDigits(assignedBy))).padStart(
+                        3,
+                        "0"
+                      )}`
+                    : task.assigned_by,
+                  assigned_at:
+                    updatedTask.assigned_at || new Date().toISOString(),
+                  status: updatedTask.status || task.status,
+                }
+              : task
+          )
+        );
+
+        toast.success("Task assigned successfully");
+      } catch (err: any) {
+        // surface backend validation errors when possible
+        if (err?.response?.data) {
+          console.error("Assign error response:", err.response.data);
+        } else {
+          console.error("Failed to assign task", err);
+        }
+        toast.error("Failed to assign task");
+      }
     },
     []
   );
@@ -258,6 +474,8 @@ export const TaskProvider: React.FC<{ children: React.ReactNode }> = ({
         updateTaskStatus,
         createTask,
         assignTask,
+        updateTaskPriority,
+        updateTaskReviewer,
         addRemark,
         deleteTask,
         getTaskById,

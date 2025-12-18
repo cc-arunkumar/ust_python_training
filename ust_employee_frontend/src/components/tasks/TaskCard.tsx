@@ -18,7 +18,32 @@ const priorityConfig: Record<Priority, { class: string; label: string }> = {
 
 const TaskCard: React.FC<TaskCardProps> = ({ task, isDragging, onClick }) => {
   const { getEmployeeById } = useEmployees();
-  const assignee = task.assigned_to ? getEmployeeById(task.assigned_to) : null;
+  const resolveId = (val?: string | number) => {
+    if (val == null) return undefined;
+    const s = String(val);
+    const digits = s.replace(/\D/g, "");
+    return digits || undefined;
+  };
+  const assigneeId = task.assigned_to
+    ? resolveId(task.assigned_to)
+    : (resolveId((task as any).assigned_to_id) as string | undefined);
+
+  // additional fallback: task.assigned_to might be an object with emp_id/e_id
+  let assignee = assigneeId ? getEmployeeById(assigneeId) : null;
+  if (!assignee) {
+    const at = (task as any).assigned_to;
+    if (at && typeof at === "object") {
+      const candidateId = resolveId(at.emp_id || at.e_id || at.id);
+      if (candidateId) assignee = getEmployeeById(candidateId);
+      if (!assignee && at.name) {
+        // create a lightweight employee object so we can render the name
+        assignee = {
+          e_id: at.e_id || String(at.emp_id || ""),
+          name: at.name,
+        } as any;
+      }
+    }
+  }
   const priority = priorityConfig[task.priority];
 
   return (
@@ -49,8 +74,8 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, isDragging, onClick }) => {
           {assignee && (
             <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
               <User className="h-3 w-3" />
-              <span className="truncate max-w-[80px]">
-                {assignee.name.split(" ")[0]}
+              <span className="truncate max-w-[120px]">
+                {String(assignee.name)}
               </span>
             </div>
           )}

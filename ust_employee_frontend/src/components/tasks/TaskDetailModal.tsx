@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Task, Role, TaskStatus } from "@/types";
 import { useTasks } from "@/contexts/TaskContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -40,24 +40,105 @@ const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
   onClose,
   viewMode,
 }) => {
-  const { updateTaskStatus, assignTask, addRemark, remarks, deleteTask } =
-    useTasks();
+  const {
+    updateTaskStatus,
+    assignTask,
+    addRemark,
+    remarks,
+    deleteTask,
+    updateTaskPriority,
+    updateTaskReviewer,
+  } = useTasks();
   const { user } = useAuth();
   const [newRemark, setNewRemark] = useState("");
-  const [selectedAssignee, setSelectedAssignee] = useState(
-    task.assigned_to || ""
+  const [priorityVal, setPriorityVal] = useState<string>(
+    task.priority || "medium"
   );
-  const [selectedReviewer, setSelectedReviewer] = useState(task.reviewer || "");
+  // Normalize selected values to the raw employee id string (no prefix)
+  const stripNonDigits = (s?: string | null) =>
+    s ? String(s).replace(/\D/g, "") : "";
+
+  const [selectedAssignee, setSelectedAssignee] = useState(
+    stripNonDigits(task.assigned_to) || ""
+  );
+  const [selectedReviewer, setSelectedReviewer] = useState(
+    stripNonDigits(task.reviewer) || ""
+  );
   const { employees, getEmployeeById } = useEmployees();
+  const [managersList, setManagersList] = useState<
+    { emp_id: number | string | undefined; name: string; e_id: string }[]
+  >([]);
+
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        const res = await fetch("http://localhost:8000/api/users", {
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        });
+        const data = await res.json();
+        if (!mounted) return;
+        const all = Array.isArray(data) ? data : [];
+        setManagersList(
+          all
+            .filter((u: any) => {
+              const roles = u.roles || u.role || [];
+              return Array.isArray(roles)
+                ? roles.some((r: any) =>
+                    String(r).toLowerCase().includes("manager")
+                  )
+                : String(roles).toLowerCase().includes("manager");
+            })
+            .map((u: any) => {
+              const empId = u.emp_id != null ? u.emp_id : u.id;
+              return {
+                emp_id: empId,
+                name: u.name || u.username || u.email || `User ${empId}`,
+                e_id: empId
+                  ? `E${String(empId).padStart(3, "0")}`
+                  : u.e_id || "",
+              };
+            })
+        );
+      } catch (err) {
+        // fallback silently — managers list will be empty and employees-based filter will still work
+        console.warn("Failed to load users for managers list", err);
+      }
+    })();
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   const taskRemarks = remarks.filter((r) => r.task_id === task.t_id);
-  const assignee = task.assigned_to ? getEmployeeById(task.assigned_to) : null;
-  const reviewer = task.reviewer ? getEmployeeById(task.reviewer) : null;
+  // Resolve assignee/reviewer robustly: accept prefixed id (E001) or numeric id present on the task
+  const resolveId = (val?: string | number) => {
+    if (val == null) return undefined;
+    const s = String(val);
+    const digits = s.replace(/\D/g, "");
+    return digits || undefined;
+  };
+
+  const assigneeId = task.assigned_to
+    ? resolveId(task.assigned_to)
+    : (resolveId((task as any).assigned_to_id) as string | undefined);
+  const reviewerId = task.reviewer
+    ? resolveId(task.reviewer)
+    : (resolveId((task as any).reviewer) as string | undefined);
+
+  const assignee = assigneeId ? getEmployeeById(assigneeId) : null;
+  const reviewer = reviewerId ? getEmployeeById(reviewerId) : null;
   const creator = getEmployeeById(task.created_by);
 
   const isReviewer = task.reviewer === user?.e_id;
+  // Disallow any status change when task is DONE
   const canChangeStatus =
-    viewMode !== "employee" || task.status === "IN_PROGRESS";
+    task.status !== "DONE" &&
+    (viewMode !== "employee" || task.status === "IN_PROGRESS");
   const canAssign = viewMode === "admin" || viewMode === "manager";
   const canDelete = viewMode === "admin";
 
@@ -142,9 +223,33 @@ const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
 
           <div className="grid grid-cols-2 gap-4">
             <div className="flex items-center gap-2 text-sm">
-              <Flag className={`h-4 w-4 priority-${task.priority}`} />
+              <Flag className={`h-4 w-4 priority-${priorityVal}`} />
               <span className="text-muted-foreground">Priority:</span>
-              <span className="font-medium capitalize">{task.priority}</span>
+              {/* Allow only the task creator to change priority */}
+              {user?.e_id === task.created_by ? (
+                <div className="w-40">
+                  <Select
+                    value={priorityVal}
+                    onValueChange={(value) => {
+                      setPriorityVal(value);
+                      updateTaskPriority(task.t_id, value, user?.e_id || "");
+                    }}
+                  >
+                    <SelectTrigger>
+                      <SelectValue className="capitalize">
+                        {priorityVal}
+                      </SelectValue>
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="low">Low</SelectItem>
+                      <SelectItem value="medium">Medium</SelectItem>
+                      <SelectItem value="high">High</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              ) : (
+                <span className="font-medium capitalize">{task.priority}</span>
+              )}
             </div>
             <div className="flex items-center gap-2 text-sm">
               <Calendar className="h-4 w-4 text-muted-foreground" />
@@ -173,43 +278,98 @@ const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
                 Assign Task
               </h4>
               <div className="grid grid-cols-2 gap-3">
-                <Select
-                  value={selectedAssignee}
-                  onValueChange={setSelectedAssignee}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select assignee" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {employees.map((emp) => (
-                      <SelectItem key={emp.e_id} value={emp.e_id}>
-                        {emp.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <Select
-                  value={selectedReviewer}
-                  onValueChange={setSelectedReviewer}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select reviewer" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {employees
-                      .filter(
-                        (emp) =>
-                          (emp.designation || "").includes("Manager") ||
-                          (emp.designation || "").includes("Lead")
-                      )
-                      .map((emp) => (
-                        <SelectItem key={emp.e_id} value={emp.e_id}>
+                <div className="flex flex-col">
+                  <span className="text-xs text-muted-foreground mb-1">
+                    Select assignee
+                  </span>
+                  <Select
+                    value={selectedAssignee}
+                    onValueChange={(value) => {
+                      // Immediately apply assignment when a different assignee is selected
+                      setSelectedAssignee(value);
+                      // call assignTask with current reviewer (if any) and logged-in user as assigned_by
+                      assignTask(
+                        task.t_id,
+                        value,
+                        user?.e_id || "",
+                        selectedReviewer || undefined
+                      );
+                    }}
+                  >
+                    <SelectTrigger>
+                      {/* Show the selected employee's name explicitly to avoid Radix rendering multiple concatenated values */}
+                      <SelectValue>
+                        {selectedAssignee ? (
+                          getEmployeeById(selectedAssignee)?.name || ""
+                        ) : (
+                          <span className="text-black">Select assignee</span>
+                        )}
+                      </SelectValue>
+                    </SelectTrigger>
+                    <SelectContent>
+                      {employees.map((emp) => (
+                        <SelectItem key={emp.e_id} value={String(emp.e_id)}>
                           {emp.name}
                         </SelectItem>
                       ))}
-                  </SelectContent>
-                </Select>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="flex flex-col">
+                  <span className="text-xs text-muted-foreground mb-1">
+                    Select reviewer
+                  </span>
+                  <Select
+                    value={selectedReviewer}
+                    onValueChange={(value) => setSelectedReviewer(value)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue>
+                        {selectedReviewer ? (
+                          getEmployeeById(selectedReviewer)?.name || ""
+                        ) : (
+                          <span className="text-muted-foreground">
+                            Select reviewer
+                          </span>
+                        )}
+                      </SelectValue>
+                    </SelectTrigger>
+                    <SelectContent>
+                      {(managersList.length > 0
+                        ? managersList
+                        : employees.filter((emp) => {
+                            const desig = (emp.designation || "")
+                              .toString()
+                              .toLowerCase();
+                            const hasRole = Array.isArray(emp.roles)
+                              ? emp.roles.some(
+                                  (r: any) =>
+                                    String(r)
+                                      .toLowerCase()
+                                      .includes("manager") ||
+                                    String(r).toLowerCase().includes("lead")
+                                )
+                              : false;
+                            return (
+                              desig.includes("manager") ||
+                              desig.includes("lead") ||
+                              hasRole
+                            );
+                          })
+                      ).map((m: any) => (
+                        <SelectItem
+                          key={m.e_id || String(m.emp_id)}
+                          value={m.e_id || String(m.emp_id)}
+                        >
+                          {m.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
+              {/* Removed explicit 'Change' buttons — selecting a new assignee applies the change immediately. */}
               <Button
                 onClick={handleAssign}
                 disabled={!selectedAssignee}
@@ -217,6 +377,65 @@ const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
               >
                 Assign Task
               </Button>
+            </div>
+          )}
+
+          {canAssign && task.status === "REVIEW" && (
+            <div className="p-4 rounded-lg bg-muted/50 space-y-3">
+              <h4 className="text-black font-medium text-foreground">
+                Assign Reviewer
+              </h4>
+              <div className="w-72">
+                <Select
+                  value={selectedReviewer}
+                  onValueChange={(value) => {
+                    setSelectedReviewer(value);
+                    // Allow Admin/Manager to assign reviewer for a REVIEW task
+                    updateTaskReviewer(task.t_id, value, user?.e_id || "");
+                  }}
+                >
+                  <SelectTrigger>
+                    <SelectValue>
+                      {selectedReviewer ? (
+                        getEmployeeById(selectedReviewer)?.name || ""
+                      ) : (
+                        <span className="text-muted-foreground">
+                          Select reviewer
+                        </span>
+                      )}
+                    </SelectValue>
+                  </SelectTrigger>
+                  <SelectContent>
+                    {(managersList.length > 0
+                      ? managersList
+                      : employees.filter((emp) => {
+                          const desig = (emp.designation || "")
+                            .toString()
+                            .toLowerCase();
+                          const hasRole = Array.isArray(emp.roles)
+                            ? emp.roles.some(
+                                (r: any) =>
+                                  String(r).toLowerCase().includes("manager") ||
+                                  String(r).toLowerCase().includes("lead")
+                              )
+                            : false;
+                          return (
+                            desig.includes("manager") ||
+                            desig.includes("lead") ||
+                            hasRole
+                          );
+                        })
+                    ).map((m: any) => (
+                      <SelectItem
+                        key={m.e_id || String(m.emp_id)}
+                        value={m.e_id || String(m.emp_id)}
+                      >
+                        {m.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
           )}
 

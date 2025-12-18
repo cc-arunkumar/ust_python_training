@@ -22,7 +22,7 @@ def get_all(
     db: Session = Depends(get_db),
     skip: Optional[int] = Query(None, ge=0, description="Number of records to skip"),
     limit: Optional[int] = Query(None, gt=0, description="Maximum number of records to return"),
-    current=Depends(role_guard("Admin"))
+    current=Depends(role_guard(["Admin", "Manager"]))
 ):
     """Get all employees with optional pagination."""
     if skip is not None or limit is not None:

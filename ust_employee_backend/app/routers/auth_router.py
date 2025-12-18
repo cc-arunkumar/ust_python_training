@@ -14,6 +14,7 @@ from utils.auth import (
 from schemas.auth_model import LoginRequest, ForgotPasswordRequest, ResetPasswordRequest, VerifyCodeRequest
 from passlib.context import CryptContext
 from datetime import datetime, timedelta, timezone
+import re
 from jose import jwt, JWTError, ExpiredSignatureError
 import random, string
 
@@ -47,11 +48,19 @@ async def login( request: LoginRequest, db: Session = Depends(get_db)):
     # Build employee sub-object
     employee_obj = None
     if employee:
-        mgr_id = None
-        if employee.manager_id:
-            mgr_id = f"E{employee.manager_id:03d}"
+        def _fmt_eid(x):
+            if x is None:
+                return None
+            try:
+                digits = re.sub(r"\D", "", str(x))
+                n = int(digits) if digits else None
+                return f"E{n:03d}" if n is not None else None
+            except Exception:
+                return None
+
+        mgr_id = _fmt_eid(employee.manager_id)
         employee_obj = {
-            "e_id": f"E{employee.emp_id:03d}",
+            "e_id": _fmt_eid(employee.emp_id) or None,
             "name": employee.name,
             "email": employee.email,
             "designation": employee.designation,

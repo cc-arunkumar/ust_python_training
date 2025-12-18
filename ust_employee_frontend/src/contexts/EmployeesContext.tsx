@@ -31,7 +31,17 @@ export const EmployeesProvider: React.FC<{ children: React.ReactNode }> = ({
     try {
       // call backend employees route (requires auth)
       const res = await api.get("/api/employees");
-      setEmployees(res.data || []);
+      // Normalize backend employee shape to frontend-friendly shape (e_id)
+      const fetched = (res.data || []).map((emp: any) => ({
+        ...emp,
+        // normalize e_id to the prefixed form used across the UI (E###)
+        e_id:
+          emp.e_id ||
+          (emp.emp_id != null
+            ? `E${String(emp.emp_id).padStart(3, "0")}`
+            : undefined),
+      }));
+      setEmployees(fetched || []);
     } catch (err) {
       console.error("Failed to load employees", err);
     } finally {
@@ -43,10 +53,18 @@ export const EmployeesProvider: React.FC<{ children: React.ReactNode }> = ({
     fetchEmployees();
   }, []);
 
+  const normalizeId = (id?: string | number) =>
+    id == null ? "" : String(id).replace(/\D/g, "");
+
   const value: EmployeesContextValue = {
     employees,
     loading,
-    getEmployeeById: (e_id?: string) => employees.find((e) => e.e_id === e_id),
+    // Accepts either numeric string, prefixed like 'E001' or a number.
+    getEmployeeById: (e_id?: string) => {
+      if (!e_id) return undefined;
+      const target = normalizeId(e_id);
+      return employees.find((e) => normalizeId(e.e_id) === target);
+    },
     refresh: fetchEmployees,
   };
 

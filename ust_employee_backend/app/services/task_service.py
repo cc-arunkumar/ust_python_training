@@ -55,6 +55,10 @@ def patch_status(db: Session, task_id: int, status: str, role: str | None = None
     if not task:
         return None
 
+    # Do not allow changing the status of a completed task
+    if getattr(task, "status", None) == "DONE":
+        raise ValueError("Cannot change status of a completed task")
+
     task.status = normalized_status
     db.commit()
     db.refresh(task)
@@ -73,12 +77,21 @@ def patch_reviewer(db, task_id: int, reviewer_id: str):
     task = get_task_by_id(db, task_id)
     if not task:
         return None
+    # Do not allow assigning reviewer to a completed task
+    if getattr(task, "status", None) == "DONE":
+        raise ValueError("Cannot assign reviewer to a completed task")
 
-    if task.status != "DONE":
-        raise ValueError("Task must be completed before assigning reviewer")
+    # Set reviewer and assign the task to the reviewer so they receive it
+    try:
+        rid = int(reviewer_id)
+    except Exception:
+        rid = None
 
-    task.reviewer_id = reviewer_id
-    task.assigned_to = reviewer_id  # task goes to reviewer
+    if rid is None:
+        raise ValueError("Invalid reviewer id")
+
+    task.reviewer = rid
+    task.assigned_to_id = rid
     db.commit()
     db.refresh(task)
     return task

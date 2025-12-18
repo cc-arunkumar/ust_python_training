@@ -28,8 +28,10 @@ class TaskBase(BaseModel):
 
 
 # ---------- Assign ----------
-class TaskAssign(TaskBase):
+class TaskAssign(BaseModel):
     assigned_to_id: int
+    reviewer: Optional[int] = None
+
 
 
 # ---------- Status ----------
@@ -41,6 +43,11 @@ class TaskStatusUpdate(BaseModel):
 class TaskReviewDecision(BaseModel):
     action: str  # APPROVE | REJECT
     remarks: Optional[str] = None
+
+
+# ---------- Priority update ----------
+class TaskPriorityUpdate(BaseModel):
+    priority: str
 
 class TaskResponse(TaskBase):
     id: int
