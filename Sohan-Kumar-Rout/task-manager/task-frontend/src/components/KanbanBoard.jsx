@@ -5,10 +5,11 @@ import {
   Draggable,
 } from "@hello-pangea/dnd";
 import { getTasks, updateTask } from "../services/taskService";
+import { toast } from "react-toastify";
 
 // 🌈 Header colors
 const statusColors = {
-  TO_DO: "#A7C7E7",          // Light Blue
+  TO_DO: "#A7C7E7",          
   IN_PROGRESS: "#F7E7A1",    // Light Yellow
   REVIEW: "#D7BDE2",         // Light Purple
   COMPLETED: "#7DCEA0",      // Green
@@ -60,21 +61,25 @@ const KanbanBoard = () => {
   const role = localStorage.getItem("role");
 
   const loadTasks = async () => {
-    const res = await getTasks();
-    const tasks = res.data;
+    try {
+      const res = await getTasks();
+      const tasks = res.data;
 
-    const newCols = {
-      TO_DO: { ...initialColumns.TO_DO, items: [] },
-      IN_PROGRESS: { ...initialColumns.IN_PROGRESS, items: [] },
-      REVIEW: { ...initialColumns.REVIEW, items: [] },
-      COMPLETED: { ...initialColumns.COMPLETED, items: [] },
-    };
+      const newCols = {
+        TO_DO: { ...initialColumns.TO_DO, items: [] },
+        IN_PROGRESS: { ...initialColumns.IN_PROGRESS, items: [] },
+        REVIEW: { ...initialColumns.REVIEW, items: [] },
+        COMPLETED: { ...initialColumns.COMPLETED, items: [] },
+      };
 
-    tasks.forEach((task) => {
-      if (newCols[task.status]) newCols[task.status].items.push(task);
-    });
+      tasks.forEach((task) => {
+        if (newCols[task.status]) newCols[task.status].items.push(task);
+      });
 
-    setColumns(newCols);
+      setColumns(newCols);
+    } catch (err) {
+      toast.error("Failed to load tasks!");
+    }
   };
 
   useEffect(() => {
@@ -99,7 +104,7 @@ const KanbanBoard = () => {
     }
 
     if (!isMoveAllowedFrontend(role, from, to)) {
-      alert(`You cannot move from ${from} → ${to}`);
+      toast.error(`You cannot move from ${from} → ${to}`);
       return;
     }
 
@@ -122,8 +127,9 @@ const KanbanBoard = () => {
 
     try {
       await updateTask(moved.task_id, { status: moved.status });
+      toast.success(`Task moved to ${to}!`);
     } catch (err) {
-      alert("Backend rejected this move. Reloading.");
+      toast.error("Backend rejected this move. Reloading.");
       loadTasks();
     }
   };

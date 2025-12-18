@@ -3,7 +3,6 @@ import { getEmployees, deleteEmployee } from "../services/employeeService";
 
 const EmployeeList = () => {
   const [employees, setEmployees] = useState([]);
-
   const role = localStorage.getItem("role");
 
   const loadEmployees = async () => {
@@ -22,7 +21,7 @@ const EmployeeList = () => {
   };
 
   return (
-    <div className="bg-gray-800 p-6 rounded-xl shadow-lg text-white w-full">
+    <div className="bg-gray-800 p-6 rounded-xl text-white w-full">
       <h2 className="text-2xl font-bold mb-4 text-blue-400">Employees</h2>
 
       <table className="w-full text-left border-collapse">
@@ -50,14 +49,14 @@ const EmployeeList = () => {
                     onClick={() =>
                       (window.location.href = `/admin/employees/create?id=${emp.id}`)
                     }
-                    className="bg-blue-600 px-3 py-1 rounded hover:bg-blue-700"
+                    className="bg-blue-600 px-3 py-1 rounded hover:bg-blue-700 transition-all duration-300"
                   >
                     Edit
                   </button>
 
                   <button
                     onClick={() => handleDelete(emp.id)}
-                    className="bg-red-600 px-3 py-1 rounded hover:bg-red-700"
+                    className="bg-red-600 px-3 py-1 rounded hover:bg-red-700 transition-all duration-300"
                   >
                     Delete
                   </button>

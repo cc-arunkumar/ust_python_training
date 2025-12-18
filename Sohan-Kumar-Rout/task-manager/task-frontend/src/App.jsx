@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+// src/App.jsx
+import React, { useEffect } from "react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import Login from "./pages/Login";
-import DashboardManager from "./pages/DashboardManager";   // ✅ Manager Dashboard
-import KanbanBoard from "./components/KanbanBoard";
+import DashboardManager from "./pages/DashboardManager";
 
 import SidebarAdmin from "./components/SidebarAdmin";
 import SidebarManager from "./components/SidebarManager";
@@ -14,59 +16,30 @@ import EmployeeForm from "./components/EmployeeForm";
 import TaskList from "./components/TaskList";
 import CreateTask from "./components/CreateTask";
 import EmployeeTaskBoard from "./components/EmployeeTaskBoard";
+import KanbanBoard from "./components/KanbanBoard";
 
-import { FaMoon, FaSun } from "react-icons/fa";
-
-// ---------------- THEME TOGGLE BUTTON ----------------
-const ThemeToggle = ({ theme, toggleTheme }) => (
-  <button
-    onClick={toggleTheme}
-    className="fixed top-4 right-4 p-3 rounded-full shadow-lg 
-               bg-gray-200 dark:bg-gray-800 text-gray-900 dark:text-white 
-               transition-all duration-300 hover:scale-110 z-50"
-  >
-    {theme === "light" ? <FaMoon size={18} /> : <FaSun size={18} />}
-  </button>
-);
-
-// ---------------- LAYOUT WRAPPER ----------------
 const Layout = ({ sidebar, children }) => (
   <div className="flex">
     {sidebar}
-    <div className="flex-1 p-6 
-      bg-white text-black 
-      dark:bg-gray-900 dark:text-white 
-      transition-all duration-300">
+    <div className="flex-1 p-6 bg-white text-black transition-all duration-300">
       {children}
     </div>
   </div>
 );
 
 function App() {
-  const [theme, setTheme] = useState("light");
-
+  // Force light theme globally (no toggle)
   useEffect(() => {
-    const savedTheme = localStorage.getItem("theme") || "light";
-    setTheme(savedTheme);
-    document.documentElement.className = savedTheme;
+    document.documentElement.className = "light";
   }, []);
-
-  const toggleTheme = () => {
-    const newTheme = theme === "light" ? "dark" : "light";
-    setTheme(newTheme);
-    document.documentElement.className = newTheme;
-    localStorage.setItem("theme", newTheme);
-  };
 
   return (
     <BrowserRouter>
-      <ThemeToggle theme={theme} toggleTheme={toggleTheme} />
-
       <Routes>
-        {/* LOGIN */}
+        {/* Login */}
         <Route path="/login" element={<Login />} />
 
-        {/* ---------------- ADMIN ROUTES ---------------- */}
+        {/* --- Admin routes (no Admin dashboard) --- */}
         <Route
           path="/admin/employees"
           element={
@@ -107,13 +80,15 @@ function App() {
             </Layout>
           }
         />
+        {/* Redirect /admin -> /admin/employees to avoid "No routes matched" */}
+        <Route path="/admin" element={<Navigate to="/admin/employees" replace />} />
 
-        {/* ---------------- MANAGER ROUTES ---------------- */}
+        {/* --- Manager routes --- */}
         <Route
           path="/manager/dashboard"
           element={
             <Layout sidebar={<SidebarManager />}>
-              <DashboardManager />   {/* ✅ Manager Dashboard */}
+              <DashboardManager />
             </Layout>
           }
         />
@@ -150,7 +125,7 @@ function App() {
           }
         />
 
-        {/* ---------------- EMPLOYEE ROUTES ---------------- */}
+        {/* --- Employee routes --- */}
         <Route
           path="/employee/tasks"
           element={
@@ -168,9 +143,21 @@ function App() {
           }
         />
 
-        {/* DEFAULT ROUTE */}
+        {/* Default route */}
         <Route path="/" element={<Login />} />
       </Routes>
+
+      {/* Global Toasts */}
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        pauseOnHover
+        draggable
+        theme="light"
+      />
     </BrowserRouter>
   );
 }
