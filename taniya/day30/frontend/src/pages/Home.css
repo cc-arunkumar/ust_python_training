@@ -1,0 +1,63 @@
+.home-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: #f7f7f7;
+}
+
+.home-card {
+  background: white;
+  padding: 30px;
+  width: 350px;
+  border-radius: 10px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+}
+
+.user-icon {
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.user-name {
+  font-weight: bold;
+}
+
+.role-switch {
+  background-color: #667eea;
+  color: white;
+  padding: 8px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  border: none;
+}
+
+.role-switch:hover {
+  background-color: #5a67d8;
+}
+
+.logout-btn {
+  background-color: #f44336;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  border: none;
+  margin-top: 20px;
+  cursor: pointer;
+}
+
+.logout-btn:hover {
+  background-color: #d32f2f;
+}
