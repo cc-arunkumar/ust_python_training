@@ -1,46 +1,58 @@
-import React, { useState, useEffect } from 'react';
-import { Plus, Edit2, Trash2, AlertCircle } from 'lucide-react';
-import { useAuth } from '../../context/AuthContext';
-import ApiService from '../../services/api';
-import EmployeeModal from './EmployeeModal';
-import toast from 'react-hot-toast';
+import React, { useState, useEffect } from "react";
+import { Plus, Edit2, Trash2, AlertCircle } from "lucide-react";
+import { useAuth } from "../../context/AuthContext";
+import ApiService from "../../services/api";
+import EmployeeModal from "./EmployeeModal";
+import toast from "react-hot-toast";
 
-const EmployeesPage = () => {
-  const [employees, setEmployees] = useState([]);
+const EmployeesPage = ({ initialEmployees }) => {
+  // If `initialEmployees` is passed (from Layout for role-specific views), use it and skip
+  // the initial API fetch. Otherwise, fetch all employees.
+  const [employees, setEmployees] = useState(initialEmployees ?? []);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [editingEmployee, setEditingEmployee] = useState(null);
 
   const { hasRole } = useAuth();
-  const isAdmin = hasRole('ADMIN');
+  const isAdmin = hasRole("ADMIN");
 
   useEffect(() => {
+    // If parent supplied employees, use them and skip fetching.
+    if (initialEmployees !== undefined) {
+      setEmployees(initialEmployees);
+      setLoading(false);
+      setError("");
+      return;
+    }
+
     fetchEmployees();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialEmployees]);
 
   const fetchEmployees = async () => {
     try {
-      setError('');
+      setError("");
       const data = await ApiService.getEmployees();
       setEmployees(data);
     } catch (err) {
       setError(err.message);
-      toast.error('Failed to load employees');
+      toast.error("Failed to load employees");
     } finally {
       setLoading(false);
     }
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this employee?')) return;
+    if (!window.confirm("Are you sure you want to delete this employee?"))
+      return;
 
     try {
       await ApiService.deleteEmployee(id);
-      toast.success('Employee deleted successfully');
+      toast.success("Employee deleted successfully");
       fetchEmployees();
     } catch (err) {
-      toast.error(err.message || 'Failed to delete employee');
+      toast.error(err.message || "Failed to delete employee");
     }
   };
 
@@ -64,7 +76,6 @@ const EmployeesPage = () => {
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
-
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
         <div>
@@ -109,7 +120,7 @@ const EmployeesPage = () => {
                 <p className="text-gray-500 text-sm">{emp.designation}</p>
                 <p className="text-gray-400 text-sm mt-1">{emp.email}</p>
                 <p className="text-gray-400 text-sm mt-1">
-                  Manager ID: {emp.manager_id || '-'}
+                  Manager ID: {emp.manager_id || "-"}
                 </p>
                 <p className="text-gray-400 text-sm mt-1">
                   Employee ID: {emp.emp_id}

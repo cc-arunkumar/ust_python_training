@@ -129,7 +129,8 @@ const Layout = () => {
         );
 
         setTasks(devTasks);
-        setEmployees([]); // Developers don't see other employees
+        // Show only the developer user in the employees panel
+        setEmployees(currentEmp ? [currentEmp] : []);
         return;
       }
       // fallback: clear
@@ -150,8 +151,21 @@ const Layout = () => {
     totalTasks === 0 ? 0 : Math.round((completedTasks / totalTasks) * 100);
 
   const renderPage = () => {
-    if (currentPage === "employees") return <EmployeesPage />;
-    return taskView === "board" ? <KanbanBoard /> : <TasksPage />;
+    if (currentPage === "employees")
+      return <EmployeesPage initialEmployees={employees} />;
+    return taskView === "board" ? (
+      <KanbanBoard
+        initialTasks={tasks}
+        initialEmployees={employees}
+        onTasksChanged={loadDashboardData}
+      />
+    ) : (
+      <TasksPage
+        initialTasks={tasks}
+        initialEmployees={employees}
+        onTasksChanged={loadDashboardData}
+      />
+    );
   };
 
   const roleStyles = {
@@ -188,13 +202,7 @@ const Layout = () => {
             open={sidebarOpen}
             onClick={() => setCurrentPage("tasks")}
           />
-          <SidebarButton
-            icon={<Users size={18} />}
-            label="Employees"
-            active={currentPage === "employees"}
-            open={sidebarOpen}
-            onClick={() => setCurrentPage("employees")}
-          />
+          {/* Employees button moved into KanbanBoard header per UX change */}
         </nav>
       </aside>
 
