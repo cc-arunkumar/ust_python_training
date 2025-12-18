@@ -1,7 +1,8 @@
-from sqlalchemy import Column, Integer, String, Enum, ForeignKey, DateTime, Date, Text
+from sqlalchemy import Column, Integer, String, Enum, ForeignKey, DateTime, Date, Text, Boolean
 from sqlalchemy.orm import relationship
 from database import Base
 import enum
+from datetime import datetime
 
 # Enums
 class RoleEnum(str, enum.Enum):
@@ -71,6 +72,10 @@ class Task(Base):
     remark = Column(Text)
     expected_closure = Column(Date)
     actual_closure = Column(Date)
+
+    # ✅ Soft delete fields
+    is_deleted = Column(Boolean, default=False)
+    deleted_at = Column(DateTime, nullable=True)
 
     # Relationships
     assignee = relationship("Employee", foreign_keys=[assigned_to], back_populates="tasks_assigned")
