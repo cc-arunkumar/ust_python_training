@@ -22,6 +22,8 @@ class UserResponse(UserBase):
     id: int
 
     class Config:
+        # Support Pydantic v1 ORM mode; keep from_attributes if present in other pydantic versions
+        orm_mode = True
         from_attributes = True
 
 class UserStatusUpdate(BaseModel):

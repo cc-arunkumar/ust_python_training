@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from database.connection import get_db
 from schemas.users import UserCreate, UserResponse, UserLogin, UserUpdate
-from services.users_service import create_user, get_user_by_id, delete_user, update_user, patch_user, get_users
+from services.users_service import create_user, get_user_by_id, delete_user, update_user, patch_user, get_users, get_managers
 from database.mongodb import log_activity
 from utils.auth import get_current_user, role_guard
 
@@ -23,6 +23,16 @@ def get_all(skip: int = 0, limit: int = 10, db: Session = Depends(get_db),curren
     Example: /users?skip=0&limit=20
     """
     return get_users(db, skip=skip, limit=limit)
+
+
+@router.get("/managers", response_model=list[UserResponse])
+def get_managers_list(skip: int = 0, limit: int = 100, db: Session = Depends(get_db), current=Depends(role_guard(["Admin", "Manager"]))):
+    """Return users that have a manager role (case-insensitive).
+
+    This endpoint is provided as a convenience for the frontend to fetch all
+    managers explicitly instead of client-side filtering.
+    """
+    return get_managers(db, skip=skip, limit=limit)
 
 @router.get("/{user_id}", response_model=UserResponse)
 def get_by_id(user_id: int, db: Session = Depends(get_db),current=Depends(role_guard(["Admin", "Manager"]))):

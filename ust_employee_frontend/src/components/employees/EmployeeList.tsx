@@ -2,6 +2,7 @@ import React, { useState, useMemo, useEffect } from "react";
 import { Employee, Role } from "@/types";
 import api from "@/services/api";
 import { useAuth } from "@/contexts/AuthContext";
+import { useEmployees } from "@/contexts/EmployeesContext";
 import {
   Table,
   TableBody,
@@ -45,12 +46,13 @@ const AddEmployeeForm: React.FC<{
   const [designation, setDesignation] = useState("");
   const [manager, setManager] = useState("");
   const [managersList, setManagersList] = useState<ManagerOption[]>([]);
+  const { employees, getEmployeeById } = useEmployees();
 
   useEffect(() => {
     (async () => {
       try {
-        // Fetch from users endpoint — managers may exist as user records with a Manager role
-        const res = await api.get("/api/users");
+        // Fetch managers from the new managers endpoint (backend returns users with manager role)
+        const res = await api.get("/api/users/managers");
         const all = Array.isArray(res.data) ? res.data : [];
         setManagersList(
           all
@@ -64,9 +66,17 @@ const AddEmployeeForm: React.FC<{
             })
             .map((u: any) => {
               const empId = u.emp_id != null ? u.emp_id : u.id;
+              const empRec = getEmployeeById
+                ? getEmployeeById(String(empId))
+                : undefined;
               return {
                 emp_id: empId,
-                name: u.name || u.username || u.email || `User ${empId}`,
+                name:
+                  (empRec && empRec.name) ||
+                  u.name ||
+                  u.username ||
+                  u.email ||
+                  `User ${empId}`,
                 e_id: empId
                   ? `E${String(empId).padStart(3, "0")}`
                   : u.e_id || "",

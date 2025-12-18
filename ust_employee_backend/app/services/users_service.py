@@ -27,10 +27,39 @@ def get_users(db: Session, skip: int = 0, limit: int = 10):
     Returns:
         list[UserDB]
     """
-    query = db.query(UserDB).offset(skip)
+    # Order by id to make pagination deterministic (avoid skipping items when DB returns arbitrary order)
+    query = db.query(UserDB).order_by(UserDB.id).offset(skip)
     if limit is not None and limit > 0:
         query = query.limit(limit)
     return query.all()
+
+
+def get_managers(db: Session, skip: int = 0, limit: int | None = None):
+    """Return users which have a manager role (case-insensitive).
+
+    This does a safe, conservative check in Python after fetching rows because
+    JSON->SQL queries differ across DB backends. For small user counts this is
+    fine; if you have many users consider implementing a DB-level JSON query.
+    """
+    # fetch all (or paginated) users and filter by roles in Python
+    query = db.query(UserDB).order_by(UserDB.id).offset(skip)
+    if limit is not None and limit > 0:
+        query = query.limit(limit)
+
+    users = query.all()
+    managers = []
+    for u in users:
+        roles = u.roles or []
+        # roles might be stored as a string or list; normalize to list of strings
+        if not isinstance(roles, (list, tuple)):
+            roles_list = [str(roles)]
+        else:
+            roles_list = [str(r) for r in roles]
+
+        if any("manager" in r.lower() for r in roles_list):
+            managers.append(u)
+
+    return managers
 
 def get_user_by_id(db: Session, user_id: int):
     return db.query(UserDB).filter(UserDB.id == user_id).first()

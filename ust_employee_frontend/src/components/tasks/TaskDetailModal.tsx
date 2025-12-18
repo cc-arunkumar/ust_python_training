@@ -9,6 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import api from "@/services/api";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -74,36 +75,27 @@ const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
     let mounted = true;
     (async () => {
       try {
-        const res = await fetch("http://localhost:8000/api/users", {
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-        });
-        const data = await res.json();
+        // use axios instance so Authorization header is included
+        const res = await api.get("/api/users/managers");
         if (!mounted) return;
-        const all = Array.isArray(data) ? data : [];
+        const all = Array.isArray(res.data) ? res.data : [];
         setManagersList(
-          all
-            .filter((u: any) => {
-              const roles = u.roles || u.role || [];
-              return Array.isArray(roles)
-                ? roles.some((r: any) =>
-                    String(r).toLowerCase().includes("manager")
-                  )
-                : String(roles).toLowerCase().includes("manager");
-            })
-            .map((u: any) => {
-              const empId = u.emp_id != null ? u.emp_id : u.id;
-              return {
-                emp_id: empId,
-                name: u.name || u.username || u.email || `User ${empId}`,
-                e_id: empId
-                  ? `E${String(empId).padStart(3, "0")}`
-                  : u.e_id || "",
-              };
-            })
+          all.map((u: any) => {
+            const empId = u.emp_id != null ? u.emp_id : u.id;
+            const empRec = getEmployeeById
+              ? getEmployeeById(String(empId))
+              : undefined;
+            return {
+              emp_id: empId,
+              name:
+                (empRec && empRec.name) ||
+                u.name ||
+                u.username ||
+                u.email ||
+                `User ${empId}`,
+              e_id: empId ? `E${String(empId).padStart(3, "0")}` : u.e_id || "",
+            };
+          })
         );
       } catch (err) {
         // fallback silently — managers list will be empty and employees-based filter will still work
