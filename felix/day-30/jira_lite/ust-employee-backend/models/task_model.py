@@ -45,6 +45,9 @@ class TaskCreate(BaseModel):
 class TaskUpdate(BaseModel):
     status: Optional[Literal['To Do', 'In Progress','Review', 'Done']] = None
     remarks: Optional[List[dict]] = None
+    assigned_to: Optional[int] = None
+    assigned_by: Optional[int] = None
+    assigned_at: Optional[datetime] = None
     updated_by: int
     updated_at: datetime = datetime.now()
     actual_completion_date: Optional[date] = None

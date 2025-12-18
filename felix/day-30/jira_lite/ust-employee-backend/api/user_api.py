@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends
-from services.user_services import update_user_role, create_User, get_User_by_id,get_all_manager_for_admin
-from models.user_model import UpdateRole, UserModel
+from services.user_services import update_user_role, create_User, get_User_by_id,get_all_manager_for_admin,delete_User_account, get_all_Users, update_User
+from models.user_model import UpdateRole, UserModel, UserUpdate
 from auth.jwt_auth import get_current_user
 
 user_router = APIRouter()
@@ -121,3 +121,113 @@ def get_user_by_id_endpoint(
         raise HTTPException(status_code=401, detail="Invalid token")
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error fetching user: {e}")
+    
+# Add these endpoints to your user_router in routes/user_routes.py
+
+@user_router.get("/users", tags=["Users"])
+def get_all_users_endpoint(user: str = Depends(get_current_user)):
+    """Get all users - Admin only"""
+    try:
+        auth_emp_id = int(user)
+        
+        # Get the authenticated user's info
+        auth_user = get_User_by_id(auth_emp_id)
+        if not auth_user:
+            raise HTTPException(status_code=401, detail="User not found")
+        
+        # Check if user has admin role
+        roles = auth_user.role
+        if "admin" not in roles:
+            raise HTTPException(
+                status_code=403, 
+                detail="Forbidden: admin role required to view all users"
+            )
+        
+        # Get all users
+        users = get_all_Users()
+        if isinstance(users, dict) and "detail" in users:
+            raise HTTPException(status_code=404, detail=users["detail"])
+        
+        return users
+    except ValueError:
+        raise HTTPException(status_code=401, detail="Invalid token")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching users: {e}")
+
+
+@user_router.put("/users/{emp_id}", tags=["Users"])
+def update_user_endpoint(
+    emp_id: int, 
+    user_update: UserUpdate,
+    user: str = Depends(get_current_user)
+):
+    """Update user - Admin only"""
+    try:
+        auth_emp_id = int(user)
+        
+        # Get the authenticated user's info
+        auth_user = get_User_by_id(auth_emp_id)
+        if not auth_user:
+            raise HTTPException(status_code=401, detail="User not found")
+        
+        # Check if user has admin role
+        roles = auth_user.role
+        if "admin" not in roles:
+            raise HTTPException(
+                status_code=403, 
+                detail="Forbidden: admin role required to update users"
+            )
+        
+        # Update the user
+        updated_user = update_User(emp_id, user_update)
+        if updated_user is None:
+            raise HTTPException(status_code=500, detail="User update failed")
+        
+        return updated_user
+    except ValueError:
+        raise HTTPException(status_code=401, detail="Invalid token")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error updating user: {e}")
+
+
+@user_router.delete("/users/{emp_id}", tags=["Users"])
+def delete_user_endpoint(
+    emp_id: int,
+    user: str = Depends(get_current_user)
+):
+    """Delete user - Admin only"""
+    try:
+        auth_emp_id = int(user)
+        
+        # Get the authenticated user's info
+        auth_user = get_User_by_id(auth_emp_id)
+        if not auth_user:
+            raise HTTPException(status_code=401, detail="User not found")
+        
+        # Check if user has admin role
+        roles = auth_user.role
+        if "admin" not in roles:
+            raise HTTPException(
+                status_code=403, 
+                detail="Forbidden: admin role required to delete users"
+            )
+        
+        # Prevent self-deletion
+        if auth_emp_id == emp_id:
+            raise HTTPException(
+                status_code=400, 
+                detail="You cannot delete your own user account"
+            )
+        
+        # Delete the user
+        success = delete_User_account(emp_id)
+        if not success:
+            raise HTTPException(status_code=404, detail="User not found or deletion failed")
+        
+        return {"message": "User deleted successfully", "emp_id": emp_id}
+    except ValueError:
+        raise HTTPException(status_code=401, detail="Invalid token")
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error deleting user: {e}")

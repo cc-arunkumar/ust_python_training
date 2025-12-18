@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { LogOut, ChevronDown, Users, LayoutDashboard } from 'lucide-react';
+import { LogOut, ChevronDown, Users, LayoutDashboard, Shield } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { api } from '../../services/api';
 
@@ -46,6 +46,8 @@ const Header = ({ currentView, userRoles, onChangeView, onNavigate, onUserNameFe
     ['admin', 'manager'].includes(role)
   );
 
+  const canAccessUsers = userRoles?.includes('admin');
+
   return (
     <header className="bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 shadow-xl sticky top-0 z-40 backdrop-blur-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -74,11 +76,30 @@ const Header = ({ currentView, userRoles, onChangeView, onNavigate, onUserNameFe
               {canAccessEmployees && (
                 <button
                   onClick={() => onNavigate('/employees')}
-                  className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-400 hover:to-pink-400 text-white rounded-xl transition-all duration-200 shadow-lg hover:shadow-purple-500/50 transform hover:scale-105"
+                  className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white rounded-xl transition-all duration-200 shadow-lg hover:shadow-cyan-500/50 transform hover:scale-105"
                 >
                   <Users size={18} />
                   <span className="hidden sm:inline font-medium">Employees</span>
                 </button>
+              )}
+
+              {canAccessUsers && (
+                <button
+                  onClick={() => onNavigate('/users')}
+                  className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white rounded-xl transition-all duration-200 shadow-lg hover:shadow-cyan-500/50 transform hover:scale-105"
+                >
+                  <Shield size={18} />
+                  <span className="hidden sm:inline font-medium">Users</span>
+                </button>
+              )}
+
+              {/* Current Role Badge */}
+              {currentView && (
+                <div className="hidden lg:flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20 shadow-lg">
+                  <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                  <span className="text-xs text-white/80 font-medium">Role:</span>
+                  <span className="text-sm font-bold text-white capitalize">{currentView}</span>
+                </div>
               )}
             </nav>
           )}
@@ -90,7 +111,7 @@ const Header = ({ currentView, userRoles, onChangeView, onNavigate, onUserNameFe
               <div className="relative">
                 <button
                   onClick={() => setShowRoleDropdown(!showRoleDropdown)}
-                  className="flex items-center gap-3 px-5 py-3 bg-gradient-to-r from-emerald-400/90 via-teal-400/90 to-cyan-400/90 hover:from-emerald-500 hover:via-teal-500 hover:to-cyan-500 text-white font-bold rounded-2xl transition-all duration-300 backdrop-blur-xl border-2 border-emerald-300/50 hover:border-emerald-400/70 shadow-2xl hover:shadow-emerald-500/40 hover:scale-105 hover:-translate-y-1 group relative overflow-hidden"
+                  className="flex items-center gap-3 px-5 py-3 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white rounded-xl transition-all duration-200 shadow-lg hover:shadow-cyan-500/50 transform hover:scale-105 hover:-translate-y-1 group relative overflow-hidden"
                 >
                   {/* Animated background glow */}
                   <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent rounded-2xl blur animate-pulse opacity-75 group-hover:opacity-100 transition-opacity"></div>
@@ -117,7 +138,7 @@ const Header = ({ currentView, userRoles, onChangeView, onNavigate, onUserNameFe
                         onClick={() => handleRoleChange(role)}
                         className={`w-full px-4 py-3 text-left text-sm font-semibold rounded-xl transition-all duration-200 shadow-sm hover:shadow-lg transform hover:scale-[1.02] hover:-translate-y-0.5 group capitalize ${
                           currentView === role
-                            ? 'bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 text-white shadow-emerald-500/50 border-2 border-emerald-300 ring-2 ring-emerald-500/30 shadow-lg'
+                            ? 'bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white rounded-xl transition-all duration-200 shadow-lg hover:shadow-cyan-500/50 transform hover:scale-105'
                             : 'bg-gradient-to-r from-gray-50 to-white text-gray-700 border-2 border-gray-200 hover:from-emerald-50 hover:to-teal-50 hover:text-emerald-700 hover:border-emerald-300'
                         }`}
                       >

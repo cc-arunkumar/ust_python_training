@@ -162,3 +162,27 @@ def delete_User(emp_id,manager_id):
     finally:
         print("Completed")
         session.close()
+        
+# Add this function to your services/user_services.py file
+
+def delete_User_account(emp_id):
+    """Delete a user account by emp_id"""
+    try:
+        session = SessionLocal()
+        
+        # Fetch the User by ID
+        user = session.query(User).filter(User.emp_id == emp_id).first()
+        if not user:
+            print("User not found")
+            return False
+        
+        session.delete(user)
+        session.commit()
+        return True
+    except Exception as e:
+        session.rollback()
+        print("ERROR:", e)
+        return False
+    finally:
+        print("Completed")
+        session.close()

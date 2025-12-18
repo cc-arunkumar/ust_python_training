@@ -3,7 +3,8 @@ import { Routes, Route } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import LoginPage from './auth/LoginPage';
 import Dashboard from './dashboard/Dashboard';
-import EmployeeManagement from './dashboard/EmployeeManagement'; // <-- import your component
+import EmployeeManagement from './dashboard/EmployeeManagement';
+import UserManagement from './dashboard/UserManagement'; // ADD THIS IMPORT
 
 const AppRouter = () => {
   const { user, loading } = useAuth();
@@ -27,6 +28,7 @@ const AppRouter = () => {
         <>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/employees" element={<EmployeeManagement />} />
+          <Route path="/users" element={<UserManagement />} /> {/* ADD THIS ROUTE */}
           <Route path="*" element={<Dashboard />} /> {/* fallback */}
         </>
       )}

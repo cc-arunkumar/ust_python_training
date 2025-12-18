@@ -45,7 +45,10 @@ export const api = {
       },
       body: JSON.stringify(taskData)
     });
-    if (!response.ok) throw new Error('Failed to create task');
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.detail || 'Failed to create task');
+    }
     return response.json();
   },
   
@@ -97,14 +100,11 @@ export const api = {
     return response.json();
   },
 
-  // In your api.js or services/api.js file
-
-// Get employee by ID
-getEmployeeById: async (token, empid) => {
+  getEmployeeById: async (token, empid) => {
     const response = await fetch(`${API_BASE_URL}/employee_by_id/${empid}`, {
       headers: { 'Authorization': `Bearer ${token}` }
     });
-    if (!response.ok) throw new Error('Failed to fetch employees');
+    if (!response.ok) throw new Error('Failed to fetch employee');
     return response.json();
   },
 
@@ -166,6 +166,36 @@ getEmployeeById: async (token, empid) => {
     return response.json();
   },
 
+  getAllUsers: async (token) => {
+    const response = await fetch(`${API_BASE_URL}/users`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    if (!response.ok) throw new Error('Failed to fetch users');
+    return response.json();
+  },
+
+  updateUser: async (token, empId, userData) => {
+    const response = await fetch(`${API_BASE_URL}/users/${empId}`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(userData)
+    });
+    if (!response.ok) throw new Error('Failed to update user');
+    return response.json();
+  },
+
+  deleteUser: async (token, empId) => {
+    const response = await fetch(`${API_BASE_URL}/users/${empId}`, {
+      method: 'DELETE',
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    if (!response.ok) throw new Error('Failed to delete user');
+    return response.json();
+  },
+
   updateUserRole: async (token, empId, role) => {
     const response = await fetch(`${API_BASE_URL}/users/${empId}/role`, {
       method: 'PUT',
@@ -180,14 +210,15 @@ getEmployeeById: async (token, empid) => {
   },
 
   getManagers: async (token) => {
-  const response = await fetch(`${API_BASE_URL}/managers`, {
-    headers: { 'Authorization': `Bearer ${token}` },
-  });
-  if (!response.ok) throw new Error('Failed to fetch managers');
-  return response.json();
-},
+    const response = await fetch(`${API_BASE_URL}/managers`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    if (!response.ok) throw new Error('Failed to fetch managers');
+    return response.json();
+  },
 
-uploadFileToTask: async (token, taskId, file) => {
+  // File Management APIs
+  uploadFileToTask: async (token, taskId, file) => {
     const formData = new FormData();
     formData.append('file', file);
     
@@ -195,7 +226,6 @@ uploadFileToTask: async (token, taskId, file) => {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`
-        // ✅ No Content-Type - let browser set multipart boundary
       },
       body: formData
     });
@@ -229,7 +259,6 @@ uploadFileToTask: async (token, taskId, file) => {
     return response.json();
   },
 
-  // 🔴 UTILITY: Convert base64 to downloadable blob
   downloadFileBlob: async (token, fileId, fileName) => {
     const fileData = await api.downloadFile(token, fileId);
     
@@ -251,6 +280,5 @@ uploadFileToTask: async (token, taskId, file) => {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-  },
-
+  }
 };
