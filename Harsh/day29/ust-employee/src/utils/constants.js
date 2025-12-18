@@ -1,13 +1,21 @@
 // API Configuration
 export const API_BASE_URL = 'http://localhost:8000';
 
-// Task Status Options
 export const TASK_STATUSES = {
   TODO: 'TODO',
-  IN_PROGRESS: 'IN_PROGRESS',
-  IN_REVIEW: 'IN_REVIEW',
+  ON_PROCESS: 'ON_PROCESS',
+  REVIEW: 'REVIEW',
   DONE: 'DONE'
 };
+
+export const STATUS_LABELS = {
+  TODO: 'Todo',
+  ON_PROCESS: 'On Process',
+  REVIEW: 'Review',
+  DONE: 'Done'
+};
+
+export const STATUS_ORDER = ['TODO', 'ON_PROCESS', 'REVIEW', 'DONE'];
 
 // Status Colors for UI (Dark Theme)
 export const STATUS_COLORS = {
@@ -38,3 +46,9 @@ export const STORAGE_KEYS = {
   USER: 'user',
   ACTIVE_ROLE: 'active_role'
 }; 
+
+export const PRIORITY_COLORS = {
+  high: 'bg-red-500 text-white',
+  medium: 'bg-yellow-400 text-black',
+  low: 'bg-green-500 text-white',
+};

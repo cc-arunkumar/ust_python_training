@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Eye, AlertCircle, Calendar, User } from 'lucide-react';
+import { Plus, Eye, Trash, AlertCircle, Calendar, User } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import ApiService from '../../services/api';
 import TaskModal from './TaskModal';
 import TaskDetailsModal from './TaskDetailsModal';
 import { STATUS_COLORS } from '../../utils/constants';
+import toast from 'react-hot-toast';
 
 const TasksPage = () => {
   const [tasks, setTasks] = useState([]);
@@ -16,18 +17,35 @@ const TasksPage = () => {
   const { hasRole } = useAuth();
 
   const canCreate = hasRole('ADMIN') || hasRole('MANAGER');
+  const canDelete = hasRole('ADMIN') || hasRole('MANAGER');
 
   useEffect(() => {
     fetchTasks();
   }, []);
 
+  const normalizeStatus = (task) => {
+    if (!task) return task;
+    if (task.status === 'IN_PROGRESS') task.status = 'ON_PROCESS';
+    if (task.status === 'IN_REVIEW') task.status = 'REVIEW';
+    return task;
+  };
+
   const fetchTasks = async () => {
     try {
       setError('');
-      const data = await ApiService.getTasks();
+      let data = await ApiService.getTasks();
+
+      // Normalize statuses
+      if (Array.isArray(data)) {
+        data = data.map(normalizeStatus);
+      } else if (data && data.status) {
+        data = normalizeStatus(data);
+      }
+
       setTasks(data);
     } catch (err) {
       setError(err.message);
+      toast.error(err.message);
     } finally {
       setLoading(false);
     }
@@ -42,7 +60,24 @@ const TasksPage = () => {
     });
   };
 
-  /* ---------- LOADING ---------- */
+  const handleDelete = async (taskId) => {
+    if (!canDelete) {
+      toast.error("You don't have permission to delete tasks");
+      return;
+    }
+
+    const confirm = window.confirm('Are you sure you want to delete this task?');
+    if (!confirm) return;
+
+    try {
+      await ApiService.deleteTask(taskId);
+      toast.success('Task deleted successfully');
+      fetchTasks();
+    } catch (err) {
+      toast.error(err.message || 'Failed to delete task');
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center py-24">
@@ -154,16 +189,31 @@ const TasksPage = () => {
               </div>
 
               {/* ACTION */}
-              <button
-                onClick={() => setSelectedTask(task)}
-                className="mt-6 flex items-center justify-center gap-2
-                           text-blue-600 text-sm font-medium
-                           rounded-lg py-2
-                           hover:bg-blue-50 transition"
-              >
-                <Eye size={16} />
-                View details
-              </button>
+              <div className="mt-6 flex gap-2">
+                <button
+                  onClick={() => setSelectedTask(task)}
+                  className="flex-1 flex items-center justify-center gap-2
+                             text-blue-600 text-sm font-medium
+                             rounded-lg py-2
+                             hover:bg-blue-50 transition"
+                >
+                  <Eye size={16} />
+                  View details
+                </button>
+
+                {canDelete && (
+                  <button
+                    onClick={() => handleDelete(task.task_id)}
+                    className="flex-1 flex items-center justify-center gap-2
+                               text-red-600 text-sm font-medium
+                               rounded-lg py-2
+                               hover:bg-red-50 transition"
+                  >
+                    <Trash size={16} />
+                    Delete
+                  </button>
+                )}
+              </div>
             </div>
           ))}
         </div>
@@ -176,6 +226,7 @@ const TasksPage = () => {
           onClose={() => setShowModal(false)}
           onSuccess={() => {
             setShowModal(false);
+            toast.success('Task saved successfully');
             fetchTasks();
           }}
         />
@@ -185,7 +236,10 @@ const TasksPage = () => {
         <TaskDetailsModal
           task={selectedTask}
           onClose={() => setSelectedTask(null)}
-          onUpdate={fetchTasks}
+          onUpdate={() => {
+            toast.success('Task updated successfully');
+            fetchTasks();
+          }}
         />
       )}
     </div>

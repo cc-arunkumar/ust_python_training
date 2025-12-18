@@ -1,103 +1,93 @@
-import React, { useState } from 'react';
-import { MoreHorizontal } from 'lucide-react';
+import React from 'react';
+import { Draggable } from '@hello-pangea/dnd';
+import { Eye, Trash, Edit, User } from 'lucide-react';
+import { STATUS_COLORS, PRIORITY_COLORS } from '../../utils/constants';
+import toast from 'react-hot-toast';
 
-const PRIORITY_COLORS = {
-  high: 'bg-red-500',
-  medium: 'bg-yellow-400',
-  low: 'bg-green-500'
-};
+const TaskCard = ({ task, index, onView, onEdit, onDelete }) => {
 
-const TaskCard = ({ task, onView, onEdit, canEdit }) => {
-  const [showMenu, setShowMenu] = useState(false);
+  const handleDelete = () => {
+    if (!onDelete) return;
+    const confirm = window.confirm('Are you sure you want to delete this task?');
+    if (!confirm) return;
+    onDelete(task.task_id);
+  };
 
   return (
-    <div
-      className="bg-gray-900 rounded-xl shadow-md hover:shadow-lg transition-shadow p-4 sm:p-5 cursor-pointer relative
-                 flex flex-col justify-between min-h-[120px] sm:min-h-[140px] w-full sm:w-auto"
-    >
-      {/* Top Row */}
-      <div className="flex items-start justify-between mb-3">
-        <span className="text-xs sm:text-sm text-gray-400 font-semibold">#{task.task_id}</span>
-
-        {canEdit && (
-          <div className="relative">
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                setShowMenu(!showMenu);
-              }}
-              className="text-gray-400 hover:text-white transition-colors"
+    <Draggable draggableId={task.task_id.toString()} index={index}>
+      {(provided) => (
+        <div
+          ref={provided.innerRef}
+          {...provided.draggableProps}
+          {...provided.dragHandleProps}
+          className="bg-white rounded-lg shadow-sm p-4 flex flex-col hover:shadow-md transition"
+        >
+          {/* Header */}
+          <div className="flex justify-between items-start mb-2">
+            <h4 className="text-sm font-semibold text-gray-800 line-clamp-1">{task.title}</h4>
+            <span
+              className={`px-2 py-1 rounded-full text-xs font-medium ${STATUS_COLORS[task.status]}`}
             >
-              <MoreHorizontal size={18} />
-            </button>
-
-            {showMenu && (
-              <>
-                <div
-                  className="fixed inset-0 z-10"
-                  onClick={() => setShowMenu(false)}
-                />
-                <div className="absolute right-0 mt-2 w-36 bg-gray-800 rounded-xl shadow-lg border border-gray-700 z-20">
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onEdit(task);
-                      setShowMenu(false);
-                    }}
-                    className="w-full text-left px-4 py-2 text-sm text-gray-200 hover:bg-gray-700 rounded-t-lg transition-colors"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onView(task);
-                      setShowMenu(false);
-                    }}
-                    className="w-full text-left px-4 py-2 text-sm text-gray-200 hover:bg-gray-700 rounded-b-lg transition-colors"
-                  >
-                    View Details
-                  </button>
-                </div>
-              </>
-            )}
-          </div>
-        )}
-      </div>
-
-      {/* Title */}
-      <h4
-        className="text-sm sm:text-base font-semibold text-white mb-3 line-clamp-2"
-        onClick={() => onView(task)}
-      >
-        {task.title}
-      </h4>
-
-      {/* Bottom Row */}
-      <div className="flex items-center justify-between">
-        {/* Priority Badge */}
-        {task.priority && (
-          <span
-            className={`text-xs sm:text-sm font-semibold text-white px-2 py-1 rounded-full ${PRIORITY_COLORS[task.priority]}`}
-          >
-            {task.priority.toUpperCase()}
-          </span>
-        )}
-
-        {/* Assigned User */}
-        {task.assigned_to && (
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600
-                            flex items-center justify-center text-xs sm:text-sm text-white font-medium">
-              {String(task.assigned_to).substring(0, 1).toUpperCase()}
-            </div>
-            <span className="hidden sm:block text-gray-300 text-sm">
-              {task.assigned_to}
+              {task.status.replace('_', ' ')}
             </span>
           </div>
-        )}
-      </div>
-    </div>
+
+          {/* Description */}
+          {task.description && (
+            <p className="text-gray-500 text-sm line-clamp-2 mb-2">
+              {task.description}
+            </p>
+          )}
+          
+          {/* Assigned, Reviewer & Priority */}
+          <div className="flex flex-col gap-1 mb-2 text-xs text-gray-500">
+            <p className="flex items-center gap-1">
+              <User size={12} /> Assigned To: {task.assigned_to || 'Unassigned'}
+            </p>
+            {task.reviewer && (
+              <p className="flex items-center gap-1">
+                <User size={12} /> Reviewer: {task.reviewer}
+              </p>
+            )}
+            {task.priority && (
+              <span
+                className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${PRIORITY_COLORS[task.priority.toLowerCase()]}`}
+              >
+                {task.priority}
+              </span>
+            )}
+          </div>
+
+          {/* Actions */}
+          <div className="mt-2 flex gap-2">
+            {onView && (
+              <button
+                onClick={() => onView(task)}
+                className="flex-1 flex items-center justify-center gap-1 text-blue-600 text-xs font-medium rounded-lg py-1 hover:bg-blue-50 transition"
+              >
+                <Eye size={14} /> View
+              </button>
+            )}
+            {onEdit && (
+              <button
+                onClick={() => onEdit(task)}
+                className="flex-1 flex items-center justify-center gap-1 text-green-600 text-xs font-medium rounded-lg py-1 hover:bg-green-50 transition"
+              >
+                <Edit size={14} /> Edit
+              </button>
+            )}
+            {onDelete && (
+              <button
+                onClick={handleDelete}
+                className="flex-1 flex items-center justify-center gap-1 text-red-600 text-xs font-medium rounded-lg py-1 hover:bg-red-50 transition"
+              >
+                <Trash size={14} /> Delete
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+    </Draggable>
   );
 };
 

@@ -17,20 +17,39 @@ class ApiService {
       headers: this.getHeaders(token),
     });
 
-    // Do NOT redirect on 401. Just throw
     if (response.status === 401) {
-      throw new Error('Invalid credentials'); // <- removed reload
+      throw new Error('Invalid credentials'); // <- no reload
     }
 
     if (response.status === 204) return null;
 
-    const data = await response.json();
+    let data;
+    try {
+      data = await response.json();
+    } catch {
+      throw new Error('Invalid response from server');
+    }
 
     if (!response.ok) {
       throw new Error(data.detail || 'Request failed');
     }
 
+    // Normalize legacy task statuses
+    if (Array.isArray(data)) {
+      return data.map(item => this._normalizeTaskStatus(item));
+    } else if (data && data.status) {
+      return this._normalizeTaskStatus(data);
+    }
+
     return data;
+  }
+
+  // Normalize IN_PROGRESS -> ON_PROCESS
+  static _normalizeTaskStatus(task) {
+    if (!task) return task;
+    if (task.status === 'IN_PROGRESS') task.status = 'ON_PROCESS';
+    if (task.status === 'IN_REVIEW') task.status = 'REVIEW';
+    return task;
   }
 
   // Auth APIs
@@ -41,7 +60,6 @@ class ApiService {
         body: JSON.stringify({ email, password }),
       });
     } catch (err) {
-      // Throw same error for LoginPage to catch
       throw new Error('Invalid credentials');
     }
   }
@@ -74,9 +92,7 @@ class ApiService {
   }
 
   static async deleteEmployee(id) {
-    return this.request(`/employees/${id}`, {
-      method: 'DELETE',
-    });
+    return this.request(`/employees/${id}`, { method: 'DELETE' });
   }
 
   // Task APIs
@@ -89,6 +105,10 @@ class ApiService {
   }
 
   static async createTask(data) {
+    // Ensure frontend sends correct status
+    if (data.status === 'IN_PROGRESS') data.status = 'ON_PROCESS';
+    if (data.status === 'IN_REVIEW') data.status = 'REVIEW';
+
     return this.request('/tasks/', {
       method: 'POST',
       body: JSON.stringify(data),
@@ -96,6 +116,9 @@ class ApiService {
   }
 
   static async updateTask(id, data) {
+    if (data.status === 'IN_PROGRESS') data.status = 'ON_PROCESS';
+    if (data.status === 'IN_REVIEW') data.status = 'REVIEW';
+
     return this.request(`/tasks/${id}`, {
       method: 'PUT',
       body: JSON.stringify(data),
@@ -103,6 +126,9 @@ class ApiService {
   }
 
   static async updateTaskStatus(id, status, review = null) {
+    if (status === 'IN_PROGRESS') status = 'ON_PROCESS';
+    if (status === 'IN_REVIEW') status = 'REVIEW';
+
     const payload = { status };
     if (review) payload.review = review;
 
@@ -131,6 +157,11 @@ class ApiService {
     }
 
     return response.json();
+  }
+
+  // Delete Task
+  static async deleteTask(id) {
+    return this.request(`/tasks/${id}`, { method: 'DELETE' });
   }
 }
 

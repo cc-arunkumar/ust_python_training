@@ -3,6 +3,7 @@ import { Plus, Edit2, Trash2, AlertCircle } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import ApiService from '../../services/api';
 import EmployeeModal from './EmployeeModal';
+import toast from 'react-hot-toast';
 
 const EmployeesPage = () => {
   const [employees, setEmployees] = useState([]);
@@ -10,8 +11,8 @@ const EmployeesPage = () => {
   const [error, setError] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [editingEmployee, setEditingEmployee] = useState(null);
-  const { hasRole } = useAuth();
 
+  const { hasRole } = useAuth();
   const isAdmin = hasRole('ADMIN');
 
   useEffect(() => {
@@ -25,6 +26,7 @@ const EmployeesPage = () => {
       setEmployees(data);
     } catch (err) {
       setError(err.message);
+      toast.error('Failed to load employees');
     } finally {
       setLoading(false);
     }
@@ -32,11 +34,13 @@ const EmployeesPage = () => {
 
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this employee?')) return;
+
     try {
       await ApiService.deleteEmployee(id);
-      await fetchEmployees();
+      toast.success('Employee deleted successfully');
+      fetchEmployees();
     } catch (err) {
-      alert(`Failed to delete employee: ${err.message}`);
+      toast.error(err.message || 'Failed to delete employee');
     }
   };
 
@@ -60,6 +64,7 @@ const EmployeesPage = () => {
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
+
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
         <div>
@@ -98,11 +103,17 @@ const EmployeesPage = () => {
               className="bg-white rounded-lg shadow p-4 flex flex-col justify-between hover:shadow-lg transition"
             >
               <div>
-                <h2 className="text-lg font-semibold text-gray-900">{emp.emp_name}</h2>
+                <h2 className="text-lg font-semibold text-gray-900">
+                  {emp.emp_name}
+                </h2>
                 <p className="text-gray-500 text-sm">{emp.designation}</p>
                 <p className="text-gray-400 text-sm mt-1">{emp.email}</p>
-                <p className="text-gray-400 text-sm mt-1">Manager ID: {emp.manager_id || '-'}</p>
-                <p className="text-gray-400 text-sm mt-1">Employee ID: {emp.emp_id}</p>
+                <p className="text-gray-400 text-sm mt-1">
+                  Manager ID: {emp.manager_id || '-'}
+                </p>
+                <p className="text-gray-400 text-sm mt-1">
+                  Employee ID: {emp.emp_id}
+                </p>
               </div>
 
               {isAdmin && (
@@ -126,7 +137,7 @@ const EmployeesPage = () => {
         </div>
       )}
 
-      {/* Employee Modal */}
+      {/* Modal */}
       {showModal && (
         <EmployeeModal
           employee={editingEmployee}

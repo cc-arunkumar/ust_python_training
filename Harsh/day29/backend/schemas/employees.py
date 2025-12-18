@@ -3,10 +3,12 @@ from typing import Optional
 
 
 class EmployeeCreate(BaseModel):
+    emp_id: int
     emp_name: str
     email: EmailStr
     designation: Optional[str] = None
     manager_id: Optional[int] = None
+
 
 
 class EmployeeUpdate(BaseModel):

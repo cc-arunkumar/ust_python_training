@@ -1,23 +1,29 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Search, Filter, AlertCircle, ChevronDown } from 'lucide-react';
+import { Plus, AlertCircle } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import ApiService from '../../services/api';
 import TaskModal from './TaskModal';
 import TaskDetailsModal from './TaskDetailsModal';
 import KanbanColumn from './KanbanColumn';
 import { TASK_STATUSES } from '../../utils/constants';
+import toast, { Toaster } from 'react-hot-toast';
+import { DragDropContext } from '@hello-pangea/dnd';
+
+// Priority order for sorting
+const PRIORITY_ORDER = { high: 3, medium: 2, low: 1 };
 
 const KanbanBoard = () => {
+  const { hasRole } = useAuth();
+  const canEdit = hasRole('ADMIN') || hasRole('MANAGER');
+
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+
   const [selectedTask, setSelectedTask] = useState(null);
   const [editingTask, setEditingTask] = useState(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const { hasRole } = useAuth();
-  
-  const canEdit = hasRole('ADMIN') || hasRole('MANAGER');
+  const [sortOption, setSortOption] = useState('priority'); // default sort
 
   useEffect(() => {
     fetchTasks();
@@ -25,141 +31,150 @@ const KanbanBoard = () => {
 
   const fetchTasks = async () => {
     try {
-      setError('');
       const data = await ApiService.getTasks();
       setTasks(data);
     } catch (err) {
       setError(err.message);
+      toast.error(err.message);
     } finally {
       setLoading(false);
     }
   };
-  
-  const getTasksByStatus = (status) => {
-    let filtered = tasks.filter(task => task.status === status);
-    
-    if (searchQuery) {
-      filtered = filtered.filter(task => 
-        task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        task.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        task.task_id.toString().includes(searchQuery)
-      );
+
+  const handleDelete = async (taskId) => {
+    try {
+      await ApiService.deleteTask(taskId);
+      toast.success('Task deleted successfully');
+      fetchTasks();
+    } catch (err) {
+      toast.error(err.message);
     }
-    
-    return filtered;
   };
 
-  const handleEdit = (task) => {
-    setEditingTask(task);
+  // Restrict movement: only ON_PROCESS <-> REVIEW
+  const canMove = (from, to) => {
+    return (from === 'ON_PROCESS' && to === 'REVIEW') ||
+           (from === 'REVIEW' && to === 'ON_PROCESS');
   };
 
-  const handleView = (task) => {
-    setSelectedTask(task);
+  const onDragEnd = async (result) => {
+    const { source, destination, draggableId } = result;
+    if (!destination || source.droppableId === destination.droppableId) return;
+
+    const fromStatus = source.droppableId;
+    const toStatus = destination.droppableId;
+
+    if (!canMove(fromStatus, toStatus)) {
+      toast.error('Tasks can only move between ON_PROCESS and REVIEW');
+      return;
+    }
+
+    try {
+      await ApiService.updateTaskStatus(draggableId, toStatus);
+      toast.success(`Task moved to ${toStatus}`);
+      fetchTasks();
+    } catch {
+      toast.error('Failed to update task');
+    }
   };
 
-  const handleModalClose = () => {
-    setEditingTask(null);
-    setShowCreateModal(false);
-  };
-
-  const handleModalSuccess = () => {
-    setEditingTask(null);
-    setShowCreateModal(false);
-    fetchTasks();
-  };
+  // Group tasks by status and apply sorting
+  const groupedTasks = {};
+  Object.values(TASK_STATUSES).forEach(status => {
+    groupedTasks[status] = tasks
+      .filter(t => t.status === status)
+      .sort((a, b) => {
+        if (sortOption === 'priority') {
+          const aPriority = a.priority ? PRIORITY_ORDER[a.priority.toLowerCase()] || 0 : 0;
+          const bPriority = b.priority ? PRIORITY_ORDER[b.priority.toLowerCase()] || 0 : 0;
+          return bPriority - aPriority; // high → low
+        } else if (sortOption === 'date') {
+          const aDate = a.expected_closure ? new Date(a.expected_closure) : new Date(0);
+          const bDate = b.expected_closure ? new Date(b.expected_closure) : new Date(0);
+          return aDate - bDate; // earliest first
+        }
+        return 0;
+      });
+  });
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
-        <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
-          <p className="mt-2 text-gray-400">Loading board...</p>
-        </div>
-      </div>
-    );
+    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
   }
-  
+
   return (
-    <div className="min-h-screen bg-gray-900 text-white">
-      {/* Header */}
-      <div className="border-b border-gray-800 bg-gray-850 px-6 py-3">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <h1 className="text-lg font-semibold">Board</h1>
-            <div className="flex items-center gap-2">
-              <div className="relative">
-                <input
-                  type="text"
-                  placeholder="Search tasks..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="bg-gray-800 border border-gray-700 rounded px-3 py-1.5 text-sm w-64 focus:ring-2 focus:ring-blue-500 outline-none"
-                />
-                <Search className="absolute right-3 top-2 text-gray-500 pointer-events-none" size={16} />
-              </div>
-            </div>
-          </div>
-          
-          <div className="flex items-center gap-3">
-            <button className="flex items-center gap-1 px-3 py-1.5 text-sm text-gray-300 hover:bg-gray-800 rounded transition">
-              <Filter size={16} />
-              Filter
+    <div className="min-h-screen bg-gray-50">
+      <Toaster position="top-right" />
+
+      {/* HEADER */}
+      <div className="bg-white px-6 py-4 shadow-sm flex justify-between items-center">
+        <h1 className="text-xl font-semibold">Task Board</h1>
+
+        <div className="flex gap-4 items-center">
+          {/* Sort dropdown */}
+          <select
+            value={sortOption}
+            onChange={(e) => setSortOption(e.target.value)}
+            className="border rounded px-3 py-1 text-sm"
+          >
+            <option value="priority">Sort by Priority</option>
+            <option value="date">Sort by Deadline</option>
+          </select>
+
+          {canEdit && (
+            <button
+              onClick={() => setShowCreateModal(true)}
+              className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm flex items-center gap-1"
+            >
+              <Plus size={16} /> New Task
             </button>
-            <button className="flex items-center gap-1 px-3 py-1.5 text-sm text-gray-300 hover:bg-gray-800 rounded transition">
-              Group by
-              <ChevronDown size={16} />
-            </button>
-            {canEdit && (
-              <button
-                onClick={() => setShowCreateModal(true)}
-                className="flex items-center gap-1 px-3 py-1.5 text-sm bg-blue-600 hover:bg-blue-700 rounded transition"
-              >
-                <Plus size={16} />
-                Create
-              </button>
-            )}
-          </div>
+          )}
         </div>
       </div>
 
-      {/* Error Message */}
+      {/* ERROR */}
       {error && (
-        <div className="mx-6 mt-4 bg-red-900 bg-opacity-50 border border-red-700 text-red-200 px-4 py-3 rounded flex items-center gap-2">
-          <AlertCircle size={20} />
-          <span>{error}</span>
+        <div className="m-6 bg-red-50 text-red-700 px-4 py-3 rounded-lg flex gap-2">
+          <AlertCircle size={18} />
+          {error}
         </div>
       )}
-      
-      {/* Kanban Board */}
-      <div className="p-6">
-        <div className="flex gap-4 overflow-x-auto pb-4">
-          {Object.values(TASK_STATUSES).map((status) => (
+
+      {/* BOARD */}
+      <DragDropContext onDragEnd={onDragEnd}>
+        <div className="p-6 flex gap-6 overflow-x-auto">
+          {Object.entries(groupedTasks).map(([status, list]) => (
             <KanbanColumn
               key={status}
               status={status}
-              tasks={getTasksByStatus(status)}
-              onTaskView={handleView}
-              onTaskEdit={canEdit ? handleEdit : null}
-              canEdit={canEdit}
+              tasks={list}
+              onTaskView={setSelectedTask}
+              onTaskEdit={canEdit ? setEditingTask : null}
+              onTaskDelete={handleDelete}
             />
           ))}
         </div>
-      </div>
-      
-      {/* Modals */}
+      </DragDropContext>
+
+      {/* MODALS */}
       {selectedTask && (
         <TaskDetailsModal
           task={selectedTask}
           onClose={() => setSelectedTask(null)}
-          onUpdate={fetchTasks}
         />
       )}
-      
+
       {(editingTask || showCreateModal) && (
         <TaskModal
           task={editingTask}
-          onClose={handleModalClose}
-          onSuccess={handleModalSuccess}
+          onClose={() => {
+            setEditingTask(null);
+            setShowCreateModal(false);
+          }}
+          onSuccess={() => {
+            setEditingTask(null);
+            setShowCreateModal(false);
+            fetchTasks();
+          }}
         />
       )}
     </div>

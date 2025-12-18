@@ -2,6 +2,7 @@ import React from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import LoginPage from './components/auth/LoginPage';
 import Layout from './components/layout/Layout';
+import { Toaster } from 'react-hot-toast';
 
 const AppContent = () => {
   const { user, activeRole, loading } = useAuth(); // Removed showRoleSelector
@@ -19,12 +20,22 @@ const AppContent = () => {
 
   // Show login if no user
   if (!user) {
-    return <LoginPage />;
+    return (
+      <>
+        <Toaster position="top-right" reverseOrder={false} />
+        <LoginPage />
+      </>
+    );
   }
 
   // Show main app if user is logged in
   if (activeRole) {
-    return <Layout />; // Directly render Layout
+    return (
+      <>
+        <Toaster position="top-right" reverseOrder={false} />
+        <Layout /> {/* Layout contains main routes/pages */}
+      </>
+    );
   }
 
   // Fallback loading state
