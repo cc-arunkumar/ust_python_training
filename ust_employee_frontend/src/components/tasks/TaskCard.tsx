@@ -1,7 +1,7 @@
 import React from "react";
 import { Task, Priority } from "@/types";
 import { useEmployees } from "@/contexts/EmployeesContext";
-import { Calendar, User, Flag, MessageSquare } from "lucide-react";
+import { Calendar, User, Flag, MessageSquare, Paperclip } from "lucide-react";
 import { format } from "date-fns";
 
 interface TaskCardProps {
@@ -51,6 +51,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, isDragging, onClick }) => {
       className={`task-card ${
         isDragging ? "task-card-dragging" : ""
       } animate-card-enter`}
+      // keep the card clickable for opening details; we handle attach button separately
       onClick={onClick}
     >
       <div className="flex items-start justify-between gap-2 mb-3">
@@ -84,9 +85,27 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, isDragging, onClick }) => {
             <span>{format(new Date(task.expected_closure), "MMM d")}</span>
           </div>
         </div>
-        <span className="text-[10px] font-mono text-muted-foreground bg-muted px-1.5 py-0.5 rounded">
-          {task.t_id}
-        </span>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={(e) => {
+              // stop card onClick from firing when clicking the attachment button
+              e.stopPropagation();
+              // open modal handled below via custom event
+              const ev = new CustomEvent("task:open-attach", {
+                detail: { task },
+              });
+              window.dispatchEvent(ev);
+            }}
+            title="Attach file / Add remark"
+            className="p-1 rounded hover:bg-muted/60"
+          >
+            <Paperclip className="h-4 w-4" />
+          </button>
+
+          <span className="text-[10px] font-mono text-muted-foreground bg-muted px-1.5 py-0.5 rounded">
+            {task.t_id}
+          </span>
+        </div>
       </div>
     </div>
   );

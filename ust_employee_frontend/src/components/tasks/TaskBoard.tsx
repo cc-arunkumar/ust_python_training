@@ -6,6 +6,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import KanbanColumn from "./KanbanColumn";
 import TaskDetailModal from "./TaskDetailModal";
 import CreateTaskModal from "./CreateTaskModal";
+import FileAttachmentModal from "./FileAttachmentModal";
+import { useEffect } from "react";
 import { toast } from "sonner";
 
 interface TaskBoardProps {
@@ -17,6 +19,18 @@ const TaskBoard: React.FC<TaskBoardProps> = ({ viewMode }) => {
   const { user, isAdmin, isManager } = useAuth();
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [attachmentTask, setAttachmentTask] = useState<Task | null>(null);
+
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const ev = e as CustomEvent;
+      const t = ev?.detail?.task as Task | undefined;
+      if (t) setAttachmentTask(t);
+    };
+    window.addEventListener("task:open-attach", handler as EventListener);
+    return () =>
+      window.removeEventListener("task:open-attach", handler as EventListener);
+  }, []);
 
   const filteredTasks = useMemo(() => {
     if (viewMode === "admin") {
@@ -181,6 +195,13 @@ const TaskBoard: React.FC<TaskBoardProps> = ({ viewMode }) => {
 
       {showCreateModal && (
         <CreateTaskModal onClose={() => setShowCreateModal(false)} />
+      )}
+
+      {attachmentTask && (
+        <FileAttachmentModal
+          task={attachmentTask}
+          onClose={() => setAttachmentTask(null)}
+        />
       )}
     </div>
   );
