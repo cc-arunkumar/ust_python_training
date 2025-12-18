@@ -14,6 +14,7 @@ function TaskBoard({
   onSaveTask,
   userRole = "",
   currentEmpId = null,
+  openTaskId = null,
 }) {
   const ALLOWED_TRANSITIONS = {
     TO_DO: ["IN_PROGRESS"],
@@ -26,6 +27,10 @@ function TaskBoard({
   const [searchQuery, setSearchQuery] = useState("");
   const [priorityFilter, setPriorityFilter] = useState("ALL");
   const [detailTask, setDetailTask] = useState(null);
+  const [promptOpen, setPromptOpen] = useState(false);
+  const [promptTask, setPromptTask] = useState(null);
+  const [promptStatus, setPromptStatus] = useState(null);
+  const [promptText, setPromptText] = useState("");
   const [dragOverStatus, setDragOverStatus] = useState(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
@@ -146,7 +151,8 @@ function TaskBoard({
 
     // Determine if current user is a manager/reviewer role
     const roleUpper = (userRole || "").toUpperCase();
-    const isManagerRole = roleUpper.includes("MANAGER") || roleUpper.includes("ADMIN");
+    const isManagerRole =
+      roleUpper.includes("MANAGER") || roleUpper.includes("ADMIN");
 
     if (newStatus === "REVIEW") {
       console.debug("TaskBoard.handleDrop -> REVIEW requested", {
@@ -160,25 +166,30 @@ function TaskBoard({
       });
 
       // Prompt for remarks - determine if it's reviewer or developer remarks
-      const promptText = isReviewer || isManagerRole
-        ? `Add reviewer remarks for changing status to ${STATUS_CONFIG[newStatus].label}:`
-        : `Add developer remarks for submitting to ${STATUS_CONFIG[newStatus].label}:`;
-      
-      const remarks = prompt(promptText);
-      console.debug("TaskBoard.handleDrop -> prompt result", { remarks });
-      
-      await onUpdateStatus(taskId, newStatus, remarks || null);
+      const promptText =
+        isReviewer || isManagerRole
+          ? `Add reviewer remarks for changing status to ${STATUS_CONFIG[newStatus].label}:`
+          : `Add developer remarks for submitting to ${STATUS_CONFIG[newStatus].label}:`;
+
+      // open inline prompt instead of browser prompt
+      setPromptTask(task);
+      setPromptStatus(newStatus);
+      setPromptText("");
+      setPromptOpen(true);
+      return;
     } else if (newStatus === "DONE") {
-      // For DONE status, always treat as reviewer remarks if user has permission
-      const remarks = prompt(
-        `Add reviewer remarks for marking task as ${STATUS_CONFIG[newStatus].label}:`
-      );
-      await onUpdateStatus(taskId, newStatus, remarks || null);
+      // open inline prompt for DONE as reviewer remarks
+      setPromptTask(task);
+      setPromptStatus(newStatus);
+      setPromptText("");
+      setPromptOpen(true);
+      return;
     } else if (newStatus === "IN_PROGRESS") {
-      const remarks = prompt(
-        `Add remarks for changing status to ${STATUS_CONFIG[newStatus].label} (optional):`
-      );
-      await onUpdateStatus(taskId, newStatus, remarks || null);
+      setPromptTask(task);
+      setPromptStatus(newStatus);
+      setPromptText("");
+      setPromptOpen(true);
+      return;
     } else {
       await onUpdateStatus(taskId, newStatus, null);
     }
@@ -196,6 +207,21 @@ function TaskBoard({
       // ignore
     }
   }, [tasks]);
+
+  // Open a detail view when parent requests a specific task id
+  useEffect(() => {
+    if (!openTaskId || !tasks || !tasks.length) return;
+    try {
+      const found = tasks.find(
+        (t) =>
+          String(t.task_id) === String(openTaskId) ||
+          String(t.id) === String(openTaskId)
+      );
+      if (found) setDetailTask(found);
+    } catch (e) {
+      // ignore
+    }
+  }, [openTaskId, tasks]);
 
   return (
     <div className="container mx-auto px-4 py-4">
@@ -236,7 +262,7 @@ function TaskBoard({
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 z--1">
           <button
             onClick={() => {
               setEditingTask(null);
@@ -292,7 +318,7 @@ function TaskBoard({
               >
                 {/* Column Header */}
                 <div
-                  className="sticky top-2 bg-white rounded-lg px-3 py-2.5 shadow-sm mb-3 border-l-4 transition-all hover:shadow-md"
+                  className=" top-2 bg-white rounded-lg px-3 py-2.5 shadow-md mb-3 transition-all hover:shadow-md"
                   style={{ borderColor: config.color.replace("bg-", "#") }}
                 >
                   <div className="flex items-center justify-between">
@@ -379,7 +405,57 @@ function TaskBoard({
             setDetailTask(null);
           }}
           currentEmpId={currentEmpId}
+          userRole={userRole}
+          onMarkAllRead={onRefresh}
         />
+      )}
+
+      {/* Inline prompt shown when user drops a card to a status that requires remarks */}
+      {promptOpen && promptTask && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+          <div className="w-full max-w-md bg-white rounded-lg p-4 shadow-lg">
+            <div className="mb-2 text-sm text-gray-700">
+              {`Change status to ${STATUS_CONFIG[promptStatus].label} for task: `}
+              <strong className="text-gray-900">{promptTask.title}</strong>
+            </div>
+            <textarea
+              className="w-full border rounded p-2 mb-3"
+              rows={3}
+              value={promptText}
+              onChange={(e) => setPromptText(e.target.value)}
+              placeholder="Add remarks (optional)"
+            />
+            <div className="flex gap-2">
+              <button
+                className="flex-1 bg-indigo-600 text-white py-2 rounded"
+                onClick={async () => {
+                  setPromptOpen(false);
+                  const tid = promptTask.task_id;
+                  const status = promptStatus;
+                  const text =
+                    promptText && promptText.trim() ? promptText.trim() : null;
+                  setPromptTask(null);
+                  setPromptStatus(null);
+                  setPromptText("");
+                  await onUpdateStatus(tid, status, text);
+                }}
+              >
+                Submit
+              </button>
+              <button
+                className="flex-1 bg-gray-200 text-gray-700 py-2 rounded"
+                onClick={() => {
+                  setPromptOpen(false);
+                  setPromptTask(null);
+                  setPromptStatus(null);
+                  setPromptText("");
+                }}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

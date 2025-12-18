@@ -13,6 +13,7 @@ function App() {
   const [employees, setEmployees] = useState([]);
   const [activeTab, setActiveTab] = useState("tasks");
   const [loading, setLoading] = useState(true);
+  const [openTaskId, setOpenTaskId] = useState(null);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -148,12 +149,16 @@ function App() {
 
       // Find the task to check if current user is the reviewer
       const task = tasks.find((t) => t.task_id === taskId);
-      const isReviewer = task && currentEmpId != null && Number(currentEmpId) === Number(task.reviewer);
-      
+      const isReviewer =
+        task &&
+        currentEmpId != null &&
+        Number(currentEmpId) === Number(task.reviewer);
+
       const username = localStorage.getItem("username") || null;
       const nowTs = new Date().toISOString();
       const roleUpper = (role || "").toUpperCase();
-      const isManagerRole = roleUpper.includes("MANAGER") || roleUpper.includes("ADMIN");
+      const isManagerRole =
+        roleUpper.includes("MANAGER") || roleUpper.includes("ADMIN");
 
       // Prepare extra fields for role-specific remarks
       const extra = {};
@@ -176,6 +181,7 @@ function App() {
             from: "reviewer",
             text: review.trim(),
             by: username,
+            byEmpId: currentEmpId,
             ts: nowTs,
           });
 
@@ -191,6 +197,7 @@ function App() {
             from: "developer",
             text: review.trim(),
             by: username,
+            byEmpId: currentEmpId,
             ts: nowTs,
           });
 
@@ -217,10 +224,22 @@ function App() {
 
       // Call API with the review field (for backend to store in reviews collection)
       // AND the extra fields (for role-specific storage)
+      // include current active role so backend can store it with the review
+      if (role) extra.role = role;
+      // Avoid sending the top-level `review` when we already set role-specific fields
+      // so the backend does not mistake a developer remark for a reviewer remark.
+      const topLevelReview =
+        Object.keys(extra).length &&
+        (extra.reviewer_review || extra.developer_review)
+          ? null
+          : review && review.trim()
+          ? review.trim()
+          : null;
+
       await api.updateTaskStatus(
         taskId,
         status,
-        review && review.trim() ? review.trim() : null,
+        topLevelReview,
         Object.keys(extra).length ? extra : undefined
       );
 
@@ -228,7 +247,6 @@ function App() {
 
       // Reload data from server
       await loadData();
-
     } catch (err) {
       console.error("Failed to update status:", err);
       const errorMessage = err.message || "Unknown error occurred";
@@ -267,11 +285,21 @@ function App() {
 
   const canManageEmployees = role.includes("ADMIN");
   const canCreateTasks = role.includes("ADMIN") || role.includes("MANAGER");
+  const openTaskDetail = (taskId) => {
+    setActiveTab("tasks");
+    // ensure tasks view is visible, then instruct TaskBoard to open the detail
+    setOpenTaskId(taskId);
+    // clear after a short delay so subsequent opens work
+    setTimeout(() => setOpenTaskId(null), 5000);
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
       <Header
         role={role}
+        tasks={tasks}
+        currentEmpId={currentEmpId}
+        onOpenTask={openTaskDetail}
         activeTab={activeTab}
         onTabChange={setActiveTab}
         onLogout={handleLogout}
@@ -290,6 +318,7 @@ function App() {
             currentEmpId={currentEmpId}
             onUpdateStatus={handleUpdateStatus}
             onSaveTask={handleSaveTask}
+            openTaskId={openTaskId}
           />
         ) : (
           <EmployeeManagement

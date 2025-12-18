@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { X, Edit, Clock } from "lucide-react";
+import { X, Edit, Clock, MoreVertical } from "lucide-react";
 import api from "../api/api";
 
 function normalizeRemarks(task = {}) {
@@ -11,6 +11,7 @@ function normalizeRemarks(task = {}) {
       from: from || "unknown",
       text: String(text).trim(),
       by: by || null,
+      byEmpId: null,
       ts: ts || null,
     });
   }
@@ -92,12 +93,16 @@ function normalizeRemarks(task = {}) {
   // client-side optimistic remarks (injected locally)
   if (Array.isArray(task._clientRemarks)) {
     task._clientRemarks.forEach((r) => {
-      pushRemark(
-        r.from || "client",
-        r.text || r.remark || r.comment,
-        r.by || null,
-        r.ts || null
-      );
+      // preserve byEmpId when provided by App optimistic injection
+      const idx = remarks.length;
+      if (!r) return;
+      remarks.push({
+        from: r.from || "client",
+        text: String(r.text || r.remark || r.comment || "").trim(),
+        by: r.by || null,
+        byEmpId: r.byEmpId || null,
+        ts: r.ts || null,
+      });
     });
   }
 
@@ -147,9 +152,14 @@ export default function TaskDetailModal({
   employees = [],
   onClose = () => {},
   onEdit = () => {},
+  currentEmpId = null,
+  userRole = "",
+  onMarkAllRead = () => {},
 }) {
   const [readRemarks, setReadRemarks] = useState(new Set());
   const [serverReviews, setServerReviews] = useState([]);
+  const [fetchError, setFetchError] = useState(null);
+  const chatRef = React.useRef(null);
 
   useEffect(() => {
     let mounted = true;
@@ -162,12 +172,15 @@ export default function TaskDetailModal({
       }
       try {
         const res = await api.getTaskReviews(task.task_id);
+        console.log("TaskDetailModal: fetched reviews for", task.task_id, res);
         if (!mounted) return;
         setServerReviews(res || []);
+        setFetchError(null);
       } catch (e) {
         if (!mounted) return;
         console.error("Failed to load task reviews:", e);
         setServerReviews([]);
+        setFetchError(e.message || String(e));
       }
     };
 
@@ -201,16 +214,31 @@ export default function TaskDetailModal({
 
   // combine normalized task remarks with server-stored reviews
   const normalized = normalizeRemarks(task);
-  const serverMapped = (serverReviews || []).map((s) => ({
-    from: s.role || "reviewer",
-    text: s.review || s.message || s.comment,
-    by:
-      s.reviewed_by_name ||
-      s.reviewed_by_emp_id ||
-      s.reviewed_by_user_id ||
-      null,
-    ts: s.created_at || null,
-  }));
+  const serverMapped = (serverReviews || []).map((s) => {
+    // Normalize role values coming from backend. Backend may store 'MANAGER', 'ADMIN',
+    // 'DEVELOPER' or canonical 'reviewer'/'developer'. Map them to 'reviewer' or 'developer'
+    // so the UI groups remarks correctly.
+    const roleRaw = (s.role || "").toString().toLowerCase();
+    let fromNorm = "reviewer";
+    if (roleRaw.includes("dev") || roleRaw.includes("developer"))
+      fromNorm = "developer";
+    else if (roleRaw.includes("review") || roleRaw.includes("reviewer"))
+      fromNorm = "reviewer";
+    else if (roleRaw.includes("manager") || roleRaw.includes("admin"))
+      fromNorm = "reviewer";
+
+    return {
+      from: fromNorm,
+      text: s.review || s.message || s.comment,
+      by:
+        s.reviewed_by_name ||
+        s.reviewed_by_emp_id ||
+        s.reviewed_by_user_id ||
+        null,
+      byEmpId: s.reviewed_by_emp_id || s.reviewed_by_user_id || null,
+      ts: s.created_at || null,
+    };
+  });
 
   // merge normalized client-side remarks with server-stored reviews
   const remarks = [...normalized, ...serverMapped]
@@ -231,43 +259,80 @@ export default function TaskDetailModal({
   });
 
   // Separate remarks by role while preserving chronological order
-  const devRemarks = remarks.filter(
-    (r) =>
-      String(r.from || "")
-        .toLowerCase()
-        .includes("dev") || String(r.from || "").toLowerCase() === "developer"
-  );
-
-  const reviewerRemarks = remarks.filter(
-    (r) =>
-      String(r.from || "")
-        .toLowerCase()
-        .includes("review") || String(r.from || "").toLowerCase() === "reviewer"
-  );
-
-  const otherRemarks = remarks.filter(
-    (r) => !devRemarks.includes(r) && !reviewerRemarks.includes(r)
-  );
+  // For the chat view we'll keep a single ordered remarks array and decide side per item
+  const otherRemarks = remarks.filter((r) => {
+    const from = String(r.from || "").toLowerCase();
+    return (
+      !from.includes("dev") &&
+      !from.includes("review") &&
+      !from.includes("developer") &&
+      !from.includes("reviewer") &&
+      !from.includes("manager") &&
+      !from.includes("admin")
+    );
+  });
 
   function isNewRemark(r, index) {
     if (!r || !r.ts) return false;
 
-    // Create unique ID for this remark
-    const remarkId = `${r.from}_${r.ts}_${index}`;
+    // Create deterministic unique ID for this remark (stable across components)
+    const remarkId = (() => {
+      const from = String(r.from || "unknown").replace(/\s+/g, "_");
+      const ts = String(r.ts || "").replace(/\s+/g, "_");
+      const by = String(r.byEmpId || r.by || "").replace(/\s+/g, "_");
+      const txt = String(r.text || "")
+        .slice(0, 30)
+        .replace(/\s+/g, "_");
+      return `${from}_${ts}_${by}_${txt}`;
+    })();
 
     // Check if already read
     if (readRemarks.has(remarkId)) return false;
 
+    // Don't mark remarks as new for the author themselves
+    // Some remarks include numeric byEmpId (optimistic or server); check that first
+    if (r.byEmpId && currentEmpId && Number(r.byEmpId) === Number(currentEmpId))
+      return false;
+
+    // Normalize role to decide who should see it as 'new'
+    const fromRaw = String(r.from || "").toLowerCase();
+    const fromNorm =
+      fromRaw.includes("dev") || fromRaw.includes("developer")
+        ? "developer"
+        : "reviewer";
+
+    // If it's a reviewer remark, only the assignee (developer) should see it as new
+    if (fromNorm === "reviewer") {
+      if (currentEmpId && Number(currentEmpId) !== Number(task.assigned_to))
+        return false;
+    }
+
+    // If it's a developer remark, only the reviewer should see it as new
+    if (fromNorm === "developer") {
+      if (currentEmpId && Number(currentEmpId) !== Number(task.reviewer))
+        return false;
+    }
+
     const then = Date.parse(r.ts);
     if (isNaN(then)) return false;
-
     const age = Date.now() - then;
     // Mark as new if within last 7 days
     return age < 7 * 24 * 60 * 60 * 1000;
   }
 
+  const computeRemarkId = (r) => {
+    const from = String(r.from || "unknown").replace(/\s+/g, "_");
+    const ts = String(r.ts || "").replace(/\s+/g, "_");
+    const by = String(r.byEmpId || r.by || "").replace(/\s+/g, "_");
+    const txt = String(r.text || "")
+      .slice(0, 30)
+      .replace(/\s+/g, "_");
+    return `${from}_${ts}_${by}_${txt}`;
+  };
+
   const markAsRead = (r, index) => {
-    const remarkId = `${r.from}_${r.ts}_${index}`;
+    const remarkId = computeRemarkId(r);
+
     const newReadRemarks = new Set(readRemarks);
     newReadRemarks.add(remarkId);
     setReadRemarks(newReadRemarks);
@@ -275,6 +340,31 @@ export default function TaskDetailModal({
     // Save to localStorage
     const key = `task_${task.task_id}_read_remarks`;
     localStorage.setItem(key, JSON.stringify([...newReadRemarks]));
+  };
+
+  const [showRemarksMenu, setShowRemarksMenu] = useState(false);
+
+  const markAllRead = () => {
+    try {
+      const newRead = new Set(readRemarks);
+      remarks.forEach((r) => {
+        if (!r || !r.ts) return;
+        const id = computeRemarkId(r);
+        newRead.add(id);
+      });
+      setReadRemarks(newRead);
+      const key = `task_${task.task_id}_read_remarks`;
+      localStorage.setItem(key, JSON.stringify([...newRead]));
+      setShowRemarksMenu(false);
+      // notify parent (e.g., TaskBoard) so badges/update can refresh immediately
+      try {
+        onMarkAllRead();
+      } catch (e) {
+        console.warn("onMarkAllRead callback failed:", e);
+      }
+    } catch (e) {
+      console.error("Failed to mark all read:", e);
+    }
   };
 
   const formatTimestamp = (ts) => {
@@ -354,6 +444,14 @@ export default function TaskDetailModal({
       </div>
     </div>
   );
+  // Auto-scroll chat to bottom when remarks change
+  useEffect(() => {
+    try {
+      if (chatRef.current) {
+        chatRef.current.scrollTop = chatRef.current.scrollHeight;
+      }
+    } catch (e) {}
+  }, [remarks.length, serverReviews.length]);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
@@ -391,6 +489,11 @@ export default function TaskDetailModal({
 
         {/* Scrollable Content */}
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
+          {fetchError && (
+            <div className="bg-red-50 border border-red-200 text-red-700 p-3 rounded">
+              Failed to load server reviews: {fetchError}
+            </div>
+          )}
           {/* Description */}
           <div>
             <h3 className="text-sm font-semibold text-gray-600 mb-2">
@@ -421,21 +524,112 @@ export default function TaskDetailModal({
             </div>
           </div>
 
-          {/* Developer Remarks */}
-          <RemarksSection
-            title="Developer Remarks"
-            remarks={devRemarks}
-            type="developer"
-          />
+          {/* Chat-style remarks (reviewer left / developer right) */}
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <h4 className="text-sm font-semibold text-gray-700">Remarks</h4>
+              <div className="relative">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShowRemarksMenu((s) => !s);
+                  }}
+                  className="p-1 rounded hover:bg-gray-100"
+                  title="More"
+                >
+                  <MoreVertical size={16} />
+                </button>
+                {showRemarksMenu && (
+                  <div className="absolute right-0 mt-2 w-40 bg-white border rounded shadow-lg z-50">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        markAllRead();
+                      }}
+                      className="w-full text-left px-3 py-2 hover:bg-gray-50 text-sm"
+                    >
+                      Mark all read
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+            <div
+              ref={chatRef}
+              className="max-h-64 shadow-md border-1  overflow-y-auto space-y-3 p-3 bg-gray-50 rounded"
+            >
+              {remarks.length ? (
+                remarks.map((r, i) => {
+                  const fromRaw = String(r.from || "").toLowerCase();
+                  const fromNorm =
+                    fromRaw.includes("dev") || fromRaw.includes("developer")
+                      ? "developer"
+                      : "reviewer";
+                  const isLeft = fromNorm === "reviewer";
+                  const isNew = isNewRemark(r, i);
+                  const remarkId = `${fromNorm}_${i}`;
 
-          {/* Reviewer Remarks */}
-          <RemarksSection
-            title="Reviewer Remarks"
-            remarks={reviewerRemarks}
-            type="reviewer"
-          />
+                  return (
+                    <div
+                      key={remarkId}
+                      className={`flex ${
+                        isLeft ? "justify-start" : "justify-end"
+                      }`}
+                      onClick={() => isNew && markAsRead(r, i)}
+                    >
+                      <div
+                        className={`${
+                          isLeft
+                            ? "bg-white border"
+                            : "bg-indigo-600 text-white"
+                        } rounded-lg p-3 max-w-[70%] border-gray-200`}
+                      >
+                        <div className="flex items-center gap-2 text-xs text-gray-500 mb-1">
+                          {r.by && (
+                            <span
+                              className={`${
+                                isLeft
+                                  ? "text-gray-700 font-medium"
+                                  : "text-white font-medium"
+                              }`}
+                            >
+                              {r.by}
+                            </span>
+                          )}
+                          {r.ts && (
+                            <>
+                              <Clock size={10} />
+                              <span>{formatTimestamp(r.ts)}</span>
+                            </>
+                          )}
+                          {isNew && (
+                            <span
+                              className={`ml-2 ${
+                                isLeft
+                                  ? "bg-red-100 text-red-700"
+                                  : "bg-red-500 text-white"
+                              } text-[10px] font-bold px-2 py-0.5 rounded-full`}
+                            >
+                              NEW
+                            </span>
+                          )}
+                        </div>
+                        <div className="text-sm whitespace-pre-wrap">
+                          {r.text}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })
+              ) : (
+                <div className="text-center text-gray-400 text-sm py-4 bg-gray-50 rounded-lg">
+                  No remarks yet
+                </div>
+              )}
+            </div>
+          </div>
 
-          {/* Other Remarks */}
+          {/* Other Remarks (non reviewer/dev roles) */}
           {otherRemarks.length > 0 && (
             <RemarksSection
               title="Other Remarks"

@@ -271,32 +271,44 @@ def patch_status(task_id: int,
 
         # Handle review and audit logs with error handling
         try:
-            if payload.review:
-                # Allow the designated reviewer to submit reviewer remarks.
-                # Additionally, allow users with MANAGER or ADMIN roles to add reviewer remarks
-                # so managers' comments can appear in the reviewer remarks timeline.
+            # Reviewer remarks (explicit reviewer_review or top-level review)
+            if getattr(payload, "reviewer_review", None) or getattr(payload, "review", None):
+                rv_text = getattr(payload, "reviewer_review", None) or getattr(payload, "review", None)
                 reviewer_emp_id = task.reviewer
                 user_emp_id = getattr(user, "emp_id", None)
                 if reviewer_emp_id is None:
                     raise HTTPException(400, "Task has no reviewer assigned")
+                if user_emp_id != reviewer_emp_id:
+                    raise HTTPException(403, "Only the designated reviewer can add reviewer remarks")
 
-                # allow if user is the designated reviewer OR the user has MANAGER/ADMIN role
-                allowed_roles = ["MANAGER","DEVELOPER"]
-                has_manager_role = any(r in user.role for r in allowed_roles)
-                if user_emp_id != reviewer_emp_id and not has_manager_role:
-                    raise HTTPException(403, "Only the designated reviewer or Managers/Developer can add review remarks")
-
-                # store reviewer metadata so we can return readable reviews later
                 reviews_collection.insert_one({
                     "task_id": task_id,
-                    "review": payload.review,
+                    "review": rv_text,
                     "reviewed_by_user_id": user.user_id,
                     "reviewed_by_emp_id": user_emp_id,
-                    "role": user.role,
+                    # record the active role if frontend provided it, else default to reviewer
+                    "role": getattr(payload, "role", None) or "reviewer",
                     "created_at": datetime.utcnow()
                 })
 
-            
+            # Developer remarks
+            if getattr(payload, "developer_review", None):
+                assignee_emp_id = task.assigned_to
+                user_emp_id = getattr(user, "emp_id", None)
+                if assignee_emp_id is None:
+                    raise HTTPException(400, "Task has no assignee")
+                if user_emp_id != assignee_emp_id:
+                    raise HTTPException(403, "Only the assigned developer can add developer remarks")
+
+                reviews_collection.insert_one({
+                    "task_id": task_id,
+                    "review": payload.developer_review,
+                    "reviewed_by_user_id": user.user_id,
+                    "reviewed_by_emp_id": user_emp_id,
+                    # record the active role if frontend provided it, else default to developer
+                    "role": getattr(payload, "role", None) or "developer",
+                    "created_at": datetime.utcnow(),
+                })
 
             audit_logs_collection.insert_one({
                 "action": "STATUS_UPDATED",
@@ -375,7 +387,7 @@ async def upload_file(task_id: int,
 
 
 @task_router.get("/{task_id}/reviews")
-def get_task_reviews(task_id: int,
+async def get_task_reviews(task_id: int,
                      db: Session = Depends(get_db),
                      user=Depends(get_current_user)):
     try:
@@ -402,11 +414,17 @@ def get_task_reviews(task_id: int,
         else:
             raise HTTPException(403, "Insufficient permissions")
 
-        # Fetch reviews from MongoDB
+        # Fetch reviews from MongoDB (motor async cursor)
         cursor = reviews_collection.find({"task_id": task_id}).sort("created_at", -1)
+        try:
+            docs = await cursor.to_list(length=1000)
+        except Exception as e:
+            # convert motor errors into HTTPException
+            raise HTTPException(500, f"Failed to fetch reviews from MongoDB: {str(e)}")
+
         reviews = []
-        for doc in cursor:
-            # doc may be a Motor object; convert fields
+        for doc in docs:
+            # doc is a dict-like Mongo document; convert fields
             r = {
                 "review": doc.get("review"),
                 "reviewed_by_user_id": doc.get("reviewed_by_user_id"),
@@ -433,9 +451,12 @@ def get_task_reviews(task_id: int,
 
             reviews.append(r)
 
+        # return the normalized reviews list
         return reviews
 
     except HTTPException:
         raise
+    except SQLAlchemyError as e:
+        raise HTTPException(500, f"Database error: {str(e)}")
     except Exception as e:
         raise HTTPException(500, f"Internal server error: {str(e)}")
