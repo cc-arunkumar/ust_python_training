@@ -234,6 +234,27 @@ const TaskCard = ({
     );
   }, [task, currentUserId]);
 
+  // Due date calculations
+  const dueDate = task.expected_completion_date
+    ? new Date(task.expected_completion_date)
+    : null;
+  const now = new Date();
+  const isOverdue = dueDate ? now > dueDate : false;
+  const msInDay = 24 * 60 * 60 * 1000;
+  // mark as due soon if within 3 days (but not overdue)
+  const isDueSoon = dueDate
+    ? dueDate - now > 0 && dateDiffInMs(dueDate, now) <= msInDay * 3
+    : false;
+  // days left (rounded up) for tooltip
+  const daysLeft = dueDate
+    ? Math.ceil(dateDiffInMs(dueDate, now) / msInDay)
+    : null;
+
+  // helper to compute difference in ms (dueDate - now)
+  function dateDiffInMs(a, b) {
+    return a.getTime() - b.getTime();
+  }
+
   // Clear notifications when the remarks modal is opened (ensure badge removed)
   useEffect(() => {
     let cancelled = false;
@@ -436,6 +457,7 @@ const TaskCard = ({
               <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white shadow-sm">
                 <Calendar size={14} />
               </div>
+              
               <div className="flex-1">
                 <span className="text-gray-500 font-medium block">
                   Due date
@@ -448,6 +470,25 @@ const TaskCard = ({
                     : "Not set"}
                 </span>
               </div>
+              {isOverdue ? (
+                <div className="flex items-center">
+                  <span
+                    className="ml-2 w-3 h-3 rounded-full bg-red-500 animate-pulse ring-2 ring-red-300"
+                    title="Overdue"
+                    aria-label="Overdue"
+                  ></span>
+                </div>
+              ) : isDueSoon ? (
+                <div className="flex items-center">
+                  <span
+                    className="ml-2 w-3 h-3 rounded-full bg-amber-400 animate-pulse ring-2 ring-amber-200"
+                    title={`Due in ${daysLeft} day${daysLeft === 1 ? "" : "s"}`}
+                    aria-label={`Due in ${daysLeft} day${
+                      daysLeft === 1 ? "" : "s"
+                    }`}
+                  ></span>
+                </div>
+              ) : null}
             </div>
           </div>
         </div>

@@ -95,13 +95,35 @@ def update_task_remarks(id:int, task_id:str, remarks_update:TaskRemarksUpdate):
     try:
         updated_remark = {str(id): remarks_update.remarks}
         oid = ObjectId(task_id)
-        # determine recipient based on sender role (be permissive about role shape)
+        
+        # First, get the task to determine recipient
+        task = tasks.find_one({"_id": oid})
+        if not task:
+            return 0
+        
+        # Ensure notifications field exists as an object and remarks as an array (not null)
+        fields_to_init = {}
+        if task.get('notifications') is None:
+            fields_to_init['notifications'] = {}
+        if task.get('remarks') is None:
+            fields_to_init['remarks'] = []
+        
+        # Initialize null fields if needed
+        if fields_to_init:
+            tasks.update_one(
+                {"_id": oid},
+                {"$set": fields_to_init}
+            )
+        
+        # Determine recipient based on sender role
         sender = get_User_by_id(id)
         recipient_id = None
-        task = tasks.find_one({"_id": oid})
+        
         if sender:
             roles = getattr(sender, 'role', None)
-            has_role = False
+            has_manager = False
+            has_developer = False
+            
             try:
                 # roles might be a list (JSON) or a string
                 if isinstance(roles, list):
@@ -118,10 +140,10 @@ def update_task_remarks(id:int, task_id:str, remarks_update:TaskRemarksUpdate):
 
             if has_manager:
                 # notify the assigned developer (if any)
-                recipient_id = task.get('assigned_to') if task else None
+                recipient_id = task.get('assigned_to')
             elif has_developer:
                 # notify the assigning manager (if any)
-                recipient_id = task.get('assigned_by') if task else None
+                recipient_id = task.get('assigned_by')
             else:
                 # unknown role shape — no recipient
                 recipient_id = None
@@ -129,19 +151,17 @@ def update_task_remarks(id:int, task_id:str, remarks_update:TaskRemarksUpdate):
             # no sender found in user service
             recipient_id = None
 
-        if not task:
-            # nothing to do if task missing
-            return 0
-
+        # Build update operations
         update_ops = {"$push": {"remarks": updated_remark}}
+        
         if recipient_id:
             # increment notifications for the recipient for this task
             update_ops.setdefault("$inc", {})[f"notifications.{recipient_id}"] = 1
         else:
             # for debugging: ensure we at least log that no recipient was found
-            # (in production you might send this to a proper logger)
             print(f"No recipient to notify for remark by user {id} on task {task_id}")
 
+        # Perform the update
         result = tasks.update_one(
             {"_id": oid},
             update_ops

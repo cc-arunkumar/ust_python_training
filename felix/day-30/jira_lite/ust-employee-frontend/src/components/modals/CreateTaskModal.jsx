@@ -327,8 +327,8 @@ const CreateTaskModal = ({
                       colorScheme: "light",
                     }}
                   />
-                  <Calendar 
-                    size={18} 
+                  <Calendar
+                    size={18}
                     className="absolute right-4 top-1/2 -translate-y-1/2 text-pink-500 pointer-events-none"
                   />
                 </div>
@@ -339,25 +339,22 @@ const CreateTaskModal = ({
             </div>
           </div>
 
-          
-
           {/* Action Buttons */}
           <div className="flex gap-3 mt-8 justify-end">
-  <button
-    onClick={onClose}
-    className="px-6 py-2.5 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-semibold transition-all hover:shadow-md"
-  >
-    Cancel
-  </button>
-  <button
-    onClick={handleSubmit}
-    disabled={loading}
-    className="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:shadow-lg font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-  >
-    {loading ? "Creating..." : "Create Task"}
-  
-  </button>
-</div>
+            <button
+              onClick={onClose}
+              className="px-3 py-1.5 border-2 border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 font-semibold transition-all hover:shadow-sm text-sm"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleSubmit}
+              disabled={loading}
+              className="px-3 py-1.5 bg-blue-600 text-white rounded-md hover:bg-blue-700 hover:shadow-sm font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+            >
+              {loading ? "Creating..." : "Create Task"}
+            </button>
+          </div>
         </div>
       </div>
     </div>
