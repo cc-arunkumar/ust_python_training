@@ -1,23 +1,27 @@
 import { useEffect, useState } from "react";
 import { loginByUser } from "../api/users";
+import { useNavigate } from "react-router-dom"; 
 
 export default function Login() {
   const [userId, setUserId] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (localStorage.getItem("token")) {
-      window.location.href = "/";
+      navigate("/", { replace: true });
     }
-  }, []);
+  }, [navigate]);
 
   const handleLogin = async () => {
     setLoading(true);
     try {
       const data = await loginByUser(userId, password);
-      localStorage.setItem("token", data.access_token);
-      window.location.href = "/";
+      localStorage.setItem("token", data.access_token); // always store token
+      navigate("/", { replace: true });
     } catch {
       alert("Login failed");
     } finally {
@@ -26,73 +30,60 @@ export default function Login() {
   };
 
   return (
-    <div className="flex items-center justify-center h-screen relative bg-white overflow-hidden">
-      {/* Decorative background pattern in sidebar colors */}
-      <div className="absolute inset-0">
-        <svg
-          className="absolute w-full h-full opacity-10 animate-pulse"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <defs>
-            <pattern
-              id="grid"
-              width="40"
-              height="40"
-              patternUnits="userSpaceOnUse"
-            >
-              <path
-                d="M 40 0 L 0 0 0 40"
-                fill="none"
-                stroke="#2b384bff"
-                strokeWidth="0.5"
-              />
-            </pattern>
-          </defs>
-          <rect width="100%" height="100%" fill="url(#grid)" />
-        </svg>
-
-        {/* Gradient overlay with animation */}
-        <div className="absolute inset-0 bg-gradient-to-br from-gray-100 via-gray-200 to-gray-300 opacity-30 animate-gradient"></div>
-
-        {/* Floating circles */}
-        <div className="absolute top-1/4 left-1/3 w-32 h-32 bg-gray-800 rounded-full opacity-10 animate-bounce-slow"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-24 h-24 bg-gray-900 rounded-full opacity-10 animate-bounce-slower"></div>
-
-        {/* Welcome message in background */}
-        <div className="absolute top-12 w-full text-center">
-          <h1 className="text-4xl font-extrabold text-teal-800 opacity-20 tracking-wide animate-fade-in">
-            Welcome to Jira Lite
-          </h1>
-        </div>
+    <div className="flex flex-col md:flex-row h-screen">
+      {/* Left branding panel */}
+      <div className="flex-1 flex flex-col justify-center items-center bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 text-white p-10 relative overflow-hidden">
+        <div className="absolute inset-0 bg-black opacity-20 mix-blend-multiply"></div>
+        <h1 className="text-5xl font-extrabold mb-6 animate-fade-in">
+          Jira Lite
+        </h1>
+        <p className="text-lg max-w-md text-center leading-relaxed animate-slide-up">
+          A lightweight project management tool designed for speed, simplicity,
+          and collaboration. Track tasks, manage sprints, and stay productive
+          with a clean, intuitive interface.
+        </p>
+        <div className="absolute -bottom-20 -left-20 w-72 h-72 bg-purple-400 rounded-full opacity-30 blur-3xl animate-pulse"></div>
+        <div className="absolute -top-20 -right-20 w-72 h-72 bg-indigo-400 rounded-full opacity-30 blur-3xl animate-pulse"></div>
       </div>
 
-      {/* Login card */}
-      <div className="bg-white p-6 rounded-lg shadow-lg w-96 relative z-10">
-        <h2 className="text-xl font-semibold mb-4 text-center text-gray-800">
-          Login
-        </h2>
-        <div className="space-y-3">
-          <input
-            type="text"
-            placeholder="User ID"
-            value={userId}
-            onChange={(e) => setUserId(e.target.value)}
-            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          <button
-            onClick={handleLogin}
-            disabled={loading}
-            className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition-colors disabled:opacity-60"
-          >
-            {loading ? "Logging in..." : "Login"}
-          </button>
+      {/* Right login form */}
+      <div className="flex-1 flex items-center justify-center bg-gray-50">
+        <div className="bg-white shadow-xl rounded-lg p-8 w-96 animate-slide-up">
+          <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
+            Login
+          </h2>
+          <div className="space-y-4">
+            <input
+              type="text"
+              placeholder="User ID"
+              value={userId}
+              onChange={(e) => setUserId(e.target.value)}
+              className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute inset-y-0 right-3 flex items-center text-sm text-indigo-600 hover:text-indigo-800"
+              >
+                {showPassword ? "Hide" : "Show"}
+              </button>
+            </div>
+            <button
+              onClick={handleLogin}
+              disabled={loading}
+              className="w-full bg-indigo-600 text-white py-3 rounded-lg hover:bg-indigo-700 transition-colors disabled:opacity-60"
+            >
+              {loading ? "Logging in..." : "Login"}
+            </button>
+          </div>
         </div>
       </div>
     </div>

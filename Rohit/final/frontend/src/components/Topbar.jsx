@@ -1,15 +1,61 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { getUser } from "../api/users";
+import { listTasks } from "../api/tasks";
+import { health } from "../api/utils";
 
 export default function Topbar() {
   const [user, setUser] = useState(null);
+  const [tasks, setTasks] = useState([]);
+  const [healthInfo, setHealthInfo] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    if (!token) return;
-    const payload = JSON.parse(atob(token.split(".")[1]));
-    getUser(payload.user_id).then(setUser).catch(() => setUser(null));
+    if (!token) {
+      setLoading(false);
+      return;
+    }
+
+    let payload;
+    try {
+      payload = JSON.parse(atob(token.split(".")[1]));
+    } catch (e) {
+      console.error("Invalid token", e);
+      setLoading(false);
+      return;
+    }
+
+    const userId = payload.user_id;
+    Promise.all([
+      getUser(userId).then(setUser).catch(() => setUser(null)),
+      health().then(setHealthInfo).catch(() => setHealthInfo(null)),
+      listTasks().then(setTasks).catch(() => setTasks([])),
+    ]).finally(() => setLoading(false));
   }, []);
+
+  const visibleTasks = useMemo(() => {
+    if (!user) return [];
+    return user.role === "EMPLOYEE"
+      ? tasks.filter((t) => t.assigned_to === user.emp_id)
+      : tasks;
+  }, [tasks, user]);
+
+  const statusCounts = useMemo(() => {
+    return {
+      TO_DO: visibleTasks.filter((t) => t.status === "TO_DO").length,
+      IN_PROGRESS: visibleTasks.filter((t) => t.status === "IN_PROGRESS").length,
+      REVIEW: visibleTasks.filter((t) => t.status === "REVIEW").length,
+      DONE: visibleTasks.filter((t) => t.status === "DONE").length,
+    };
+  }, [visibleTasks]);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-full">
+        <p className="text-gray-500 text-lg animate-pulse">Loading dashboard...</p>
+      </div>
+    );
+  }
 
   const onLogout = () => {
     localStorage.removeItem("token");
@@ -19,13 +65,13 @@ export default function Topbar() {
   const roleBadge = (role) => {
     switch (role) {
       case "ADMIN":
-        return "bg-red-100 text-red-600 dark:bg-red-900 dark:text-red-300";
+        return "bg-gradient-to-r from-red-500 to-pink-500 text-white shadow-md";
       case "MANAGER":
-        return "bg-purple-100 text-purple-600 dark:bg-purple-900 dark:text-purple-300";
+        return "bg-gradient-to-r from-purple-500 to-indigo-500 text-white shadow-md";
       case "EMPLOYEE":
-        return "bg-green-100 text-green-600 dark:bg-green-900 dark:text-green-300";
+        return "bg-gradient-to-r from-green-500 to-emerald-600 text-white shadow-md";
       default:
-        return "bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300";
+        return "bg-gradient-to-r from-gray-400 to-gray-600 text-white shadow-md";
     }
   };
 
@@ -43,17 +89,17 @@ export default function Topbar() {
   };
 
   return (
-    <div className="h-16 bg-white dark:bg-gray-900 shadow flex items-center justify-between px-6">
+    <div className="h-20 bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 shadow-lg flex items-center justify-between px-8">
       {/* App title */}
-      <div className="text-2xl font-bold text-gray-800 dark:text-gray-200">
-        Jira Lite
+      <div className="text-3xl font-extrabold tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">
+        TaskFlow Dashboard
       </div>
 
-      <div className="flex items-center space-x-6">
+      <div className="flex items-center space-x-8">
         {user && (
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center space-x-4">
             {/* Circular avatar */}
-            <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-gray-300 dark:border-gray-600">
+            <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-cyan-400 shadow-md">
               <img
                 src={roleAvatar(user.role)}
                 alt={`${user.role} avatar`}
@@ -62,7 +108,7 @@ export default function Topbar() {
             </div>
             {/* Role badge */}
             <span
-              className={`px-3 py-1 rounded text-base font-semibold ${roleBadge(
+              className={`px-4 py-1.5 rounded-full text-sm font-semibold uppercase tracking-wide ${roleBadge(
                 user.role
               )}`}
             >
@@ -74,7 +120,7 @@ export default function Topbar() {
         {/* Logout button */}
         <button
           onClick={onLogout}
-          className="text-base font-medium text-blue-600 dark:text-blue-400 hover:underline"
+          className="px-4 py-2 rounded-lg bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-medium shadow hover:scale-105 transform transition-all duration-200"
         >
           Logout
         </button>

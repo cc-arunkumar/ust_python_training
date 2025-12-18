@@ -1,13 +1,36 @@
 import { useEffect, useMemo, useState } from "react";
-import { listTasks, updateTaskStatus, createTask, updateTaskPriority } from "../api/tasks"; 
+import {
+  listTasks,
+  updateTaskStatus,
+  createTask,
+  updateTaskPriority,
+} from "../api/tasks";
 import { getUser } from "../api/users";
 import toast from "react-hot-toast";
+import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 
+// Gradient color themes for each status column
 const STATUS_COLUMNS = [
-  { key: "TO_DO", label: "TO_DO", color: "bg-blue-200 text-blue-800 dark:bg-blue-900 dark:text-blue-200" },
-  { key: "IN_PROGRESS", label: "IN_PROGRESS", color: "bg-yellow-200 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200" },
-  { key: "REVIEW", label: "REVIEW", color: "bg-purple-200 text-purple-800 dark:bg-purple-900 dark:text-purple-200" },
-  { key: "DONE", label: "DONE", color: "bg-green-200 text-green-800 dark:bg-green-900 dark:text-green-200" },
+  {
+    key: "TO_DO",
+    label: "To Do",
+    gradient: "bg-gradient-to-r from-blue-500 to-indigo-600 text-white",
+  },
+  {
+    key: "IN_PROGRESS",
+    label: "In Progress",
+    gradient: "bg-gradient-to-r from-yellow-400 to-orange-500 text-white",
+  },
+  {
+    key: "REVIEW",
+    label: "Review",
+    gradient: "bg-gradient-to-r from-purple-500 to-pink-600 text-white",
+  },
+  {
+    key: "DONE",
+    label: "Done",
+    gradient: "bg-gradient-to-r from-green-500 to-emerald-600 text-white",
+  },
 ];
 
 // Priority order mapping
@@ -16,6 +39,8 @@ const priorityOrder = { HIGH: 1, MEDIUM: 2, LOW: 3 };
 export default function Tasks() {
   const [tasks, setTasks] = useState([]);
   const [current, setCurrent] = useState(null);
+  const [filterPriority, setFilterPriority] = useState("");
+
   const [showCreate, setShowCreate] = useState(false);
 
   useEffect(() => {
@@ -27,10 +52,20 @@ export default function Tasks() {
 
   const visibleTasks = useMemo(() => {
     if (!current) return [];
-    return current.role === "EMPLOYEE"
-      ? tasks.filter((t) => t.assigned_to === current.emp_id)
-      : tasks;
-  }, [tasks, current]);
+    let filtered =
+      current.role === "EMPLOYEE"
+        ? tasks.filter((t) => t.assigned_to === current.emp_id)
+        : tasks;
+
+    // ✅ apply priority filter
+    if (filterPriority) {
+      filtered = filtered.filter(
+        (t) => t.priority === filterPriority.toUpperCase()
+      );
+    }
+
+    return filtered;
+  }, [tasks, current, filterPriority]);
 
   const grouped = useMemo(() => {
     const g = { TO_DO: [], IN_PROGRESS: [], REVIEW: [], DONE: [] };
@@ -38,7 +73,9 @@ export default function Tasks() {
 
     // sort each column by priority order
     Object.keys(g).forEach((status) => {
-      g[status].sort((a, b) => priorityOrder[a.priority] - priorityOrder[b.priority]);
+      g[status].sort(
+        (a, b) => priorityOrder[a.priority] - priorityOrder[b.priority]
+      );
     });
 
     return g;
@@ -84,94 +121,223 @@ export default function Tasks() {
     }
   };
 
+  // 🔑 Drag and Drop handler
+  const handleDragEnd = async (result) => {
+    const { destination, source, draggableId } = result;
+    if (!destination) return;
+
+    // same place → ignore
+    if (
+      destination.droppableId === source.droppableId &&
+      destination.index === source.index
+    ) {
+      return;
+    }
+
+    const taskId = Number(draggableId);
+    const newStatus = destination.droppableId;
+
+    // If moved to a new column → update status in backend
+    if (newStatus !== source.droppableId) {
+      try {
+        const updated = await updateTaskStatus(taskId, newStatus);
+        setTasks((prev) => prev.map((t) => (t.id === taskId ? updated : t)));
+        toast.success("Task moved!");
+      } catch {
+        toast.error("Failed to move task");
+      }
+    } else {
+      // Reordering inside same column → update local state only
+      const items = Array.from(grouped[source.droppableId]);
+      const [moved] = items.splice(source.index, 1);
+      items.splice(destination.index, 0, moved);
+
+      setTasks((prev) => prev.map((t) => (t.id === moved.id ? { ...t } : t)));
+    }
+  };
+
   return (
-    <div className="p-6 space-y-4 text-gray-800 dark:text-gray-200">
+    <div className="p-6 space-y-6 text-gray-800 dark:text-gray-200">
+      <div className="flex gap-3 items-center">
+        <label className="font-medium">Filter by Priority:</label>
+        <select
+          value={filterPriority}
+          onChange={(e) => setFilterPriority(e.target.value)}
+          className="p-2 border rounded dark:bg-gray-700 dark:text-gray-200"
+        >
+          <option value="">All</option>
+          <option value="HIGH">HIGH</option>
+          <option value="MEDIUM">MEDIUM</option>
+          <option value="LOW">LOW</option>
+        </select>
+      </div>
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Tasks</h1>
+        <h1 className="text-3xl font-extrabold tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">
+          Tasks
+        </h1>
         {current?.role !== "EMPLOYEE" && (
           <button
             onClick={() => setShowCreate(true)}
-            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+            className="px-4 py-2 rounded-lg bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-medium shadow hover:scale-105 transform transition-all duration-200"
           >
-            Create task
+            + Create Task
           </button>
         )}
       </div>
 
       {showCreate && (
-        <form onSubmit={handleCreate} className="bg-white dark:bg-gray-800 p-4 rounded shadow space-y-3">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <input name="title" required placeholder="Title" className="p-2 border rounded dark:bg-gray-700 dark:text-gray-200" />
-            <select name="priority" className="p-2 border rounded dark:bg-gray-700 dark:text-gray-200" defaultValue="MEDIUM">
+        <form
+          onSubmit={handleCreate}
+          className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg space-y-4"
+        >
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <input
+              name="title"
+              required
+              placeholder="Title"
+              className="p-2 border rounded dark:bg-gray-700 dark:text-gray-200"
+            />
+            <select
+              name="priority"
+              className="p-2 border rounded dark:bg-gray-700 dark:text-gray-200"
+              defaultValue="MEDIUM"
+            >
               <option value="HIGH">HIGH</option>
               <option value="MEDIUM">MEDIUM</option>
               <option value="LOW">LOW</option>
             </select>
           </div>
-          <textarea name="description" placeholder="Description" className="p-2 border rounded w-full dark:bg-gray-700 dark:text-gray-200" />
-          <input name="assigned_to" type="number" required placeholder="Assignee emp_id" className="p-2 border rounded w-full dark:bg-gray-700 dark:text-gray-200" />
-          <div className="flex gap-2">
-            <button type="submit" className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Save</button>
-            <button type="button" onClick={() => setShowCreate(false)} className="px-4 py-2 rounded border">Cancel</button>
+          <textarea
+            name="description"
+            placeholder="Description"
+            className="p-2 border rounded w-full dark:bg-gray-700 dark:text-gray-200"
+          />
+          <input
+            name="assigned_to"
+            type="number"
+            required
+            placeholder="Assignee emp_id"
+            className="p-2 border rounded w-full dark:bg-gray-700 dark:text-gray-200"
+          />
+          <div className="flex gap-3">
+            <button
+              type="submit"
+              className="px-4 py-2 rounded-lg bg-gradient-to-r from-green-500 to-emerald-600 text-white font-medium shadow hover:scale-105 transition"
+            >
+              Save
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowCreate(false)}
+              className="px-4 py-2 rounded-lg border hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+            >
+              Cancel
+            </button>
           </div>
         </form>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        {STATUS_COLUMNS.map(({ key, label, color }) => (
-          <div key={key} className="bg-gray-100 dark:bg-gray-800 rounded-lg p-2">
-            <h2 className={`text-lg font-semibold mb-2 px-2 py-1 rounded ${color}`}>{label}</h2>
-            <div className="space-y-2">
-              {grouped[key].map((t) => (
-                <div key={t.id} className="bg-white dark:bg-gray-900 p-3 rounded shadow">
-                  <div className="flex items-center justify-between">
-                    <p className="font-medium text-gray-800 dark:text-gray-200">{t.title}</p>
-                    {current?.role === "EMPLOYEE" ? (
-                      <span
-                        className={`text-xs px-2 py-1 rounded ${
-                          t.priority === "HIGH"
-                            ? "bg-red-100 text-red-600 dark:bg-red-900 dark:text-red-300"
-                            : t.priority === "MEDIUM"
-                            ? "bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300"
-                            : "bg-green-100 text-green-600 dark:bg-green-900 dark:text-green-300"
-                        }`}
+      {/* 🔑 DragDropContext wrapper */}
+      <DragDropContext onDragEnd={handleDragEnd}>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          {STATUS_COLUMNS.map(({ key, label, gradient }) => (
+            <Droppable droppableId={key} key={key}>
+              {(provided) => (
+                <div
+                  ref={provided.innerRef}
+                  {...provided.droppableProps}
+                  className="bg-gray-50 dark:bg-gray-800 rounded-xl shadow-lg p-4"
+                >
+                  <h2
+                    className={`text-lg font-semibold mb-3 px-3 py-2 rounded-lg ${gradient}`}
+                  >
+                    {label}
+                  </h2>
+                  <div className="space-y-3">
+                    {grouped[key].map((t, index) => (
+                      <Draggable
+                        key={t.id}
+                        draggableId={String(t.id)}
+                        index={index}
                       >
-                        {t.priority}
-                      </span>
-                    ) : (
-                      <select
-                        value={t.priority}
-                        onChange={(e) => handlePriorityChange(t.id, e.target.value)}
-                        className="text-xs border rounded p-1 dark:bg-gray-700 dark:text-gray-200"
-                      >
-                        <option value="HIGH">HIGH</option>
-                        <option value="MEDIUM">MEDIUM</option>
-                        <option value="LOW">LOW</option>
-                      </select>
+                        {(provided) => (
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                            className="bg-white dark:bg-gray-900 p-4 rounded-lg shadow hover:scale-[1.02] transition"
+                          >
+                            <div className="flex items-center justify-between">
+                              <p className="font-medium text-gray-800 dark:text-gray-200">
+                                {t.title}
+                              </p>
+                              {current?.role === "EMPLOYEE" ? (
+                                <span
+                                  className={`text-xs px-2 py-1 rounded-full font-semibold ${
+                                    t.priority === "HIGH"
+                                      ? "bg-red-500 text-white"
+                                      : t.priority === "MEDIUM"
+                                      ? "bg-yellow-400 text-white"
+                                      : "bg-green-500 text-white"
+                                  }`}
+                                >
+                                  {t.priority}
+                                </span>
+                              ) : (
+                                <select
+                                  value={t.priority}
+                                  onChange={(e) =>
+                                    handlePriorityChange(t.id, e.target.value)
+                                  }
+                                  className="text-xs border rounded p-1 dark:bg-gray-700 dark:text-gray-200"
+                                >
+                                  <option value="HIGH">HIGH</option>
+                                  <option value="MEDIUM">MEDIUM</option>
+                                  <option value="LOW">LOW</option>
+                                </select>
+                              )}
+                            </div>
+
+                            <p className="text-xs text-gray-500 dark:text-gray-400">
+                              Assignee emp_id: {t.assigned_to}
+                            </p>
+
+                            <div className="mt-2">
+                              <select
+                                value={t.status}
+                                onChange={(e) =>
+                                  handleStatusChange(t.id, e.target.value)
+                                }
+                                className="text-sm border rounded p-1 dark:bg-gray-700 dark:text-gray-200"
+                                disabled={
+                                  current?.role === "EMPLOYEE" &&
+                                  current?.emp_id !== t.assigned_to
+                                }
+                              >
+                                {STATUS_COLUMNS.map(({ key }) => (
+                                  <option key={key} value={key}>
+                                    {key}
+                                  </option>
+                                ))}
+                              </select>
+                            </div>
+                          </div>
+                        )}
+                      </Draggable>
+                    ))}
+                    {grouped[key].length === 0 && (
+                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                        No tasks
+                      </p>
                     )}
-                  </div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">Assignee emp_id: {t.assigned_to}</p>
-                  <div className="mt-2">
-                    <select
-                      value={t.status}
-                      onChange={(e) => handleStatusChange(t.id, e.target.value)}
-                      className="text-sm border rounded p-1 dark:bg-gray-700 dark:text-gray-200"
-                      disabled={current?.role === "EMPLOYEE" && current?.emp_id !== t.assigned_to}
-                    >
-                      {STATUS_COLUMNS.map(({ key }) => (
-                        <option key={key} value={key}>{key}</option>
-                      ))}
-                    </select>
+                    {provided.placeholder}
                   </div>
                 </div>
-              ))}
-              {grouped[key].length === 0 && (
-                <p className="text-sm text-gray-500 dark:text-gray-400">No tasks</p>
               )}
-            </div>
-          </div>
-        ))}
-      </div>
+            </Droppable>
+          ))}
+        </div>
+      </DragDropContext>
     </div>
   );
 }

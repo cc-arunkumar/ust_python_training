@@ -1,203 +1,128 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { getUser } from "../api/users";
 import { health } from "../api/utils";
-import { Line, Bar } from "react-chartjs-2";
-import {
-  Chart as ChartJS,
-  LineElement,
-  PointElement,
-  CategoryScale,
-  LinearScale,
-  Tooltip,
-  Legend,
-  Filler,
-  BarElement,
-} from "chart.js";
-
-ChartJS.register(
-  LineElement,
-  PointElement,
-  CategoryScale,
-  LinearScale,
-  Tooltip,
-  Legend,
-  Filler,
-  BarElement
-);
+import { listTasks } from "../api/tasks";
 
 export default function Dashboard() {
   const [user, setUser] = useState(null);
   const [healthInfo, setHealthInfo] = useState(null);
+  const [tasks, setTasks] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    if (!token) return;
+    if (!token) {
+      setLoading(false);
+      return;
+    }
 
-    const payload = JSON.parse(atob(token.split(".")[1]));
+    let payload;
+    try {
+      payload = JSON.parse(atob(token.split(".")[1]));
+    } catch (e) {
+      console.error("Invalid token", e);
+      setLoading(false);
+      return;
+    }
+
     const userId = payload.user_id;
 
-    getUser(userId).then(setUser).catch(() => setUser(null));
-    health().then(setHealthInfo).catch(() => setHealthInfo(null));
+    Promise.all([
+      getUser(userId)
+        .then(setUser)
+        .catch(() => setUser(null)),
+      health()
+        .then(setHealthInfo)
+        .catch(() => setHealthInfo(null)),
+      listTasks()
+        .then(setTasks)
+        .catch(() => setTasks([])),
+    ]).finally(() => setLoading(false));
   }, []);
 
-  // Line chart: task trends
-  const taskTrendData = {
-    labels: ["Week 1", "Week 2", "Week 3", "Week 4"],
-    datasets: [
-      {
-        label: "TO_DO",
-        data: [5, 4, 6, 3],
-        borderColor: "#3b82f6",
-        backgroundColor: "rgba(147, 197, 253, 0.4)",
-        fill: true,
-        tension: 0.4,
-      },
-      {
-        label: "IN_PROGRESS",
-        data: [2, 5, 3, 4],
-        borderColor: "#facc15",
-        backgroundColor: "rgba(253, 230, 138, 0.4)",
-        fill: true,
-        tension: 0.4,
-      },
-      {
-        label: "REVIEW",
-        data: [1, 2, 3, 2],
-        borderColor: "#a855f7",
-        backgroundColor: "rgba(216, 180, 252, 0.4)",
-        fill: true,
-        tension: 0.4,
-      },
-      {
-        label: "DONE",
-        data: [3, 6, 8, 10],
-        borderColor: "#22c55e",
-        backgroundColor: "rgba(134, 239, 172, 0.4)",
-        fill: true,
-        tension: 0.4,
-      },
-    ],
-  };
+  const visibleTasks = useMemo(() => {
+    if (!user) return [];
+    return user.role === "EMPLOYEE"
+      ? tasks.filter((t) => t.assigned_to === user.emp_id)
+      : tasks;
+  }, [tasks, user]);
+  console.log(visibleTasks);
+  const statusCounts = useMemo(() => {
+    return {
+      TO_DO: visibleTasks.filter((t) => t.status === "TO_DO").length,
+      IN_PROGRESS: visibleTasks.filter((t) => t.status === "IN_PROGRESS")
+        .length,
+      REVIEW: visibleTasks.filter((t) => t.status === "REVIEW").length,
+      DONE: visibleTasks.filter((t) => t.status === "DONE").length,
+    };
+  }, [visibleTasks]);
 
-  // Bar chart: task distribution by priority
-const taskPriorityData = {
-  labels: ["HIGH", "MEDIUM", "LOW"],
-  datasets: [
-    {
-      label: "Tasks by Priority",
-      data: [7, 12, 5],
-      backgroundColor: [
-        "rgba(239, 68, 68, 0.7)",   // red with opacity
-        "rgba(250, 204, 21, 0.7)",  // yellow with opacity
-        "rgba(34, 197, 94, 0.7)",   // green with opacity
-      ],
-      borderColor: ["#ef4444", "#facc15", "#22c55e"],
-      borderWidth: 1,
-      borderRadius: 6,   // rounded bars
-      barThickness: 40,  // consistent width
-    },
-  ],
-};
-
-const taskPriorityOptions = {
-  responsive: true,
-  plugins: {
-    legend: {
-      display: false, // hide legend since labels are obvious
-    },
-    tooltip: {
-      enabled: true,
-      callbacks: {
-        label: (context) => `${context.label}: ${context.raw} tasks`,
-      },
-    },
-  },
-  scales: {
-    x: {
-      ticks: {
-        color: "#374151", // gray-700
-        font: { weight: "bold" },
-      },
-      grid: { display: false },
-    },
-    y: {
-      beginAtZero: true,
-      ticks: {
-        stepSize: 2,
-        color: "#374151",
-      },
-      grid: { color: "rgba(209, 213, 219, 0.3)" }, // subtle grid
-    },
-  },
-};
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-full">
+        <p className="text-gray-500 text-lg animate-pulse">
+          Loading dashboard...
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="p-6 space-y-6 text-gray-800 dark:text-gray-200">
-      <h1 className="text-2xl font-bold">Dashboard</h1>
+      <h1 className="text-3xl font-extrabold tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">
+        Dashboard
+      </h1>
+      <p className="text-gray-500">
+        Here's what's happening with your tasks today
+      </p>
+
       {user && (
         <>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {/* Welcome card */}
-            <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow border border-gray-200 dark:border-gray-700 transition transform hover:scale-[1.02] hover:bg-pink-50 dark:hover:bg-pink-900/30">
-              <p className="text-gray-700 dark:text-gray-200">
-                <span className="font-medium">Welcome:</span>{" "}
-                {user.employee?.name || `User #${user.user_id}`}
+          {/* Task summary boxes */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+            {/* Big card spanning all 3 columns */}
+            <div className="lg:col-span-3 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-xl shadow-lg p-8 text-center transform hover:scale-105 transition duration-300">
+              <h3 className="text-2xl font-semibold text-white">Overview</h3>
+              <p className="text-5xl font-extrabold text-white">
+                {visibleTasks.length} Tasks
               </p>
-              <p className="text-gray-600 dark:text-gray-400">
-                <span className="font-medium">Role:</span> {user.role}
-              </p>
-              <p className="text-gray-600 dark:text-gray-400">
-                <span className="font-medium">Status:</span> {user.status}
+              <p className="mt-2 text-gray-200">
+                Summary of all tasks assigned
               </p>
             </div>
 
-            {/* Backend health card */}
-            <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow border border-gray-200 dark:border-gray-700 transition transform hover:scale-[1.02] hover:bg-blue-50 dark:hover:bg-blue-900/30">
-              <p className="text-gray-700 dark:text-gray-200">
-                <span className="font-medium">Backend:</span>{" "}
-                {healthInfo?.message || "Checking..."}
-              </p>
-              <p className="text-gray-600 dark:text-gray-400">
-                <span className="font-medium">Service:</span>{" "}
-                {healthInfo?.status || "unknown"}
+            {/* Smaller cards */}
+            <div className="bg-gradient-to-r from-yellow-400 to-orange-500 rounded-xl shadow-lg p-6 text-center transform hover:scale-105 transition duration-300">
+              <h3 className="text-lg font-semibold text-white">To Do</h3>
+              <p className="text-4xl font-extrabold text-white">
+                {statusCounts.TO_DO}
               </p>
             </div>
 
-            {/* Quick actions card */}
-            <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow border border-gray-200 dark:border-gray-700 transition transform hover:scale-[1.02] hover:bg-green-50 dark:hover:bg-green-900/30">
-              <p className="text-gray-700 dark:text-gray-200">
-                <span className="font-medium">Quick actions:</span>
+            <div className="bg-gradient-to-r from-purple-500 to-pink-600 rounded-xl shadow-lg p-6 text-center transform hover:scale-105 transition duration-300">
+              <h3 className="text-lg font-semibold text-white">In Progress</h3>
+              <p className="text-4xl font-extrabold text-white">
+                {statusCounts.IN_PROGRESS}
               </p>
-              <ul className="text-sm text-blue-600 dark:text-blue-400 space-y-1 mt-2">
-                <li>
-                  <a href="/tasks" className="hover:underline">
-                    View tasks
-                  </a>
-                </li>
-                {user?.role !== "EMPLOYEE" && (
-                  <li>
-                    <a href="/users" className="hover:underline">
-                      Manage users
-                    </a>
-                  </li>
-                )}
-              </ul>
             </div>
-          </div>
 
-          {/* Task trend line chart */}
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow border border-gray-200 dark:border-gray-700">
-            <h2 className="text-lg font-semibold mb-4">Task Trends</h2>
-            <Line data={taskTrendData} />
-          </div>
+            <div className="bg-gradient-to-r from-pink-500 to-rose-600 rounded-xl shadow-lg p-6 text-center transform hover:scale-105 transition duration-300">
+              <h3 className="text-lg font-semibold text-white">Review</h3>
+              <p className="text-4xl font-extrabold text-white">
+                {statusCounts.REVIEW}
+              </p>
+            </div>
 
-          {/* Task priority bar chart */}
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow border border-gray-200 dark:border-gray-700">
-            <h2 className="text-lg font-semibold mb-4">Task Priorities</h2>
-            <Bar data={taskPriorityData} options={taskPriorityOptions} />
+            <div className="bg-gradient-to-r from-green-500 to-emerald-600 rounded-xl shadow-lg p-6 text-center transform hover:scale-105 transition duration-300">
+              <h3 className="text-lg font-semibold text-white">Done</h3>
+              <p className="text-4xl font-extrabold text-white">
+                {statusCounts.DONE}
+              </p>
+            </div>
           </div>
         </>
       )}
+
       {!user && (
         <p className="text-gray-500 dark:text-gray-400">Loading user info...</p>
       )}
