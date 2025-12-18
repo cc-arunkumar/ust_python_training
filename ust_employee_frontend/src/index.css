@@ -1,0 +1,232 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@layer base {
+  :root {
+    --background: 220 20% 97%;
+    --foreground: 222 47% 11%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+
+    --primary: 217 91% 50%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 220 14% 96%;
+    --secondary-foreground: 222 47% 11%;
+
+    --muted: 220 14% 96%;
+    --muted-foreground: 220 9% 46%;
+
+    --accent: 217 91% 50%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 217 91% 50%;
+
+    --radius: 0.5rem;
+
+    /* Status colors */
+    --status-todo: 217 91% 60%;
+    --status-todo-bg: 217 91% 96%;
+    --status-inprogress: 45 93% 47%;
+    --status-inprogress-bg: 45 93% 95%;
+    --status-review: 24 95% 53%;
+    --status-review-bg: 24 95% 95%;
+    --status-done: 142 71% 45%;
+    --status-done-bg: 142 71% 95%;
+
+    /* Priority colors */
+    --priority-high: 0 84% 60%;
+    --priority-medium: 45 93% 47%;
+    --priority-low: 142 71% 45%;
+
+    /* Role colors */
+    --role-admin: 262 83% 58%;
+    --role-manager: 217 91% 50%;
+    --role-developer: 142 71% 45%;
+
+    --sidebar-background: 222 47% 11%;
+    --sidebar-foreground: 220 20% 97%;
+    --sidebar-primary: 217 91% 60%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 222 47% 18%;
+    --sidebar-accent-foreground: 220 20% 97%;
+    --sidebar-border: 222 47% 18%;
+    --sidebar-ring: 217 91% 60%;
+  }
+
+  .dark {
+    --background: 222 47% 8%;
+    --foreground: 220 20% 97%;
+
+    --card: 222 47% 11%;
+    --card-foreground: 220 20% 97%;
+
+    --popover: 222 47% 11%;
+    --popover-foreground: 220 20% 97%;
+
+    --primary: 217 91% 60%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 222 47% 18%;
+    --secondary-foreground: 220 20% 97%;
+
+    --muted: 222 47% 18%;
+    --muted-foreground: 220 9% 64%;
+
+    --accent: 217 91% 60%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 62% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 222 47% 18%;
+    --input: 222 47% 18%;
+    --ring: 217 91% 60%;
+
+    --status-todo-bg: 217 91% 15%;
+    --status-inprogress-bg: 45 93% 15%;
+    --status-review-bg: 24 95% 15%;
+    --status-done-bg: 142 71% 15%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  code {
+    font-family: 'JetBrains Mono', monospace;
+  }
+}
+
+@layer components {
+  .status-badge {
+    @apply px-2.5 py-1 rounded-full text-xs font-semibold uppercase tracking-wide;
+  }
+
+  .status-todo {
+    @apply bg-[hsl(var(--status-todo-bg))] text-[hsl(var(--status-todo))];
+  }
+
+  .status-inprogress {
+    @apply bg-[hsl(var(--status-inprogress-bg))] text-[hsl(var(--status-inprogress))];
+  }
+
+  .status-review {
+    @apply bg-[hsl(var(--status-review-bg))] text-[hsl(var(--status-review))];
+  }
+
+  .status-done {
+    @apply bg-[hsl(var(--status-done-bg))] text-[hsl(var(--status-done))];
+  }
+
+  .priority-high {
+    @apply text-[hsl(var(--priority-high))];
+  }
+
+  .priority-medium {
+    @apply text-[hsl(var(--priority-medium))];
+  }
+
+  .priority-low {
+    @apply text-[hsl(var(--priority-low))];
+  }
+
+  .kanban-column {
+    @apply flex flex-col min-h-[500px] rounded-xl p-4 transition-all duration-200;
+  }
+
+  .kanban-column-todo {
+    @apply bg-[hsl(var(--status-todo-bg))]/50 border-2 border-[hsl(var(--status-todo))]/20;
+  }
+
+  .kanban-column-inprogress {
+    @apply bg-[hsl(var(--status-inprogress-bg))]/50 border-2 border-[hsl(var(--status-inprogress))]/20;
+  }
+
+  .kanban-column-review {
+    @apply bg-[hsl(var(--status-review-bg))]/50 border-2 border-[hsl(var(--status-review))]/20;
+  }
+
+  .kanban-column-done {
+    @apply bg-[hsl(var(--status-done-bg))]/50 border-2 border-[hsl(var(--status-done))]/20;
+  }
+
+  .task-card {
+    @apply bg-card p-4 rounded-lg shadow-sm border border-border hover:shadow-md transition-all duration-200 cursor-grab active:cursor-grabbing;
+  }
+
+  .task-card-dragging {
+    @apply shadow-xl ring-2 ring-primary/50 rotate-2;
+  }
+
+  .nav-button {
+    @apply flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-200;
+  }
+
+  .nav-button-admin {
+    @apply bg-[hsl(var(--role-admin))]/10 text-[hsl(var(--role-admin))] hover:bg-[hsl(var(--role-admin))]/20;
+  }
+
+  .nav-button-manager {
+    @apply bg-[hsl(var(--role-manager))]/10 text-[hsl(var(--role-manager))] hover:bg-[hsl(var(--role-manager))]/20;
+  }
+
+  .nav-button-developer {
+    @apply bg-[hsl(var(--role-developer))]/10 text-[hsl(var(--role-developer))] hover:bg-[hsl(var(--role-developer))]/20;
+  }
+
+  .nav-button-active {
+    @apply ring-2 ring-offset-2 ring-offset-background;
+  }
+}
+
+@layer utilities {
+  .animate-slide-in {
+    animation: slideIn 0.3s ease-out;
+  }
+
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-card-enter {
+    animation: cardEnter 0.2s ease-out;
+  }
+
+  @keyframes cardEnter {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+}
