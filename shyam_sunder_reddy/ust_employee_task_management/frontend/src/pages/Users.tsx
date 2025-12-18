@@ -220,7 +220,7 @@ const UserModal: React.FC<{
   onClose: () => void;
   onSuccess: () => void;
 }> = ({ user, onClose, onSuccess }) => {
-  const { user: currentUser, activeRole } = useAuth();
+  const { activeRole } = useAuth();
   const [formData, setFormData] = useState({
     e_id: user?.e_id?.toString() || "",
     password: "",
@@ -368,4 +368,3 @@ const UserModal: React.FC<{
 };
 
 export default Users;
-

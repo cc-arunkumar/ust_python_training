@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { taskAPI } from "../services/api";
-import { Plus, Search, X as XIcon, MessageSquare } from "lucide-react";
+import { Plus, Search, X as XIcon, MessageSquare, Eye } from "lucide-react";
 import { employeeAPI, userAPI, remarkAPI } from "../services/api";
 import { useNavigate } from "react-router-dom";
 import type { Task, User } from "../types";
@@ -138,9 +138,19 @@ const Tasks = () => {
   // Remark modal state
   const [showRemarkModal, setShowRemarkModal] = useState(false);
   const [remarkTask, setRemarkTask] = useState<Task | null>(null);
+  // Task detail modal state
+  const [showDetailModal, setShowDetailModal] = useState(false);
+  const [detailTask, setDetailTask] = useState<Task | null>(null);
+  // Used to force reload of remarks inside TaskDetailModal when a remark is added
+  const [remarksReloadKey, setRemarksReloadKey] = useState(0);
 
   const handlePriorityChange = async (task: Task, newPriority: string) => {
     if (!activeRole || !task.t_id) return;
+    // Developers are not permitted to change priority
+    if (activeRole === "Developer") {
+      alert("You are not authorized to change task priority.");
+      return;
+    }
     try {
       await taskAPI.patchPriority(task.t_id, newPriority, activeRole as string);
       updateTaskInState({ ...task, priority: newPriority as any });
@@ -158,6 +168,26 @@ const Tasks = () => {
       alert("Remarks can only be added when task is In Progress or in Review.");
       return;
     }
+    // Determine required role for this status
+    const requiredRole = status === "IN_PROGRESS" ? "Developer" : "Manager";
+
+    // Disallow Admin from adding remarks explicitly in the UI
+    const userRoles: any = user?.role || [];
+    const hasRequired = Array.isArray(userRoles)
+      ? userRoles.includes(requiredRole)
+      : String(userRoles).includes(requiredRole);
+    const isAdmin = Array.isArray(userRoles)
+      ? userRoles.includes("Admin")
+      : String(userRoles).includes("Admin");
+
+    if (!hasRequired || isAdmin) {
+      // If the activeRole matches the requiredRole we can allow (covers role switch)
+      if (activeRole !== requiredRole) {
+        alert("You are not authorized to add remarks for this task.");
+        return;
+      }
+    }
+
     // Open remark modal for in-place remark creation
     setRemarkTask(task);
     setShowRemarkModal(true);
@@ -166,6 +196,19 @@ const Tasks = () => {
   const handleStatusChange = async (task: Task, newStatus: string) => {
     if (!activeRole || !task.t_id) return;
     if (normalizeStatus(task.status) === newStatus) return;
+    // Developers have a limited ability to change status via drag/drop:
+    // allow Developer to move their assigned task from IN_PROGRESS -> REVIEW.
+    if (activeRole === "Developer") {
+      const from = normalizeStatus(task.status);
+      const to = newStatus;
+      const allowedForDev =
+        (from === "IN_PROGRESS" && to === "REVIEW") ||
+        (from === "TO_DO" && to === "IN_PROGRESS");
+      if (!allowedForDev) {
+        alert("You are not authorized to change task status.");
+        return;
+      }
+    }
     try {
       await taskAPI.patchStatus(task.t_id, newStatus, activeRole as string);
       updateTaskInState({ ...task, status: newStatus });
@@ -261,7 +304,12 @@ const Tasks = () => {
           getPriorityColor={getPriorityColor}
           onPriorityChange={handlePriorityChange}
           onStatusChange={handleStatusChange}
+          activeRole={activeRole}
           onAddRemark={handleAddRemark}
+          onViewDetails={(t: Task) => {
+            setDetailTask(t);
+            setShowDetailModal(true);
+          }}
           draggedTask={draggedTask}
           setDraggedTask={setDraggedTask}
           onEditClick={(t: Task) => setEditingTask(t)}
@@ -279,7 +327,12 @@ const Tasks = () => {
           getPriorityColor={getPriorityColor}
           onPriorityChange={handlePriorityChange}
           onStatusChange={handleStatusChange}
+          activeRole={activeRole}
           onAddRemark={handleAddRemark}
+          onViewDetails={(t: Task) => {
+            setDetailTask(t);
+            setShowDetailModal(true);
+          }}
           draggedTask={draggedTask}
           setDraggedTask={setDraggedTask}
           onEditClick={(t: Task) => setEditingTask(t)}
@@ -297,7 +350,12 @@ const Tasks = () => {
           getPriorityColor={getPriorityColor}
           onPriorityChange={handlePriorityChange}
           onStatusChange={handleStatusChange}
+          activeRole={activeRole}
           onAddRemark={handleAddRemark}
+          onViewDetails={(t: Task) => {
+            setDetailTask(t);
+            setShowDetailModal(true);
+          }}
           draggedTask={draggedTask}
           setDraggedTask={setDraggedTask}
           onEditClick={(t: Task) => setEditingTask(t)}
@@ -315,7 +373,12 @@ const Tasks = () => {
           getPriorityColor={getPriorityColor}
           onPriorityChange={handlePriorityChange}
           onStatusChange={handleStatusChange}
+          activeRole={activeRole}
           onAddRemark={handleAddRemark}
+          onViewDetails={(t: Task) => {
+            setDetailTask(t);
+            setShowDetailModal(true);
+          }}
           draggedTask={draggedTask}
           setDraggedTask={setDraggedTask}
           onEditClick={(t: Task) => setEditingTask(t)}
@@ -356,11 +419,25 @@ const Tasks = () => {
           onSuccess={() => {
             setShowRemarkModal(false);
             setRemarkTask(null);
-            // small feedback; parent can refresh if needed
+            // bump reload key so TaskDetailModal (if open) refreshes remarks
+            setRemarksReloadKey((k) => k + 1);
+            // small feedback
             alert("Remark added.");
           }}
           user={user}
           activeRole={activeRole}
+        />
+      )}
+      {showDetailModal && detailTask && (
+        <TaskDetailModal
+          task={detailTask}
+          onClose={() => {
+            setShowDetailModal(false);
+            setDetailTask(null);
+          }}
+          activeRole={activeRole}
+          user={user}
+          reloadKey={remarksReloadKey}
         />
       )}
     </div>
@@ -379,9 +456,11 @@ interface TaskColumnProps {
   onPriorityChange: (task: Task, newPriority: string) => void;
   onStatusChange: (task: Task, newStatus: string) => void;
   onAddRemark?: (task: Task) => void;
+  onViewDetails?: (task: Task) => void;
   draggedTask: Task | null;
   setDraggedTask: (task: Task | null) => void;
   onEditClick?: (task: Task) => void;
+  activeRole?: string | null;
 }
 
 const TaskColumn = ({
@@ -399,6 +478,8 @@ const TaskColumn = ({
   setDraggedTask,
   onEditClick,
   onAddRemark,
+  onViewDetails,
+  activeRole,
 }: TaskColumnProps) => {
   return (
     <div
@@ -449,63 +530,68 @@ const TaskColumn = ({
               onDragStart={() => setDraggedTask(task)}
               onDragEnd={() => setDraggedTask(null)}
             >
-              <div className="flex items-start justify-between mb-2 gap-2 min-w-0">
-                <div className="flex-1">
-                  <p className="text-xs text-gray-400 mb-0.5">
-                    #{task.t_id ?? ""}
-                  </p>
-                  <h3 className="text-sm font-semibold text-gray-800 line-clamp-2">
-                    {task.title}
-                  </h3>
-                </div>
-                <div className="flex flex-col items-end gap-1">
-                  <div className="flex flex-col items-end gap-1">
-                    {/* status pill removed as requested */}
-                    <div className="flex items-center gap-2">
-                      <button
-                        className={`inline-flex items-center whitespace-nowrap px-2 py-0.5 rounded-full text-[11px] font-medium border ${getPriorityColor(
-                          task.priority
-                        )}`}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          const next =
-                            task.priority === "high"
-                              ? "medium"
-                              : task.priority === "medium"
-                              ? "low"
-                              : "high";
-                          onPriorityChange(task, next);
-                        }}
-                        title="Click to change priority"
-                      >
-                        {task.priority}
-                      </button>
+              {/* Top row: task id, eye (details), remark, priority */}
+              <div className="flex items-center gap-2 mb-2">
+                <p className="text-xs text-gray-400 mb-0.5 flex-shrink-0">
+                  #{task.t_id ?? ""}
+                </p>
 
-                      {/* remark icon: active only for IN_PROGRESS or REVIEW */}
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onAddRemark && onAddRemark(task);
-                        }}
-                        className={`p-1 rounded-full text-gray-500 hover:bg-gray-100 transition-colors ${
-                          (task.status || "TO_DO") === "IN_PROGRESS" ||
-                          (task.status || "TO_DO") === "REVIEW"
-                            ? "cursor-pointer"
-                            : "opacity-40 pointer-events-none"
-                        }`}
-                        title={
-                          (task.status || "TO_DO") === "IN_PROGRESS" ||
-                          (task.status || "TO_DO") === "REVIEW"
-                            ? "Add remark"
-                            : "Remarks disabled for this status"
-                        }
-                      >
-                        <MessageSquare size={14} />
-                      </button>
-                    </div>
-                  </div>
-                </div>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onViewDetails && onViewDetails(task);
+                  }}
+                  className="p-1 rounded-full text-gray-500 hover:bg-gray-100 transition-colors flex-shrink-0"
+                  title="View task details & remarks"
+                >
+                  <Eye size={14} />
+                </button>
+
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onAddRemark && onAddRemark(task);
+                  }}
+                  className={`p-1 rounded-full text-gray-500 hover:bg-gray-100 transition-colors flex-shrink-0 ${
+                    (task.status || "TO_DO") === "IN_PROGRESS" ||
+                    (task.status || "TO_DO") === "REVIEW"
+                      ? "cursor-pointer"
+                      : "opacity-40 pointer-events-none"
+                  }`}
+                  title={
+                    (task.status || "TO_DO") === "IN_PROGRESS" ||
+                    (task.status || "TO_DO") === "REVIEW"
+                      ? "Add remark"
+                      : "Remarks disabled for this status"
+                  }
+                >
+                  <MessageSquare size={14} />
+                </button>
+
+                <button
+                  className={`inline-flex items-center whitespace-nowrap px-2 py-0.5 rounded-full text-[11px] font-medium border ${getPriorityColor(
+                    task.priority
+                  )} max-w-[72px] truncate overflow-hidden ml-1 flex-shrink-0`}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    const next =
+                      task.priority === "high"
+                        ? "medium"
+                        : task.priority === "medium"
+                        ? "low"
+                        : "high";
+                    onPriorityChange(task, next);
+                  }}
+                  disabled={activeRole === "Developer"}
+                  title="Click to change priority"
+                >
+                  {task.priority}
+                </button>
               </div>
+
+              <h3 className="text-sm font-semibold text-gray-800 line-clamp-2 mb-1">
+                {task.title}
+              </h3>
 
               <p className="text-xs text-gray-500 mb-3 line-clamp-2">
                 {task.description}
@@ -821,6 +907,7 @@ const CreateTaskModal: React.FC<{
                   setFormData({ ...formData, status: e.target.value })
                 }
                 className="input-field h-8 px-2 py-1 text-xs"
+                disabled={activeRole === "Developer"}
               >
                 <option value="TO_DO">To Do</option>
                 <option value="IN_PROGRESS">In Progress</option>
@@ -917,6 +1004,13 @@ const EditTaskInline: React.FC<{
         ? "Manager"
         : activeRole || user?.role?.[0] || "";
 
+      // Disallow Developer role from performing task updates
+      if (roleToUse === "Developer") {
+        alert("You are not authorized to update tasks.");
+        setIsSubmitting(false);
+        return;
+      }
+
       const updates: any = {
         title: formData.title,
         description: formData.description,
@@ -947,33 +1041,6 @@ const EditTaskInline: React.FC<{
     }
   };
 
-  // const handleAddRemark = async () => {
-  //   if (!task.t_id) return;
-  //   if (!remarkText && !remarkFile) {
-  //     alert("Please enter a comment or attach a file for the remark.");
-  //     return;
-  //   }
-  //   setIsAddingRemark(true);
-  //   try {
-  //     const roleToUse = user?.role?.includes("Manager")
-  //       ? "Manager"
-  //       : activeRole || user?.role?.[0] || "";
-  //     await remarkAPI.create(
-  //       task.t_id,
-  //       remarkText,
-  //       roleToUse,
-  //       remarkFile || undefined
-  //     );
-  //     setRemarkText("");
-  //     setRemarkFile(null);
-  //     alert("Remark added.");
-  //   } catch (err) {
-  //     console.error("Failed to add remark:", err);
-  //     alert("Failed to add remark. See console for details.");
-  //   } finally {
-  //     setIsAddingRemark(false);
-  //   }
-  // };
   useEffect(() => {
     let mounted = true;
     // fetch users via userAPI.getByRole then resolve display names from Employee table
@@ -1190,6 +1257,7 @@ const EditTaskInline: React.FC<{
                   })
                 }
                 className="input-field h-8 px-2 py-1 text-xs"
+                disabled={activeRole === "Developer"}
               >
                 <option value="low">Low</option>
                 <option value="medium">Medium</option>
@@ -1229,47 +1297,6 @@ const EditTaskInline: React.FC<{
               type="datetime-local"
             />
           </div>
-
-          {/* Remarks
-      <div className="pt-1">
-        <label className="block font-medium text-gray-600 mb-0.5">
-          Add Remark
-        </label>
-        <textarea
-          placeholder="Add a comment or note"
-          value={remarkText}
-          onChange={(e) => setRemarkText(e.target.value)}
-          className="input-field px-2 py-1 text-xs mb-1"
-          rows={2}
-        />
-        <input
-          type="file"
-          onChange={(e) =>
-            setRemarkFile(e.target.files ? e.target.files[0] : null)
-          }
-          className="text-xs mb-1"
-        />
-        <div className="flex gap-1.5">
-          <button
-            type="button"
-            onClick={handleAddRemark}
-            className="btn-primary text-xs px-2 py-1 h-7"
-            disabled={isAddingRemark}
-          >
-            {isAddingRemark ? "Adding..." : "Add"}
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              setRemarkText("");
-              setRemarkFile(null);
-            }}
-            className="btn-secondary text-xs px-2 py-1 h-7"
-          >
-            Clear
-          </button>
-        </div>
-      </div> */}
 
           {/* Footer buttons */}
           <div className="flex gap-2 pt-2">
@@ -1314,10 +1341,31 @@ const RemarkModal: React.FC<{
     }
     setIsSubmitting(true);
     try {
-      const roleToUse = user?.role?.includes("Manager")
-        ? "Manager"
-        : activeRole || user?.role?.[0] || "";
-      await remarkAPI.create(task.t_id, comment, roleToUse, file || undefined);
+      // Choose role based on task status: IN_PROGRESS -> Developer, REVIEW -> Manager
+      const status = task?.status || "TO_DO";
+      const requiredRole = status === "IN_PROGRESS" ? "Developer" : "Manager";
+
+      const userRoles: any = user?.role || [];
+      const hasRequired = Array.isArray(userRoles)
+        ? userRoles.includes(requiredRole)
+        : String(userRoles).includes(requiredRole);
+
+      // prefer the required role if the user has it, otherwise fall back to activeRole or first role
+      const roleToUse = hasRequired
+        ? requiredRole
+        : activeRole === requiredRole
+        ? requiredRole
+        : activeRole ||
+          (Array.isArray(userRoles) ? userRoles[0] : userRoles) ||
+          "";
+
+      const resp = await remarkAPI.create(
+        task.t_id,
+        comment,
+        roleToUse,
+        file || undefined
+      );
+      if (import.meta.env.DEV) console.log("remark.create resp:", resp);
       onSuccess();
     } catch (err) {
       console.error("Failed to add remark:", err);
@@ -1393,6 +1441,179 @@ const RemarkModal: React.FC<{
             </button>
           </div>
         </form>
+      </div>
+    </div>
+  );
+};
+
+const TaskDetailModal: React.FC<{
+  task: Task;
+  onClose: () => void;
+  activeRole: string | null;
+  user: User | null;
+  reloadKey?: number;
+}> = ({ task, onClose, activeRole, user, reloadKey }) => {
+  const [remarks, setRemarks] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      if (!task?.t_id) {
+        if (mounted) {
+          setRemarks([]);
+          setLoading(false);
+        }
+        return;
+      }
+
+      // Try multiple roles: prefer activeRole, then any roles the user has.
+      const tried = new Set<string>();
+      const rolesToTry: string[] = [];
+      if (activeRole) {
+        rolesToTry.push(activeRole);
+        tried.add(activeRole);
+      }
+      if (user?.role && Array.isArray(user.role)) {
+        user.role.forEach((r: string) => {
+          if (r && !tried.has(r)) {
+            rolesToTry.push(r);
+            tried.add(r);
+          }
+        });
+      } else if (user?.role) {
+        rolesToTry.push(String(user.role));
+      }
+
+      let lastError: any = null;
+      if (import.meta.env.DEV)
+        console.debug(
+          "TaskDetailModal: rolesToTry=",
+          rolesToTry,
+          "taskId=",
+          task.t_id
+        );
+      for (const role of rolesToTry) {
+        try {
+          if (import.meta.env.DEV)
+            console.debug("TaskDetailModal: trying role=", role);
+          const data = await remarkAPI.getByTask(task.t_id as number, role);
+          if (!mounted) return;
+          if (import.meta.env.DEV)
+            console.debug(
+              "TaskDetailModal: got remarks count=",
+              (data || []).length
+            );
+          setRemarks(data || []);
+          lastError = null;
+          break; // success
+        } catch (err: any) {
+          if (import.meta.env.DEV)
+            console.error(
+              "TaskDetailModal: getByTask error for role=",
+              role,
+              err?.response?.status,
+              err?.response?.data || err
+            );
+          lastError = err;
+          const status = err?.response?.status;
+          // If it's not an auth error, stop and surface
+          if (status && status !== 400 && status !== 403) {
+            console.error("Failed to load remarks:", err);
+            break;
+          }
+          // otherwise try next role
+        }
+      }
+
+      if (lastError && mounted) {
+        // failed for all tried roles
+        console.error(
+          "Failed to load remarks with available roles:",
+          lastError
+        );
+        setRemarks([]);
+      }
+
+      if (mounted) setLoading(false);
+    })();
+    return () => {
+      mounted = false;
+    };
+  }, [task.t_id, activeRole, user, reloadKey]);
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div
+        className="absolute inset-0 bg-black/30 backdrop-blur-sm"
+        onClick={onClose}
+      />
+      <div
+        className="relative z-10 bg-white rounded-lg shadow-xl w-full max-w-xl max-h-[80vh] overflow-y-auto animate-scale-in"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex items-center justify-between px-4 py-3 border-b">
+          <h2 className="text-lg font-medium text-gray-800">Task Details</h2>
+          <button
+            type="button"
+            onClick={onClose}
+            className="text-gray-500 hover:text-gray-700 p-1 rounded"
+            aria-label="Close"
+          >
+            <XIcon size={16} />
+          </button>
+        </div>
+        <div className="px-4 py-3 text-sm space-y-3">
+          <div>
+            <h3 className="text-sm font-semibold">{task.title}</h3>
+            <p className="text-xs text-gray-600">#{task.t_id}</p>
+            <p className="text-sm text-gray-700 mt-1">{task.description}</p>
+          </div>
+          <div className="grid grid-cols-2 gap-3 text-xs text-gray-600">
+            <div>Priority: {task.priority}</div>
+            <div>Status: {task.status}</div>
+            <div>Assignee: {task.assigned_to ?? "-"}</div>
+            <div>Reviewer: {task.reviewer ?? "-"}</div>
+            <div>
+              Expected:{" "}
+              {task.expected_closure
+                ? new Date(task.expected_closure).toLocaleString()
+                : "-"}
+            </div>
+          </div>
+
+          <hr />
+
+          <div>
+            <h4 className="text-sm font-medium">Remarks</h4>
+            {loading ? (
+              <div className="text-xs text-gray-500 py-4">
+                Loading remarks...
+              </div>
+            ) : remarks.length === 0 ? (
+              <div className="text-xs text-gray-500 py-4">No remarks</div>
+            ) : (
+              <ul className="space-y-2 mt-2">
+                {remarks.map((r) => (
+                  <li key={r._id} className="border rounded p-2 text-xs">
+                    <div className="text-gray-700">{r.comment}</div>
+                    <div className="text-gray-500 text-[11px] mt-1">
+                      By: {r.created_by ?? "-"} •{" "}
+                      {r.created_at
+                        ? new Date(r.created_at).toLocaleString()
+                        : "-"}
+                    </div>
+                    {r.file_name && (
+                      <div className="text-xs text-blue-600 mt-1">
+                        Attachment: {r.file_name}
+                      </div>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );

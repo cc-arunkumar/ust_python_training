@@ -73,28 +73,33 @@ def add_remark(task_id: int, comment: str, e_id: int, file=None, role: str = Non
         session.close()
 
 
+# def get_remarks_by_task(task_id: int):
+#     # Support two storage formats for backward compatibility:
+#     # 1) New format: a single document per task with an embedded `remarks` array
+#     # 2) Legacy format: one Mongo document per remark with a top-level task_id
+
+#     # Try the new in-place format first
+#     doc = remarks_collection.find_one({"task_id": task_id, "remarks": {"$exists": True}})
+#     if doc and doc.get("remarks"):
+#         remarks = doc.get("remarks", [])
+#         serialized = []
+#         for r in remarks:
+#             if isinstance(r.get("_id"), ObjectId):
+#                 r["_id"] = str(r["_id"])
+#             serialized.append(r)
+#         return serialized
+
+#     # Fallback to legacy format: multiple remark documents with top-level fields
+#     docs = list(remarks_collection.find({"task_id": task_id, "remarks": {"$exists": False}}))
+#     if not docs:
+#         return []
+#     return [serialize_mongo(d) for d in docs]
+
 def get_remarks_by_task(task_id: int):
-    # Support two storage formats for backward compatibility:
-    # 1) New format: a single document per task with an embedded `remarks` array
-    # 2) Legacy format: one Mongo document per remark with a top-level task_id
-
-    # Try the new in-place format first
-    doc = remarks_collection.find_one({"task_id": task_id, "remarks": {"$exists": True}})
-    if doc and doc.get("remarks"):
-        remarks = doc.get("remarks", [])
-        serialized = []
-        for r in remarks:
-            if isinstance(r.get("_id"), ObjectId):
-                r["_id"] = str(r["_id"])
-            serialized.append(r)
-        return serialized
-
-    # Fallback to legacy format: multiple remark documents with top-level fields
-    docs = list(remarks_collection.find({"task_id": task_id, "remarks": {"$exists": False}}))
-    if not docs:
-        return []
-    return [serialize_mongo(d) for d in docs]
-
+    """
+    Returns ONE task document with embedded remarks
+    """
+    return remarks_collection.find_one({"task_id": task_id})
 
 def update_remark(remark_id: str, comment: str | None, file, e_id: int, role: str):
     # Find the document that contains the remark element

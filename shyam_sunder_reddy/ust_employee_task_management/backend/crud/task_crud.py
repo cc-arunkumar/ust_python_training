@@ -176,14 +176,16 @@ def update_task(user, t_id: int, title: str = None, description: str = None, ass
         if not t:
             raise HTTPException(status_code=404, detail="Task not found")
 
-        # Check if the user is authorized to update the task
+        # Enforce stricter authorization: only Manager (reviewer) or Admin can update task fields
         if "Admin" in user.role:
             pass  # Admin can always update any task
         elif "Manager" in user.role:
+            # Manager may update only if they are the reviewer
             if t.reviewer != user.e_id:
                 raise HTTPException(status_code=403, detail="You are not the reviewer for this task")
-        elif t.assigned_to != user.e_id:
-            raise HTTPException(status_code=403, detail="You are not assigned to this task")
+        else:
+            # Other roles (including Developer) are not allowed to update tasks here
+            raise HTTPException(status_code=403, detail="Only Manager or Admin can update tasks")
         
         # Update fields if provided
         if title:
@@ -342,7 +344,7 @@ def patch_priority(t_id: int, priority: str, role: str, user):
         if not t:
             raise HTTPException(status_code=404, detail="Task not found")
 
-        # Check if the user has permission to change the priority
+        # Check if the user has permission to change the priority (only Manager/Admin)
         if role not in ["Manager", "Admin"]:
             raise HTTPException(status_code=403, detail="You do not have permission to change the priority of this task")
 

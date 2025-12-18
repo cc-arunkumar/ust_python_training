@@ -12,3 +12,10 @@ class RemarkReqRes(BaseModel):
 
     class Config:
         orm_mode = True
+class RemarkResponse(BaseModel):
+    task_id: int
+    comment: str
+    created_by: int
+    file_id: str | None = None
+    file_name: str | None = None
+    created_at: datetime

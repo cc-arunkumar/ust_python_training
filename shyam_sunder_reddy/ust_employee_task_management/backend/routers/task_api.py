@@ -87,6 +87,10 @@ def update_task_data(t_id: int,role: str,
         role_clean = normalize_role_param(role)
         if not role_clean or role_clean not in user.role:
             raise HTTPException(status_code=409, detail="The user doesn't have the mentioned role")
+
+        # Disallow Developer role from making arbitrary updates to tasks
+        if role_clean == "Developer":
+            raise HTTPException(status_code=403, detail="Developers are not allowed to update tasks")
         
         # FIXED: Check if 'status' key exists before accessing it
         
@@ -112,10 +116,15 @@ def update_task_data(t_id: int,role: str,
 @task_router.patch("/patch")
 def patch_stat(id: int, status: str, role: str, user=Depends(get_current_user)):
     try:
-        # FIXED: Changed 'and' to 'or' for proper validation
         role_clean = normalize_role_param(role)
-        if not role_clean or role_clean not in user.role or role_clean.upper() == "ADMIN":
-            raise HTTPException(status_code=409, detail="The user doesn't have the mentioned role or Admin cannot change the status of task")
+        if not role_clean or role_clean not in user.role:
+            raise HTTPException(status_code=409, detail="The user doesn't have the mentioned role")
+
+        # Allow Manager and Admin to change status broadly.
+        # Developers are allowed to change status for limited transitions (e.g. TO_DO->IN_PROGRESS and IN_PROGRESS->REVIEW)
+        # The lower-level `patch_status` CRUD function enforces those transition rules and assignment checks.
+        if role_clean not in ("Manager", "Admin", "Developer"):
+            raise HTTPException(status_code=403, detail="Only Manager, Admin or Developer can change task status")
 
         patched = patch_status(id, status, role_clean, user)
         return {"detail": "Patched the task", "task": patched}

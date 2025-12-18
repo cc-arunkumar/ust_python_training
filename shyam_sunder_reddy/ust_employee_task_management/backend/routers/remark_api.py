@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends, UploadFile, File, Form
 from typing import List, Optional
-from models.remark import RemarkReqRes
+from models.remark import RemarkReqRes,RemarkResponse
 from utils.auth import get_current_user
 from crud.remark_crud import add_remark, get_remarks_by_task, delete_remark_by_id, update_remark
 from crud.users_crud import normalize_role_param
@@ -8,16 +8,64 @@ from crud.users_crud import normalize_role_param
 remark_router = APIRouter(prefix="/Remark", tags=["Remark"])
 
 
-@remark_router.get("/getbytask", response_model=List[RemarkReqRes])
-def list_for_task(task_id: int, role: str, user=Depends(get_current_user)):
-    role_clean = normalize_role_param(role)
-    if not role_clean or role_clean not in user.role:
-        raise HTTPException(status_code=400,detail="you dont have the access of mentioned role")
-        
-    remarks = get_remarks_by_task(task_id)
-    if not remarks:
-        raise HTTPException(status_code=404, detail="No remarks found for task")
-    return remarks
+# @remark_router.get("/getbytask", response_model=List[RemarkReqRes])
+# def list_for_task(task_id: int, role: str, user=Depends(get_current_user)):
+#     # Normalize incoming role but do not strictly require it for read access.
+#     # Historically the frontend sometimes sends an empty or differently-formatted
+#     # role value when requesting remarks. Rejecting the request in that case
+#     # causes the UI to show "No remarks" even when remarks exist in the DB.
+#     #
+#     # We keep strict role checks for create/update/delete, but for listing
+#     # remarks allow the request to proceed when role is empty or cannot be
+#     # normalized to one of the user's roles.
+#     role_clean = normalize_role_param(role)
+#     if role and role_clean and role_clean not in user.role:
+#         # Only reject when a concrete role was provided and it's not permitted
+#         raise HTTPException(status_code=400, detail="you dont have the access of mentioned role")
+
+#     remarks = get_remarks_by_task(task_id)
+#     if not remarks:
+#         raise HTTPException(status_code=404, detail="No remarks found for task")
+#     return remarks
+# @remark_router.get("/getbytask", response_model=list[RemarkResponse])
+# def list_for_task(task_id: int, user=Depends(get_current_user)):
+#     docs = get_remarks_by_task(task_id)
+
+#     if not docs:
+#         return []
+
+#     doc = docs[0]   # take first task document
+
+#     return [
+#         {
+#             "task_id": doc["task_id"],
+#             "comment": r["comment"],
+#             "created_by": r["created_by"],
+#             "file_id": r.get("file_id"),
+#             "file_name": r.get("file_name"),
+#             "created_at": r["created_at"],
+#         }
+#         for r in doc.get("remarks", [])
+#     ]
+
+@remark_router.get("/getbytask", response_model=list[RemarkResponse])
+def list_for_task(task_id: int, user=Depends(get_current_user)):
+    doc = get_remarks_by_task(task_id)
+
+    if not doc:
+        return []
+
+    return [
+        {
+            "task_id": doc["task_id"],
+            "comment": r["comment"],
+            "created_by": r["created_by"],
+            "file_id": r.get("file_id"),
+            "file_name": r.get("file_name"),
+            "created_at": r["created_at"],
+        }
+        for r in doc.get("remarks", [])
+    ]
 
 
 @remark_router.post("/create")

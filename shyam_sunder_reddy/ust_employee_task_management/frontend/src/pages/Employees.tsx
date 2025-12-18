@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { employeeAPI } from "../services/api";
-import { Plus, Search, Edit, Trash2, UserPlus } from "lucide-react";
+import { Plus, Search, Edit, Trash2 } from "lucide-react";
 import type { Employee } from "../types";
 
 const Employees = () => {
@@ -372,4 +372,3 @@ const EmployeeModal: React.FC<{
 };
 
 export default Employees;
-

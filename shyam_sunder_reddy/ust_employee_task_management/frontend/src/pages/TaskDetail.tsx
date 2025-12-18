@@ -67,8 +67,50 @@ const TaskDetail = () => {
     fetchData();
   }, [id, activeRole]);
 
+  // Helper to re-fetch remarks trying activeRole first then other user roles.
+  const fetchRemarks = async () => {
+    if (!id) return;
+    const tried = new Set<string>();
+    const rolesToTry: string[] = [];
+    if (activeRole) {
+      rolesToTry.push(activeRole);
+      tried.add(activeRole);
+    }
+    if (user?.role && Array.isArray(user.role)) {
+      user.role.forEach((r: string) => {
+        if (r && !tried.has(r)) {
+          rolesToTry.push(r);
+          tried.add(r);
+        }
+      });
+    }
+
+    for (const role of rolesToTry) {
+      try {
+        const remarksData = await remarkAPI.getByTask(parseInt(id), role);
+        setRemarks(remarksData || []);
+        break;
+      } catch (err) {
+        // try next role
+      }
+    }
+  };
+
   const handleStatusChange = async (newStatus: string) => {
     if (!id || !activeRole) return;
+
+    // Developers may be allowed limited transitions (TO_DO->IN_PROGRESS, IN_PROGRESS->REVIEW)
+    if (activeRole === "Developer") {
+      const from = (task?.status || "TO_DO").toUpperCase();
+      const to = newStatus.toUpperCase();
+      const allowedForDev =
+        (from === "IN_PROGRESS" && to === "REVIEW") ||
+        (from === "TO_DO" && to === "IN_PROGRESS");
+      if (!allowedForDev) {
+        alert("You are not authorized to change task status.");
+        return;
+      }
+    }
 
     try {
       await taskAPI.patchStatus(parseInt(id), newStatus, activeRole as string);
@@ -81,6 +123,12 @@ const TaskDetail = () => {
 
   const handlePriorityChange = async (newPriority: string) => {
     if (!id || !activeRole) return;
+
+    // Developers should not be allowed to change priority
+    if (activeRole === "Developer") {
+      alert("You are not authorized to change task priority.");
+      return;
+    }
 
     try {
       await taskAPI.patchPriority(
@@ -199,6 +247,7 @@ const TaskDetail = () => {
                   value={task.status || "TO_DO"}
                   onChange={(e) => handleStatusChange(e.target.value)}
                   className="input-field"
+                  disabled={activeRole === "Developer"}
                 >
                   <option value="TO_DO">To Do</option>
                   <option value="IN_PROGRESS">In Progress</option>
@@ -214,6 +263,7 @@ const TaskDetail = () => {
                   value={task.priority}
                   onChange={(e) => handlePriorityChange(e.target.value)}
                   className="input-field"
+                  disabled={activeRole === "Developer"}
                 >
                   <option value="low">Low</option>
                   <option value="medium">Medium</option>
@@ -358,9 +408,8 @@ const TaskDetail = () => {
           onClose={() => setShowRemarkModal(false)}
           onSuccess={() => {
             setShowRemarkModal(false);
-            remarkAPI
-              .getByTask(parseInt(id!), activeRole as string)
-              .then(setRemarks);
+            // Re-fetch remarks using role fallbacks (activeRole first, then other roles)
+            fetchRemarks();
           }}
         />
       )}
