@@ -130,7 +130,45 @@ const Dashboard = () => {
   const handleAddRemark = async (taskId, remark) => {
     try {
       await api.addRemark(token, user.emp_id, taskId, remark);
-      loadTasks();
+
+      // Optimistically update local tasks state so the recipient (if in same session)
+      // sees the notification badge immediately without waiting for a full reload.
+      try {
+        const updatedTask = await api.getTaskById(token, taskId);
+        const recipientId =
+          currentView === "manager"
+            ? updatedTask.assigned_to
+            : updatedTask.assigned_by;
+
+        setTasks((prev) =>
+          prev.map((t) => {
+            if (t._id !== taskId) return t;
+            const prevNotifications = t.notifications || {};
+            const nextNotifications = { ...prevNotifications };
+            if (recipientId) {
+              const prevCount =
+                parseInt(nextNotifications[recipientId] || 0, 10) || 0;
+              nextNotifications[recipientId] = prevCount + 1;
+            }
+            // append remark locally as well for immediate UI feedback
+            const nextRemarks = Array.isArray(t.remarks)
+              ? [...t.remarks, { [user.emp_id]: remark }]
+              : [{ [user.emp_id]: remark }];
+            return {
+              ...t,
+              notifications: nextNotifications,
+              remarks: nextRemarks,
+            };
+          })
+        );
+      } catch (e) {
+        // If optimistic update fails, fall back to reloading tasks
+        console.warn(
+          "Optimistic notification update failed, reloading tasks",
+          e
+        );
+        loadTasks();
+      }
     } catch (error) {
       console.error("Error adding remark:", error);
     }
@@ -293,6 +331,7 @@ const Dashboard = () => {
           userRole={currentView}
           employees={managerEmployees}
           token={token} // ✅ ADD THIS LINE
+          currentUserId={user.emp_id}
         />
       </main>
 

@@ -12,6 +12,7 @@ import {
   Loader2,
   Eye,
   X,
+  Bell,
 } from "lucide-react";
 import { PRIORITY_COLORS } from "../../utils/constants";
 import { api } from "../../services/api";
@@ -24,6 +25,7 @@ const TaskCard = ({
   onAssign,
   employees = [],
   token,
+  currentUserId,
 }) => {
   const [showMenu, setShowMenu] = useState(false);
   const [activeModal, setActiveModal] = useState(null); // 'assign', 'status', 'remarks', 'files', 'addRemark'
@@ -218,6 +220,46 @@ const TaskCard = ({
   const assignedByEmployee = employees.find(
     (e) => (e.emp_id ?? e.id) === task.assigned_by
   );
+  const [notificationCount, setNotificationCount] = useState(
+    (task.notifications && currentUserId
+      ? task.notifications[currentUserId]
+      : 0) || 0
+  );
+
+  useEffect(() => {
+    setNotificationCount(
+      (task.notifications && currentUserId
+        ? task.notifications[currentUserId]
+        : 0) || 0
+    );
+  }, [task, currentUserId]);
+
+  // Clear notifications when the remarks modal is opened (ensure badge removed)
+  useEffect(() => {
+    let cancelled = false;
+    const maybeClear = async () => {
+      if (
+        activeModal === "remarks" &&
+        notificationCount > 0 &&
+        currentUserId &&
+        token
+      ) {
+        // Optimistically clear local badge so UI reflects opened notifications immediately
+        if (!cancelled) setNotificationCount(0);
+        try {
+          await api.clearTaskNotifications(token, task._id);
+        } catch (err) {
+          // If server clear fails, log it. We keep the badge cleared locally to reflect that
+          // the user has opened the notifications; a full refresh will reconcile server state.
+          console.error("Failed to clear notifications on modal open", err);
+        }
+      }
+    };
+    maybeClear();
+    return () => {
+      cancelled = true;
+    };
+  }, [activeModal, notificationCount, currentUserId, token, task._id]);
 
   return (
     <>
@@ -237,6 +279,31 @@ const TaskCard = ({
               >
                 {task.priority}
               </span>
+
+              {/* Notification Bell */}
+              <button
+                onClick={async (e) => {
+                  e.stopPropagation();
+                  try {
+                    if (currentUserId) {
+                      await api.clearTaskNotifications(token, task._id);
+                      setNotificationCount(0);
+                    }
+                  } catch (err) {
+                    console.error("Failed to clear notification", err);
+                  }
+                  setActiveModal("remarks");
+                }}
+                className="relative p-2 hover:bg-gray-100 rounded-lg transition-colors group-hover:bg-gray-50"
+                title={`Notifications: ${notificationCount}`}
+              >
+                <Bell size={18} className="text-gray-600" />
+                {notificationCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-bold">
+                    {notificationCount}
+                  </span>
+                )}
+              </button>
 
               {/* 3-Dot Menu Button */}
               <div className="relative" ref={menuRef}>

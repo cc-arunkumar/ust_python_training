@@ -180,3 +180,16 @@ def update_task_remarks_only(task_id: str, remarks_update: TaskRemarksUpdate, us
         return {"modified_count": modified_count}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@task_router.post("/tasks/{task_id}/notifications/clear", tags=["Tasks"])
+def clear_task_notifications(task_id: str, user: str = Depends(get_current_user)):
+    try:
+        emp_id = int(user)
+        # allow any authenticated user to clear their own notification counter for this task
+        modified_count = update_task(task_id, {"notifications": {emp_id: 0}, "updated_by": emp_id})
+        if modified_count == 0:
+            raise HTTPException(status_code=404, detail="Task not found or no changes made")
+        return {"modified_count": modified_count}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
