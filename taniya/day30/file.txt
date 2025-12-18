@@ -1,0 +1,649 @@
+models.py
+from sqlalchemy import Column, Integer, String, Enum, ForeignKey, DateTime, Date, Text
+from sqlalchemy.orm import relationship
+from database import Base
+import enum
+
+# Enums
+class RoleEnum(str, enum.Enum):
+    ADMIN = "ADMIN"
+    MANAGER = "MANAGER"
+    EMPLOYEE = "EMPLOYEE"
+
+class StatusEnum(str, enum.Enum):
+    ACTIVE = "ACTIVE"
+    INACTIVE = "INACTIVE"
+    SUSPENDED = "SUSPENDED"
+
+class PriorityEnum(str, enum.Enum):
+    HIGH = "HIGH"
+    MEDIUM = "MEDIUM"
+    LOW = "LOW"
+
+class TaskStatusEnum(str, enum.Enum):
+    TO_DO = "TO_DO"
+    IN_PROGRESS = "IN_PROGRESS"
+    REVIEW = "REVIEW"
+    DONE = "DONE"
+
+# Employee Model
+class Employee(Base):
+    __tablename__ = "employees"
+
+    emp_id = Column(Integer, primary_key=True, index=True)
+    name = Column(String(100), nullable=False)
+    # email = Column(String(150), unique=True, nullable=False)
+    designation = Column(String(100))
+    manager_id = Column(Integer, ForeignKey("employees.emp_id"), nullable=True)
+
+    # Relationships
+    user = relationship("User", back_populates="employee", uselist=False)
+    tasks_assigned = relationship("Task", foreign_keys="[Task.assigned_to]", back_populates="assignee")
+    tasks_created = relationship("Task", foreign_keys="[Task.assigned_by]", back_populates="creator")
+    tasks_updated = relationship("Task", foreign_keys="[Task.updated_by]", back_populates="updater")
+
+# User Model
+class User(Base):
+    __tablename__ = "users"
+
+    user_id = Column(Integer, primary_key=True, index=True)
+    emp_id = Column(Integer, ForeignKey("employees.emp_id"), nullable=False)
+    password = Column(String(255), nullable=False)
+    role = Column(Enum(RoleEnum), nullable=False)
+    status = Column(Enum(StatusEnum), default=StatusEnum.ACTIVE)
+
+    # Relationship
+    employee = relationship("Employee", back_populates="user")
+
+# Task Model
+class Task(Base):
+    __tablename__ = "tasks"
+
+    id = Column(Integer, primary_key=True, index=True)
+    title = Column(String(200), nullable=False)
+    description = Column(Text)
+    assigned_to = Column(Integer, ForeignKey("employees.emp_id"), nullable=False)
+    assigned_by = Column(Integer, ForeignKey("employees.emp_id"), nullable=False)
+    assigned_at = Column(DateTime)
+    updated_by = Column(Integer, ForeignKey("employees.emp_id"), nullable=True)
+    updated_at = Column(DateTime)
+    priority = Column(Enum(PriorityEnum), default=PriorityEnum.MEDIUM)
+    status = Column(Enum(TaskStatusEnum), default=TaskStatusEnum.TO_DO)
+    review = Column(Text)
+    remark = Column(Text)
+    expected_closure = Column(Date)
+    actual_closure = Column(Date)
+
+    # Relationships
+    assignee = relationship("Employee", foreign_keys=[assigned_to], back_populates="tasks_assigned")
+    creator = relationship("Employee", foreign_keys=[assigned_by], back_populates="tasks_created")
+    updater = relationship("Employee", foreign_keys=[updated_by], back_populates="tasks_updated")
+employee_routes.py
+# routes/employee_routes.py
+from fastapi import APIRouter, Depends, HTTPException, Query
+from sqlalchemy.orm import Session
+from typing import Optional
+from database import get_db
+from models.models import Employee, User, RoleEnum
+from deps import get_current_user
+from mongo import log_activity  # optional audit logging
+
+router = APIRouter(tags=["Employees"])
+
+def require_admin(current_user: User):
+    role = current_user.role if isinstance(current_user.role, RoleEnum) else RoleEnum(current_user.role)
+    if role != RoleEnum.ADMIN:
+        raise HTTPException(status_code=403, detail="Only ADMIN can perform this action")
+    return role
+
+# Create employee (ADMIN only)
+@router.post("/", response_model=dict)
+def create_employee(
+    name: str,
+    email: str,
+    department: Optional[str] = None,
+    title: Optional[str] = None,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    require_admin(current_user)
+
+    # Unique email check
+    exists = db.query(Employee).filter(Employee.email == email).first()
+    if exists:
+        raise HTTPException(status_code=409, detail="Employee with this email already exists")
+
+    emp = Employee(
+        name=name,
+        email=email,
+        department=department,
+        title=title,
+    )
+    db.add(emp)
+    db.commit()
+    db.refresh(emp)
+
+    log_activity(
+        performed_by=current_user.user_id,
+        action="employee_created",
+        details={"emp_id": emp.emp_id, "name": emp.name, "email": emp.email},
+    )
+
+    return {"message": "Employee created", "employee": emp.to_dict() if hasattr(emp, "to_dict") else {
+        "emp_id": emp.emp_id, "name": emp.name, "email": emp.email, "department": emp.department, "title": emp.title
+    }}
+
+# Get all employees (ADMIN only)
+@router.get("/", response_model=dict)
+def get_all_employees(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+    q: Optional[str] = Query(None, description="Search by name or email"),
+    # limit: int = Query(50, ge=1, le=200),
+    # offset: int = Query(0, ge=0),
+):
+    require_admin(current_user)
+
+    query = db.query(Employee)
+    if q:
+        query = query.filter((Employee.name.ilike(f"%{q}%")) | (Employee.email.ilike(f"%{q}%")))
+    total = query.count()
+    employees = query.order_by(Employee.emp_id).offset(offset).limit(limit).all()
+
+    log_activity(current_user.user_id, "employee_list", {"count": len(employees), "total": total, "q": q})
+
+    def serialize(e: Employee):
+        return {
+            "emp_id": e.emp_id,
+            "name": e.name,
+            "email": e.email,
+            "department": e.department,
+            "title": e.title,
+        }
+
+    return {"total": total, "items": [serialize(e) for e in employees]}
+
+# Get employee by id (ADMIN only)
+@router.get("/{emp_id}", response_model=dict)
+def get_employee_by_id(
+    emp_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    require_admin(current_user)
+
+    emp = db.query(Employee).filter(Employee.emp_id == emp_id).first()
+    if not emp:
+        raise HTTPException(status_code=404, detail="Employee not found")
+
+    log_activity(current_user.user_id, "employee_get", {"emp_id": emp_id})
+
+    return {
+        "emp_id": emp.emp_id,
+        "name": emp.name,
+        "email": emp.email,
+        "department": emp.department,
+        "title": emp.title,
+    }
+
+# Update employee (ADMIN only)
+@router.patch("/{emp_id}", response_model=dict)
+def update_employee(
+    emp_id: int,
+    name: Optional[str] = None,
+    email: Optional[str] = None,
+    department: Optional[str] = None,
+    title: Optional[str] = None,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    require_admin(current_user)
+
+    emp = db.query(Employee).filter(Employee.emp_id == emp_id).first()
+    if not emp:
+        raise HTTPException(status_code=404, detail="Employee not found")
+
+    if email and email != emp.email:
+        exists = db.query(Employee).filter(Employee.email == email).first()
+        if exists:
+            raise HTTPException(status_code=409, detail="Another employee with this email already exists")
+
+    if name is not None:
+        emp.name = name
+    if email is not None:
+        emp.email = email
+    if department is not None:
+        emp.department = department
+    if title is not None:
+        emp.title = title
+
+    db.commit()
+    db.refresh(emp)
+
+    log_activity(
+        performed_by=current_user.user_id,
+        action="employee_updated",
+        details={"emp_id": emp.emp_id, "name": emp.name, "email": emp.email, "department": emp.department, "title": emp.title},
+    )
+
+    return {"message": "Employee updated", "employee": {
+        "emp_id": emp.emp_id,
+        "name": emp.name,
+        "email": emp.email,
+        "department": emp.department,
+        "title": emp.title,
+    }}
+
+# Delete employee (ADMIN only)
+@router.delete("/{emp_id}", response_model=dict)
+def delete_employee(
+    emp_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    require_admin(current_user)
+
+    emp = db.query(Employee).filter(Employee.emp_id == emp_id).first()
+    if not emp:
+        raise HTTPException(status_code=404, detail="Employee not found")
+
+    db.delete(emp)
+    db.commit()
+
+    log_activity(current_user.user_id, "employee_deleted", {"emp_id": emp_id})
+
+    return {"message": "Employee deleted", "emp_id": emp_id}
+
+task_routes.py
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm import Session
+from database import get_db
+from models.models import Task, Employee, TaskStatusEnum, PriorityEnum, User, RoleEnum
+from deps import get_current_user
+
+router = APIRouter(tags=["Tasks"])
+# Create a new task (only MANAGER/ADMIN)
+@router.post("/")
+def create_task(
+    title: str,
+    description: str,
+    assigned_to: int,
+    priority: PriorityEnum,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    # Role check
+    if current_user.role not in [RoleEnum.MANAGER, RoleEnum.ADMIN]:
+        raise HTTPException(status_code=403, detail="Only MANAGER or ADMIN can create tasks")
+
+    # Validate employees
+    assignee = db.query(Employee).filter(Employee.emp_id == assigned_to).first()
+    creator = db.query(Employee).filter(Employee.emp_id == current_user.emp_id).first()
+    if not assignee or not creator:
+        raise HTTPException(status_code=404, detail="Employee not found")
+
+    # Create task
+    task = Task(
+        title=title,
+        description=description,
+        assigned_to=assigned_to,
+        assigned_by=current_user.emp_id,
+        priority=priority,
+        status=TaskStatusEnum.TO_DO,
+    )
+    db.add(task)
+    db.commit()
+    db.refresh(task)
+    return task
+
+# List all tasks (any authenticated user)
+@router.get("/")
+def list_tasks(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    return db.query(Task).all()
+
+# Update task status (assignee or ADMIN/MANAGER)
+@router.put("/{task_id}/status")
+def update_task_status(
+    task_id: int,
+    status: TaskStatusEnum,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    task = db.query(Task).filter(Task.id == task_id).first()
+    if not task:
+        raise HTTPException(status_code=404, detail="Task not found")
+
+    # Employees can only update their own tasks
+    if current_user.role == RoleEnum.EMPLOYEE:
+        if current_user.emp_id != task.assigned_to:
+            raise HTTPException(status_code=403, detail="Not authorized to update this task")
+
+        # Employee transitions allowed
+        if task.status == TaskStatusEnum.TO_DO and status == TaskStatusEnum.IN_PROGRESS:
+            task.status = status
+        elif task.status == TaskStatusEnum.IN_PROGRESS and status == TaskStatusEnum.REVIEW:
+            task.status = status
+        else:
+            raise HTTPException(status_code=403, detail="Employees can only move TO_DO→IN_PROGRESS or IN_PROGRESS→REVIEW")
+
+    # Managers/Admins transitions allowed
+    elif current_user.role in [RoleEnum.MANAGER, RoleEnum.ADMIN]:
+        if task.status == TaskStatusEnum.REVIEW and status in [TaskStatusEnum.IN_PROGRESS, TaskStatusEnum.DONE]:
+            task.status = status
+        else:
+            raise HTTPException(status_code=403, detail="Managers/Admins can only move REVIEW→IN_PROGRESS or REVIEW→DONE")
+
+    else:
+        raise HTTPException(status_code=403, detail="Not authorized to update task status")
+
+    db.commit()
+    db.refresh(task)
+    return task
+# Update task priority (only MANAGER/ADMIN)
+@router.put("/{task_id}/priority")
+def update_task_priority(
+    task_id: int,
+    priority: PriorityEnum,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    task = db.query(Task).filter(Task.id == task_id).first()
+    if not task:
+        raise HTTPException(status_code=404, detail="Task not found")
+
+    if current_user.role not in [RoleEnum.MANAGER, RoleEnum.ADMIN]:
+        raise HTTPException(status_code=403, detail="Only MANAGER or ADMIN can update priority")
+
+    task.priority = priority
+    db.commit()
+    db.refresh(task)
+    return task
+
+user_routes.py
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm import Session
+from database import get_db
+from models.models import User, Employee, RoleEnum, StatusEnum
+from auth import create_access_token   # only JWT helpers now
+from deps import get_current_user      # HTTPBearer-based dependency
+from datetime import timedelta
+from mongo import log_activity 
+router = APIRouter(tags=["Users"])
+
+# Create a new user account
+@router.post("/")
+def create_user(emp_id: int, password: str, role: RoleEnum, db: Session = Depends(get_db)):
+    employee = db.query(Employee).filter(Employee.emp_id == emp_id).first()
+    if not employee:
+        raise HTTPException(status_code=404, detail="Employee not found")
+
+    existing = db.query(User).filter(User.emp_id == emp_id).first()
+    if existing:
+        raise HTTPException(status_code=409, detail="User already exists for this employee")
+
+    # store plain password directly
+    user = User(emp_id=emp_id, password=password, role=role, status=StatusEnum.ACTIVE)
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+    log_activity(user.user_id, "user_created", {"emp_id": emp_id, "role": role})
+    return user
+
+# List all users (protected)
+@router.get("/")
+def list_users(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    log_activity(current_user.user_id, "list_users")
+    return db.query(User).all()
+
+# Get user by user_id (protected)
+@router.get("/{user_id}")
+def get_user(user_id: int, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.user_id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    log_activity(current_user.user_id, "get_user", {"target_user": user_id})
+    return user
+
+# Login with user_id + password → returns JWT
+@router.post("/login/by-user")
+def login_by_user(user_id: int, password: str, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.user_id == user_id).first()
+    if not user or user.password != password:
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+    if user.status != StatusEnum.ACTIVE:
+        raise HTTPException(status_code=403, detail=f"Account {user.status}")
+
+    token = create_access_token(
+        data={"user_id": user.user_id, "role": user.role},
+        expires_delta=timedelta(minutes=30)
+    )
+    log_activity(user.user_id, "login_success", {"role": user.role})
+    return {"access_token": token, "token_type": "bearer"}
+
+# Login with emp_id + password → returns JWT
+@router.post("/login/by-emp")
+def login_by_emp(emp_id: int, password: str, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.emp_id == emp_id).first()
+    if not user or user.password != password:
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+    if user.status != StatusEnum.ACTIVE:
+        raise HTTPException(status_code=403, detail=f"Account {user.status}")
+
+    token = create_access_token(
+        data={"user_id": user.user_id, "role": user.role},
+        expires_delta=timedelta(minutes=30)
+    )
+    log_activity(user.user_id, "login_success", {"role": user.role})
+    return {"access_token": token, "token_type": "bearer"}
+
+# Update user status (protected, only ADMIN)
+@router.patch("/{user_id}/status")
+def update_user_status(
+    user_id: int,
+    status: StatusEnum,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    if current_user.role != RoleEnum.ADMIN:
+        raise HTTPException(status_code=403, detail="Only ADMIN can update user status")
+
+    user = db.query(User).filter(User.user_id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    user.status = status
+    db.commit()
+    db.refresh(user)
+    log_activity(current_user.user_id, "update_user_status", {"target_user": user_id, "new_status": status})
+    return {"user_id": user.user_id, "status": user.status}
+
+utils_routes.py
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm import Session
+from database import get_db
+from models.models import Employee, User
+from deps import get_current_user  # JWT + HTTPBearer dependency
+from text import validate_remark_length
+router = APIRouter(tags=["Utils"])
+
+# Health check (public)
+# @router.get("/health")
+# def health_check():
+#     return {"status": "ok", "message": "Backend running smoothly"}
+
+# Get employee with user account info (protected)
+@router.get("/employee/{emp_id}")
+def get_employee_with_user(emp_id: int, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    employee = db.query(Employee).filter(Employee.emp_id == emp_id).first()
+    if not employee:
+        raise HTTPException(status_code=404, detail="Employee not found")
+    return {
+        "emp_id": employee.emp_id,
+        "name": employee.name,
+        "designation": employee.designation,
+        "user": {
+            "user_id": employee.user.user_id if employee.user else None,
+            "role": employee.user.role if employee.user else None,
+            "status": employee.user.status if employee.user else None,
+        }
+    }
+
+# Quick role check (protected)
+@router.get("/role/{user_id}")
+def check_role(user_id: int, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.user_id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    return {"user_id": user.user_id, "role": user.role, "status": user.status}
+
+
+auth.py
+from datetime import datetime, timedelta
+from jose import jwt, JWTError
+
+SECRET_KEY = "your-secret-key"   # keep safe!
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 30
+
+def create_access_token(data: dict, expires_delta: timedelta | None = None):
+    to_encode = data.copy()
+    expire = datetime.utcnow() + (expires_delta or timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
+    to_encode.update({"exp": expire})
+    return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+
+def decode_token(token: str):
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        return payload
+    except JWTError:
+        return None
+
+database.py
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker, declarative_base
+
+# Adjust with your own MySQL credentials
+DATABASE_URL = "mysql+pymysql://root:pass%40word1@localhost:3306/task_manager"
+
+engine = create_engine(DATABASE_URL, echo=True, future=True)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+Base = declarative_base()
+
+# Dependency for FastAPI routes
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+deps.py
+from fastapi import Depends, HTTPException, status
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from sqlalchemy.orm import Session
+from database import get_db
+from models.models import User, StatusEnum
+from auth import decode_token
+
+security = HTTPBearer()
+
+def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security), db: Session = Depends(get_db)):
+    token = credentials.credentials
+    payload = decode_token(token)
+    if payload is None:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
+
+    user_id = payload.get("user_id")
+    if user_id is None:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token payload")
+
+    user = db.query(User).filter(User.user_id == user_id).first()
+    if not user or user.status != StatusEnum.ACTIVE:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Inactive or missing user")
+
+    return user
+init_db.py
+from database import engine
+from database import Base  # Adjust the import path based on where your Base is defined
+
+def create_tables():
+    Base.metadata.create_all(bind=engine)
+
+if __name__ == "__main__":
+    create_tables()
+
+logs.py
+from pymongo import MongoClient
+from datetime import datetime
+
+client = MongoClient("mongodb://localhost:27017/")
+db = client["jira_logs"]
+logs_collection = db["activity_logs"]
+
+def insert_log(entity: str, entity_id: int, action: str, performed_by: int, role: str, details: dict = None):
+    log_entry = {
+        "entity": entity,
+        "entity_id": entity_id,
+        "action": action,
+        "performed_by": performed_by,
+        "role": role,
+        "timestamp": datetime.utcnow(),
+        "details": details or {}
+    }
+    logs_collection.insert_one(log_entry)
+
+main.py
+from fastapi import FastAPI
+from routes import user_routes, task_routes, utils_routes,employee_routes
+from fastapi.middleware.cors import CORSMiddleware
+from init_db import create_tables
+app = FastAPI(title="Task Manager", version="1.0")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+# Include routers
+create_tables()
+app.include_router(user_routes.router, prefix="/api/users", tags=["Users"])
+app.include_router(task_routes.router, prefix="/api/tasks", tags=["Tasks"])
+app.include_router(utils_routes.router, prefix="/api/utils", tags=["Utils"])
+app.include_router(employee_routes.router, prefix="/api/employees", tags=["Employees"])
+
+mongo.py
+from pymongo import MongoClient,ASCENDING
+from datetime import datetime
+
+# Connect to MongoDB (adjust URI as needed)
+client = MongoClient("mongodb://localhost:27017/")
+db = client["activity_logs_db"]
+
+# Collection for user activity
+user_activity_collection = db["user_activity"]
+# task_remarks_collection = db["task_remarks"]
+
+# task_remarks_collection.create_index([("task_id", ASCENDING), ("timestamp", ASCENDING)])
+
+def log_activity(user_id: int, action: str, details: dict | None = None):
+    """Insert a log entry into MongoDB."""
+    entry = {
+        "user_id": user_id,
+        "action": action,
+        "details": details or {},
+        "timestamp": datetime.utcnow()
+    }
+    user_activity_collection.insert_one(entry)
+
+text.py
+# utils/text.py
+def count_words(text: str) -> int:
+    return len([w for w in text.strip().split() if w])
+
+def validate_remark_length(text: str, min_words: int = 200, max_words: int = 300):
+    words = count_words(text)
+    if words < min_words or words > max_words:
+        return False, words
+    return True, words

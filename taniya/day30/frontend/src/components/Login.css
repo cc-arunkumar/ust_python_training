@@ -80,6 +80,13 @@ input[type="number"] {
   cursor: pointer;
 }
 
+.error {
+  color: rgb(116, 95, 95);
+  font-size: 0.9rem;
+  margin-top: 10px;
+  text-align: center;
+}
+
 .login-card button:hover {
   background: #4f46e5;
 }

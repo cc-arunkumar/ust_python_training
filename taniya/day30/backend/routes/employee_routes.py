@@ -1,6 +1,7 @@
 # routes/employee_routes.py
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
+from pydantic import BaseModel
 from typing import Optional
 from database import get_db
 from models.models import Employee, User, RoleEnum
@@ -14,7 +15,16 @@ def require_admin(current_user: User):
     if role != RoleEnum.ADMIN:
         raise HTTPException(status_code=403, detail="Only ADMIN can perform this action")
     return role
+class LoginRequest(BaseModel):
+    emp_id: int
+    password: str
 
+@router.post("/users/login/by-emp")
+async def login_by_emp(request: LoginRequest):
+    # Handle login logic here
+    # You can access the emp_id as request.emp_id and password as request.password
+    # Return response based on your logic
+    return {"access_token": "your-token", "role": "EMPLOYEE"}
 # Create employee (ADMIN only)
 @router.post("/", response_model=dict)
 def create_employee(
