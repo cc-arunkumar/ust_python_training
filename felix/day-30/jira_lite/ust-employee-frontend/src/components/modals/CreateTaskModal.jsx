@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { api } from '../../services/api';
 
-const CreateTaskModal = ({ token, empId, currentRole, employees = [], onClose, onSuccess }) => {
+const CreateTaskModal = ({ token, empId, currentRole, employees = [], managers = [], onClose, onSuccess }) => {
   const [formData, setFormData] = useState({
     title: '',
     description: '',
-    assigned_to: '',                 // will be set differently based on role
+    assigned_to: '',                  // manager will set, admin leaves empty
+    reviewer: '',                     // admin selects manager, manager uses own id
     priority: 'Low',
     status: 'To Do',
     expected_completion_date: ''
@@ -16,48 +17,54 @@ const CreateTaskModal = ({ token, empId, currentRole, employees = [], onClose, o
   const isManager = currentRole === 'manager';
 
   const handleSubmit = async () => {
-    // Validate required fields
+    // common checks
     if (!formData.title || !formData.description || !formData.expected_completion_date) {
       alert('Please fill all required fields');
       return;
     }
 
-    // Role-based validation for assigned_to
-    if (isManager) {
-      if (!formData.assigned_to) {
-        alert('Please select an employee to assign this task to');
+    let payload = {
+      title: formData.title,
+      description: formData.description,
+      priority: formData.priority,
+      status: 'To Do',
+      expected_completion_date: formData.expected_completion_date,
+      assigned_by: empId,
+      assigned_at: new Date().toISOString(),
+      updated_by: empId,
+      remarks: []
+    };
+
+    if (isAdmin) {
+      // admin must select reviewer (manager)
+      if (!formData.reviewer) {
+        alert('Please select a reviewer (manager).');
         return;
       }
-    }
-
-    // For admin, you can either:
-    // - auto-assign to themselves, OR
-    // - prevent task creation (choose one behavior).
-    let assignedToValue;
-    if (isManager) {
-      assignedToValue = parseInt(formData.assigned_to, 10);
-    } else if (isAdmin) {
-      // Option 1: auto-assign to admin themself
-      assignedToValue = empId;
-      // Option 2 (stricter): disallow creation and return
-      // alert('Admin cannot assign tasks directly. Switch to manager view.');
-      // return;
+      payload = {
+        ...payload,
+        reviewer: parseInt(formData.reviewer, 10),
+        assigned_to: null
+      };
+    } else if (isManager) {
+      // manager: reviewer is themself; must assign to one of their developers
+      if (!formData.assigned_to) {
+        alert('Please select a developer to assign this task to.');
+        return;
+      }
+      payload = {
+        ...payload,
+        reviewer: empId,
+        assigned_to: parseInt(formData.assigned_to, 10)
+      };
     } else {
-      // Developers should not be able to open this modal in your UI
       alert('You do not have permission to create tasks.');
       return;
     }
 
     setLoading(true);
     try {
-      await api.createTask(token, {
-        ...formData,
-        assigned_to: assignedToValue,
-        assigned_by: empId,
-        assigned_at: new Date().toISOString(),
-        updated_by: empId,
-        remarks: []
-      });
+      await api.createTask(token, payload);
       onSuccess();
     } catch (error) {
       console.error('Error creating task:', error);
@@ -72,9 +79,7 @@ const CreateTaskModal = ({ token, empId, currentRole, employees = [], onClose, o
       <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         <div className="p-6 border-b border-gray-200 flex items-center justify-between">
           <h2 className="text-2xl font-bold text-gray-900">Create New Task</h2>
-          <span className="text-sm text-gray-500 capitalize">
-            Role: {currentRole}
-          </span>
+          <span className="text-xs text-gray-500 capitalize">Role: {currentRole}</span>
         </div>
 
         <div className="p-6 space-y-4">
@@ -103,19 +108,37 @@ const CreateTaskModal = ({ token, empId, currentRole, employees = [], onClose, o
           </div>
 
           <div className="grid grid-cols-2 gap-4">
+            {isAdmin && (
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Reviewer (Manager) *
+                </label>
+                <select
+                  value={formData.reviewer}
+                  onChange={(e) => setFormData({ ...formData, reviewer: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  <option value="">Select manager</option>
+                  {managers.map((mgr) => (
+                    <option key={mgr.emp_id} value={mgr.emp_id}>
+                      {mgr.name} (ID: {mgr.emp_id})
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+
             {isManager && (
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Assign To (Your Employee) *
+                  Assign To (Developer) *
                 </label>
                 <select
                   value={formData.assigned_to}
-                  onChange={(e) =>
-                    setFormData({ ...formData, assigned_to: e.target.value })
-                  }
+                  onChange={(e) => setFormData({ ...formData, assigned_to: e.target.value })}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 >
-                  <option value="">Select employee</option>
+                  <option value="">Select developer</option>
                   {employees.map((emp) => (
                     <option key={emp.id || emp.emp_id} value={emp.emp_id ?? emp.id}>
                       {emp.name} (ID: {emp.emp_id ?? emp.id})
@@ -125,29 +148,13 @@ const CreateTaskModal = ({ token, empId, currentRole, employees = [], onClose, o
               </div>
             )}
 
-            {isAdmin && (
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Assigned To
-                </label>
-                <input
-                  type="text"
-                  value="Assigned automatically to admin"
-                  readOnly
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-500"
-                />
-              </div>
-            )}
-
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
                 Priority
               </label>
               <select
                 value={formData.priority}
-                onChange={(e) =>
-                  setFormData({ ...formData, priority: e.target.value })
-                }
+                onChange={(e) => setFormData({ ...formData, priority: e.target.value })}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
                 <option value="Low">Low</option>
@@ -165,10 +172,7 @@ const CreateTaskModal = ({ token, empId, currentRole, employees = [], onClose, o
               type="date"
               value={formData.expected_completion_date}
               onChange={(e) =>
-                setFormData({
-                  ...formData,
-                  expected_completion_date: e.target.value
-                })
+                setFormData({ ...formData, expected_completion_date: e.target.value })
               }
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />

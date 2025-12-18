@@ -13,6 +13,18 @@ def get_all_employees_for_admin():
         print("ERROR: ",e)
     finally:
         print("Completed")
+def get_emploee_by_id(emp_id:int):
+    try:
+        session = SessionLocal()
+        emp = session.query(Employee).filter(Employee.id == emp_id).first()
+        session.close()
+        
+        return emp
+    except Exception as e:
+        print("ERROR: ",e)
+    finally:
+        print("Completed")
+        
 def get_all_employees(manager_id:int):
     try:
         session = SessionLocal()

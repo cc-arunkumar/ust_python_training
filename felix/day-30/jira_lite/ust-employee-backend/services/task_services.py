@@ -11,6 +11,7 @@ def create_task(task:TaskCreate):
             description = task.description,
             assigned_to = task.assigned_to,
             assigned_by = task.assigned_by,
+            reviewer=task.reviewer,
             assigned_at = task.assigned_at,
             updated_by = task.updated_by,
             updated_at = datetime.now(),
@@ -52,7 +53,12 @@ def get_all_tasks_by_employee(id:int):
 
 def get_all_tasks_by_manager(id:int):
     try:
-        all_tasks = tasks.find({"assigned_by":id})
+        all_tasks = tasks.find({
+    "$or": [
+        {"reviewer": id},          # tasks sent to this manager by admin
+        {"assigned_by": id}        # tasks this manager created directly
+    ]
+})
         return all_tasks
     except Exception as e:
         raise Exception(e)

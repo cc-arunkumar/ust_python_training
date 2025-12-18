@@ -5,8 +5,9 @@ from datetime import datetime,date
 class Task(BaseModel): 
     title: str
     description: str
-    assigned_to: int
+    assigned_to: Optional[int]
     assigned_by: Optional[int] = None
+    reviewer: int 
     assigned_at: Optional[datetime] = None
     updated_by: int
     updated_at: datetime = datetime.now()
@@ -19,7 +20,8 @@ class Task(BaseModel):
 class TaskCreate(BaseModel):
     title: str
     description: str
-    assigned_to: int
+    assigned_to: Optional[int]
+    reviewer: int 
     assigned_by: Optional[int] = None
     assigned_at: Optional[datetime] = None
     updated_by: int

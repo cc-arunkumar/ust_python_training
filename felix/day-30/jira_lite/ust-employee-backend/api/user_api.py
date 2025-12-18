@@ -1,11 +1,25 @@
 from fastapi import APIRouter, HTTPException, Depends
-from services.user_services import update_user_role, create_User, get_User_by_id
+from services.user_services import update_user_role, create_User, get_User_by_id,get_all_manager_for_admin
 from models.user_model import UpdateRole, UserModel
 from auth.jwt_auth import get_current_user
 
 user_router = APIRouter()
 
-
+@user_router.get("/managers", tags=["Users"])
+def get_all_managers_endpoint():
+    """Get all managers - Admin only"""
+    try:
+        # Fetch all managers
+        managers = get_all_manager_for_admin()
+        if isinstance(managers, dict) and "detail" in managers:
+            raise HTTPException(status_code=404, detail=managers["detail"])
+        
+        return managers
+    except ValueError:
+        raise HTTPException(status_code=401, detail="Invalid token")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching managers: {e}")
+    
 @user_router.put("/users/{emp_id}/role", tags=["Users"])
 def update_user_role_endpoint(
     emp_id: int, 

@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends
 from models.emp_model import Employee
-from services.employee_services import create_employee, get_all_employees, get_employee_by_id, update_employee, delete_employee, get_all_employees_for_admin
+from services.employee_services import create_employee, get_all_employees, get_employee_by_id, update_employee, delete_employee, get_all_employees_for_admin, get_emploee_by_id
 from services.user_services import update_user_role, create_User, get_User_by_id
 from models.user_model import UpdateRole,UserModel
 from auth.jwt_auth import get_current_user
@@ -65,6 +65,13 @@ def get_employee(manager_id: int,user: str = Depends(get_current_user)):
         return get_all_employees(manager_id)
     except Exception as e:
         raise Exception(f"Error fetching employees: {e}")
+
+@emp_router.get("/employee_by_id/{emp_id}",tags=["Employees"])
+def get_employee_by_id_endpoint(emp_id: int):
+    try:
+        return get_emploee_by_id(emp_id)
+    except Exception as e:
+        raise Exception(f"Error fetching employee by ID: {e}")
 
 @emp_router.get("/employees/{manager_id}/{emp_id}",tags=["Employees"])
 def get_one_employee(emp_id: int,manager_id: int,user: str = Depends(get_current_user)):

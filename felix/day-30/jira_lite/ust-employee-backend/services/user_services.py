@@ -1,5 +1,24 @@
 from database.mysql_connection import SessionLocal, User
+from sqlalchemy import cast
+from sqlalchemy.dialects.postgresql import JSONB
 
+def get_all_manager_for_admin():
+    try:
+        session = SessionLocal()
+
+        users = session.query(User).all()
+        managers = [u for u in users if isinstance(u.role, list) and "manager" in u.role]
+
+     
+        session.close()
+        if not managers:
+            return {"detail":"No Managers found"}
+        return managers
+    except Exception as e:
+        print("ERROR: ",e)
+    finally:
+        print("Completed")
+        
 def get_all_Users():
     try:
         session = SessionLocal()

@@ -97,6 +97,17 @@ export const api = {
     return response.json();
   },
 
+  // In your api.js or services/api.js file
+
+// Get employee by ID
+getEmployeeById: async (token, empid) => {
+    const response = await fetch(`${API_BASE_URL}/employee_by_id/${empid}`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    if (!response.ok) throw new Error('Failed to fetch employees');
+    return response.json();
+  },
+
   getEmployeesForAdmin: async (token) => {
     const response = await fetch(`${API_BASE_URL}/employees/admin`, {
       headers: { 'Authorization': `Bearer ${token}` }
@@ -166,5 +177,13 @@ export const api = {
     });
     if (!response.ok) throw new Error('Failed to update user role');
     return response.json();
-  }
+  },
+
+  getManagers: async (token) => {
+  const response = await fetch(`${API_BASE_URL}/managers`, {
+    headers: { 'Authorization': `Bearer ${token}` },
+  });
+  if (!response.ok) throw new Error('Failed to fetch managers');
+  return response.json();
+}
 };
