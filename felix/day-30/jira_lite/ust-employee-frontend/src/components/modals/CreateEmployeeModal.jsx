@@ -1,19 +1,12 @@
 import React, { useState } from 'react';
-import { X } from 'lucide-react';
-import { api } from '../../services/api';
+import { X, User, Mail, Briefcase, UserCog } from 'lucide-react';
 
 const CreateEmployeeModal = ({ token, managerId, onClose, onSuccess }) => {
   const [formData, setFormData] = useState({
-    emp_id: '',
     name: '',
     email: '',
-    password: '',
-    position: '',
-    manager_id: managerId,
-    status: 'active',
-    // optional UI-only fields
-    department: '',
-    phone: ''
+    designation: '',
+    manager_id: managerId
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -22,37 +15,57 @@ const CreateEmployeeModal = ({ token, managerId, onClose, onSuccess }) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: name === 'emp_id' || name === 'manager_id' ? parseInt(value) || '' : value
+      [name]: name === 'manager_id' ? parseInt(value) || '' : value
     }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
     setError('');
     setLoading(true);
 
     try {
+      // Validate required fields
+      if (!formData.name || !formData.email || !formData.designation || !formData.manager_id) {
+        throw new Error('Please fill in all required fields');
+      }
+
       // Employee payload (matches backend Employee model)
       const employeePayload = {
         name: formData.name,
         email: formData.email,
-        designation: formData.position,
+        designation: formData.designation,
         manager_id: formData.manager_id
       };
 
-      // User payload (matches backend UserModel)
-      const userPayload = {
-        emp_id: formData.emp_id,
-        password: formData.password,
-        role: ["developer"], // must be a list
-        status: formData.status
-      };
+      // Make API call to create employee
+      const API_BASE_URL = 'http://localhost:8000/api/v1'
+      
+      const response = await fetch(`${API_BASE_URL}/employees`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(employeePayload)
+      });
 
-      // Create employee
-      await api.createEmployee(token, employeePayload);
+      if (!response.ok) {
+        let errorMessage = 'Failed to create employee';
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.message || errorData.detail || errorMessage;
+        } catch {
+          errorMessage = `Error: ${response.status} ${response.statusText}`;
+        }
+        throw new Error(errorMessage);
+      }
 
-      // Create user account
-      await api.createUser(token, userPayload);
+      // Try to parse response, but don't fail if empty
+      try {
+        await response.json();
+      } catch {
+        // Some APIs return empty response on success
+      }
 
       onSuccess();
     } catch (err) {
@@ -64,42 +77,46 @@ const CreateEmployeeModal = ({ token, managerId, onClose, onSuccess }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-        <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
-          <h2 className="text-xl font-bold text-gray-800">Create New Employee</h2>
+    <div className="fixed inset-0 bg-gradient-to-br from-blue-500/20 via-purple-500/20 to-pink-500/20 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-3xl shadow-2xl max-w-lg w-full border-2 border-white/50 relative overflow-hidden">
+        {/* Decorative background elements */}
+        <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-blue-400/10 to-purple-400/10 rounded-full blur-3xl -z-10"></div>
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-gradient-to-tr from-pink-400/10 to-blue-400/10 rounded-full blur-3xl -z-10"></div>
+
+        {/* Header */}
+        <div className="relative bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 px-8 py-6 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
+              <User className="text-white" size={24} />
+            </div>
+            <div>
+              <h2 className="text-2xl font-bold text-white">Create Employee</h2>
+              <p className="text-blue-100 text-sm">Add a new team member</p>
+            </div>
+          </div>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            className="p-2 hover:bg-white/20 rounded-xl transition-all text-white"
           >
-            <X size={20} />
+            <X size={24} />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6">
+        {/* Content */}
+        <div className="p-8">
           {error && (
-            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm">
-              {error}
+            <div className="mb-6 p-4 bg-gradient-to-r from-red-50 to-pink-50 border-2 border-red-200 rounded-xl text-red-600 text-sm font-medium flex items-start gap-3">
+              <div className="w-5 h-5 bg-red-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                <span className="text-white text-xs font-bold">!</span>
+              </div>
+              <span>{error}</span>
             </div>
           )}
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-5">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Employee ID *
-              </label>
-              <input
-                type="number"
-                name="emp_id"
-                value={formData.emp_id}
-                onChange={handleChange}
-                required
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="flex items-center gap-2 text-sm font-bold text-gray-700 mb-3">
+                <User size={18} className="text-blue-600" />
                 Full Name *
               </label>
               <input
@@ -108,12 +125,14 @@ const CreateEmployeeModal = ({ token, managerId, onClose, onSuccess }) => {
                 value={formData.name}
                 onChange={handleChange}
                 required
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Enter full name..."
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all outline-none bg-gray-50 hover:bg-white font-medium"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="flex items-center gap-2 text-sm font-bold text-gray-700 mb-3">
+                <Mail size={18} className="text-purple-600" />
                 Email *
               </label>
               <input
@@ -122,100 +141,66 @@ const CreateEmployeeModal = ({ token, managerId, onClose, onSuccess }) => {
                 value={formData.email}
                 onChange={handleChange}
                 required
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="employee@company.com"
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-purple-500/20 focus:border-purple-500 transition-all outline-none bg-gray-50 hover:bg-white font-medium"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Password *
-              </label>
-              <input
-                type="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                required
-                minLength="6"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Position *
+              <label className="flex items-center gap-2 text-sm font-bold text-gray-700 mb-3">
+                <Briefcase size={18} className="text-pink-600" />
+                Designation *
               </label>
               <input
                 type="text"
-                name="position"
-                value={formData.position}
+                name="designation"
+                value={formData.designation}
                 onChange={handleChange}
                 required
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="e.g., Software Engineer, Manager"
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-pink-500/20 focus:border-pink-500 transition-all outline-none bg-gray-50 hover:bg-white font-medium"
               />
             </div>
 
-            {/* Optional UI-only fields */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Department
+              <label className="flex items-center gap-2 text-sm font-bold text-gray-700 mb-3">
+                <UserCog size={18} className="text-indigo-600" />
+                Manager ID *
               </label>
               <input
-                type="text"
-                name="department"
-                value={formData.department}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Phone
-              </label>
-              <input
-                type="tel"
-                name="phone"
-                value={formData.phone}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Status *
-              </label>
-              <select
-                name="status"
-                value={formData.status}
+                type="number"
+                name="manager_id"
+                value={formData.manager_id}
                 onChange={handleChange}
                 required
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              >
-                <option value="active">Active</option>
-                <option value="inactive">Inactive</option>
-              </select>
+                placeholder="Enter manager ID..."
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all outline-none bg-gray-50 hover:bg-white font-medium"
+              />
             </div>
           </div>
 
-          <div className="mt-6 flex gap-3 justify-end">
+          {/* Action Buttons */}
+          <div className="flex gap-4 mt-8">
             <button
               type="button"
               onClick={onClose}
-              className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+              className="flex-1 px-6 py-4 border-2 border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 font-bold transition-all hover:scale-105 hover:shadow-lg"
             >
               Cancel
             </button>
             <button
-              type="submit"
+              type="button"
+              onClick={handleSubmit}
               disabled={loading}
-              className="px-6 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 px-6 py-4 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white rounded-xl hover:shadow-2xl font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 relative overflow-hidden group"
             >
-              {loading ? 'Creating...' : 'Create Employee'}
+              <div className="absolute inset-0 bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <span className="relative z-10">
+                {loading ? 'Creating...' : '✨ Create Employee'}
+              </span>
             </button>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   );

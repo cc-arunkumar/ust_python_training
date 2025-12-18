@@ -10,4 +10,4 @@ db = client["ust_jira_lite"]
 
 tasks = db.tasks
 logs = db.logs
-
+files = db.files

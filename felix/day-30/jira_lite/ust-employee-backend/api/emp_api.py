@@ -8,19 +8,19 @@ from auth.jwt_auth import get_current_user
 emp_router = APIRouter()
 
 @emp_router.post("/employees",tags=["Employees"])
-def create_new_employee(employee: Employee,user: str = Depends(get_current_user)):
+def create_new_employee(employee: Employee):
     try:
-        emp_id = int(user)
+        # emp_id = int(user)
     
-        auth_user = get_User_by_id(emp_id)
-        if not auth_user:
-            raise HTTPException(status_code=401, detail="User not found")
+        # auth_user = get_User_by_id(emp_id)
+        # if not auth_user:
+        #     raise HTTPException(status_code=401, detail="User not found")
 
-        # role stored as comma-separated string; allow creation only for admins
-        roles = auth_user.role
-        print("Roles of auth user:", roles)
-        if "admin" not in roles:
-            raise HTTPException(status_code=403, detail="Forbidden: admin role required to create employees")
+        # # role stored as comma-separated string; allow creation only for admins
+        # roles = auth_user.role
+        # print("Roles of auth user:", roles)
+        # if "admin" not in roles:
+        #     raise HTTPException(status_code=403, detail="Forbidden: admin role required to create employees")
 
         new_emp = create_employee(employee)
         if new_emp is None:

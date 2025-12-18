@@ -185,5 +185,71 @@ getEmployeeById: async (token, empid) => {
   });
   if (!response.ok) throw new Error('Failed to fetch managers');
   return response.json();
-}
+},
+
+uploadFileToTask: async (token, taskId, file) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    
+    const response = await fetch(`${API_BASE_URL}/tasks/${taskId}/upload`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`
+        // ✅ No Content-Type - let browser set multipart boundary
+      },
+      body: formData
+    });
+    
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.detail || 'Failed to upload file');
+    }
+    return response.json();
+  },
+
+  getTaskFiles: async (token, taskId) => {
+    const response = await fetch(`${API_BASE_URL}/tasks/${taskId}/files`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.detail || 'Failed to fetch task files');
+    }
+    return response.json();
+  },
+
+  downloadFile: async (token, fileId) => {
+    const response = await fetch(`${API_BASE_URL}/files/${fileId}`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.detail || 'Failed to download file');
+    }
+    return response.json();
+  },
+
+  // 🔴 UTILITY: Convert base64 to downloadable blob
+  downloadFileBlob: async (token, fileId, fileName) => {
+    const fileData = await api.downloadFile(token, fileId);
+    
+    // Convert base64 to blob
+    const byteCharacters = atob(fileData.file_data);
+    const byteNumbers = new Array(byteCharacters.length);
+    for (let i = 0; i < byteCharacters.length; i++) {
+      byteNumbers[i] = byteCharacters.charCodeAt(i);
+    }
+    const byteArray = new Uint8Array(byteNumbers);
+    const blob = new Blob([byteArray], { type: fileData.file_type });
+    
+    // Create download link
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = fileName || fileData.file_name;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  },
 };
