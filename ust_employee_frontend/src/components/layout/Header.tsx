@@ -1,6 +1,14 @@
 import React from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { Shield, Users, Code2, LogOut, LayoutDashboard } from "lucide-react";
+import {
+  Shield,
+  Users,
+  Code2,
+  LogOut,
+  LayoutDashboard,
+  Sun,
+  Moon,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -29,6 +37,36 @@ const Header: React.FC<HeaderProps> = ({ currentView, onViewChange }) => {
       .join("")
       .toUpperCase();
   };
+
+  const [theme, setTheme] = React.useState<"light" | "dark">(() => {
+    try {
+      const stored = localStorage.getItem("theme");
+      if (stored === "dark") return "dark";
+      if (stored === "light") return "light";
+    } catch (e) {
+      // ignore
+    }
+    // fallback to prefers-color-scheme
+    if (typeof window !== "undefined" && window.matchMedia) {
+      return window.matchMedia("(prefers-color-scheme: dark)").matches
+        ? "dark"
+        : "light";
+    }
+    return "light";
+  });
+
+  React.useEffect(() => {
+    try {
+      const root = document.documentElement;
+      if (theme === "dark") root.classList.add("dark");
+      else root.classList.remove("dark");
+      localStorage.setItem("theme", theme);
+    } catch (e) {
+      // ignore
+    }
+  }, [theme]);
+
+  const toggleTheme = () => setTheme((t) => (t === "dark" ? "light" : "dark"));
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/60">
@@ -103,14 +141,35 @@ const Header: React.FC<HeaderProps> = ({ currentView, onViewChange }) => {
               {user?.employee?.name ? getInitials(user.employee.name) : "U"}
             </AvatarFallback>
           </Avatar>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={handleLogout}
-            className="text-muted-foreground hover:text-foreground"
-          >
-            <LogOut className="h-5 w-5" />
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={toggleTheme}
+              className="text-muted-foreground hover:text-foreground"
+              aria-label="Toggle theme"
+              title={
+                theme === "dark"
+                  ? "Switch to light mode"
+                  : "Switch to dark mode"
+              }
+            >
+              {theme === "dark" ? (
+                <Sun className="h-5 w-5" />
+              ) : (
+                <Moon className="h-5 w-5" />
+              )}
+            </Button>
+
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleLogout}
+              className="text-muted-foreground hover:text-foreground"
+            >
+              <LogOut className="h-5 w-5" />
+            </Button>
+          </div>
         </div>
       </div>
     </header>
