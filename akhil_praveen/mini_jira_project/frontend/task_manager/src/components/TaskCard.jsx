@@ -8,6 +8,7 @@ import {
   Edit2,
   ChevronDown,
   AlertCircle,
+  GripVertical,
 } from "lucide-react";
 import { STATUS_CONFIG, PRIORITY_COLORS } from "../utils/constants";
 
@@ -18,11 +19,13 @@ function TaskCard({
   onUpdateStatus,
   onEdit,
   currentEmpId = null,
+  statusConfig = null,
 }) {
   const [showStatusMenu, setShowStatusMenu] = useState(false);
   const [showReviewInput, setShowReviewInput] = useState(false);
   const [pendingStatus, setPendingStatus] = useState(null);
   const [reviewText, setReviewText] = useState("");
+  const [isDragging, setIsDragging] = useState(false);
 
   const statusIcons = {
     TO_DO: Clock,
@@ -49,7 +52,7 @@ function TaskCard({
     }
   };
 
-  const statusCfg = STATUS_CONFIG[task.status] || STATUS_CONFIG.TO_DO;
+  const statusCfg = statusConfig || STATUS_CONFIG[task.status] || STATUS_CONFIG.TO_DO;
   const priorityClasses = PRIORITY_COLORS[task.priority] || "text-gray-600";
 
   const canMarkDone =
@@ -69,20 +72,15 @@ function TaskCard({
       return;
     }
 
-    // Always ask for review/remarks when changing to REVIEW, IN_PROGRESS or DONE
     const isReviewer =
       currentEmpId != null && Number(currentEmpId) === Number(task.reviewer);
 
-    // If reviewer-only remarks are required (REVIEW/DONE) and the current user is NOT the reviewer,
-    // skip showing the reviewer textarea and proceed without remarks (backend will enforce review writes).
     if (newStatus === "REVIEW" || newStatus === "DONE") {
       if (!isReviewer) {
-        // proceed without remarks
         onUpdateStatus && onUpdateStatus(task.task_id, newStatus, null);
         setShowStatusMenu(false);
         return;
       }
-      // current user is reviewer -> allow them to add reviewer remarks
       setPendingStatus(newStatus);
       setShowReviewInput(true);
       setShowStatusMenu(false);
@@ -96,23 +94,14 @@ function TaskCard({
       return;
     }
 
-    // For other status changes, update directly
     onUpdateStatus && onUpdateStatus(task.task_id, newStatus, null);
     setShowStatusMenu(false);
   };
 
   const submitReview = () => {
-    console.log("Submitting review:", {
-      taskId: task.task_id,
-      status: pendingStatus,
-      review: reviewText,
-      userRole: userRole,
-    });
-
     const isReviewer =
       currentEmpId != null && Number(currentEmpId) === Number(task.reviewer);
 
-    // If trying to submit reviewer remarks but not the designated reviewer, block here (server also enforces)
     if (
       reviewText &&
       reviewText.trim() &&
@@ -123,11 +112,9 @@ function TaskCard({
       return;
     }
 
-    // Call the update function with review text (even if empty)
     onUpdateStatus &&
       onUpdateStatus(task.task_id, pendingStatus, reviewText.trim() || null);
 
-    // Reset states
     setShowReviewInput(false);
     setPendingStatus(null);
     setReviewText("");
@@ -139,31 +126,56 @@ function TaskCard({
     setReviewText("");
   };
 
+  // Drag handlers
+  const handleDragStart = (e) => {
+    setIsDragging(true);
+    e.dataTransfer.effectAllowed = "move";
+    e.dataTransfer.setData("taskId", task.task_id);
+    e.dataTransfer.setData("currentStatus", task.status);
+  };
+
+  const handleDragEnd = () => {
+    setIsDragging(false);
+  };
+
   const StatusIcon = statusIcons[task.status] || Clock;
 
   return (
-    <div className="bg-white rounded-lg shadow-sm p-3 hover:shadow-md transition cursor-pointer relative">
+    <div
+      draggable
+      onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
+      className={`${statusCfg.cardBg} rounded-lg p-3 hover:shadow-sm transition cursor-pointer relative border-l-4 ${statusCfg.color.replace('bg-', 'border-')} ${
+        isDragging ? 'opacity-50 shadow-none' : 'shadow-xs'
+      }`}
+      style={{ boxShadow: isDragging ? 'none' : '0 1px 2px 0 rgba(0, 0, 0, 0.05)' }}
+    >
+      {/* Drag Handle */}
+      <div className="absolute top-2 left-2 text-gray-400 cursor-grab active:cursor-grabbing">
+        <GripVertical size={14} />
+      </div>
+
       {/* Priority Badge - Top Right */}
       <div className="absolute top-2 right-2">
-        <span className={`text-xs font-semibold ${priorityClasses}`}>
+        <span className={`text-xs font-semibold px-2 py-1 rounded ${priorityClasses}`}>
           {task.priority || "MEDIUM"}
         </span>
       </div>
 
       {/* Title */}
-      <div className="pr-16 mb-2">
+      <div className="px-4 pr-16 mb-2">
         <h3 className="text-sm font-semibold text-gray-800 line-clamp-2">
           {task.title}
         </h3>
       </div>
 
       {/* Description */}
-      <p className="text-xs text-gray-600 line-clamp-2 mb-3">
+      <p className="text-xs text-gray-600 line-clamp-2 mb-3 px-1">
         {task.description || "No description"}
       </p>
 
       {/* Info Section */}
-      <div className="space-y-1 text-xs text-gray-500 mb-3">
+      <div className="space-y-1 text-xs text-gray-500 mb-3 px-1">
         {task.expected_closure && (
           <div className="flex items-center gap-1">
             <span className="font-medium">Expected:</span>
@@ -193,7 +205,7 @@ function TaskCard({
       </div>
 
       {/* Status and Edit Row */}
-      <div className="flex items-center justify-between gap-2">
+      <div className="flex items-center justify-between gap-2 px-1">
         <div className="relative flex-1">
           <button
             onClick={(e) => {
@@ -209,7 +221,6 @@ function TaskCard({
 
           {showStatusMenu && (
             <>
-              {/* Backdrop to close menu */}
               <div
                 className="fixed inset-0 z-10"
                 onClick={(e) => {
@@ -218,7 +229,6 @@ function TaskCard({
                 }}
               />
 
-              {/* Dropdown Menu */}
               <div className="absolute left-0 bottom-full mb-1 bg-white rounded-md shadow-lg border z-20 min-w-[140px]">
                 {getAvailableStatuses().map((s) => {
                   const cfg = STATUS_CONFIG[s];
@@ -252,7 +262,7 @@ function TaskCard({
             e.stopPropagation();
             onEdit && onEdit(task);
           }}
-          className="p-1.5 hover:bg-indigo-50 text-indigo-600 rounded-md transition"
+          className="p-1.5 hover:bg-white/70 text-indigo-600 rounded-md transition"
           title="Edit Task"
         >
           <Edit2 size={14} />
@@ -262,7 +272,7 @@ function TaskCard({
       {/* Review Input Section */}
       {showReviewInput && (
         <div
-          className="mt-3 pt-3 border-t"
+          className="mt-3 pt-3 border-t bg-white/50 rounded p-2"
           onClick={(e) => e.stopPropagation()}
         >
           <div className="mb-2">
@@ -283,7 +293,7 @@ function TaskCard({
             placeholder={`Add ${
               canMarkDone ? "reviewer" : "developer"
             } remarks... (optional)`}
-            className="w-full px-2 py-1.5 border rounded text-xs mb-2 focus:ring-1 focus:ring-indigo-400 focus:outline-none"
+            className="w-full px-2 py-1.5 border rounded text-xs mb-2 focus:ring-1 focus:ring-indigo-400 focus:outline-none bg-white"
             rows="3"
             autoFocus
           />

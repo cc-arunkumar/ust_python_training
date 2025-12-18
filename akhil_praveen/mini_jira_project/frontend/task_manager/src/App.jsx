@@ -50,7 +50,12 @@ function App() {
 
       console.log("Loaded tasks:", tasksData);
 
-      setTasks(tasksData);
+      // Normalize any legacy 'CRITICAL' priorities to 'HIGH' since CRITICAL was removed
+      const normalized = (tasksData || []).map((t) => ({
+        ...t,
+        priority: t.priority === "CRITICAL" ? "HIGH" : t.priority,
+      }));
+      setTasks(normalized);
       setEmployees(employeesData);
     } catch (err) {
       console.error("Failed to load data:", err);
