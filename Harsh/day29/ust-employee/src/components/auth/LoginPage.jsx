@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { AlertCircle } from 'lucide-react';
-import { useAuth } from '../../context/AuthContext';
+import React, { useState } from "react";
+import { AlertCircle } from "lucide-react";
+import { useAuth } from "../../context/AuthContext";
 
 const LoginPage = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
 
@@ -15,9 +15,9 @@ const LoginPage = () => {
 
     try {
       await login(email, password);
-      setError('');
+      setError("");
     } catch (err) {
-      setError('Invalid credentials');
+      setError("Invalid credentials");
     } finally {
       setLoading(false);
     }
@@ -25,28 +25,38 @@ const LoginPage = () => {
 
   return (
     <div className="min-h-screen flex">
-      {/* Left side - Info */}
-      <div className="hidden md:flex w-1/2 bg-gradient-to-br from-blue-600 to-indigo-600 text-white p-16 flex-col justify-center">
-        <h1 className="text-5xl font-bold mb-6"> TaskPro</h1>
-        <p className="text-lg mb-4">
-          Manage your tasks efficiently, collaborate with your team, and track progress easily.
+      {/* Left side - Info (professional look) */}
+      <div className="hidden md:flex w-1/2 bg-gradient-to-br from-sky-700 to-indigo-800 text-white p-16 flex-col justify-center">
+        <h1 className="text-4xl font-extrabold mb-4">JIRA Lite </h1>
+        <p className="text-lg mb-6 max-w-xs text-sky-100">
+          A lightweight, fast task tracking experience for small teams.
+          Prioritize work, collaborate, and ship faster.
         </p>
-        <ul className="list-disc list-inside space-y-2">
-          <li>Organize tasks with ease</li>
-          <li>Real-time collaboration</li>
-          <li>Track deadlines and priorities</li>
-          <li>Clean and intuitive interface</li>
-        </ul>
+        <div className="grid gap-3 max-w-xs">
+          <div className="flex items-start gap-3">
+            <div className="mt-1 w-2 h-2 rounded-full bg-white/80" />
+            <div className="text-sm">Kanban-style boards to visualize work</div>
+          </div>
+          <div className="flex items-start gap-3">
+            <div className="mt-1 w-2 h-2 rounded-full bg-white/80" />
+            <div className="text-sm">
+              Simple task assignments and notifications
+            </div>
+          </div>
+          <div className="flex items-start gap-3">
+            <div className="mt-1 w-2 h-2 rounded-full bg-white/80" />
+            <div className="text-sm">Files, comments and progress tracking</div>
+          </div>
+        </div>
       </div>
 
       {/* Right side - Login */}
       <div className="flex w-full md:w-1/2 items-center justify-center bg-white p-8">
         <div className="w-full max-w-md bg-white/80 backdrop-blur-xl rounded-2xl shadow-xl border border-gray-200 p-8">
-          
           {/* Header */}
           <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-              TaskPro
+            <h1 className="text-4xl font-bold bg-clip-text text-slate-900">
+              JIRA Lite 
             </h1>
             <p className="text-gray-500 mt-2">Welcome back! Please login</p>
           </div>
@@ -62,7 +72,9 @@ const LoginPage = () => {
 
             {/* Email */}
             <div>
-              <label className="block text-sm font-medium text-gray-600 mb-2">Email Address</label>
+              <label className="block text-sm font-medium text-gray-600 mb-2">
+                Email Address
+              </label>
               <input
                 type="email"
                 value={email}
@@ -77,7 +89,9 @@ const LoginPage = () => {
 
             {/* Password */}
             <div>
-              <label className="block text-sm font-medium text-gray-600 mb-2">Password</label>
+              <label className="block text-sm font-medium text-gray-600 mb-2">
+                Password
+              </label>
               <input
                 type="password"
                 value={password}
@@ -100,12 +114,14 @@ const LoginPage = () => {
                          active:scale-95 transition-all duration-200
                          shadow-lg disabled:opacity-60 disabled:cursor-not-allowed"
             >
-              {loading ? 'Signing in...' : 'Sign In'}
+              {loading ? "Signing in..." : "Sign In"}
             </button>
           </form>
 
           {/* Footer */}
-          <p className="text-center text-sm text-gray-400 mt-8">© 2025 Task Manager</p>
+          <p className="text-center text-sm text-gray-400 mt-8">
+            © 2025 Task Manager
+          </p>
         </div>
       </div>
     </div>

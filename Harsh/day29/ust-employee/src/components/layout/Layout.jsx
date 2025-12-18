@@ -1,15 +1,12 @@
 import React, { useState, useEffect } from "react";
 import {
   LogOut,
-  Users,
   CheckSquare,
   User,
   RefreshCw,
   LayoutGrid,
   List,
   Menu,
-  ClipboardList,
-  TrendingUp,
 } from "lucide-react";
 
 import { useAuth } from "../../context/AuthContext";
@@ -145,10 +142,7 @@ const Layout = () => {
     }
   };
 
-  const totalTasks = tasks.length;
-  const completedTasks = tasks.filter((t) => t.status === "DONE").length;
-  const progress =
-    totalTasks === 0 ? 0 : Math.round((completedTasks / totalTasks) * 100);
+  // Dashboard stats moved into KanbanBoard per UX request
 
   const renderPage = () => {
     if (currentPage === "employees")
@@ -184,7 +178,7 @@ const Layout = () => {
       >
         <div className="h-16 flex items-center justify-between px-4">
           {sidebarOpen && (
-            <h1 className="text-xl font-semibold animate-fade-in">TaskPro</h1>
+            <h1 className="text-xl font-semibold animate-fade-in">JIRA Lite</h1>
           )}
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
@@ -211,16 +205,7 @@ const Layout = () => {
         {/* NAVBAR */}
         <header className="bg-white/80 backdrop-blur border-b border-slate-200 px-6 py-4 flex justify-between animate-slide-down">
           <div className="flex items-center gap-4">
-            <div className="w-9 h-9 rounded-full border border-slate-300 shadow-sm flex items-center justify-center bg-white text-slate-700 font-semibold uppercase">
-              {user?.email?.charAt(0)}
-            </div>
-
-            <span
-              className={`px-4 py-1 rounded-full text-xs font-semibold border ${roleStyles[activeRole]}`}
-            >
-              {activeRole}
-            </span>
-
+            {/* View buttons on extreme left */}
             {currentPage === "tasks" && (
               <div className="flex bg-slate-100 rounded-lg p-1 border border-slate-200">
                 <ViewButton
@@ -240,6 +225,13 @@ const Layout = () => {
           </div>
 
           <div className="flex items-center gap-3">
+            {/* Role badge should be left of email */}
+            <span
+              className={`px-4 py-1 rounded-full text-xs font-semibold border ${roleStyles[activeRole]}`}
+            >
+              {activeRole}
+            </span>
+
             <div className="flex items-center gap-2 bg-slate-100 px-4 py-2 rounded-lg border border-slate-200">
               <User size={16} />
               <span className="text-sm">{user?.email}</span>
@@ -279,35 +271,34 @@ const Layout = () => {
               danger
               onClick={logout}
             />
+
+            {/* Profile avatar moved to the far right of the header controls */}
+            <div className="relative group">
+              <div className="w-9 h-9 rounded-full border border-slate-300 shadow-sm flex items-center justify-center bg-white text-slate-700 font-semibold uppercase">
+                {user?.email?.charAt(0)}
+              </div>
+
+              {/* Hover tooltip with profile details */}
+              <div className="hidden group-hover:flex absolute right-0 mt-3 transform translate-y-0 w-56 bg-white border border-slate-200 rounded-md shadow-lg p-3 flex-col text-sm z-50">
+                <div className="font-semibold text-slate-800 truncate">
+                  {user?.name || user?.email}
+                </div>
+                <div className="text-slate-500 truncate text-xs">
+                  {user?.email}
+                </div>
+                <div className="mt-2 text-xs text-slate-600">
+                  Role: {activeRole}
+                </div>
+              </div>
+            </div>
           </div>
         </header>
 
         {/* CONTENT */}
         <main className="flex-1 p-6 animate-fade-in">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
-            <StatCard
-              title="Total Tasks"
-              value={totalTasks}
-              icon={<ClipboardList className="text-indigo-600" />}
-            />
+          {/* Dashboard stats removed from Layout — moved to KanbanBoard */}
 
-            {activeRole !== "DEVELOPER" && (
-              <StatCard
-                title="Total Employees"
-                value={employees.length}
-                icon={<Users className="text-emerald-600" />}
-              />
-            )}
-
-            <StatCard
-              title="Progress"
-              value={`${progress}%`}
-              icon={<TrendingUp className="text-blue-600" />}
-              progress={progress}
-            />
-          </div>
-
-          <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm animate-slide-up">
+          <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm animate-slide-up mt-8">
             {renderPage()}
           </div>
         </main>

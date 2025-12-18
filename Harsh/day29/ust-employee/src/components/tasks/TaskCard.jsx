@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Draggable } from "@hello-pangea/dnd";
 import { Eye, Trash, Edit, User, Bell } from "lucide-react";
 import { PRIORITY_COLORS } from "../../utils/constants";
@@ -13,6 +13,29 @@ const TaskCard = ({
   assignedEmployee,
 }) => {
   const [showNotes, setShowNotes] = useState(false);
+  const popoverRef = useRef(null);
+
+  useEffect(() => {
+    if (!showNotes) return;
+
+    const handleOutside = (e) => {
+      if (popoverRef.current && !popoverRef.current.contains(e.target)) {
+        setShowNotes(false);
+      }
+    };
+
+    const handleKey = (e) => {
+      if (e.key === "Escape") setShowNotes(false);
+    };
+
+    document.addEventListener("mousedown", handleOutside);
+    document.addEventListener("keydown", handleKey);
+
+    return () => {
+      document.removeEventListener("mousedown", handleOutside);
+      document.removeEventListener("keydown", handleKey);
+    };
+  }, [showNotes]);
   const handleDelete = () => {
     if (!onDelete) return;
     const confirm = window.confirm(
@@ -33,12 +56,15 @@ const TaskCard = ({
 
   return (
     <Draggable draggableId={task.task_id.toString()} index={index}>
-      {(provided) => (
+      {(provided, snapshot) => (
         <div
           ref={provided.innerRef}
           {...provided.draggableProps}
           {...provided.dragHandleProps}
-          className="bg-white rounded-lg shadow-sm p-4 flex flex-col hover:shadow-md transition"
+          style={{ ...(provided.draggableProps?.style || {}) }}
+          className={`relative bg-white rounded-lg shadow-sm p-4 flex flex-col transition-transform duration-150 ease-out ${
+            snapshot.isDragging ? "scale-105 shadow-xl z-50" : "hover:shadow-md"
+          }`}
         >
           {/* Header: title left, bell (notifications) top-right */}
           <div className="flex justify-between items-start mb-2">
@@ -118,40 +144,37 @@ const TaskCard = ({
             )}
           </div>
 
-          {/* Notifications modal (task-specific) */}
+          {/* Notifications popover (anchored to bell) */}
           {showNotes && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center">
-              <div
-                className="absolute inset-0 bg-black/40"
-                onClick={() => setShowNotes(false)}
-              />
-              <div className="relative bg-white rounded-lg p-6 shadow-lg w-full max-w-md z-10">
-                <div className="flex justify-between items-center mb-4">
-                  <h4 className="text-lg font-semibold">Notifications</h4>
-                  <button
-                    onClick={() => setShowNotes(false)}
-                    className="text-slate-500"
-                  >
-                    Close
-                  </button>
-                </div>
-                <div className="space-y-3 max-h-56 overflow-auto">
-                  {task.notifications && task.notifications.length > 0 ? (
-                    task.notifications.map((n, i) => (
-                      <div key={i} className="p-2 border rounded">
-                        <p className="text-sm text-slate-700">{n}</p>
-                      </div>
-                    ))
-                  ) : task.remarks && task.remarks.length > 0 ? (
-                    task.remarks.map((r, i) => (
-                      <div key={i} className="p-2 border rounded">
-                        <p className="text-sm text-slate-700">{r}</p>
-                      </div>
-                    ))
-                  ) : (
-                    <p className="text-sm text-slate-500">No notifications</p>
-                  )}
-                </div>
+            <div
+              ref={popoverRef}
+              className="absolute top-10 right-2 z-50 w-72 bg-white border border-slate-200 rounded-md shadow-lg p-3"
+            >
+              <div className="flex justify-between items-center mb-2">
+                <h4 className="text-sm font-semibold">Notifications</h4>
+                <button
+                  onClick={() => setShowNotes(false)}
+                  className="text-slate-500"
+                >
+                  Close
+                </button>
+              </div>
+              <div className="space-y-2 max-h-44 overflow-auto">
+                {task.notifications && task.notifications.length > 0 ? (
+                  task.notifications.map((n, i) => (
+                    <div key={`n-${i}`} className="p-2 border rounded">
+                      <p className="text-sm text-slate-700">{n}</p>
+                    </div>
+                  ))
+                ) : task.remarks && task.remarks.length > 0 ? (
+                  task.remarks.map((r, i) => (
+                    <div key={`r-${i}`} className="p-2 border rounded">
+                      <p className="text-sm text-slate-700">{r}</p>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-sm text-slate-500">No notifications</p>
+                )}
               </div>
             </div>
           )}
@@ -166,6 +189,7 @@ const TaskCard = ({
                 <Eye size={14} /> View
               </button>
             )}
+
             {onEdit && (
               <button
                 onClick={() => onEdit(task)}
@@ -174,6 +198,7 @@ const TaskCard = ({
                 <Edit size={14} /> Edit
               </button>
             )}
+
             {onDelete && (
               <button
                 onClick={handleDelete}

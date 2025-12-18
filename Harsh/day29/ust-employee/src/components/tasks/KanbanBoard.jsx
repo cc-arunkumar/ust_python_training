@@ -18,7 +18,17 @@ const KanbanBoard = ({ initialTasks, initialEmployees, onTasksChanged }) => {
 
   const [tasks, setTasks] = useState(initialTasks ?? []);
   const [employees, setEmployees] = useState(initialEmployees ?? []);
+  // compute progress for header display (based on current tasks list)
+  const totalTasksCount = Array.isArray(tasks) ? tasks.length : 0;
+  const completedTasksCount = Array.isArray(tasks)
+    ? tasks.filter((t) => t.status === "DONE").length
+    : 0;
+  const progress =
+    totalTasksCount === 0
+      ? 0
+      : Math.round((completedTasksCount / totalTasksCount) * 100);
   const [searchQuery, setSearchQuery] = useState("");
+  // priorityFilter now acts as a sorting preference (which priority to surface first)
   const [priorityFilter, setPriorityFilter] = useState("ALL");
   const [showEmployeesModal, setShowEmployeesModal] = useState(false);
   const [selectedEmployeeId, setSelectedEmployeeId] = useState(null);
@@ -121,15 +131,8 @@ const KanbanBoard = ({ initialTasks, initialEmployees, onTasksChanged }) => {
     }
   };
 
-  // Apply search / priority / employee filters first
+  // Apply search / employee filters (priorityFilter no longer excludes tasks; it influences sorting)
   const filteredTasks = tasks.filter((t) => {
-    // priority filter
-    if (priorityFilter && priorityFilter !== "ALL") {
-      if (!t.priority) return false;
-      if (t.priority.toString().toLowerCase() !== priorityFilter.toLowerCase())
-        return false;
-    }
-
     // search filter (task title)
     if (searchQuery && searchQuery.trim() !== "") {
       const q = searchQuery.trim().toLowerCase();
@@ -152,6 +155,23 @@ const KanbanBoard = ({ initialTasks, initialEmployees, onTasksChanged }) => {
       .filter((t) => t.status === status)
       .sort((a, b) => {
         if (sortOption === "priority") {
+          // If user selected a particular priority in the "Filter" select,
+          // surface tasks with that priority first within each column.
+          const selected =
+            priorityFilter && priorityFilter !== "ALL"
+              ? priorityFilter.toLowerCase()
+              : null;
+
+          if (selected) {
+            const aIsSelected =
+              a.priority && a.priority.toLowerCase() === selected;
+            const bIsSelected =
+              b.priority && b.priority.toLowerCase() === selected;
+            if (aIsSelected && !bIsSelected) return -1;
+            if (bIsSelected && !aIsSelected) return 1;
+            // otherwise fall back to normal priority ordering
+          }
+
           const aPriority = a.priority
             ? PRIORITY_ORDER[a.priority.toLowerCase()] || 0
             : 0;
@@ -184,62 +204,77 @@ const KanbanBoard = ({ initialTasks, initialEmployees, onTasksChanged }) => {
       <Toaster position="top-right" />
 
       {/* HEADER */}
-      <div className="bg-white px-6 py-4 shadow-sm flex justify-between items-center">
-        <h1 className="text-xl font-semibold">Task Board</h1>
+      <div className="bg-white px-6 py-4 shadow-sm">
+        <div className="max-w-7xl mx-auto flex items-center gap-4 flex-wrap">
+          <h1 className="text-xl font-semibold flex-shrink-0">Task Board</h1>
 
-        <div className="flex gap-3 items-center">
-          {/* Employee button (shows employee modal) */}
-          <button
-            onClick={() => setShowEmployeesModal(true)}
-            className="flex items-center gap-2 px-3 py-2 rounded-lg bg-slate-100 border border-slate-200 text-sm"
-          >
-            <Users size={16} /> Employees
-          </button>
+          {/* Right-side controls grouped and responsive
+              Order (from left to right when space permits): Employee | New Task | Search | Filter (extreme right)
+              On small screens controls will wrap, Employee button will show icon-only.
+          */}
+          <div className="ml-auto flex items-center gap-3 flex-wrap">
+            {/* Employee button */}
+            <button
+              onClick={() => setShowEmployeesModal(true)}
+              className="flex items-center gap-2 px-3 py-2 rounded-lg bg-slate-100 text-sm hover:bg-slate-200 transition-colors"
+            >
+              <Users size={16} />
+              <span className="hidden sm:inline">Employees</span>
+            </button>
 
-          {/* Search */}
-          <div className="relative">
-            <input
-              type="search"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search tasks by name..."
-              className="px-3 py-2 border border-slate-300 rounded-lg text-sm w-64"
-            />
-            <div className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
-              <Search size={14} />
+            {/* New Task button (visible only to editors) */}
+            {canEdit && (
+              <button
+                onClick={() => setShowCreateModal(true)}
+                className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm flex items-center gap-2 hover:bg-blue-700 transition-colors"
+              >
+                <Plus size={16} />
+                <span className="hidden xs:inline">New Task</span>
+              </button>
+            )}
+
+            {/* Search + Filter grouped so they sit at the extreme right on wide screens */}
+            <div className="flex items-center gap-3">
+              {/* Search moved to the far right visually (flex keeps group together) */}
+              <div className="relative order-2 sm:order-1">
+                <input
+                  type="search"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search tasks by name..."
+                  className="px-3 py-2 rounded-lg text-sm w-64 bg-white border border-slate-200 shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-200"
+                />
+                <div className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
+                  <Search size={14} />
+                </div>
+              </div>
+
+              {/* Progress display (moved from layout) */}
+              <div className="flex items-center gap-2 mr-2">
+                <div className="text-xs text-slate-500">Progress</div>
+                <div className="w-32 bg-slate-100 rounded-full h-2 overflow-hidden">
+                  <div
+                    className="h-2 bg-blue-600 rounded-full transition-all duration-500"
+                    style={{ width: `${progress}%` }}
+                  />
+                </div>
+                <div className="text-xs text-slate-600 ml-2">{progress}%</div>
+              </div>
+
+              {/* Priority filter (renamed to 'Filter') */}
+              <select
+                value={priorityFilter}
+                onChange={(e) => setPriorityFilter(e.target.value)}
+                className="bg-slate-100 rounded px-3 py-2 text-sm shadow-sm focus:outline-none"
+                aria-label="Filter"
+              >
+                <option value="ALL">Filter</option>
+                <option value="HIGH">High</option>
+                <option value="MEDIUM">Medium</option>
+                <option value="LOW">Low</option>
+              </select>
             </div>
           </div>
-
-          {/* Sort */}
-          <select
-            value={sortOption}
-            onChange={(e) => setSortOption(e.target.value)}
-            className="border rounded px-3 py-1 text-sm"
-          >
-            <option value="priority">Sort by Priority</option>
-            <option value="date">Sort by Deadline</option>
-          </select>
-
-          {canEdit && (
-            <button
-              onClick={() => setShowCreateModal(true)}
-              className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm flex items-center gap-1"
-            >
-              <Plus size={16} /> New Task
-            </button>
-          )}
-
-          {/* Priority filter on extreme right */}
-          <select
-            value={priorityFilter}
-            onChange={(e) => setPriorityFilter(e.target.value)}
-            className="border rounded px-3 py-1 text-sm"
-          >
-            <option value="ALL">All priorities</option>
-            <option value="HIGH">High</option>
-            <option value="MEDIUM">Medium</option>
-            <option value="LOW">Low</option>
-          </select>
         </div>
       </div>
 
@@ -270,12 +305,12 @@ const KanbanBoard = ({ initialTasks, initialEmployees, onTasksChanged }) => {
 
       {/* Employees modal */}
       {showEmployeesModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
           <div
             className="absolute inset-0 bg-black/40"
             onClick={() => setShowEmployeesModal(false)}
           />
-          <div className="relative bg-white rounded-lg p-6 shadow-lg w-full max-w-md z-10">
+          <div className="relative bg-white rounded-lg p-6 shadow-lg w-full max-w-3xl z-10">
             <div className="flex justify-between items-center mb-4">
               <h4 className="text-lg font-semibold">Employees</h4>
               <button
@@ -285,26 +320,36 @@ const KanbanBoard = ({ initialTasks, initialEmployees, onTasksChanged }) => {
                 Close
               </button>
             </div>
-            <div className="space-y-2 max-h-64 overflow-auto">
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-72 overflow-auto">
               {employees && employees.length > 0 ? (
                 employees.map((emp) => (
                   <div
                     key={emp.emp_id}
-                    className="p-2 border rounded flex items-center justify-between"
+                    className="p-3 bg-slate-50 rounded-md flex items-center justify-between shadow-sm"
                   >
-                    <div>
-                      <div className="font-medium">{emp.emp_name}</div>
-                      <div className="text-xs text-slate-500">
-                        ID: {emp.emp_id}
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-blue-500 text-white flex items-center justify-center font-semibold">
+                        {emp.emp_name
+                          ? emp.emp_name.charAt(0).toUpperCase()
+                          : "-"}
+                      </div>
+                      <div>
+                        <div className="font-medium truncate max-w-[12rem]">
+                          {emp.emp_name}
+                        </div>
+                        <div className="text-xs text-slate-500">
+                          ID: {emp.emp_id}
+                        </div>
                       </div>
                     </div>
-                    <div>
+                    <div className="flex-shrink-0">
                       <button
                         onClick={() => {
                           setSelectedEmployeeId(emp.emp_id);
                           setShowEmployeesModal(false);
                         }}
-                        className="px-2 py-1 text-sm bg-slate-100 rounded"
+                        className="px-3 py-1 text-sm bg-white border border-slate-200 rounded hover:bg-slate-50"
                       >
                         Filter
                       </button>
@@ -315,6 +360,7 @@ const KanbanBoard = ({ initialTasks, initialEmployees, onTasksChanged }) => {
                 <p className="text-sm text-slate-500">No employees available</p>
               )}
             </div>
+
             {selectedEmployeeId && (
               <div className="mt-4 text-right">
                 <button
