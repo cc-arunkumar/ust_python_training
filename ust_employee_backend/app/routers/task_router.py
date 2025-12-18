@@ -207,8 +207,9 @@ def assign_task(
     if assigned_by_id is not None:
         db_task.assigned_by_id = assigned_by_id
     db_task.assigned_at = datetime.now()
-    # Move task to IN_PROGRESS when assigned
-    db_task.status = "IN_PROGRESS"
+    # Keep task in TO_DO when assigned. Only the assigned employee may
+    # transition the task to IN_PROGRESS. We still record assigned_at/assigned_by
+    # and optional reviewer, but do not change the status here.
 
     db.commit()
     db.refresh(db_task)

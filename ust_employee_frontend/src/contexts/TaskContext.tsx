@@ -398,7 +398,14 @@ export const TaskProvider: React.FC<{ children: React.ReactNode }> = ({
         const taskIdNum = Number(stripDigits(taskId)); // T002 → 2 or '2' -> 2
         const assignedToId = Number(stripDigits(assignedTo)); // E003 or '3' -> 3
 
-        if (!Number.isFinite(taskIdNum) || !Number.isFinite(assignedToId)) {
+        // Reject invalid or non-positive task ids — a value of 0 previously
+        // resulted in calls to /api/tasks/0/assign which return 404.
+        if (
+          !Number.isFinite(taskIdNum) ||
+          taskIdNum <= 0 ||
+          !Number.isFinite(assignedToId) ||
+          assignedToId <= 0
+        ) {
           console.error("Invalid taskId or assignedToId", {
             taskId,
             assignedTo,
