@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { LogOut, ChevronDown, Users, LayoutDashboard, Shield } from 'lucide-react';
+import { LogOut, ChevronDown, Users, LayoutDashboard, Shield, Mail, Phone, Briefcase, Calendar } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { api } from '../../services/api';
 
 const Header = ({ currentView, userRoles, onChangeView, onNavigate, onUserNameFetched }) => {
   const { user, logout, token } = useAuth();
   const [showRoleDropdown, setShowRoleDropdown] = useState(false);
+  const [showUserDetails, setShowUserDetails] = useState(false);
   const [userName, setUserName] = useState('');
+  const [userDetails, setUserDetails] = useState(null);
 
   useEffect(() => {
     const fetchUserName = async () => {
@@ -14,8 +16,8 @@ const Header = ({ currentView, userRoles, onChangeView, onNavigate, onUserNameFe
         const userData = await api.getEmployeeById(token, user.emp_id);
         const name = userData?.name || user.name || 'User';
         setUserName(name);
+        setUserDetails(userData);
         
-        // Pass the name to parent component (Dashboard)
         if (onUserNameFetched) {
           onUserNameFetched(name);
         }
@@ -113,22 +115,16 @@ const Header = ({ currentView, userRoles, onChangeView, onNavigate, onUserNameFe
                   onClick={() => setShowRoleDropdown(!showRoleDropdown)}
                   className="flex items-center gap-3 px-5 py-3 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white rounded-xl transition-all duration-200 shadow-lg hover:shadow-cyan-500/50 transform hover:scale-105 hover:-translate-y-1 group relative overflow-hidden"
                 >
-                  {/* Animated background glow */}
                   <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent rounded-2xl blur animate-pulse opacity-75 group-hover:opacity-100 transition-opacity"></div>
-                  
-                  {/* Active indicator dot */}
                   <div className="w-3 h-3 bg-white rounded-full shadow-lg animate-ping group-hover:animate-none"></div>
-                  
                   <span className="relative z-10 text-sm font-bold bg-gradient-to-r from-white via-emerald-50 to-cyan-50 bg-clip-text text-transparent drop-shadow-lg">
                     {currentView}
                   </span>
-                  
                   <ChevronDown 
                     size={18} 
                     className="relative z-10 text-white/90 group-hover:rotate-180 transition-transform duration-300" 
                   />
                 </button>
-
 
                 {showRoleDropdown && (
                   <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-2xl border border-gray-100 py-2 animate-in fade-in slide-in-from-top-2 duration-200">
@@ -151,44 +147,149 @@ const Header = ({ currentView, userRoles, onChangeView, onNavigate, onUserNameFe
                           {role}
                         </span>
                       </button>
-
                     ))}
                   </div>
                 )}
               </div>
             )}
 
-            {/* User Info */}
-            <div className="flex items-center gap-3">
-              {/* User Profile Card */}
-              <div className="hidden sm:flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-xl px-4 py-2 border border-white/20 shadow-lg">
-                {/* Profile Picture */}
-                <div className="relative">
-                  <div className="w-10 h-10 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg ring-2 ring-white/30">
-                    {userName.charAt(0).toUpperCase()}
+            {/* User Info with Dropdown */}
+            <div className="relative">
+              <div className="flex items-center gap-3">
+                {/* User Profile Card - Clickable */}
+                <button
+                  onClick={() => setShowUserDetails(!showUserDetails)}
+                  className="hidden sm:flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-xl px-4 py-2 border border-white/20 shadow-lg hover:bg-white/20 transition-all duration-200 cursor-pointer transform hover:scale-105"
+                >
+                  {/* Profile Picture */}
+                  <div className="relative">
+                    <div className="w-10 h-10 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg ring-2 ring-white/30">
+                      {userName.charAt(0).toUpperCase()}
+                    </div>
+                    <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-400 rounded-full border-2 border-white shadow-sm"></div>
                   </div>
-                  <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-400 rounded-full border-2 border-white shadow-sm"></div>
-                </div>
-                
-                {/* User Details */}
-                <div className="text-left">
-                  <p className="text-sm font-bold text-white leading-tight">
-                    {userName}
-                  </p>
-                  <p className="text-xs text-white/80 font-medium">
-                    ID: {user.emp_id}
-                  </p>
-                </div>
+                  
+                  {/* User Details */}
+                  <div className="text-left">
+                    <p className="text-sm font-bold text-white leading-tight">
+                      {userName}
+                    </p>
+                    <p className="text-xs text-white/80 font-medium">
+                      ID: {user.emp_id}
+                    </p>
+                  </div>
+
+                  <ChevronDown 
+                    size={16} 
+                    className={`text-white/90 transition-transform duration-300 ${showUserDetails ? 'rotate-180' : ''}`}
+                  />
+                </button>
+
+                <button
+                  onClick={logout}
+                  className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-400 hover:to-pink-400 text-white rounded-xl transition-all duration-200 shadow-xl hover:shadow-red-500/50 transform hover:scale-110 border-2 border-red-400/50 font-bold"
+                  title="Logout"
+                >
+                  <LogOut size={18} />
+                  <span className="hidden sm:inline">Logout</span>
+                </button>
               </div>
 
-              <button
-                onClick={logout}
-                className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-400 hover:to-pink-400 text-white rounded-xl transition-all duration-200 shadow-xl hover:shadow-red-500/50 transform hover:scale-110 border-2 border-red-400/50 font-bold"
-                title="Logout"
-              >
-                <LogOut size={18} />
-                <span className="hidden sm:inline">Logout</span>
-              </button>
+              {/* User Details Dropdown */}
+              {showUserDetails && (
+                <div className="absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200 z-50">
+                  {/* Header */}
+                  <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-14 h-14 bg-white rounded-full flex items-center justify-center text-blue-600 font-bold text-2xl shadow-lg">
+                        {userName.charAt(0).toUpperCase()}
+                      </div>
+                      <div className="text-white">
+                        <h3 className="font-bold text-lg">{userName}</h3>
+                        <p className="text-sm text-white/80">Employee ID: {user.emp_id}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Details */}
+                  <div className="p-4 space-y-3">
+                    {userDetails?.email && (
+                      <div className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                        <Mail size={18} className="text-blue-600 mt-0.5 flex-shrink-0" />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs text-gray-500 font-medium">Email</p>
+                          <p className="text-sm text-gray-800 font-semibold break-all">{userDetails.email}</p>
+                        </div>
+                      </div>
+                    )}
+
+                    {userDetails?.phone && (
+                      <div className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                        <Phone size={18} className="text-green-600 mt-0.5 flex-shrink-0" />
+                        <div className="flex-1">
+                          <p className="text-xs text-gray-500 font-medium">Phone</p>
+                          <p className="text-sm text-gray-800 font-semibold">{userDetails.phone}</p>
+                        </div>
+                      </div>
+                    )}
+
+                    {userDetails?.designation && (
+                      <div className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                        <Briefcase size={18} className="text-purple-600 mt-0.5 flex-shrink-0" />
+                        <div className="flex-1">
+                          <p className="text-xs text-gray-500 font-medium">Designation</p>
+                          <p className="text-sm text-gray-800 font-semibold">{userDetails.designation}</p>
+                        </div>
+                      </div>
+                    )}
+
+                    {userDetails?.department && (
+                      <div className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                        <Users size={18} className="text-indigo-600 mt-0.5 flex-shrink-0" />
+                        <div className="flex-1">
+                          <p className="text-xs text-gray-500 font-medium">Department</p>
+                          <p className="text-sm text-gray-800 font-semibold">{userDetails.department}</p>
+                        </div>
+                      </div>
+                    )}
+
+                    {userDetails?.date_of_joining && (
+                      <div className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                        <Calendar size={18} className="text-orange-600 mt-0.5 flex-shrink-0" />
+                        <div className="flex-1">
+                          <p className="text-xs text-gray-500 font-medium">Joined</p>
+                          <p className="text-sm text-gray-800 font-semibold">
+                            {new Date(userDetails.date_of_joining).toLocaleDateString('en-US', { 
+                              year: 'numeric', 
+                              month: 'long', 
+                              day: 'numeric' 
+                            })}
+                          </p>
+                        </div>
+                      </div>
+                    )}
+
+                    {userRoles && userRoles.length > 0 && (
+                      <div className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                        <Shield size={18} className="text-red-600 mt-0.5 flex-shrink-0" />
+                        <div className="flex-1">
+                          <p className="text-xs text-gray-500 font-medium mb-1">Roles</p>
+                          <div className="flex flex-wrap gap-2">
+                            {userRoles.map((role) => (
+                              <span 
+                                key={role}
+                                className="px-2 py-1 bg-gradient-to-r from-blue-500 to-purple-500 text-white text-xs font-semibold rounded-lg capitalize"
+                              >
+                                {role}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>

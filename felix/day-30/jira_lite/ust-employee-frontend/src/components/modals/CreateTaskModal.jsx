@@ -18,6 +18,13 @@ const CreateTaskModal = ({
   onClose,
   onSuccess,
 }) => {
+  // Calculate default date (7 days from today)
+  const getDefaultDate = () => {
+    const date = new Date();
+    date.setDate(date.getDate() + 7);
+    return date.toISOString().split("T")[0];
+  };
+
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -25,7 +32,7 @@ const CreateTaskModal = ({
     reviewer: "",
     priority: "Low",
     status: "To Do",
-    expected_completion_date: "",
+    expected_completion_date: getDefaultDate(),
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -107,20 +114,31 @@ const CreateTaskModal = ({
   };
 
   const priorityColors = {
-    Low: "from-green-500 to-emerald-500",
-    Medium: "from-yellow-500 to-orange-500",
-    High: "from-red-500 to-pink-500",
+    Low: {
+      gradient: "from-green-500 to-emerald-500",
+      border: "border-green-500",
+      ring: "ring-green-500/50",
+      glow: "shadow-green-500/50",
+    },
+    Medium: {
+      gradient: "from-yellow-500 to-orange-500",
+      border: "border-yellow-500",
+      ring: "ring-yellow-500/50",
+      glow: "shadow-yellow-500/50",
+    },
+    High: {
+      gradient: "from-red-500 to-pink-500",
+      border: "border-red-500",
+      ring: "ring-red-500/50",
+      glow: "shadow-red-500/50",
+    },
   };
 
   return (
-    <div className="fixed inset-0 bg-gradient-to-br from-blue-500/20 via-purple-500/20 to-pink-500/20 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-3xl shadow-2xl w-full max-w-3xl border-2 border-white/50 relative overflow-hidden max-h-[90vh] overflow-y-auto">
-        {/* Decorative background elements */}
-        <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-blue-400/10 to-purple-400/10 rounded-full blur-3xl -z-10"></div>
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-tr from-pink-400/10 to-blue-400/10 rounded-full blur-3xl -z-10"></div>
-
-        {/* Header */}
-        <div className="sticky top-0 z-10 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 px-8 py-6 flex items-center justify-between">
+    <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+      <div className="bg-white rounded-3xl shadow-2xl w-full max-w-3xl border-2 border-gray-200 relative overflow-hidden max-h-[90vh] overflow-y-auto">
+        {/* Header - Solid Blue */}
+        <div className="sticky top-0 z-10 bg-blue-600 px-8 py-6 flex items-center justify-between">
           <div>
             <h2 className="text-2xl font-bold text-white mb-1">
               Create New Task
@@ -155,26 +173,89 @@ const CreateTaskModal = ({
             </div>
           )}
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Title - Full Width */}
-            <div className="md:col-span-2">
-              <label className="flex items-center gap-2 text-sm font-bold text-gray-700 mb-3">
-                <CheckCircle size={18} className="text-blue-600" />
-                Task Title *
-              </label>
-              <input
-                type="text"
-                value={formData.title}
-                onChange={(e) =>
-                  setFormData({ ...formData, title: e.target.value })
-                }
-                placeholder="Enter a descriptive title..."
-                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all outline-none bg-gray-50 hover:bg-white font-medium"
-              />
+          <div className="space-y-6">
+            {/* Title and Assigned To - Horizontal Layout */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Title */}
+              <div>
+                <label className="flex items-center gap-2 text-sm font-bold text-gray-700 mb-3">
+                  <CheckCircle size={18} className="text-blue-600" />
+                  Task Title *
+                </label>
+                <input
+                  type="text"
+                  value={formData.title}
+                  onChange={(e) =>
+                    setFormData({ ...formData, title: e.target.value })
+                  }
+                  placeholder="Enter task title..."
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all outline-none bg-gray-50 hover:bg-white font-medium"
+                />
+              </div>
+
+              {/* Assign To (for Manager) or Reviewer (for Admin) */}
+              {isManager && (
+                <div>
+                  <label className="flex items-center gap-2 text-sm font-bold text-gray-700 mb-3">
+                    <User size={18} className="text-cyan-600" />
+                    Assign To (Developer) *
+                  </label>
+                  <select
+                    value={formData.assigned_to}
+                    onChange={(e) =>
+                      setFormData({ ...formData, assigned_to: e.target.value })
+                    }
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all outline-none bg-gray-50 hover:bg-white font-medium appearance-none cursor-pointer"
+                  >
+                    <option value="">Select a developer...</option>
+                    {employees.map((emp) => (
+                      <option
+                        key={emp.id || emp.emp_id}
+                        value={emp.emp_id ?? emp.id}
+                      >
+                        {emp.name} (ID: {emp.emp_id ?? emp.id})
+                      </option>
+                    ))}
+                  </select>
+                  {employees.length === 0 && (
+                    <p className="text-xs text-amber-600 mt-2">
+                      ⚠️ No developers available
+                    </p>
+                  )}
+                </div>
+              )}
+
+              {isAdmin && (
+                <div>
+                  <label className="flex items-center gap-2 text-sm font-bold text-gray-700 mb-3">
+                    <Users size={18} className="text-indigo-600" />
+                    Reviewer (Manager) *
+                  </label>
+                  <select
+                    value={formData.reviewer}
+                    onChange={(e) =>
+                      setFormData({ ...formData, reviewer: e.target.value })
+                    }
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all outline-none bg-gray-50 hover:bg-white font-medium appearance-none cursor-pointer"
+                  >
+                    <option value="">Select a manager...</option>
+                    {managers.map((mgr) => (
+                      <option key={mgr.emp_id} value={mgr.emp_id}>
+                        {mgr.name} (ID: {mgr.emp_id})
+                      </option>
+                    ))}
+                  </select>
+                  {managers.length === 0 && (
+                    <p className="text-xs text-amber-600 mt-2">
+                      ⚠️ No managers available
+                    </p>
+                  )}
+                </div>
+              )}
             </div>
 
             {/* Description - Full Width */}
-            <div className="md:col-span-2">
+            <div>
               <label className="flex items-center gap-2 text-sm font-bold text-gray-700 mb-3">
                 <AlertCircle size={18} className="text-purple-600" />
                 Description *
@@ -186,158 +267,97 @@ const CreateTaskModal = ({
                 }
                 placeholder="Provide detailed information about the task..."
                 className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-purple-500/20 focus:border-purple-500 transition-all outline-none bg-gray-50 hover:bg-white font-medium resize-none"
-                rows="3"
+                rows="4"
               />
             </div>
 
-            {/* Conditional Fields */}
-            {isAdmin && (
-              <div className="md:col-span-2">
+            {/* Priority and Deadline - Horizontal Layout */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Priority with Glowing Border */}
+              <div>
                 <label className="flex items-center gap-2 text-sm font-bold text-gray-700 mb-3">
-                  <Users size={18} className="text-indigo-600" />
-                  Reviewer (Manager) *
+                  <AlertCircle size={18} className="text-orange-600" />
+                  Priority
                 </label>
-                <select
-                  value={formData.reviewer}
-                  onChange={(e) =>
-                    setFormData({ ...formData, reviewer: e.target.value })
-                  }
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all outline-none bg-gray-50 hover:bg-white font-medium appearance-none cursor-pointer"
-                >
-                  <option value="">Select a manager...</option>
-                  {managers.map((mgr) => (
-                    <option key={mgr.emp_id} value={mgr.emp_id}>
-                      {mgr.name} (ID: {mgr.emp_id})
-                    </option>
-                  ))}
-                </select>
-                {managers.length === 0 && (
-                  <p className="text-xs text-amber-600 mt-2">
-                    ⚠️ No managers available
-                  </p>
-                )}
+                <div className="relative">
+                  <select
+                    value={formData.priority}
+                    onChange={(e) =>
+                      setFormData({ ...formData, priority: e.target.value })
+                    }
+                    className={`w-full px-4 py-3 border-2 ${
+                      priorityColors[formData.priority].border
+                    } rounded-xl focus:ring-4 ${
+                      priorityColors[formData.priority].ring
+                    } transition-all outline-none bg-white font-bold appearance-none cursor-pointer shadow-lg ${
+                      priorityColors[formData.priority].glow
+                    }`}
+                  >
+                    <option value="Low"> Low Priority</option>
+                    <option value="Medium"> Medium Priority</option>
+                    <option value="High"> High Priority</option>
+                  </select>
+                  <div
+                    className={`absolute right-4 top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-gradient-to-br ${
+                      priorityColors[formData.priority].gradient
+                    } animate-pulse`}
+                  ></div>
+                </div>
               </div>
-            )}
 
-            {isManager && (
-              <div className="md:col-span-2">
+              {/* Expected Completion Date with Enhanced Calendar */}
+              <div>
                 <label className="flex items-center gap-2 text-sm font-bold text-gray-700 mb-3">
-                  <User size={18} className="text-cyan-600" />
-                  Assign To (Developer) *
+                  <Calendar size={18} className="text-pink-600" />
+                  Deadline *
                 </label>
-                <select
-                  value={formData.assigned_to}
-                  onChange={(e) =>
-                    setFormData({ ...formData, assigned_to: e.target.value })
-                  }
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all outline-none bg-gray-50 hover:bg-white font-medium appearance-none cursor-pointer"
-                >
-                  <option value="">Select a developer...</option>
-                  {employees.map((emp) => (
-                    <option
-                      key={emp.id || emp.emp_id}
-                      value={emp.emp_id ?? emp.id}
-                    >
-                      {emp.name} (ID: {emp.emp_id ?? emp.id})
-                    </option>
-                  ))}
-                </select>
-                {employees.length === 0 && (
-                  <p className="text-xs text-amber-600 mt-2">
-                    ⚠️ No developers available
-                  </p>
-                )}
+                <div className="relative">
+                  <input
+                    type="date"
+                    value={formData.expected_completion_date}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        expected_completion_date: e.target.value,
+                      })
+                    }
+                    min={new Date().toISOString().split("T")[0]}
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-pink-500/20 focus:border-pink-500 transition-all outline-none bg-white hover:bg-gray-50 font-medium cursor-pointer shadow-sm"
+                    style={{
+                      colorScheme: "light",
+                    }}
+                  />
+                  <Calendar 
+                    size={18} 
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-pink-500 pointer-events-none"
+                  />
+                </div>
+                <p className="text-xs text-gray-500 mt-2">
+                  Default: 7 days from today
+                </p>
               </div>
-            )}
-
-            {/* Priority */}
-            <div>
-              <label className="flex items-center gap-2 text-sm font-bold text-gray-700 mb-3">
-                <AlertCircle size={18} className="text-orange-600" />
-                Priority
-              </label>
-              <div className="relative">
-                <select
-                  value={formData.priority}
-                  onChange={(e) =>
-                    setFormData({ ...formData, priority: e.target.value })
-                  }
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-orange-500/20 focus:border-orange-500 transition-all outline-none bg-gray-50 hover:bg-white font-bold appearance-none cursor-pointer"
-                >
-                  <option value="Low">🟢 Low Priority</option>
-                  <option value="Medium">🟡 Medium Priority</option>
-                  <option value="High">🔴 High Priority</option>
-                </select>
-                <div
-                  className={`absolute right-4 top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-gradient-to-br ${
-                    priorityColors[formData.priority]
-                  }`}
-                ></div>
-              </div>
-            </div>
-
-            {/* Expected Completion Date */}
-            <div>
-              <label className="flex items-center gap-2 text-sm font-bold text-gray-700 mb-3">
-                <Calendar size={18} className="text-pink-600" />
-                Deadline *
-              </label>
-              <input
-                type="date"
-                value={formData.expected_completion_date}
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    expected_completion_date: e.target.value,
-                  })
-                }
-                min={new Date().toISOString().split("T")[0]}
-                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-pink-500/20 focus:border-pink-500 transition-all outline-none bg-gray-50 hover:bg-white font-medium"
-              />
             </div>
           </div>
 
-          {/* Debug Info (Remove in production) */}
-          {process.env.NODE_ENV === "development" && (
-            <div className="mt-6 p-4 bg-gray-50 rounded-xl border border-gray-200">
-              <p className="text-xs font-bold text-gray-700 mb-2">
-                Debug Info:
-              </p>
-              <pre className="text-xs text-gray-600 overflow-auto">
-                {JSON.stringify(
-                  {
-                    currentRole,
-                    empId,
-                    managersCount: managers.length,
-                    employeesCount: employees.length,
-                    hasToken: !!token,
-                  },
-                  null,
-                  2
-                )}
-              </pre>
-            </div>
-          )}
+          
 
           {/* Action Buttons */}
-          <div className="flex gap-4 mt-8">
-            <button
-              onClick={onClose}
-              className="flex-1 px-6 py-4 border-2 border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 font-bold transition-all hover:scale-105 hover:shadow-lg"
-            >
-              Cancel
-            </button>
-            <button
-              onClick={handleSubmit}
-              disabled={loading}
-              className="flex-1 px-6 py-4 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white rounded-xl hover:shadow-2xl font-bold transition-all disabled:opacity-50 hover:scale-105 relative overflow-hidden group disabled:cursor-not-allowed"
-            >
-              <div className="absolute inset-0 bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              <span className="relative z-10">
-                {loading ? "⏳ Creating..." : "✨ Create Task"}
-              </span>
-            </button>
-          </div>
+          <div className="flex gap-3 mt-8 justify-end">
+  <button
+    onClick={onClose}
+    className="px-6 py-2.5 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-semibold transition-all hover:shadow-md"
+  >
+    Cancel
+  </button>
+  <button
+    onClick={handleSubmit}
+    disabled={loading}
+    className="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:shadow-lg font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+  >
+    {loading ? "Creating..." : "Create Task"}
+  
+  </button>
+</div>
         </div>
       </div>
     </div>

@@ -254,14 +254,13 @@ const EmployeeManagement = () => {
 
             {currentView === 'admin' && (
               <button
-                onClick={() => setShowCreateModal(true)}
-                className="flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white rounded-2xl hover:shadow-2xl hover:shadow-purple-500/50 transform hover:scale-105 transition-all font-bold relative overflow-hidden group shadow-xl"
-              >
-                <div className="absolute inset-0 bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-20 animate-pulse"></div>
-                <Plus size={22} className="relative z-10 group-hover:rotate-90 transition-transform duration-300" />
-                <span className="relative z-10">Add Employee</span>
-              </button>
+  onClick={() => setShowCreateModal(true)}
+  className="flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold shadow-md"
+>
+  <Plus size={20} />
+  <span>Add Employee</span>
+</button>
+
             )}
           </div>
         </div>
