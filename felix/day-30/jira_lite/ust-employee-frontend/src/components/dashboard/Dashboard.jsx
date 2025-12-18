@@ -263,13 +263,15 @@ const Dashboard = () => {
         </div>
 
         <TaskBoard
-          tasks={filteredTasks}
-          onStatusChange={handleStatusChange}
-          onAddRemark={handleAddRemark}
-          onAssign={handleAssign}
-          userRole={currentView}
-          employees={managerEmployees} 
-        />
+  tasks={filteredTasks}
+  onStatusChange={handleStatusChange}
+  onAddRemark={handleAddRemark}
+  onAssign={handleAssign}
+  userRole={currentView}
+  employees={managerEmployees}
+  token={token}  // ✅ ADD THIS LINE
+/>
+
       </main>
 
       {showCreateModal && (

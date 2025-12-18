@@ -252,4 +252,5 @@ uploadFileToTask: async (token, taskId, file) => {
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
   },
+
 };

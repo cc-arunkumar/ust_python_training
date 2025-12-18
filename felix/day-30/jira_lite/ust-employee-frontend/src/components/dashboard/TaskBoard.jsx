@@ -5,7 +5,15 @@ import TaskCard from './TaskCard';
 
 const PRIORITY_ORDER = { High: 1, Medium: 2, Low: 3 };
 
-const TaskBoard = ({ tasks, onStatusChange, onAddRemark, onAssign, userRole, employees }) => {
+const TaskBoard = ({ 
+  tasks, 
+  onStatusChange, 
+  onAddRemark, 
+  onAssign, 
+  userRole, 
+  employees,
+  token  // ✅ ADD TOKEN PROP
+}) => {
   const canEditTasks = ['admin', 'manager', 'developer'].includes(userRole);
   const [draggedTask, setDraggedTask] = useState(null);
 
@@ -171,7 +179,7 @@ const TaskBoard = ({ tasks, onStatusChange, onAddRemark, onAssign, userRole, emp
             </div>
 
             {/* Task list */}
-            <div className="space-y-4 flex-1 relative z-10 min-h-[200px]">
+            <div className="space-y-4 flex-1 relative z-10 min-h-[200px] custom-scrollbar">
               {sortedTasks.length === 0 ? (
                 <div className="absolute inset-0 flex items-center justify-center">
                   <div className="text-center py-8">
@@ -195,11 +203,13 @@ const TaskBoard = ({ tasks, onStatusChange, onAddRemark, onAssign, userRole, emp
                       draggedTask?._id === task._id ? 'opacity-30 scale-95' : ''
                     }`}
                     style={{
-                      animation: `slideIn 0.3s ease-out ${index * 0.1}s both`
+                      animationDelay: `${index * 0.1}s`,
+                      animation: 'slideIn 0.3s ease-out forwards'
                     }}
                   >
                     <TaskCard
                       task={task}
+                      token={token}  // ✅ PASS TOKEN TO TASKCARD
                       onStatusChange={(newStatus) => onStatusChange(task, newStatus)}
                       onAddRemark={onAddRemark}
                       canEdit={canEditTasks}
@@ -213,19 +223,6 @@ const TaskBoard = ({ tasks, onStatusChange, onAddRemark, onAssign, userRole, emp
           </div>
         );
       })}
-      
-      <style jsx>{`
-        @keyframes slideIn {
-          from {
-            opacity: 0;
-            transform: translateY(20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-      `}</style>
     </div>
   );
 };

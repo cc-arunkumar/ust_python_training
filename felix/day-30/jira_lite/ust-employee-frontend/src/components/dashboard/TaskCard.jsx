@@ -1,12 +1,94 @@
-import React, { useState } from 'react';
-import { User, Calendar, MessageSquare, ChevronDown, ChevronUp, UserPlus, Send } from 'lucide-react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
+import { User, Calendar, MessageSquare, ChevronDown, ChevronUp, UserPlus, Send, Upload, Download, File, Loader2, Eye } from 'lucide-react';
 import { PRIORITY_COLORS } from '../../utils/constants';
+import { api } from '../../services/api';
 
-const TaskCard = ({ task, onStatusChange, onAddRemark, canEdit, onAssign, employees = [] }) => {
+const TaskCard = ({ task, onStatusChange, onAddRemark, canEdit, onAssign, employees = [], token }) => {
   const [showDetails, setShowDetails] = useState(false);
   const [remark, setRemark] = useState('');
   const [addingRemark, setAddingRemark] = useState(false);
   const [assignee, setAssignee] = useState(task.assigned_to || '');
+  
+  // 🔴 FILE STATES - FIXED
+  const [taskFiles, setTaskFiles] = useState(task.files || []);
+  const [uploading, setUploading] = useState(false);
+  const [selectedFileName, setSelectedFileName] = useState('');
+  const [fileInputKey, setFileInputKey] = useState(0);
+  const fileInputRef = useRef(null);
+
+  // 🔴 FILE HANDLERS - FIXED
+  const loadTaskFiles = useCallback(async () => {
+    if (!token || !task._id) return;
+    try {
+      const response = await api.getTaskFiles(token, task._id);
+      setTaskFiles(response.files || []);
+    } catch (error) {
+      console.error('Failed to load files:', error);
+    }
+  }, [token, task._id]);
+
+  const handleFileUpload = useCallback(async (event) => {
+    const file = event.target.files[0];
+    if (!file || !token) return;
+
+    setUploading(true);
+    setSelectedFileName(file.name);
+    try {
+      await api.uploadFileToTask(token, task._id, file);
+      await loadTaskFiles(); // Refresh file list
+      
+      // 🔴 PROPER RESET - BUTTON BECOMES EMPTY
+      setSelectedFileName('');
+      setFileInputKey(prev => prev + 1); // Force input re-render
+      if (fileInputRef.current) {
+        fileInputRef.current.value = ''; // Clear file input
+      }
+      
+      alert(`✅ "${file.name}" uploaded successfully!`);
+    } catch (error) {
+      alert(`❌ Upload failed: ${error.message}`);
+      setSelectedFileName('');
+    } finally {
+      setUploading(false);
+    }
+  }, [token, task._id, loadTaskFiles]);
+
+  const handleDownloadFile = useCallback(async (fileId, fileName) => {
+    try {
+      await api.downloadFileBlob(token, fileId, fileName);
+    } catch (error) {
+      alert(`❌ Download failed: ${error.message}`);
+    }
+  }, [token]);
+
+  const handlePreviewFile = useCallback(async (fileId) => {
+    try {
+      const fileData = await api.downloadFile(token, fileId);
+      if (fileData.file_type.startsWith('image/')) {
+        const imgWindow = window.open('', '_blank');
+        imgWindow.document.write(`
+          <html>
+            <body style="margin:0;padding:20px;background:#f8fafc;">
+              <img src="data:${fileData.file_type};base64,${fileData.file_data}" 
+                   style="max-width:90vw;max-height:90vh;border-radius:12px;box-shadow:0 20px 40px rgba(0,0,0,0.1);">
+              <p style="text-align:center;margin-top:20px;color:#64748b;">${fileData.file_name}</p>
+            </body>
+          </html>
+        `);
+      } else {
+        await api.downloadFileBlob(token, fileId);
+      }
+    } catch (error) {
+      alert(`❌ Preview failed: ${error.message}`);
+    }
+  }, [token]);
+
+  // Load files when details expand
+  useEffect(() => {
+    if (showDetails) {
+      loadTaskFiles();
+    }
+  }, [showDetails, loadTaskFiles]);
 
   const handleAddRemark = async () => {
     if (!remark.trim()) return;
@@ -25,8 +107,8 @@ const TaskCard = ({ task, onStatusChange, onAddRemark, canEdit, onAssign, employ
     await onAssign(task._id, parseInt(assignee, 10));
   };
 
-  const canAddRemarkNow =
-    task.status === 'In Progress' || task.status === 'Review';
+  const canAddRemarkNow = task.status === 'In Progress' || task.status === 'Review';
+  const canManageFiles = canEdit; // Manager/Developer can upload/download
 
   const priorityConfig = {
     High: {
@@ -209,6 +291,86 @@ const TaskCard = ({ task, onStatusChange, onAddRemark, canEdit, onAssign, employ
               </div>
             )}
 
+            {/* 🔴 FILE UPLOAD/ DOWNLOAD SECTION - FIXED */}
+            {canManageFiles && (
+              <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl p-4 border-2 border-emerald-200">
+                <label className="text-xs font-bold text-emerald-700 mb-4 flex items-center gap-2">
+                  <File size={16} />
+                  Files ({taskFiles.length})
+                </label>
+
+                {/* File Upload - FIXED */}
+                <div className="mb-4 p-4 bg-white rounded-xl border-2 border-dashed border-emerald-300 hover:border-emerald-400 transition-all">
+                  <input
+                    key={fileInputKey}
+                    ref={fileInputRef}
+                    type="file"
+                    onChange={handleFileUpload}
+                    className="hidden"
+                    accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={uploading}
+                    className="w-full flex items-center justify-center gap-2 px-4 py-3 text-sm font-bold bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-xl hover:from-emerald-600 hover:to-teal-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg hover:shadow-xl transform hover:scale-[1.02]"
+                  >
+                    {uploading ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        Uploading...
+                      </>
+                    ) : (
+                      <>
+                        <Upload size={16} />
+                        {selectedFileName || 'Upload File'}
+                      </>
+                    )}
+                  </button>
+                  <p className="text-xs text-emerald-600 mt-2 text-center">
+                    Supports PDF, DOC, Images (Max 10MB)
+                  </p>
+                </div>
+
+                {/* File List */}
+                {taskFiles.length > 0 && (
+                  <div className="space-y-2 max-h-32 overflow-y-auto custom-scrollbar">
+                    {taskFiles.map((file) => (
+                      <div key={file.file_id} className="flex items-center justify-between p-3 bg-white rounded-lg border border-gray-200 hover:shadow-md transition-all group/file">
+                        <div className="flex items-center gap-3 flex-1 min-w-0">
+                          <div className="w-8 h-8 bg-gradient-to-br from-gray-400 to-gray-500 rounded-lg flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
+                            {file.file_name.split('.').pop()?.toUpperCase() || 'F'}
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <p className="font-medium text-sm text-gray-900 truncate">{file.file_name}</p>
+                            <p className="text-xs text-gray-500">
+                              {(file.file_size / 1024).toFixed(1)} KB
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <button
+                            onClick={() => handlePreviewFile(file.file_id)}
+                            className="p-1.5 text-gray-500 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-all group-hover/file:bg-emerald-50"
+                            title="Preview"
+                          >
+                            <Eye size={14} />
+                          </button>
+                          <button
+                            onClick={() => handleDownloadFile(file.file_id, file.file_name)}
+                            className="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all group-hover/file:bg-blue-50"
+                            title="Download"
+                          >
+                            <Download size={16} />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
             {/* Add remark (In Progress / Review) */}
             {canAddRemarkNow && (
               <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl p-4 border-2 border-blue-100">
@@ -252,23 +414,6 @@ const TaskCard = ({ task, onStatusChange, onAddRemark, canEdit, onAssign, employ
           </div>
         )}
       </div>
-
-      <style jsx>{`
-        .custom-scrollbar::-webkit-scrollbar {
-          width: 6px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-          background: #f1f1f1;
-          border-radius: 10px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: #cbd5e1;
-          border-radius: 10px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: #94a3b8;
-        }
-      `}</style>
     </div>
   );
 };

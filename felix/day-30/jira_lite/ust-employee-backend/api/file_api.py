@@ -7,9 +7,9 @@ from typing import List
 from bson.objectid import ObjectId
 from database.mongo_connection import files
 
-task_router = APIRouter()
+file_router = APIRouter()
 
-@task_router.post("/tasks/{task_id}/upload", tags=["Tasks"])
+@file_router.post("/tasks/{task_id}/upload", tags=["Tasks"])
 async def upload_file_to_tasks(
     task_id: str,
     file: UploadFile = File(...),
@@ -49,7 +49,7 @@ async def upload_file_to_tasks(
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@task_router.get("/tasks/{task_id}/files", tags=["Tasks"])
+@file_router.get("/tasks/{task_id}/files", tags=["Tasks"])
 def get_task_files_endpoint(task_id: str, user: str = Depends(get_current_user)):
     """Get all files for a task"""
     try:
@@ -70,7 +70,7 @@ def get_task_files_endpoint(task_id: str, user: str = Depends(get_current_user))
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@task_router.get("/files/{file_id}", tags=["Tasks"])
+@file_router.get("/files/{file_id}", tags=["Tasks"])
 def download_file(file_id: str, user: str = Depends(get_current_user)):
     """Get file metadata and base64 data"""
     try:
