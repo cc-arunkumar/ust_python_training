@@ -123,4 +123,55 @@ export const api = {
     if (!res.ok) throw new Error("Employee not found");
     return res.json();
   },
+  createEmployee: async (employee, token) => {
+    const res = await fetch(`${API_BASE_URL}/employees/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(employee),
+    });
+
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error(text || "Failed to create employee");
+    }
+
+    return res.json();
+  },
+
+  updateEmployee: async (empId, employee, token) => {
+    const res = await fetch(`${API_BASE_URL}/employees/${empId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(employee),
+    });
+
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error(text || "Failed to update employee");
+    }
+
+    return res.json();
+  },
+
+  deleteEmployee: async (empId, token) => {
+    const res = await fetch(`${API_BASE_URL}/employees/${empId}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error(text || "Failed to delete employee");
+    }
+
+    return res.json();
+  },
 };

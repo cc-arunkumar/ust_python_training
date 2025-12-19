@@ -1,21 +1,40 @@
-import { useState } from 'react';
-import { useDraggable } from '@dnd-kit/core';
-import { X, Calendar, User, Flag, MessageSquare, Upload, Paperclip } from 'lucide-react';
+import { useState } from "react";
+import { useDraggable } from "@dnd-kit/core";
+import {
+  X,
+  Calendar,
+  User,
+  Flag,
+  MessageSquare,
+  Upload,
+  Paperclip,
+} from "lucide-react";
 
-const TaskCard = ({ task, token, onUpdateTask }) => {
+const TaskCard = ({ task, token, onUpdateTask, draggable = true }) => {
   const [showModal, setShowModal] = useState(false);
-  const [remark, setRemark] = useState('');
+  const [remark, setRemark] = useState("");
   const [file, setFile] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
-  const { setNodeRef, listeners, attributes, transform, isDragging } =
-    useDraggable({
-      id: task.task_id,
-      data: {
-        status: task.status,
-      },
+  // Conditionally enable draggable behavior (Admin view uses draggable=false)
+  let setNodeRef = undefined;
+  let listeners = {};
+  let attributes = {};
+  let transform = null;
+  let isDragging = false;
+
+  if (draggable) {
+    const draggableResult = useDraggable({
+      id: String(task.task_id),
+      data: { status: task.status },
     });
+    setNodeRef = draggableResult.setNodeRef;
+    listeners = draggableResult.listeners || {};
+    attributes = draggableResult.attributes || {};
+    transform = draggableResult.transform;
+    isDragging = draggableResult.isDragging;
+  }
 
   const style = {
     transform: transform
@@ -36,49 +55,49 @@ const TaskCard = ({ task, token, onUpdateTask }) => {
     if (selectedFile) {
       // Limit file size to 5MB
       if (selectedFile.size > 5 * 1024 * 1024) {
-        setError('File size must be less than 5MB');
+        setError("File size must be less than 5MB");
         return;
       }
       setFile(selectedFile);
-      setError('');
+      setError("");
     }
   };
 
   const handleSubmitRemark = async () => {
     if (!remark.trim() && !file) {
-      setError('Please add a remark or upload a file');
+      setError("Please add a remark or upload a file");
       return;
     }
 
     setIsSubmitting(true);
-    setError('');
+    setError("");
 
     try {
       // Import api from your services
-      const { api } = await import('../../services/api');
-      
+      const { api } = await import("../../services/api");
+
       // Call the new API method
       const data = await api.addTaskRemark(task.task_id, remark, file, token);
-      
+
       // Update task with new remark
       if (onUpdateTask) {
-        const updatedRemarks = Array.isArray(task.remarks) 
+        const updatedRemarks = Array.isArray(task.remarks)
           ? [...task.remarks, data.remark]
           : [data.remark];
-          
+
         onUpdateTask({
           ...task,
-          remarks: updatedRemarks
+          remarks: updatedRemarks,
         });
       }
 
       // Reset form
-      setRemark('');
+      setRemark("");
       setFile(null);
-      setError('');
-      alert('Remark added successfully!');
+      setError("");
+      alert("Remark added successfully!");
     } catch (err) {
-      setError(err.message || 'Failed to submit remark');
+      setError(err.message || "Failed to submit remark");
     } finally {
       setIsSubmitting(false);
     }
@@ -86,14 +105,14 @@ const TaskCard = ({ task, token, onUpdateTask }) => {
 
   const getPriorityColor = (priority) => {
     switch (priority) {
-      case 'HIGH':
-        return 'text-red-600 bg-red-50';
-      case 'MEDIUM':
-        return 'text-amber-600 bg-amber-50';
-      case 'LOW':
-        return 'text-green-600 bg-green-50';
+      case "HIGH":
+        return "text-red-600 bg-red-50";
+      case "MEDIUM":
+        return "text-amber-600 bg-amber-50";
+      case "LOW":
+        return "text-green-600 bg-green-50";
       default:
-        return 'text-gray-600 bg-gray-50';
+        return "text-gray-600 bg-gray-50";
     }
   };
 
@@ -101,17 +120,23 @@ const TaskCard = ({ task, token, onUpdateTask }) => {
     <>
       {/* Task Card */}
       <div
-        ref={setNodeRef}
+        ref={setNodeRef || undefined}
         style={style}
-        {...listeners}
-        {...attributes}
+        {...(listeners || {})}
+        {...(attributes || {})}
         onClick={handleCardClick}
-        className="bg-white rounded-xl border p-4 shadow cursor-grab hover:shadow-md transition"
+        className={`bg-white rounded-xl border p-4 shadow ${
+          draggable ? "cursor-grab" : ""
+        } hover:shadow-md transition`}
       >
         <h3 className="font-semibold text-gray-800 mb-1">{task.name}</h3>
         <p className="text-xs text-gray-500">{task.task_id}</p>
         <div className="mt-2 flex items-center gap-2">
-          <span className={`text-xs px-2 py-0.5 rounded-full ${getPriorityColor(task.priority)}`}>
+          <span
+            className={`text-xs px-2 py-0.5 rounded-full ${getPriorityColor(
+              task.priority
+            )}`}
+          >
             {task.priority}
           </span>
         </div>
@@ -136,21 +161,32 @@ const TaskCard = ({ task, token, onUpdateTask }) => {
             <div className="p-6 space-y-6">
               {/* Task Info */}
               <div>
-                <h3 className="text-2xl font-semibold text-gray-900 mb-2">{task.name}</h3>
+                <h3 className="text-2xl font-semibold text-gray-900 mb-2">
+                  {task.name}
+                </h3>
                 <p className="text-sm text-gray-500 mb-4">ID: {task.task_id}</p>
-                
+
                 {task.description && (
                   <div className="mb-4">
-                    <h4 className="font-medium text-gray-700 mb-2">Description</h4>
+                    <h4 className="font-medium text-gray-700 mb-2">
+                      Description
+                    </h4>
                     <p className="text-gray-600 text-sm">{task.description}</p>
                   </div>
                 )}
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="flex items-center gap-2 text-sm">
-                    <Flag className={getPriorityColor(task.priority)} size={16} />
+                    <Flag
+                      className={getPriorityColor(task.priority)}
+                      size={16}
+                    />
                     <span className="text-gray-700">Priority:</span>
-                    <span className={`font-medium px-2 py-0.5 rounded ${getPriorityColor(task.priority)}`}>
+                    <span
+                      className={`font-medium px-2 py-0.5 rounded ${getPriorityColor(
+                        task.priority
+                      )}`}
+                    >
                       {task.priority}
                     </span>
                   </div>
@@ -165,7 +201,9 @@ const TaskCard = ({ task, token, onUpdateTask }) => {
                     <Calendar className="text-purple-600" size={16} />
                     <span className="text-gray-700">Created:</span>
                     <span className="font-medium">
-                      {task.created_at ? new Date(task.created_at).toLocaleDateString() : '—'}
+                      {task.created_at
+                        ? new Date(task.created_at).toLocaleDateString()
+                        : "—"}
                     </span>
                   </div>
 
@@ -173,7 +211,9 @@ const TaskCard = ({ task, token, onUpdateTask }) => {
                     <Calendar className="text-orange-600" size={16} />
                     <span className="text-gray-700">Deadline:</span>
                     <span className="font-medium">
-                      {task.expected_closure ? new Date(task.expected_closure).toLocaleDateString() : '—'}
+                      {task.expected_closure
+                        ? new Date(task.expected_closure).toLocaleDateString()
+                        : "—"}
                     </span>
                   </div>
                 </div>
@@ -188,13 +228,26 @@ const TaskCard = ({ task, token, onUpdateTask }) => {
                   </h4>
                   <div className="space-y-2 max-h-40 overflow-y-auto">
                     {task.remarks.map((rem, idx) => (
-                      <div key={idx} className="bg-gray-50 p-3 rounded-lg text-sm">
-                        <p className="text-gray-700">{rem.text || rem.remark_text || 'No comment'}</p>
+                      <div
+                        key={idx}
+                        className="bg-gray-50 p-3 rounded-lg text-sm"
+                      >
+                        <p className="text-gray-700">
+                          {rem.text || rem.remark_text || "No comment"}
+                        </p>
                         <p className="text-xs text-gray-500 mt-1">
-                          {rem.created_at ? new Date(rem.created_at).toLocaleString() : ''}
+                          {rem.created_at
+                            ? new Date(rem.created_at).toLocaleString()
+                            : ""}
                           {rem.file_url && (
-                            <a href={rem.file_url} target="_blank" rel="noopener noreferrer" className="ml-2 text-blue-600 hover:underline">
-                              <Paperclip size={12} className="inline" /> View File
+                            <a
+                              href={rem.file_url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="ml-2 text-blue-600 hover:underline"
+                            >
+                              <Paperclip size={12} className="inline" /> View
+                              File
                             </a>
                           )}
                         </p>
@@ -207,7 +260,7 @@ const TaskCard = ({ task, token, onUpdateTask }) => {
               {/* Add Remark Section */}
               <div className="border-t pt-6">
                 <h4 className="font-medium text-gray-700 mb-3">Add Remark</h4>
-                
+
                 {error && (
                   <div className="mb-3 bg-red-50 border border-red-300 text-red-700 p-3 rounded-lg text-sm">
                     {error}
@@ -234,7 +287,7 @@ const TaskCard = ({ task, token, onUpdateTask }) => {
                     />
                     <div className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-lg text-sm transition">
                       <Upload size={16} />
-                      <span>{file ? file.name : 'Upload File (Optional)'}</span>
+                      <span>{file ? file.name : "Upload File (Optional)"}</span>
                     </div>
                   </label>
                   {file && (
@@ -253,7 +306,7 @@ const TaskCard = ({ task, token, onUpdateTask }) => {
                   disabled={isSubmitting || (!remark.trim() && !file)}
                   className="mt-4 w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white py-3 rounded-lg font-medium transition"
                 >
-                  {isSubmitting ? 'Submitting...' : 'Submit Remark'}
+                  {isSubmitting ? "Submitting..." : "Submit Remark"}
                 </button>
               </div>
             </div>

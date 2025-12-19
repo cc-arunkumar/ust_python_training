@@ -1,5 +1,4 @@
 import { useState, useMemo } from "react";
-import PerformanceBarChart from "../ui/PerformanceBarChart";  // Assume this exists for team performance
 import {
   DndContext,
   PointerSensor,
@@ -11,18 +10,24 @@ import {
 import { Users, LogOut, AlertCircle, Plus } from "lucide-react";
 import { api } from "../../services/api";
 import TaskCard from "../ui/TaskCard";
+import {
+  PerformancePieChart,
+  EmployeePerformanceBarChart,
+} from "../ui/PerformanceChart";
 
-/* ================= STATUS CONFIG ================= */
 const STATUS_ORDER = ["TO_DO", "IN_PROGRESS", "REVIEW", "DONE"];
 
 const STATUS_META = {
   TO_DO: { label: "To Do", bg: "bg-blue-50", ring: "ring-blue-300" },
-  IN_PROGRESS: { label: "In Progress", bg: "bg-amber-50", ring: "ring-amber-300" },
+  IN_PROGRESS: {
+    label: "In Progress",
+    bg: "bg-amber-50",
+    ring: "ring-amber-300",
+  },
   REVIEW: { label: "Review", bg: "bg-purple-50", ring: "ring-purple-300" },
   DONE: { label: "Done", bg: "bg-emerald-50", ring: "ring-emerald-300" },
 };
 
-/* ================= DROPPABLE COLUMN ================= */
 const DroppableColumn = ({ status, count, children }) => {
   const { setNodeRef, isOver } = useDroppable({
     id: status,
@@ -50,7 +55,6 @@ const DroppableColumn = ({ status, count, children }) => {
   );
 };
 
-/* ================= MAIN DASHBOARD ================= */
 const ManagerDashboard = ({
   user,
   tasks,
@@ -65,12 +69,12 @@ const ManagerDashboard = ({
   const [viewMode, setViewMode] = useState("KANBAN");
   const [showCreateTask, setShowCreateTask] = useState(false);
   const [taskForm, setTaskForm] = useState({
-    task_id: '',
-    name: '',
-    description: '',
-    assigned_to: '',
-    priority: 'MEDIUM',
-    expected_closure: '',
+    task_id: "",
+    name: "",
+    description: "",
+    assigned_to: "",
+    priority: "MEDIUM",
+    expected_closure: "",
   });
   const [localLoading, setLocalLoading] = useState(false);
 
@@ -80,7 +84,6 @@ const ManagerDashboard = ({
     })
   );
 
-  /* MANAGER'S TEAM TASKS */
   const managerTasks = tasks.filter(
     (t) =>
       String(t.assigned_by).trim().toUpperCase() ===
@@ -102,7 +105,6 @@ const ManagerDashboard = ({
     });
   }, [managerTasks]);
 
-  /* ================= DRAG END (Manager-Specific) ================= */
   const handleDragEnd = async ({ active, over }) => {
     try {
       if (!over) return;
@@ -113,34 +115,30 @@ const ManagerDashboard = ({
       const draggedTask = tasks.find((t) => t.task_id === taskId);
       if (!draggedTask || draggedTask.status === newStatus) return;
 
-      // Manager ALLOWED: Full forward + limited backward (REVIEW → IN_PROGRESS only)
       const ALLOWED = {
         TO_DO: ["IN_PROGRESS"],
         IN_PROGRESS: ["REVIEW"],
-        REVIEW: ["DONE", "IN_PROGRESS"],  // Backward enabled for REVIEW
+        REVIEW: ["DONE", "IN_PROGRESS"],
         DONE: [],
       };
 
       if (!ALLOWED[draggedTask.status].includes(newStatus)) return;
 
-      // Optimistic update
       onUpdateTasks({ ...draggedTask, status: newStatus });
 
-      // API call
       await api.updateTaskStatus(taskId, newStatus, "", token);
     } catch (err) {
       onError(err.message);
     }
   };
 
-  /* ================= CREATE TASK ================= */
   const handleCreateTask = async (e) => {
     e.preventDefault();
     setLocalLoading(true);
     try {
       const newTask = {
         ...taskForm,
-        status: 'TO_DO',
+        status: "TO_DO",
         assigned_by: user?.emp_id,
         created_by: user?.emp_id,
       };
@@ -148,12 +146,12 @@ const ManagerDashboard = ({
       onCreateTask(created);
       setShowCreateTask(false);
       setTaskForm({
-        task_id: '',
-        name: '',
-        description: '',
-        assigned_to: '',
-        priority: 'MEDIUM',
-        expected_closure: '',
+        task_id: "",
+        name: "",
+        description: "",
+        assigned_to: "",
+        priority: "MEDIUM",
+        expected_closure: "",
       });
     } catch (err) {
       onError(err.message);
@@ -164,7 +162,6 @@ const ManagerDashboard = ({
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-100 to-gray-200">
-      {/* HEADER */}
       <header className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between">
           <div className="flex items-center gap-3">
@@ -175,7 +172,7 @@ const ManagerDashboard = ({
             </div>
           </div>
           <div className="flex items-center gap-4">
-            {user?.role === 'ADMIN' && (
+            {user?.role === "ADMIN" && (
               <button
                 onClick={onSwitchRole}
                 className="text-gray-600 hover:text-gray-900"
@@ -193,7 +190,6 @@ const ManagerDashboard = ({
         </div>
       </header>
 
-      {/* MAIN */}
       <main className="max-w-7xl mx-auto px-6 py-6">
         {error && (
           <div className="mb-4 bg-red-50 border border-red-300 text-red-700 p-3 rounded-lg flex items-center gap-2">
@@ -202,7 +198,6 @@ const ManagerDashboard = ({
           </div>
         )}
 
-        {/* VIEW TOGGLE */}
         <div className="flex justify-end mb-4 gap-2">
           <button
             onClick={() => setViewMode("KANBAN")}
@@ -236,7 +231,6 @@ const ManagerDashboard = ({
           </button>
         </div>
 
-        {/* CREATE TASK BUTTON (Always Visible) */}
         <div className="mb-6">
           <button
             onClick={() => setShowCreateTask(true)}
@@ -247,7 +241,6 @@ const ManagerDashboard = ({
           </button>
         </div>
 
-        {/* KANBAN */}
         {viewMode === "KANBAN" && (
           <DndContext
             sensors={sensors}
@@ -275,7 +268,6 @@ const ManagerDashboard = ({
           </DndContext>
         )}
 
-        {/* LIST */}
         {viewMode === "LIST" && (
           <div className="bg-white rounded-xl shadow border overflow-x-auto">
             <table className="w-full text-sm">
@@ -313,12 +305,19 @@ const ManagerDashboard = ({
           </div>
         )}
 
-        {/* PERFORMANCE */}
         {viewMode === "PERFORMANCE" && (
-          <PerformanceBarChart tasksByStatus={tasksByStatus} />  // Team-based chart
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <PerformancePieChart
+              tasksByStatus={tasksByStatus}
+              title="Team Task Status"
+            />
+            <EmployeePerformanceBarChart
+              tasks={managerTasks}
+              title="Employee Completion Rates"
+            />
+          </div>
         )}
 
-        {/* CREATE TASK MODAL */}
         {showCreateTask && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
             <div className="bg-white rounded-lg max-w-2xl w-full p-6">
@@ -393,7 +392,10 @@ const ManagerDashboard = ({
                       type="text"
                       value={taskForm.assigned_to}
                       onChange={(e) =>
-                        setTaskForm({ ...taskForm, assigned_to: e.target.value })
+                        setTaskForm({
+                          ...taskForm,
+                          assigned_to: e.target.value,
+                        })
                       }
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg"
                       required
@@ -407,7 +409,10 @@ const ManagerDashboard = ({
                       type="date"
                       value={taskForm.expected_closure}
                       onChange={(e) =>
-                        setTaskForm({ ...taskForm, expected_closure: e.target.value })
+                        setTaskForm({
+                          ...taskForm,
+                          expected_closure: e.target.value,
+                        })
                       }
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg"
                       required
@@ -427,7 +432,7 @@ const ManagerDashboard = ({
                     disabled={localLoading}
                     className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50"
                   >
-                    {localLoading ? 'Creating...' : 'Create Task'}
+                    {localLoading ? "Creating..." : "Create Task"}
                   </button>
                 </div>
               </form>
