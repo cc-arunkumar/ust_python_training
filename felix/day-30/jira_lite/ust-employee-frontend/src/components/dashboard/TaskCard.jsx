@@ -378,11 +378,23 @@ const TaskCard = ({
 
               {/* Notification Bell */}
               <button
-                onClick={(e) => {
+                onClick={async (e) => {
                   e.stopPropagation();
+                  // Optimistically clear the badge locally
+                  setNotificationCount(0);
+
                   // Ask dashboard to open the remarks panel for this task
                   if (typeof onOpenPanel === "function")
                     onOpenPanel("remarks", task);
+
+                  // Tell server to clear notifications for this task (best-effort)
+                  try {
+                    if (token && task._id) {
+                      await api.clearTaskNotifications(token, task._id);
+                    }
+                  } catch (err) {
+                    console.error("Failed to clear task notifications:", err);
+                  }
                 }}
                 className="relative p-2 hover:bg-gray-100 rounded-lg transition-colors group-hover:bg-gray-50"
                 title={`Notifications: ${notificationCount}`}
