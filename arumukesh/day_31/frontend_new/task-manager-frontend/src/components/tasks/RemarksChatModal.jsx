@@ -279,15 +279,28 @@ const RemarksChatModal = ({ taskId, isOpen, onClose }) => {
               type="button"
               aria-label="Attach files"
               className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 relative"
-              onClick={() => fileInputRef.current && fileInputRef.current.click()}
+              onClick={() =>
+                fileInputRef.current && fileInputRef.current.click()
+              }
             >
               {/* paperclip SVG */}
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
                 <path d="M21.44 11.05l-9.19 9.19a5 5 0 01-7.07-7.07l9.19-9.19a3.5 3.5 0 014.95 4.95L10.5 18.37a2 2 0 01-2.83-2.83l7.07-7.07" />
               </svg>
 
               {selectedFiles.length > 0 && (
-                <span className="absolute -top-1 -right-1 bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">{selectedFiles.length}</span>
+                <span className="absolute -top-1 -right-1 bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                  {selectedFiles.length}
+                </span>
               )}
             </button>
 
@@ -297,7 +310,7 @@ const RemarksChatModal = ({ taskId, isOpen, onClose }) => {
               </div>
             )}
           </div>
-          <Button onClick={handleSend} loading={sending} className="h-10" >
+          <Button onClick={handleSend} loading={sending} className="h-10">
             Send
           </Button>
         </div>
