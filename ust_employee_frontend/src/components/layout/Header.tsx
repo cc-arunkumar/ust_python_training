@@ -37,7 +37,7 @@ const Header: React.FC<HeaderProps> = ({
   onViewChange,
   onToggleSidebar,
 }) => {
-  const { user, logout, isAdmin, isManager } = useAuth();
+  const { user, logout, isAdmin, isManager, isEmployee } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const { tasks } = useTasks();
@@ -196,43 +196,63 @@ const Header: React.FC<HeaderProps> = ({
           </div>
 
           <nav className="hidden md:flex items-center gap-2 ml-8">
-            {isAdmin && (
-              <button
-                onClick={() => onViewChange("admin")}
-                className={`nav-button nav-button-admin ${
-                  currentView === "admin"
-                    ? "nav-button-active ring-[hsl(var(--role-admin))]"
-                    : ""
-                }`}
-              >
-                <Shield className="h-4 w-4" />
-                Admin
-              </button>
-            )}
-            {(isAdmin || isManager) && (
-              <button
-                onClick={() => onViewChange("manager")}
-                className={`nav-button nav-button-manager ${
-                  currentView === "manager"
-                    ? "nav-button-active ring-[hsl(var(--role-manager))]"
-                    : ""
-                }`}
-              >
-                <Users className="h-4 w-4" />
-                Manager
-              </button>
-            )}
-            <button
-              onClick={() => onViewChange("employee")}
-              className={`nav-button nav-button-developer ${
-                currentView === "employee"
-                  ? "nav-button-active ring-[hsl(var(--role-developer))]"
-                  : ""
-              }`}
-            >
-              <Code2 className="h-4 w-4" />
-              Employee
-            </button>
+            {/**
+             * Render role buttons only if the logged-in user's roles include them.
+             * We keep the isAdmin/isManager flags for other logic but rely on
+             * the user's `role` array for button visibility so a user with
+             * exactly ['admin','employee'] won't see the manager button.
+             */}
+            {React.useMemo(() => {
+              const roles = new Set(
+                (user?.role || []).map((r: string) => String(r).toLowerCase())
+              );
+
+              return (
+                <>
+                  {roles.has("admin") && (
+                    <button
+                      onClick={() => onViewChange("admin")}
+                      className={`nav-button nav-button-admin ${
+                        currentView === "admin"
+                          ? "nav-button-active ring-[hsl(var(--role-admin))]"
+                          : ""
+                      }`}
+                    >
+                      <Shield className="h-4 w-4" />
+                      Admin
+                    </button>
+                  )}
+
+                  {roles.has("manager") && (
+                    <button
+                      onClick={() => onViewChange("manager")}
+                      className={`nav-button nav-button-manager ${
+                        currentView === "manager"
+                          ? "nav-button-active ring-[hsl(var(--role-manager))]"
+                          : ""
+                      }`}
+                    >
+                      <Users className="h-4 w-4" />
+                      Manager
+                    </button>
+                  )}
+
+                  {roles.has("employee") && (
+                    <button
+                      onClick={() => onViewChange("employee")}
+                      className={`nav-button nav-button-developer ${
+                        currentView === "employee"
+                          ? "nav-button-active ring-[hsl(var(--role-developer))]"
+                          : ""
+                      }`}
+                    >
+                      <Code2 className="h-4 w-4" />
+                      Employee
+                    </button>
+                  )}
+                </>
+              );
+            }, [user, currentView, onViewChange])}
           </nav>
         </div>
 
