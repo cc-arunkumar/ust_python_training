@@ -22,8 +22,14 @@ const TaskBoard: React.FC<TaskBoardProps> = ({ viewMode }) => {
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [showCreateModal, setShowCreateModal] = useState(false);
+  ``;
   const [attachmentTask, setAttachmentTask] = useState<Task | null>(null);
-
+  const statusColors: Record<TaskStatus, { bg: string; text: string }> = {
+    TO_DO: { bg: "bg-black-700", text: "text-blue-100" },
+    IN_PROGRESS: { bg: "bg-orange-700", text: "text-orange-100" },
+    REVIEW: { bg: "bg-indigo-700", text: "text-indigo-100" },
+    DONE: { bg: "bg-green-700", text: "text-green-100" },
+  };
   useEffect(() => {
     const handler = (e: Event) => {
       const ev = e as CustomEvent;
@@ -172,15 +178,21 @@ const TaskBoard: React.FC<TaskBoardProps> = ({ viewMode }) => {
               {viewMode === "employee" && "Viewing your assigned tasks"}
             </p>
           </div>
-
           <div className="relative flex-1 max-w-sm">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            {/* Icon */}
+            <div className="absolute left-3 top-1/3 -translate-y-1/2 flex items-center pointer-events-none">
+              <Search className="h-4 w-4 text-muted-foreground" />
+            </div>
+
+            {/* Input */}
             <Input
               placeholder="Search tasks..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-9"
+              className="pl-10"
             />
+
+            {/* Task count */}
             <div className="text-sm text-muted-foreground mt-1 text-right">
               {filteredTasks.length} task{filteredTasks.length !== 1 ? "s" : ""}
             </div>
@@ -198,6 +210,7 @@ const TaskBoard: React.FC<TaskBoardProps> = ({ viewMode }) => {
             viewMode={viewMode}
             onAdd={() => setShowCreateModal(true)}
             updatingTasks={updatingTasks}
+            color={statusColors.TO_DO}
           />
           <KanbanColumn
             status="IN_PROGRESS"
@@ -205,6 +218,7 @@ const TaskBoard: React.FC<TaskBoardProps> = ({ viewMode }) => {
             onTaskClick={setSelectedTask}
             viewMode={viewMode}
             updatingTasks={updatingTasks}
+            color={statusColors.IN_PROGRESS}
           />
           <KanbanColumn
             status="REVIEW"
@@ -212,6 +226,7 @@ const TaskBoard: React.FC<TaskBoardProps> = ({ viewMode }) => {
             onTaskClick={setSelectedTask}
             viewMode={viewMode}
             updatingTasks={updatingTasks}
+            color={statusColors.REVIEW}
           />
           <KanbanColumn
             status="DONE"
@@ -219,6 +234,7 @@ const TaskBoard: React.FC<TaskBoardProps> = ({ viewMode }) => {
             onTaskClick={setSelectedTask}
             viewMode={viewMode}
             updatingTasks={updatingTasks}
+            color={statusColors.DONE}
           />
         </div>
       </DragDropContext>

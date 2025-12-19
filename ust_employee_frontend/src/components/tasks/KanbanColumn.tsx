@@ -12,6 +12,7 @@ interface KanbanColumnProps {
   onAdd?: () => void;
   viewMode?: string; // 'admin' | 'manager' | 'employee'
   updatingTasks?: string[];
+  color?: { bg: string; text: string };
 }
 
 const statusConfig: Record<
@@ -48,6 +49,7 @@ const KanbanColumn: React.FC<KanbanColumnProps> = ({
   onAdd,
   viewMode,
   updatingTasks,
+  color,
 }) => {
   const config = statusConfig[status];
 

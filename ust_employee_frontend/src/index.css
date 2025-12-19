@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap");
 
 @layer base {
   :root {
@@ -37,13 +37,15 @@
     --radius: 0.5rem;
 
     /* Status colors */
-    --status-todo: 217 91% 60%;
-    --status-todo-bg: 217 91% 96%;
+    /* TODO: changed to gray #A9B0B7 (HSL approx 211 9% 69%) */
+    --status-todo: 211 9% 69%;
+    --status-todo-bg: 211 9% 96%;
     --status-inprogress: 45 93% 47%;
     --status-inprogress-bg: 45 93% 95%;
-    --status-review: 24 95% 53%;
-    --status-review-bg: 24 95% 95%;
-    --status-done: 142 71% 45%;
+    /* REVIEW now uses the previous TODO color */
+    --status-review: 217 91% 60%;
+    --status-review-bg: 217 91% 96%;
+    --status-done: 142 71% 54%;
     --status-done-bg: 142 71% 95%;
 
     /* Priority colors */
@@ -95,9 +97,11 @@
     --input: 222 47% 18%;
     --ring: 217 91% 60%;
 
-    --status-todo-bg: 217 91% 15%;
+    /* dark-mode status bg overrides */
+    --status-todo-bg: 211 9% 15%;
     --status-inprogress-bg: 45 93% 15%;
-    --status-review-bg: 24 95% 15%;
+    /* REVIEW dark bg uses the previous TODO dark value */
+    --status-review-bg: 217 91% 15%;
     --status-done-bg: 142 71% 15%;
   }
 }
@@ -109,11 +113,11 @@
 
   body {
     @apply bg-background text-foreground font-sans antialiased;
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: "Inter", system-ui, sans-serif;
   }
 
   code {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: "JetBrains Mono", monospace;
   }
 }
 
@@ -229,4 +233,76 @@
       transform: scale(1);
     }
   }
+}
+
+/* Global thin scrollbar styles (WebKit + Firefox) */
+/* Very thin scrollbars to apply across the app including modals and task lists */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(var(--muted));
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted-foreground) / 0.26);
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground) / 0.5);
+}
+
+/* Firefox - thin appearance */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--muted-foreground) / 0.26) hsl(var(--muted));
+}
+
+/* Ensure common Tailwind scroll utilities get the same thin scrollbars */
+.overflow-auto,
+.overflow-y-auto,
+.overflow-x-auto,
+.max-h-40,
+.max-h-\[90vh\] {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--muted-foreground) / 0.26) hsl(var(--muted));
+}
+
+.overflow-auto::-webkit-scrollbar,
+.overflow-y-auto::-webkit-scrollbar,
+.overflow-x-auto::-webkit-scrollbar,
+.max-h-40::-webkit-scrollbar,
+.max-h-\[90vh\]::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+.overflow-auto::-webkit-scrollbar-track,
+.overflow-y-auto::-webkit-scrollbar-track,
+.overflow-x-auto::-webkit-scrollbar-track,
+.max-h-40::-webkit-scrollbar-track,
+.max-h-\[90vh\]::-webkit-scrollbar-track {
+  background: hsl(var(--muted));
+  border-radius: 2px;
+}
+
+.overflow-auto::-webkit-scrollbar-thumb,
+.overflow-y-auto::-webkit-scrollbar-thumb,
+.overflow-x-auto::-webkit-scrollbar-thumb,
+.max-h-40::-webkit-scrollbar-thumb,
+.max-h-\[90vh\]::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted-foreground) / 0.26);
+  border-radius: 2px;
+}
+
+.overflow-auto::-webkit-scrollbar-thumb:hover,
+.overflow-y-auto::-webkit-scrollbar-thumb:hover,
+.overflow-x-auto::-webkit-scrollbar-thumb:hover,
+.max-h-40::-webkit-scrollbar-thumb:hover,
+.max-h-\[90vh\]::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground) / 0.5);
 }

@@ -2,8 +2,15 @@ import React from "react";
 import { toast } from "sonner";
 import { Task, Priority } from "@/types";
 import { useEmployees } from "@/contexts/EmployeesContext";
-import { Calendar, User, Flag, MessageSquare, Paperclip } from "lucide-react";
-import { format } from "date-fns";
+import {
+  Calendar,
+  User,
+  Flag,
+  MessageSquare,
+  Paperclip,
+  AlertTriangle,
+} from "lucide-react";
+import { format, isBefore, startOfDay } from "date-fns";
 
 interface TaskCardProps {
   task: Task;
@@ -46,6 +53,9 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, isDragging, onClick }) => {
     }
   }
   const priority = priorityConfig[task.priority];
+  const isOverdue = task.expected_closure
+    ? isBefore(new Date(task.expected_closure), startOfDay(new Date()))
+    : false;
 
   return (
     <div
@@ -63,6 +73,12 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, isDragging, onClick }) => {
         if (onClick) onClick();
       }}
     >
+      {isOverdue && (
+        <div className="absolute top-2 right-2 inline-flex items-center gap-1 px-2 py-0.5 rounded bg-red-50 text-red-700 text-xs font-semibold">
+          <AlertTriangle className="h-3 w-3" />
+          <span>OD</span>
+        </div>
+      )}
       {/* id (left) and priority (right next to id) on same top row; title below */}
       <div className="flex items-center justify-between gap-2 mb-2">
         <div className="flex items-center gap-2">

@@ -252,7 +252,7 @@ const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
 
   return (
     <Dialog open onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto pr-12 pt-8">
         <DialogHeader>
           <div className="flex items-start justify-between gap-4">
             <div>
