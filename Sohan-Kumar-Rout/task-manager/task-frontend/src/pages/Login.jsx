@@ -49,33 +49,26 @@ const Login = () => {
       <div className="flex w-full max-w-5xl bg-white rounded-xl shadow-lg overflow-hidden">
         {/* Left side - login form */}
         <div className="w-1/2 p-10">
+          {/* animations for entrance and illustration */}
+          <style>{`
+            @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+            .animate-fade-up { animation: fadeUp 600ms ease-out both; }
+            @keyframes floatY { 0% { transform: translateY(0); } 50% { transform: translateY(-8px); } 100% { transform: translateY(0); } }
+            .animate-float-slow { animation: floatY 4s ease-in-out infinite; }
+          `}</style>
           <div className="mb-6">
             <h2 className="text-3xl font-bold text-gray-800">Log in to your Account</h2>
             <p className="text-sm text-gray-500 mt-2">Welcome back! Select method to log in:</p>
           </div>
 
-          {/* Social login buttons */}
-          <div className="flex space-x-4 mb-6">
-            <button className="flex-1 bg-red-500 text-white py-2 rounded hover:bg-red-600 transition">
-              Google
-            </button>
-            <button className="flex-1 bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition">
-              Facebook
-            </button>
-          </div>
-
-          {/* Separator */}
-          <div className="flex items-center mb-6">
-            <div className="flex-grow h-px bg-gray-300" />
-            <span className="px-3 text-sm text-gray-500">or continue with email</span>
-            <div className="flex-grow h-px bg-gray-300" />
-          </div>
+          {/* small entrance animation for the form area */}
+          <div className="mb-6 animate-fade-up" />
 
           {error && (
             <div className="mb-4 text-red-500 text-sm text-center">{error}</div>
           )}
 
-          <form onSubmit={handleLogin} className="space-y-4">
+          <form onSubmit={handleLogin} className="space-y-4 animate-fade-up">
             <input
               type="text"
               placeholder="Email ID"
@@ -121,7 +114,7 @@ const Login = () => {
         </div>
 
         {/* Right side - illustration and promo */}
-        <div className="w-1/2 bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex flex-col justify-center items-center p-10">
+        <div className="w-1/2 bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex flex-col justify-center items-center p-10 animate-float-slow">
           <div className="w-40 h-40 bg-white rounded-full mb-6 flex items-center justify-center text-indigo-600 font-bold text-2xl shadow-lg">
             JIRA LITE
           </div>

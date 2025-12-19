@@ -1,5 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from pathlib import Path
 
 from app.database import Base, engine
 from app.routers import employees, tasks, users, attachments
@@ -38,6 +40,11 @@ app.include_router(employees.router)
 app.include_router(tasks.router)
 app.include_router(users.router)
 app.include_router(attachments.router)
+
+# Ensure uploads directory exists and serve static files
+uploads_dir = Path("uploads")
+uploads_dir.mkdir(parents=True, exist_ok=True)
+app.mount("/uploads", StaticFiles(directory=str(uploads_dir)), name="uploads")
 
 
 @app.get("/")

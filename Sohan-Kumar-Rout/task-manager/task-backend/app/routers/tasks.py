@@ -161,36 +161,62 @@ def update_task(
         if task.assigned_to != emp_id:
             raise HTTPException(status_code=403, detail="Not allowed")
 
-        if data.status is None:
+        # Allow employees to update status and/or add remarks (reply to manager).
+        # They are NOT allowed to change other fields.
+        update_data = data.dict(exclude_unset=True)
+        allowed_keys = {"status", "remarks"}
+        other_keys = set(update_data.keys()) - allowed_keys
+        if other_keys:
             raise HTTPException(
                 status_code=400,
-                detail="Employee can update only status",
+                detail="Employee can update only status or remarks",
             )
 
-        current_status = task.status
-        new_status = data.status
+        status_changed = False
+        old_status = task.status
 
-        if not is_transition_allowed(role, current_status, new_status):
-            raise HTTPException(
-                status_code=400,
-                detail=f"Transition {current_status} -> {new_status} not allowed for Employee",
-            )
+        # If status change requested, validate transition
+        if "status" in update_data and update_data["status"] is not None:
+            new_status = update_data["status"]
+            if not is_transition_allowed(role, old_status, new_status):
+                raise HTTPException(
+                    status_code=400,
+                    detail=f"Transition {old_status} -> {new_status} not allowed for Employee",
+                )
+            task.status = new_status
+            status_changed = True
 
-        task.status = new_status
+        # If employee is adding/updating remarks, set remarks and mark updated_by to this employee
+        if "remarks" in update_data and update_data["remarks"] is not None:
+            task.remarks = update_data["remarks"]
+            task.updated_by = emp_id
+
         db.commit()
         db.refresh(task)
 
-        # ------- LOG STATUS CHANGE -------
-        activity = build_base_activity(current, "STATUS_CHANGE")
-        activity.update(
-            {
-                "task_id": task.task_id,
-                "from_status": current_status,
-                "to_status": new_status,
-                "details": "Employee changed status",
-            }
-        )
-        log_activity(activity)
+        # ------- LOG STATUS CHANGE or UPDATE -------
+        if status_changed:
+            activity = build_base_activity(current, "STATUS_CHANGE")
+            activity.update(
+                {
+                    "task_id": task.task_id,
+                    "from_status": old_status,
+                    "to_status": task.status,
+                    "details": "Employee changed status",
+                }
+            )
+            log_activity(activity)
+
+        # If remarks were added, log an update activity
+        if "remarks" in update_data:
+            activity = build_base_activity(current, "UPDATE_TASK")
+            activity.update(
+                {
+                    "task_id": task.task_id,
+                    "changes": {"remarks": {"from": None, "to": task.remarks}},
+                }
+            )
+            log_activity(activity)
 
         return task
 

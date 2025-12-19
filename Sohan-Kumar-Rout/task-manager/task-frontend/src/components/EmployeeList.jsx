@@ -15,48 +15,50 @@ const EmployeeList = () => {
   }, []);
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Delete this employee")) return;
+    if (!window.confirm("Delete this employee?")) return;
     await deleteEmployee(id);
     loadEmployees();
   };
 
   return (
-    <div className="bg-gray-800 p-6 rounded-xl text-white w-full">
-      <h2 className="text-2xl font-bold mb-4 text-blue-400">Employees</h2>
+    <div className="space-y-8 bg-[#F7F6F3] p-6 rounded-xl text-black font-poppins">
+      <h2 className="text-3xl font-semibold text-[#5D6A75] mb-6">Employee List</h2>
 
-      <table className="w-full text-left border-collapse">
+      <table className="w-full text-left border-collapse shadow-lg">
         <thead>
-          <tr className="border-b border-gray-600 text-gray-300">
-            <th className="p-3">ID</th>
-            <th className="p-3">Name</th>
-            <th className="p-3">Email</th>
-            <th className="p-3">Designation</th>
-            {role !== "Employee" && <th className="p-3">Actions</th>}
+          <tr className="border-b border-[#E3E9EC]">
+            <th className="p-4 text-lg text-[#616F77] font-medium">ID</th>
+            <th className="p-4 text-lg text-[#616F77] font-medium">Name</th>
+            <th className="p-4 text-lg text-[#616F77] font-medium">Email</th>
+            <th className="p-4 text-lg text-[#616F77] font-medium">Designation</th>
+            {role !== "Employee" && <th className="p-4 text-lg text-[#616F77] font-medium">Actions</th>}
           </tr>
         </thead>
 
         <tbody>
           {employees.map((emp) => (
-            <tr key={emp.id} className="border-b border-gray-700">
-              <td className="p-3">{emp.id}</td>
-              <td className="p-3">{emp.name}</td>
-              <td className="p-3">{emp.email}</td>
-              <td className="p-3">{emp.designation}</td>
+            <tr
+              key={emp.id}
+              className="border-b border-[#E3E9EC] hover:bg-[#F0F5F1] transition-all duration-300"
+            >
+              <td className="p-4 text-sm text-[#3C4C56]">{emp.id}</td>
+              <td className="p-4 text-sm text-[#3C4C56]">{emp.name}</td>
+              <td className="p-4 text-sm text-[#3C4C56]">{emp.email}</td>
+              <td className="p-4 text-sm text-[#3C4C56]">{emp.designation}</td>
 
               {role !== "Employee" && (
-                <td className="p-3 space-x-2">
+                <td className="p-4 space-x-2">
                   <button
                     onClick={() =>
                       (window.location.href = `/admin/employees/create?id=${emp.id}`)
                     }
-                    className="bg-blue-600 px-3 py-1 rounded hover:bg-blue-700 transition-all duration-300"
+                    className="bg-[#76C7C0] text-white px-4 py-2 rounded-full hover:bg-[#5BAF9F] transition-all duration-200"
                   >
                     Edit
                   </button>
-
                   <button
                     onClick={() => handleDelete(emp.id)}
-                    className="bg-red-600 px-3 py-1 rounded hover:bg-red-700 transition-all duration-300"
+                    className="bg-[#FF6F61] text-white px-4 py-2 rounded-full hover:bg-[#FF4B40] transition-all duration-200"
                   >
                     Delete
                   </button>

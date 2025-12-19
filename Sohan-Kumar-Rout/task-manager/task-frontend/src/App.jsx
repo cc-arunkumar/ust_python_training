@@ -1,22 +1,25 @@
-// src/App.jsx
 import React, { useEffect } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import Login from "./pages/Login";
-import DashboardManager from "./pages/DashboardManager";
 
+// Admin components
 import SidebarAdmin from "./components/SidebarAdmin";
-import SidebarManager from "./components/SidebarManager";
-import SidebarEmployee from "./components/SidebarEmployee";
-
 import EmployeeList from "./components/EmployeeList";
 import EmployeeForm from "./components/EmployeeForm";
 import TaskList from "./components/TaskList";
 import CreateTask from "./components/CreateTask";
-import EmployeeTaskBoard from "./components/EmployeeTaskBoard";
 import KanbanBoard from "./components/KanbanBoard";
+
+// Manager components
+import SidebarManager from "./components/SidebarManager";
+import DashboardManager from "./pages/DashboardManager";
+
+// Employee components
+import SidebarEmployee from "./components/SidebarEmployee";
+import EmployeeTaskBoard from "./components/EmployeeTaskBoard";
 
 const Layout = ({ sidebar, children }) => (
   <div className="flex">
@@ -36,10 +39,10 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Login */}
+        {/* Login route */}
         <Route path="/login" element={<Login />} />
 
-        {/* --- Admin routes (no Admin dashboard) --- */}
+        {/* --- Admin Routes --- */}
         <Route
           path="/admin/employees"
           element={
@@ -80,23 +83,15 @@ function App() {
             </Layout>
           }
         />
-        {/* Redirect /admin -> /admin/employees to avoid "No routes matched" */}
+        {/* Redirect /admin to /admin/employees to avoid 404 error */}
         <Route path="/admin" element={<Navigate to="/admin/employees" replace />} />
 
-        {/* --- Manager routes --- */}
+        {/* --- Manager Routes --- */}
         <Route
           path="/manager/dashboard"
           element={
             <Layout sidebar={<SidebarManager />}>
               <DashboardManager />
-            </Layout>
-          }
-        />
-        <Route
-          path="/manager/employees"
-          element={
-            <Layout sidebar={<SidebarManager />}>
-              <EmployeeList />
             </Layout>
           }
         />
@@ -125,7 +120,7 @@ function App() {
           }
         />
 
-        {/* --- Employee routes --- */}
+        {/* --- Employee Routes --- */}
         <Route
           path="/employee/tasks"
           element={
@@ -143,8 +138,8 @@ function App() {
           }
         />
 
-        {/* Default route */}
-        <Route path="/" element={<Login />} />
+        {/* Default route (if no other route matched) */}
+        <Route path="/" element={<Navigate to="/login" />} />
       </Routes>
 
       {/* Global Toasts */}

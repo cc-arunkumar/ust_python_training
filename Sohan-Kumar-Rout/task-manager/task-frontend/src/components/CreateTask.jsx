@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { createTask, updateTask, getTasks } from "../services/taskService";
+import { createTask, updateTask, getTasks, deleteTask } from "../services/taskService";
 import { getEmployees } from "../services/employeeService";
 import { toast } from "react-toastify";
+import { FaSave, FaEdit, FaTrash } from "react-icons/fa";
 
 const CreateTask = () => {
   const params = new URLSearchParams(window.location.search);
@@ -29,8 +30,10 @@ const CreateTask = () => {
   const loadTask = async () => {
     if (!editId) return;
     try {
-      const tasks = await getTasks();
-      const task = tasks.find((t) => String(t.task_id) === String(editId));
+      // getTasks sometimes returns an axios response (res.data) or an array directly
+      const tasksRes = await getTasks();
+      const tasks = tasksRes?.data || tasksRes;
+      const task = (Array.isArray(tasks) ? tasks : []).find((t) => String(t.task_id) === String(editId));
       if (task) setForm(task);
     } catch (err) {
       toast.error("Failed to load task!");
@@ -119,12 +122,36 @@ const CreateTask = () => {
           <option value="COMPLETED">Completed</option>
         </select>
 
-        <button
-          type="submit"
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 shadow-md"
-        >
-          {editId ? "Update" : "Create"}
-        </button>
+        <div className="flex gap-3">
+          <button
+            type="submit"
+            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 shadow-md flex items-center"
+          >
+            {editId ? <><FaEdit className="mr-2" /> Update</> : <><FaSave className="mr-2" /> Create</>}
+          </button>
+
+          {editId && (
+            <button
+              type="button"
+              onClick={async () => {
+                if (!confirm("Are you sure you want to delete this task?")) return;
+                try {
+                  await deleteTask(editId);
+                  toast.success("Task deleted.");
+                  const role = localStorage.getItem("role");
+                  if (role === "Admin") window.location.href = "/admin/tasks";
+                  else window.location.href = "/manager/tasks";
+                } catch (err) {
+                  console.error(err);
+                  toast.error("Failed to delete task.");
+                }
+              }}
+              className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 shadow-md flex items-center"
+            >
+              <FaTrash className="mr-2" /> Delete
+            </button>
+          )}
+        </div>
       </form>
     </div>
   );
