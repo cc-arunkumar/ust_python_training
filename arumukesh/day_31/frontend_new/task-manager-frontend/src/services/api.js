@@ -15,6 +15,15 @@ api.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+    // If the request data is a FormData (file upload), remove the default JSON content-type
+    try {
+      if (config.data instanceof FormData) {
+        delete config.headers["Content-Type"];
+      }
+    } catch (e) {
+      // ignore
+    }
+
     return config;
   },
   (error) => {

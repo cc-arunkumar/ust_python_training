@@ -6,7 +6,16 @@ export const remarksApi = {
     return response.data;
   },
 
-  postRemark: async (taskId, message) => {
+  postRemark: async (taskId, message, files) => {
+    // send multipart formdata if files provided
+    if (files && files.length) {
+      const fd = new FormData();
+      if (message) fd.append("message", message);
+      files.forEach((f) => fd.append("files", f));
+      const response = await api.post(`/api/v1/tasks/${taskId}/remarks`, fd);
+      return response.data;
+    }
+
     const response = await api.post(`/api/v1/tasks/${taskId}/remarks`, {
       message,
     });
