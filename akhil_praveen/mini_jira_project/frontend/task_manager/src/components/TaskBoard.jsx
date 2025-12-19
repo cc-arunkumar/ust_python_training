@@ -5,6 +5,7 @@ import TaskFormModal from "./TaskFormModel";
 import TaskDetailModal from "./TaskDetailModal";
 import { STATUS_CONFIG, STATUSES, PRIORITIES } from "../utils/constants";
 import { subscribe } from "../utils/events";
+import { publish } from "../utils/events";
 
 function TaskBoard({
   tasks = [],
@@ -33,6 +34,7 @@ function TaskBoard({
   const [promptStatus, setPromptStatus] = useState(null);
   const [promptText, setPromptText] = useState("");
   const [dragOverStatus, setDragOverStatus] = useState(null);
+  const [showNotifications, setShowNotifications] = useState(false);
   // removed manual refresh button; auto-refresh handled via in-app events
 
   const canMarkDone =
@@ -285,6 +287,39 @@ function TaskBoard({
     };
   }, [onRefresh]);
 
+  // notifications: map taskId -> { unreadCount, note }
+  const [notifications, setNotifications] = useState({});
+  const totalNotifications = Object.values(notifications).reduce(
+    (s, v) => s + (v.unreadCount || 0),
+    0
+  );
+
+  useEffect(() => {
+    const unsub = subscribe("task:unread", (payload) => {
+      try {
+        if (!payload || !payload.taskId) return;
+        setNotifications((prev) => {
+          const copy = { ...(prev || {}) };
+          if (payload.unreadCount && payload.unreadCount > 0) {
+            copy[payload.taskId] = {
+              unreadCount: payload.unreadCount,
+              note: payload.note || "",
+            };
+          } else {
+            // remove if zero
+            delete copy[payload.taskId];
+          }
+          return copy;
+        });
+      } catch (e) {}
+    });
+    return () => {
+      try {
+        unsub && unsub();
+      } catch (e) {}
+    };
+  }, []);
+
   return (
     <div className="container mx-auto px-4 py-4">
       {/* Header Controls */}
@@ -325,6 +360,78 @@ function TaskBoard({
         </div>
 
         <div className="flex items-center gap-2 z--1">
+          <div className="relative">
+            <button
+              onClick={() => setShowNotifications((s) => !s)}
+              className="p-2 rounded-lg hover:bg-gray-100 transition-all relative"
+              title="Notifications"
+            >
+              <span className="text-gray-600">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+                  />
+                </svg>
+              </span>
+              {totalNotifications > 0 && (
+                <span className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-5 h-5 text-[11px] font-bold flex items-center justify-center">
+                  {totalNotifications > 99 ? "99+" : totalNotifications}
+                </span>
+              )}
+            </button>
+
+            {/* Notifications dropdown */}
+            {showNotifications && (
+              <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-2xl border border-gray-100 z-50 p-2">
+                <div className="font-semibold px-2 py-1">Notifications</div>
+                <div className="max-h-64 overflow-auto">
+                  {Object.keys(notifications).length === 0 ? (
+                    <div className="text-sm text-gray-500 p-3">
+                      No notifications
+                    </div>
+                  ) : (
+                    Object.entries(notifications).map(([taskId, info]) => (
+                      <button
+                        key={taskId}
+                        onClick={() => {
+                          const t = tasks.find(
+                            (x) => String(x.task_id) === String(taskId)
+                          );
+                          if (t) setDetailTask(t);
+                          setShowNotifications(false);
+                        }}
+                        className="w-full text-left px-2 py-2 hover:bg-gray-50 flex items-start gap-2"
+                      >
+                        <div className="flex-1">
+                          <div className="text-sm font-medium text-gray-800">
+                            {info.note
+                              ? info.note.split("—")[0].trim()
+                              : `Task ${taskId}`}
+                          </div>
+                          <div className="text-xs text-gray-500 mt-1 line-clamp-2">
+                            {info.note || ""}
+                          </div>
+                        </div>
+                        <div className="text-xs text-red-600 font-bold flex-shrink-0">
+                          {info.unreadCount}
+                        </div>
+                      </button>
+                    ))
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+
           <button
             onClick={() => {
               setEditingTask(null);

@@ -17,6 +17,7 @@ import api from "../api/api";
 import { useEffect } from "react";
 import computeRemarkId from "../utils/remarkId";
 import { subscribe } from "../utils/events";
+import { publish } from "../utils/events";
 import { STATUS_CONFIG, PRIORITY_COLORS } from "../utils/constants";
 
 function TaskCard({
@@ -309,6 +310,54 @@ function TaskCard({
         }, 0);
 
         setUnreadCount(count);
+        try {
+          // find first unread remark to use as a short note
+          let firstUnread = null;
+          for (const r of all) {
+            if (!r || !r.ts) continue;
+            const id = computeRemarkId(r);
+            if (readSet.has(id)) continue;
+            if (
+              r.byEmpId &&
+              currentEmpId &&
+              Number(r.byEmpId) === Number(currentEmpId)
+            )
+              continue;
+
+            const from = String(r.from || "").toLowerCase();
+            if (from.includes("dev") || from.includes("developer")) {
+              if (
+                currentEmpId &&
+                Number(currentEmpId) === Number(task.reviewer)
+              ) {
+                firstUnread = r;
+                break;
+              }
+            } else {
+              if (
+                currentEmpId &&
+                Number(currentEmpId) === Number(task.assigned_to)
+              ) {
+                firstUnread = r;
+                break;
+              }
+            }
+          }
+
+          const note = firstUnread
+            ? `${(task.title || "").slice(0, 60)} — ${String(
+                firstUnread.text || ""
+              ).slice(0, 80)}`
+            : `${(task.title || "").slice(0, 80)}`;
+
+          publish("task:unread", {
+            taskId: task.task_id,
+            unreadCount: count,
+            note,
+          });
+        } catch (e) {
+          // ignore
+        }
       } catch (e) {
         // ignore errors; keep unread 0
       }
