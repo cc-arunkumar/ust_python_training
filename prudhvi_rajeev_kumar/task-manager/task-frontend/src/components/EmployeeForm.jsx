@@ -55,15 +55,15 @@ const EmployeeForm = () => {
   };
 
   return (
-    <div className="bg-gradient-to-r from-blue-800 to-purple-700 p-8 rounded-lg shadow-xl text-white w-full min-h-screen animate__animated animate__fadeIn">
-      <h2 className="text-3xl font-bold mb-6 text-center text-blue-200">
+    <div className="bg-gradient-to-r from-green-50 via-blue-50 to-purple-50 p-8 rounded-lg shadow-xl text-gray-800 w-full min-h-screen animate__animated animate__fadeIn">
+      <h2 className="text-3xl font-bold mb-6 text-center text-indigo-600 animate__animated animate__zoomIn">
         {editId ? "Edit Employee" : "Create Employee"}
       </h2>
 
       <form onSubmit={handleSubmit} className="space-y-6 max-w-xl mx-auto">
         {/* Name field */}
         <input
-          className="w-full p-4 bg-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300"
+          className="w-full p-4 bg-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400 transition-all duration-300"
           placeholder="Name"
           value={form.name}
           onChange={(e) => setForm({ ...form, name: e.target.value })}
@@ -71,7 +71,7 @@ const EmployeeForm = () => {
 
         {/* Email field */}
         <input
-          className="w-full p-4 bg-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300"
+          className="w-full p-4 bg-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400 transition-all duration-300"
           placeholder="Email"
           value={form.email}
           onChange={(e) => setForm({ ...form, email: e.target.value })}
@@ -79,7 +79,7 @@ const EmployeeForm = () => {
 
         {/* Designation field */}
         <select
-          className="w-full p-4 bg-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300"
+          className="w-full p-4 bg-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400 transition-all duration-300"
           value={form.designation}
           onChange={(e) => setForm({ ...form, designation: e.target.value })}
         >
@@ -91,7 +91,7 @@ const EmployeeForm = () => {
         {/* Manager field: Conditional rendering based on the designation */}
         {form.designation === "Employee" && (
           <select
-            className="w-full p-4 bg-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300"
+            className="w-full p-4 bg-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400 transition-all duration-300"
             value={form.manager_id}
             onChange={(e) => setForm({ ...form, manager_id: e.target.value })}
           >
@@ -106,14 +106,14 @@ const EmployeeForm = () => {
 
         {/* If designation is not Employee, fade out the manager field */}
         {form.designation !== "Employee" && (
-          <div className="w-full p-4 bg-gray-700 rounded-lg opacity-50 cursor-not-allowed">
+          <div className="w-full p-4 bg-gray-200 rounded-lg opacity-50 cursor-not-allowed">
             <span>Select Manager</span>
           </div>
         )}
 
         {/* Submit button */}
         <button
-          className="w-full bg-blue-600 px-4 py-3 rounded-lg hover:bg-blue-700 transition-all duration-300"
+          className="w-full bg-gradient-to-r from-indigo-400 to-indigo-600 px-4 py-3 rounded-lg hover:scale-105 transition-all duration-300 text-white"
         >
           {editId ? "Update Employee" : "Create Employee"}
         </button>

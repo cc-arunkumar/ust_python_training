@@ -15,19 +15,7 @@ import TaskList from "./components/TaskList";
 import CreateTask from "./components/CreateTask";
 import EmployeeTaskBoard from "./components/EmployeeTaskBoard";
 
-import { FaMoon, FaSun } from "react-icons/fa";
-
-// ---------------- THEME TOGGLE BUTTON ----------------
-const ThemeToggle = ({ theme, toggleTheme }) => (
-  <button
-    onClick={toggleTheme}
-    className="fixed top-4 right-4 p-3 rounded-full shadow-lg 
-               bg-gray-200 dark:bg-gray-800 text-gray-900 dark:text-white 
-               transition-all duration-300 hover:scale-110 z-50"
-  >
-    {theme === "light" ? <FaMoon size={18} /> : <FaSun size={18} />}
-  </button>
-);
+// (theme toggle removed)
 
 // ---------------- LAYOUT WRAPPER ----------------
 const Layout = ({ sidebar, children }) => (
@@ -43,24 +31,11 @@ const Layout = ({ sidebar, children }) => (
 );
 
 function App() {
-  const [theme, setTheme] = useState("light");
-
-  useEffect(() => {
-    const savedTheme = localStorage.getItem("theme") || "light";
-    setTheme(savedTheme);
-    document.documentElement.className = savedTheme;
-  }, []);
-
-  const toggleTheme = () => {
-    const newTheme = theme === "light" ? "dark" : "light";
-    setTheme(newTheme);
-    document.documentElement.className = newTheme;
-    localStorage.setItem("theme", newTheme);
-  };
+  // Theme is now static; remove runtime theme toggle logic.
 
   return (
     <BrowserRouter>
-      <ThemeToggle theme={theme} toggleTheme={toggleTheme} />
+  {/* Theme toggle removed */}
 
       <Routes>
         {/* LOGIN */}

@@ -34,13 +34,15 @@ const TaskList = () => {
   };
 
   return (
-    <div className="bg-gradient-to-r from-blue-800 to-purple-700 p-8 rounded-lg shadow-xl text-white w-full min-h-screen animate__animated animate__fadeIn">
-      <h2 className="text-3xl font-bold mb-6 text-center text-blue-200">Tasks</h2>
+    <div className="bg-gradient-to-r from-green-50 via-blue-50 to-purple-50 p-8 rounded-lg shadow-xl text-gray-800 w-full min-h-screen animate__animated animate__fadeIn">
+      <h2 className="text-3xl font-bold mb-6 text-center text-indigo-600 animate__animated animate__zoomIn">
+        Tasks
+      </h2>
 
       <div className="overflow-x-auto shadow-lg rounded-lg">
         <table className="w-full text-left border-separate table-auto">
           <thead>
-            <tr className="bg-gray-700 text-white">
+            <tr className="bg-gray-200 text-gray-800">
               <th className="p-4">Title</th>
               <th className="p-4">Assigned To</th>
               <th className="p-4">Priority</th>
@@ -53,7 +55,7 @@ const TaskList = () => {
             {tasks.map((task) => (
               <tr
                 key={task.task_id}
-                className="border-b border-gray-600 hover:bg-gray-800 transform transition duration-200"
+                className="border-b border-gray-300 hover:bg-gray-100 transform transition duration-200"
               >
                 <td className="p-4">{task.title}</td>
                 <td className="p-4">{task.assigned_to}</td>
@@ -66,14 +68,14 @@ const TaskList = () => {
                       onClick={() =>
                         (window.location.href = `/admin/tasks/create?id=${task.task_id}`)
                       }
-                      className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-300"
+                      className="bg-gradient-to-r from-indigo-400 to-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition duration-300"
                     >
                       Edit
                     </button>
 
                     <button
                       onClick={() => handleDelete(task.task_id)}
-                      className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition duration-300"
+                      className="bg-gradient-to-r from-red-400 to-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition duration-300"
                     >
                       Delete
                     </button>

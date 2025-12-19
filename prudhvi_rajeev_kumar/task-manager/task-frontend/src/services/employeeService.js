@@ -16,3 +16,8 @@ export const updateEmployee = async (id, data) => {
 export const deleteEmployee = async (id) => {
   return await api.delete(`/employees/${id}`);
 };
+
+export const getMyProfile = async () => {
+  const res = await api.get('/employees/me');
+  return res.data;
+};

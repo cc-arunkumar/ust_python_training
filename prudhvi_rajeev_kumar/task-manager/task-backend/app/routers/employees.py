@@ -119,3 +119,18 @@ def delete_employee(
     db.delete(emp)
     db.commit()
     return
+
+
+# ---------------- GET CURRENT EMPLOYEE ----------------
+@router.get("/me", response_model=schemas.EmployeeOut)
+def get_current_employee(current=Depends(get_current_user), db: Session = Depends(get_db)):
+    """Return the Employee record for the currently authenticated user."""
+    try:
+        emp_id = int(current["emp_id"])
+    except Exception:
+        raise HTTPException(status_code=401, detail="Invalid token payload")
+
+    emp = db.query(models.Employee).filter(models.Employee.id == emp_id).first()
+    if not emp:
+        raise HTTPException(status_code=404, detail="Employee not found")
+    return emp

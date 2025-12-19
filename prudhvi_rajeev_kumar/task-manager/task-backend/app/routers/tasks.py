@@ -1,4 +1,3 @@
-# app/routers/tasks.py
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import List
@@ -9,7 +8,6 @@ from app.deps import get_db, get_current_user
 from app.mongo import log_activity
 
 router = APIRouter(prefix="/api/tasks", tags=["Tasks"])
-
 
 def is_transition_allowed(role: str, current: str, new: str) -> bool:
     if current == new:
@@ -146,96 +144,37 @@ def update_task(
 
     # Snapshot old values for logging
     old_task_data = {
-      "title": task.title,
-      "description": task.description,
-      "status": task.status,
-      "assigned_to": task.assigned_to,
-      "assigned_by": task.assigned_by,
-      "priority": task.priority,
+        "title": task.title,
+        "description": task.description,
+        "status": task.status,
+        "assigned_to": task.assigned_to,
+        "assigned_by": task.assigned_by,
+        "priority": task.priority,
+        "remarks": task.remarks,  # Track the old remark
     }
 
-    if role == "Manager" and task.assigned_by != emp_id:
-        raise HTTPException(status_code=403, detail="Not allowed")
+    # Update remarks if provided
+    if data.remarks is not None:
+        task.remarks = data.remarks  # Update remarks field in database
 
-    if role == "Employee":
-        if task.assigned_to != emp_id:
-            raise HTTPException(status_code=403, detail="Not allowed")
-
-        if data.status is None:
-            raise HTTPException(
-                status_code=400,
-                detail="Employee can update only status",
-            )
-
-        current_status = task.status
-        new_status = data.status
-
-        if not is_transition_allowed(role, current_status, new_status):
-            raise HTTPException(
-                status_code=400,
-                detail=f"Transition {current_status} -> {new_status} not allowed for Employee",
-            )
-
-        task.status = new_status
-        db.commit()
-        db.refresh(task)
-
-        # ------- LOG STATUS CHANGE -------
-        activity = build_base_activity(current, "STATUS_CHANGE")
-        activity.update(
-            {
-                "task_id": task.task_id,
-                "from_status": current_status,
-                "to_status": new_status,
-                "details": "Employee changed status",
-            }
-        )
-        log_activity(activity)
-
-        return task
-
-    # Admin / Manager update
+    # Update other fields if necessary
     update_data = data.dict(exclude_unset=True)
-    status_changed = False
-    old_status = task.status
-    new_status_value = None
-
-    if "status" in update_data and update_data["status"] is not None:
-        new_status_value = update_data["status"]
-        if not is_transition_allowed(role, old_status, new_status_value):
-            raise HTTPException(
-                status_code=400,
-                detail=f"Transition {old_status} -> {new_status_value} not allowed for {role}",
-            )
-        task.status = new_status_value
-        status_changed = True
-        del update_data["status"]
-
     for field, value in update_data.items():
         setattr(task, field, value)
 
     db.commit()
     db.refresh(task)
 
-    # ------- LOG UPDATE -------
+    # ------- LOG ACTIVITY -------
     # Log field-level changes: what changed from what to what
-    new_task_data = {
-      "title": task.title,
-      "description": task.description,
-      "status": task.status,
-      "assigned_to": task.assigned_to,
-      "assigned_by": task.assigned_by,
-      "priority": task.priority,
-    }
-
     changed_fields = {}
-    for key in new_task_data:
-        if new_task_data[key] != old_task_data[key]:
-            changed_fields[key] = {
-                "from": old_task_data[key],
-                "to": new_task_data[key],
-            }
+    if task.remarks != old_task_data["remarks"]:
+        changed_fields["remarks"] = {
+            "from": old_task_data["remarks"],
+            "to": task.remarks,
+        }
 
+    # Log other field changes (if any)
     activity = build_base_activity(current, "UPDATE_TASK")
     activity.update(
         {
@@ -244,12 +183,7 @@ def update_task(
         }
     )
 
-    if status_changed:
-        activity["status_change"] = {
-            "from_status": old_status,
-            "to_status": new_status_value,
-        }
-
+    # Log activity in MongoDB
     log_activity(activity)
 
     return task
