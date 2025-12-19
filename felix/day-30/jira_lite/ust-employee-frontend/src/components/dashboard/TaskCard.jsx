@@ -239,6 +239,69 @@ const TaskCard = ({
     ? Math.ceil(dateDiffInMs(dueDate, now) / msInDay)
     : null;
 
+  // Local editable due-date state
+  const [editingDue, setEditingDue] = useState(false);
+  const [newDueDate, setNewDueDate] = useState(
+    dueDate ? dueDate.toISOString().slice(0, 10) : ""
+  );
+  const [localDueDate, setLocalDueDate] = useState(
+    task.expected_completion_date ? task.expected_completion_date : null
+  );
+
+  useEffect(() => {
+    setLocalDueDate(
+      task.expected_completion_date ? task.expected_completion_date : null
+    );
+    const d = task.expected_completion_date
+      ? new Date(task.expected_completion_date)
+      : null;
+    setNewDueDate(d ? d.toISOString().slice(0, 10) : "");
+  }, [task.expected_completion_date]);
+
+  const openDueEditor = (e) => {
+    e && e.stopPropagation();
+    setEditingDue(true);
+  };
+
+  const cancelDueEdit = (e) => {
+    e && e.stopPropagation();
+    setEditingDue(false);
+    const d = task.expected_completion_date
+      ? new Date(task.expected_completion_date)
+      : null;
+    setNewDueDate(d ? d.toISOString().slice(0, 10) : "");
+  };
+
+  const saveDueDate = async (e) => {
+    e && e.stopPropagation();
+    if (!token) {
+      alert("Not authenticated");
+      return;
+    }
+    if (!currentUserId) {
+      alert("Unknown user id");
+      return;
+    }
+
+    try {
+      // prepare payload - backend will normalize date string
+      const payload = {
+        expected_completion_date: newDueDate || null,
+        updated_by: currentUserId,
+      };
+      await api.updateTask(token, task._id, payload);
+
+      // update local display
+      setLocalDueDate(newDueDate || null);
+      setEditingDue(false);
+      // Optionally inform parent via onStatusChange or other callback - omitted to keep change local
+      alert("✅ Due date updated");
+    } catch (err) {
+      console.error("Failed to update due date", err);
+      alert("❌ Failed to update due date: " + (err.message || err));
+    }
+  };
+
   // helper to compute difference in ms (dueDate - now)
   function dateDiffInMs(a, b) {
     return a.getTime() - b.getTime();
@@ -415,44 +478,82 @@ const TaskCard = ({
               </div>
             </div>
 
-            {/* Due date */}
-            <div className="flex items-center gap-2 bg-gradient-to-r from-purple-50 to-pink-50 px-3 py-2 rounded-xl border border-purple-100">
-              <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white shadow-sm">
-                <Calendar size={14} />
-              </div>
+            {/* Due date (click to edit) */}
+            {editingDue ? (
+              <div
+                className="flex items-center gap-2 px-3 py-2 rounded-xl border border-purple-100"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="w-6 h-6 rounded-lg bg-purple-500 flex items-center justify-center text-white shadow-sm">
+                  <Calendar size={14} />
+                </div>
 
-              <div className="flex-1">
-                <span className="text-gray-500 font-medium block">
-                  Due date
-                </span>
-                <span className="font-bold text-gray-800 block">
-                  {task.expected_completion_date
-                    ? new Date(
-                        task.expected_completion_date
-                      ).toLocaleDateString()
-                    : "Not set"}
-                </span>
+                <div className="flex-1 flex items-center gap-3">
+                  <input
+                    type="date"
+                    value={newDueDate}
+                    onChange={(e) => setNewDueDate(e.target.value)}
+                    className="px-3 py-2 border rounded-lg text-sm outline-none"
+                  />
+
+                  <div className="ml-auto flex items-center gap-2">
+                    <button
+                      onClick={saveDueDate}
+                      className="px-3 py-1 bg-blue-600 text-white rounded-md text-sm font-semibold"
+                    >
+                      Save
+                    </button>
+                    <button
+                      onClick={cancelDueEdit}
+                      className="px-3 py-1 bg-gray-100 text-gray-700 rounded-md text-sm"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
               </div>
-              {isOverdue ? (
-                <div className="flex items-center">
-                  <span
-                    className="ml-2 w-3 h-3 rounded-full bg-red-500 animate-pulse ring-2 ring-red-300"
-                    title="Overdue"
-                    aria-label="Overdue"
-                  ></span>
+            ) : (
+              <div
+                className="flex items-center gap-2 bg-gradient-to-r from-purple-50 to-pink-50 px-3 py-2 rounded-xl border border-purple-100 cursor-pointer"
+                onClick={openDueEditor}
+              >
+                <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white shadow-sm">
+                  <Calendar size={14} />
                 </div>
-              ) : isDueSoon ? (
-                <div className="flex items-center">
-                  <span
-                    className="ml-2 w-3 h-3 rounded-full bg-amber-400 animate-pulse ring-2 ring-amber-200"
-                    title={`Due in ${daysLeft} day${daysLeft === 1 ? "" : "s"}`}
-                    aria-label={`Due in ${daysLeft} day${
-                      daysLeft === 1 ? "" : "s"
-                    }`}
-                  ></span>
+
+                <div className="flex-1">
+                  <span className="text-gray-500 font-medium block">
+                    Due date
+                  </span>
+                  <span className="font-bold text-gray-800 block">
+                    {localDueDate
+                      ? new Date(localDueDate).toLocaleDateString()
+                      : "Not set"}
+                  </span>
                 </div>
-              ) : null}
-            </div>
+                {isOverdue ? (
+                  <div className="flex items-center">
+                    <span
+                      className="ml-2 w-3 h-3 rounded-full bg-red-500 animate-pulse ring-2 ring-red-300"
+                      title="Overdue"
+                      aria-label="Overdue"
+                    ></span>
+                  </div>
+                ) : isDueSoon ? (
+                  <div className="flex items-center">
+                    <span
+                      className="ml-2 w-3 h-3 rounded-full bg-amber-400 animate-pulse ring-2 ring-amber-200"
+                      title={`Due in ${daysLeft} day${
+                        daysLeft === 1 ? "" : "s"
+                      }`}
+                      aria-label={`Due in ${daysLeft} day${
+                        daysLeft === 1 ? "" : "s"
+                      }`}
+                    ></span>
+                  </div>
+                ) : null}
+              </div>
+            )}
           </div>
         </div>
       </div>

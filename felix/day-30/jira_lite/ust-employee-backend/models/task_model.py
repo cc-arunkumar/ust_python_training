@@ -48,11 +48,24 @@ class TaskUpdate(BaseModel):
     assigned_to: Optional[int] = None
     assigned_by: Optional[int] = None
     assigned_at: Optional[datetime] = None
+    expected_completion_date: Optional[datetime] = None
     notifications: Optional[dict] = None
     updated_by: int
     updated_at: datetime = datetime.now()
     actual_completion_date: Optional[date] = None
     priority: Optional[Literal['Low', 'Medium', 'High']] ='Low'
+
+    @field_validator("expected_completion_date", mode="before")
+    @classmethod
+    def normalize_expected_date(cls, value):
+        if value is None:
+            return value
+
+        if isinstance(value, str):
+            # accept ISO date strings, with or without time
+            value = datetime.fromisoformat(value.replace("Z", "+00:00"))
+
+        return value
     
 class TaskStatusUpdate(BaseModel):
     status: Literal['To Do', 'In Progress','Review', 'Done']
