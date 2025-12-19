@@ -1,0 +1,808 @@
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import { ChevronDown, LogOut, Menu, X, CheckSquare, Users, UserPlus, Briefcase } from 'lucide-react';
+
+// API Configuration
+const API_BASE_URL = 'http://localhost:8000';
+
+// Auth Context
+const AuthContext = createContext(null);
+
+const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
+  const [token, setToken] = useState(localStorage.getItem('token'));
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (token) {
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        setUser(payload);
+      } catch (e) {
+        localStorage.removeItem('token');
+        setToken(null);
+      }
+    }
+    setLoading(false);
+  }, [token]);
+
+  const login = async (emp_id, password) => {
+    const response = await fetch(`${API_BASE_URL}/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ emp_id, password })
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.detail || 'Login failed');
+    }
+
+    const data = await response.json();
+    localStorage.setItem('token', data.access_token);
+    setToken(data.access_token);
+    setUser(data.user);
+    return data;
+  };
+
+  const logout = () => {
+    localStorage.removeItem('token');
+    setToken(null);
+    setUser(null);
+  };
+
+  return (
+    <AuthContext.Provider value={{ user, token, login, logout, loading }}>
+      {children}
+    </AuthContext.Provider>
+  );
+};
+
+const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) throw new Error('useAuth must be used within AuthProvider');
+  return context;
+};
+
+// API Helper
+const apiCall = async (endpoint, method = 'GET', body = null, token = null) => {
+  const headers = { 'Content-Type': 'application/json' };
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+
+  const config = { method, headers };
+  if (body) config.body = JSON.stringify(body);
+
+  const response = await fetch(`${API_BASE_URL}${endpoint}`, config);
+  
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.detail || 'Request failed');
+  }
+
+  if (method === 'DELETE') return null;
+  return response.json();
+};
+
+// Login Page
+const LoginPage = () => {
+  const [empId, setEmpId] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const { login } = useAuth();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+
+    try {
+      await login(parseInt(empId), password);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+      <div className="bg-white rounded-lg shadow-xl p-8 w-full max-w-md">
+        <div className="text-center mb-8">
+          <div className="bg-indigo-600 w-16 h-16 rounded-lg flex items-center justify-center mx-auto mb-4">
+            <CheckSquare className="text-white" size={32} />
+          </div>
+          <h1 className="text-3xl font-bold text-gray-800">Task Manager</h1>
+          <p className="text-gray-600 mt-2">Sign in to your account</p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Employee ID
+            </label>
+            <input
+              type="number"
+              value={empId}
+              onChange={(e) => setEmpId(e.target.value)}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              placeholder="Enter your employee ID"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Password
+            </label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              placeholder="Enter your password"
+              required
+            />
+          </div>
+
+          {error && (
+            <div className="bg-red-50 text-red-600 px-4 py-3 rounded-lg text-sm">
+              {error}
+            </div>
+          )}
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-indigo-600 text-white py-3 rounded-lg font-medium hover:bg-indigo-700 transition disabled:opacity-50"
+          >
+            {loading ? 'Signing in...' : 'Sign In'}
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+// Sidebar Component
+const Sidebar = ({ activeView, setActiveView, sidebarOpen, setSidebarOpen }) => {
+  const { user } = useAuth();
+  const [expandedMenus, setExpandedMenus] = useState({});
+
+  const toggleMenu = (menu) => {
+    setExpandedMenus(prev => ({ ...prev, [menu]: !prev[menu] }));
+  };
+
+  const isAdmin = user?.role?.toLowerCase().includes('admin');
+  const isManager = user?.role?.toLowerCase().includes('manager');
+
+  const menuItems = [
+    {
+      id: 'tasks',
+      icon: CheckSquare,
+      label: 'Tasks',
+      show: true,
+      submenu: [
+        { id: 'myTasks', label: 'My Tasks', show: true },
+        { id: 'reviewTasks', label: 'Review Tasks', show: isManager || isAdmin },
+        { id: 'createTask', label: 'Create Task', show: isManager || isAdmin }
+      ]
+    },
+    {
+      id: 'users',
+      icon: UserPlus,
+      label: 'User Actions',
+      show: isAdmin,
+      submenu: [
+        { id: 'createUser', label: 'Create User', show: true },
+        { id: 'updateUser', label: 'Update User', show: true },
+        { id: 'deleteUser', label: 'Delete User', show: true }
+      ]
+    },
+    {
+      id: 'employees',
+      icon: Briefcase,
+      label: 'Employees',
+      show: isAdmin,
+      submenu: [
+        { id: 'createEmployee', label: 'Create Employee', show: true },
+        { id: 'updateEmployee', label: 'Update Employee', show: true },
+        { id: 'deleteEmployee', label: 'Delete Employee', show: true }
+      ]
+    }
+  ];
+
+  return (
+    <>
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-20 lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
+      <div className={`fixed lg:static inset-y-0 left-0 z-30 w-64 bg-gray-900 text-white transform transition-transform duration-300 ease-in-out ${
+          sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+        }`}>
+        <div className="p-4 border-b border-gray-800 flex items-center justify-between">
+          <h2 className="text-xl font-bold">Menu</h2>
+          <button onClick={() => setSidebarOpen(false)} className="lg:hidden text-gray-400 hover:text-white">
+            <X size={24} />
+          </button>
+        </div>
+
+        <nav className="p-4 space-y-2">
+          {menuItems.map(item => {
+            if (!item.show) return null;
+            const Icon = item.icon;
+
+            return (
+              <div key={item.id}>
+                <button
+                  onClick={() => toggleMenu(item.id)}
+                  className="w-full flex items-center justify-between px-4 py-3 rounded-lg hover:bg-gray-800 transition"
+                >
+                  <div className="flex items-center gap-3">
+                    <Icon size={20} />
+                    <span>{item.label}</span>
+                  </div>
+                  <ChevronDown size={16} className={`transform transition-transform ${expandedMenus[item.id] ? 'rotate-180' : ''}`} />
+                </button>
+
+                {expandedMenus[item.id] && (
+                  <div className="ml-4 mt-1 space-y-1">
+                    {item.submenu.map(sub => {
+                      if (!sub.show) return null;
+                      return (
+                        <button
+                          key={sub.id}
+                          onClick={() => {
+                            setActiveView(sub.id);
+                            setSidebarOpen(false);
+                          }}
+                          className={`w-full text-left px-4 py-2 rounded-lg text-sm transition ${
+                            activeView === sub.id ? 'bg-indigo-600 text-white' : 'text-gray-300 hover:bg-gray-800'
+                          }`}
+                        >
+                          {sub.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </nav>
+      </div>
+    </>
+  );
+};
+
+// Header Component
+const Header = ({ sidebarOpen, setSidebarOpen }) => {
+  const { user, logout } = useAuth();
+
+  return (
+    <header className="bg-white shadow-sm border-b border-gray-200 px-4 py-3">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <button onClick={() => setSidebarOpen(!sidebarOpen)} className="lg:hidden text-gray-600 hover:text-gray-900">
+            <Menu size={24} />
+          </button>
+          <h1 className="text-xl font-bold text-gray-800">Task Manager Dashboard</h1>
+        </div>
+
+        <div className="flex items-center gap-4">
+          <div className="text-right">
+            <p className="text-sm font-medium text-gray-800">Employee ID: {user?.emp_id}</p>
+            <p className="text-xs text-gray-600 capitalize">{user?.role}</p>
+          </div>
+          <button onClick={logout} className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">
+            <LogOut size={16} />
+            <span className="hidden sm:inline">Logout</span>
+          </button>
+        </div>
+      </div>
+    </header>
+  );
+};
+
+// My Tasks View
+const MyTasks = () => {
+  const { token, user } = useAuth();
+  const [tasks, setTasks] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    fetchTasks();
+  }, []);
+
+  const fetchTasks = async () => {
+    try {
+      const data = await apiCall('/api/v1/tasks', 'GET', null, token);
+      const myTasks = data.filter(task => task.assigned_to === user.emp_id);
+      setTasks(myTasks);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const updateStatus = async (taskId, newStatus) => {
+    try {
+      await apiCall(`/api/v1/tasks/${taskId}/status`, 'PATCH', { status: newStatus }, token);
+      fetchTasks();
+    } catch (err) {
+      alert(err.message);
+    }
+  };
+
+  if (loading) return <div className="p-8">Loading...</div>;
+  if (error) return <div className="p-8 text-red-600">{error}</div>;
+
+  return (
+    <div className="p-6">
+      <h2 className="text-2xl font-bold mb-6">My Tasks</h2>
+      
+      {tasks.length === 0 ? (
+        <p className="text-gray-600">No tasks assigned to you.</p>
+      ) : (
+        <div className="grid gap-4">
+          {tasks.map(task => (
+            <div key={task.t_id} className="bg-white rounded-lg shadow p-6 border border-gray-200">
+              <div className="flex justify-between items-start mb-4">
+                <div>
+                  <h3 className="text-lg font-bold text-gray-800">{task.title}</h3>
+                  <p className="text-gray-600 text-sm mt-1">{task.description}</p>
+                </div>
+                <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                  task.priority === 'high' ? 'bg-red-100 text-red-800' :
+                  task.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' :
+                  'bg-green-100 text-green-800'
+                }`}>
+                  {task.priority}
+                </span>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4 text-sm mb-4">
+                <div>
+                  <span className="text-gray-600">Created By:</span>
+                  <span className="ml-2 font-medium">{task.created_by}</span>
+                </div>
+                <div>
+                  <span className="text-gray-600">Reviewer:</span>
+                  <span className="ml-2 font-medium">{task.reviewer}</span>
+                </div>
+                <div>
+                  <span className="text-gray-600">Expected Closure:</span>
+                  <span className="ml-2 font-medium">
+                    {new Date(task.expected_closure).toLocaleDateString()}
+                  </span>
+                </div>
+                <div>
+                  <span className="text-gray-600">Status:</span>
+                  <span className="ml-2 font-medium capitalize">{task.status.replace('_', ' ')}</span>
+                </div>
+              </div>
+
+              <div className="flex gap-2">
+                <select
+                  value={task.status}
+                  onChange={(e) => updateStatus(task.t_id, e.target.value)}
+                  className="px-4 py-2 border border-gray-300 rounded-lg text-sm"
+                >
+                  <option value="pending">Pending</option>
+                  <option value="in_progress">In Progress</option>
+                  <option value="completed">Completed</option>
+                  <option value="on_hold">On Hold</option>
+                  <option value="cancelled">Cancelled</option>
+                </select>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+// Review Tasks View
+const ReviewTasks = () => {
+  const { token, user } = useAuth();
+  const [tasks, setTasks] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchTasks();
+  }, []);
+
+  const fetchTasks = async () => {
+    try {
+      const data = await apiCall('/api/v1/tasks', 'GET', null, token);
+      const reviewTasks = data.filter(task => task.reviewer === user.emp_id);
+      setTasks(reviewTasks);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const updateStatus = async (taskId, newStatus) => {
+    try {
+      await apiCall(`/api/v1/tasks/${taskId}/status`, 'PATCH', { status: newStatus }, token);
+      fetchTasks();
+    } catch (err) {
+      alert(err.message);
+    }
+  };
+
+  if (loading) return <div className="p-8">Loading...</div>;
+
+  return (
+    <div className="p-6">
+      <h2 className="text-2xl font-bold mb-6">Tasks to Review</h2>
+      
+      {tasks.length === 0 ? (
+        <p className="text-gray-600">No tasks to review.</p>
+      ) : (
+        <div className="grid gap-4">
+          {tasks.map(task => (
+            <div key={task.t_id} className="bg-white rounded-lg shadow p-6 border border-gray-200">
+              <div className="flex justify-between items-start mb-4">
+                <div>
+                  <h3 className="text-lg font-bold text-gray-800">{task.title}</h3>
+                  <p className="text-gray-600 text-sm mt-1">{task.description}</p>
+                </div>
+                <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                  task.priority === 'high' ? 'bg-red-100 text-red-800' :
+                  task.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' :
+                  'bg-green-100 text-green-800'
+                }`}>
+                  {task.priority}
+                </span>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4 text-sm mb-4">
+                <div>
+                  <span className="text-gray-600">Assigned To:</span>
+                  <span className="ml-2 font-medium">{task.assigned_to}</span>
+                </div>
+                <div>
+                  <span className="text-gray-600">Status:</span>
+                  <span className="ml-2 font-medium capitalize">{task.status.replace('_', ' ')}</span>
+                </div>
+              </div>
+
+              <div className="flex gap-2">
+                <select
+                  value={task.status}
+                  onChange={(e) => updateStatus(task.t_id, e.target.value)}
+                  className="px-4 py-2 border border-gray-300 rounded-lg text-sm"
+                >
+                  <option value="pending">Pending</option>
+                  <option value="in_progress">In Progress</option>
+                  <option value="completed">Completed</option>
+                  <option value="on_hold">On Hold</option>
+                  <option value="cancelled">Cancelled</option>
+                </select>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+// Create Task View
+const CreateTask = () => {
+  const { token } = useAuth();
+  const [employees, setEmployees] = useState([]);
+  const [formData, setFormData] = useState({
+    title: '',
+    description: '',
+    created_by: '',
+    assigned_to: '',
+    assigned_by: '',
+    priority: 'medium',
+    status: 'pending',
+    reviewer: '',
+    expected_closure: '',
+    remarks: ''
+  });
+  const [success, setSuccess] = useState('');
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    fetchEmployees();
+  }, []);
+
+  const fetchEmployees = async () => {
+    try {
+      const data = await apiCall('/api/v1/employees', 'GET', null, token);
+      setEmployees(data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setSuccess('');
+
+    try {
+      await apiCall('/api/v1/tasks', 'POST', formData, token);
+      setSuccess('Task created successfully!');
+      setFormData({
+        title: '',
+        description: '',
+        created_by: '',
+        assigned_to: '',
+        assigned_by: '',
+        priority: 'medium',
+        status: 'pending',
+        reviewer: '',
+        expected_closure: '',
+        remarks: ''
+      });
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  return (
+    <div className="p-6 max-w-3xl">
+      <h2 className="text-2xl font-bold mb-6">Create New Task</h2>
+
+      <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow p-6 space-y-4">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">Title</label>
+          <input
+            type="text"
+            value={formData.title}
+            onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+            required
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+          <textarea
+            value={formData.description}
+            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+            rows="3"
+            required
+          />
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Created By</label>
+            <select
+              value={formData.created_by}
+              onChange={(e) => setFormData({ ...formData, created_by: e.target.value })}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+              required
+            >
+              <option value="">Select Employee</option>
+              {employees.map(emp => (
+                <option key={emp.emp_id} value={emp.emp_id}>{emp.name} ({emp.emp_id})</option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Assigned To</label>
+            <select
+              value={formData.assigned_to}
+              onChange={(e) => setFormData({ ...formData, assigned_to: e.target.value })}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+              required
+            >
+              <option value="">Select Employee</option>
+              {employees.map(emp => (
+                <option key={emp.emp_id} value={emp.emp_id}>{emp.name} ({emp.emp_id})</option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Assigned By</label>
+            <select
+              value={formData.assigned_by}
+              onChange={(e) => setFormData({ ...formData, assigned_by: e.target.value })}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+              required
+            >
+              <option value="">Select Employee</option>
+              {employees.map(emp => (
+                <option key={emp.emp_id} value={emp.emp_id}>{emp.name} ({emp.emp_id})</option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Reviewer</label>
+            <select
+              value={formData.reviewer}
+              onChange={(e) => setFormData({ ...formData, reviewer: e.target.value })}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+              required
+            >
+              <option value="">Select Manager</option>
+              {employees.filter(emp => emp.mgr_id === null).map(emp => (
+                <option key={emp.emp_id} value={emp.emp_id}>{emp.name} ({emp.emp_id})</option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Priority</label>
+            <select
+              value={formData.priority}
+              onChange={(e) => setFormData({ ...formData, priority: e.target.value })}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+            >
+              <option value="low">Low</option>
+              <option value="medium">Medium</option>
+              <option value="high">High</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Expected Closure</label>
+            <input
+              type="datetime-local"
+              value={formData.expected_closure}
+              onChange={(e) => setFormData({ ...formData, expected_closure: e.target.value })}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+              required
+            />
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">Remarks</label>
+          <textarea
+            value={formData.remarks}
+            onChange={(e) => setFormData({ ...formData, remarks: e.target.value })}
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+            rows="2"
+          />
+        </div>
+
+        {success && <div className="bg-green-50 text-green-600 px-4 py-3 rounded-lg">{success}</div>}
+        {error && <div className="bg-red-50 text-red-600 px-4 py-3 rounded-lg">{error}</div>}
+
+        <button
+          type="submit"
+          className="w-full bg-indigo-600 text-white py-3 rounded-lg font-medium hover:bg-indigo-700"
+        >
+          Create Task
+        </button>
+      </form>
+    </div>
+  );
+};
+
+// Create Employee View
+const CreateEmployee = () => {
+  const { token } = useAuth();
+  const [employees, setEmployees] = useState([]);
+  const [formData, setFormData] = useState({
+    emp_id: '',
+    name: '',
+    email: '',
+    designation: '',
+    mgr_id: '',
+    password: '',
+    role: 'developer'
+  });
+  const [success, setSuccess] = useState('');
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    fetchEmployees();
+  }, []);
+
+  const fetchEmployees = async () => {
+    try {
+      const data = await apiCall('/api/v1/employees', 'GET', null, token);
+      setEmployees(data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setSuccess('');
+
+    try {
+      const { password, role, ...employeeData } = formData;
+      await apiCall('/api/v1/employees', 'POST', employeeData, token);
+      
+      await apiCall('/api/v1/users', 'POST', {
+        emp_id: parseInt(formData.emp_id),
+        password: password,
+        role: role
+      }, token);
+
+      setSuccess('Employee and user created successfully!');
+      setFormData({
+        emp_id: '',
+        name: '',
+        email: '',
+        designation: '',
+        mgr_id: '',
+        password: '',
+        role: 'developer'
+      });
+      fetchEmployees();
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  return (
+    <div className="p-6 max-w-2xl">
+      <h2 className="text-2xl font-bold mb-6">Create Employee</h2>
+
+      <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow p-6 space-y-4">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">Employee ID</label>
+          <input
+            type="text"
+            value={formData.emp_id}
+            onChange={(e) => setFormData({ ...formData, emp_id: e.target.value })}
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+            required
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">Name</label>
+          <input
+            type="text"
+            value={formData.name}
+            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+            required
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
+          <input
+            type="email"
+            value={formData.email}
+            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+            required
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">Designation</label>
+          <input
+            type="text"
+            value={formData.designation}
+            onChange={(e) => setFormData({ ...formData, designation: e.target.value })}
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+            required
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">Manager (Optional)</label>
+          <select
+            value={formData.mgr_id}
+            onChange={(e) => setFormData({ ...formData, mgr_id: e.target.value })}
+            className="w-full px-4 py-2 border border-gray
