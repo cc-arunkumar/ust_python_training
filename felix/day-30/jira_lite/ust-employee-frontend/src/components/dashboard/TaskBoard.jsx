@@ -10,6 +10,7 @@ const TaskBoard = ({
   onStatusChange,
   onAddRemark,
   onAssign,
+  onOpenPanel,
   userRole,
   employees,
   token, // ✅ ADD TOKEN PROP
@@ -250,6 +251,7 @@ const TaskBoard = ({
                       onAssign={onAssign}
                       employees={employees}
                       currentUserId={currentUserId}
+                      onOpenPanel={onOpenPanel}
                     />
                   </div>
                 ))

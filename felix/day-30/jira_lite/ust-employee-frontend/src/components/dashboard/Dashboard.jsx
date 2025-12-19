@@ -1,5 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { Plus, Search, Filter } from "lucide-react";
+import {
+  Plus,
+  Search,
+  Filter,
+  X,
+  Send,
+  Download,
+  Eye,
+  File,
+  MessageSquare,
+  UserPlus,
+  Calendar,
+} from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { api } from "../../services/api";
@@ -18,24 +30,25 @@ const Dashboard = () => {
   const [filterPriority, setFilterPriority] = useState("All");
   const [userRoles, setUserRoles] = useState([]);
   const [userName, setUserName] = useState("User");
+  const [currentView, setCurrentView] = useState(null);
 
-  const [currentView, setCurrentView] = useState(null); // 'admin' | 'manager' | 'developer'
+  const [managerEmployees, setManagerEmployees] = useState([]);
+  const [managers, setManagers] = useState([]);
 
-  // For task creation helpers
-  const [managerEmployees, setManagerEmployees] = useState([]); // developers under a manager
-  const [managers, setManagers] = useState([]); // managers list for admin reviewer
+  // Panel state
+  const [panel, setPanel] = useState(null);
+  const [panelFiles, setPanelFiles] = useState([]);
+  const [panelLoading, setPanelLoading] = useState(false);
+  const [panelRemark, setPanelRemark] = useState("");
+  const [panelAssignTo, setPanelAssignTo] = useState("");
+  const [panelStatus, setPanelStatus] = useState("");
 
-  // Callback to receive user name from Header
-  const handleUserNameFetched = (name) => {
-    setUserName(name);
-  };
+  const handleUserNameFetched = (name) => setUserName(name);
 
-  // Fetch user roles once
   useEffect(() => {
     const fetchUserRoles = async () => {
       try {
         const userData = await api.getUserById(token, user.emp_id);
-
         if (userData && Array.isArray(userData.role)) {
           setUserRoles(userData.role);
           setCurrentView(userData.role[0] || "developer");
@@ -49,11 +62,9 @@ const Dashboard = () => {
         setCurrentView("developer");
       }
     };
-
     fetchUserRoles();
   }, [token, user.emp_id]);
 
-  // Load tasks and helper lists when currentView changes
   useEffect(() => {
     if (currentView) {
       loadTasks();
@@ -67,8 +78,8 @@ const Dashboard = () => {
       setLoading(true);
       const data = await api.getTasks(token, currentView, user.emp_id);
       setTasks(Array.isArray(data) ? data : []);
-    } catch (error) {
-      console.error("Error loading tasks:", error);
+    } catch (err) {
+      console.error("Error loading tasks:", err);
       setTasks([]);
     } finally {
       setLoading(false);
@@ -76,7 +87,6 @@ const Dashboard = () => {
   };
 
   const loadHelperLists = async () => {
-    // Manager view: load developers under this manager
     if (currentView === "manager") {
       try {
         const data = await api.getEmployees(token, user.emp_id);
@@ -89,7 +99,6 @@ const Dashboard = () => {
       setManagerEmployees([]);
     }
 
-    // Admin view: load managers list for reviewer dropdown
     if (currentView === "admin") {
       try {
         const mgrs = await api.getManagers(token);
@@ -103,10 +112,8 @@ const Dashboard = () => {
     }
   };
 
-  // status change receives full task
   const handleStatusChange = async (task, newStatus) => {
     try {
-      // Manager: must assign before moving To Do → In Progress
       if (
         currentView === "manager" &&
         task.status === "To Do" &&
@@ -118,11 +125,10 @@ const Dashboard = () => {
         );
         return;
       }
-
       await api.updateTaskStatus(token, task._id, newStatus);
       loadTasks();
-    } catch (error) {
-      console.error("Error updating task:", error);
+    } catch (err) {
+      console.error("Error updating task:", err);
       alert("Failed to update task status");
     }
   };
@@ -130,16 +136,12 @@ const Dashboard = () => {
   const handleAddRemark = async (taskId, remark) => {
     try {
       await api.addRemark(token, user.emp_id, taskId, remark);
-
-      // Optimistically update local tasks state so the recipient (if in same session)
-      // sees the notification badge immediately without waiting for a full reload.
       try {
         const updatedTask = await api.getTaskById(token, taskId);
         const recipientId =
           currentView === "manager"
             ? updatedTask.assigned_to
             : updatedTask.assigned_by;
-
         setTasks((prev) =>
           prev.map((t) => {
             if (t._id !== taskId) return t;
@@ -150,7 +152,6 @@ const Dashboard = () => {
                 parseInt(nextNotifications[recipientId] || 0, 10) || 0;
               nextNotifications[recipientId] = prevCount + 1;
             }
-            // append remark locally as well for immediate UI feedback
             const nextRemarks = Array.isArray(t.remarks)
               ? [...t.remarks, { [user.emp_id]: remark }]
               : [{ [user.emp_id]: remark }];
@@ -162,22 +163,19 @@ const Dashboard = () => {
           })
         );
       } catch (e) {
-        // If optimistic update fails, fall back to reloading tasks
         console.warn(
           "Optimistic notification update failed, reloading tasks",
           e
         );
         loadTasks();
       }
-    } catch (error) {
-      console.error("Error adding remark:", error);
+    } catch (err) {
+      console.error("Error adding remark:", err);
     }
   };
 
-  // NEW: assign handler for TaskCard
   const handleAssign = async (taskId, empId) => {
     try {
-      // assuming you have an updateTask API that accepts partial updates
       await api.updateTask(token, taskId, {
         assigned_to: empId,
         assigned_by: user.emp_id,
@@ -185,9 +183,118 @@ const Dashboard = () => {
         updated_by: user.emp_id,
       });
       loadTasks();
-    } catch (error) {
-      console.error("Error assigning task:", error);
+    } catch (err) {
+      console.error("Error assigning task:", err);
       alert("Failed to assign task");
+    }
+  };
+
+  // Panel helpers
+  const openPanel = async (action, task) => {
+    setPanel({ action, task });
+    setPanelRemark("");
+    setPanelAssignTo(task.assigned_to || "");
+    setPanelStatus(task.status || "");
+
+    if (action === "remarks") {
+      try {
+        await api.clearTaskNotifications(token, task._id);
+        setTasks((prev) =>
+          prev.map((t) => {
+            if (t._id !== task._id) return t;
+            const nextNotifications = { ...(t.notifications || {}) };
+            nextNotifications[user.emp_id] = 0;
+            return { ...t, notifications: nextNotifications };
+          })
+        );
+      } catch (err) {
+        console.warn("Failed to clear notifications when opening remarks", err);
+      }
+    }
+
+    if (action === "files") {
+      setPanelLoading(true);
+      try {
+        const res = await api.getTaskFiles(token, task._id);
+        setPanelFiles(res.files || []);
+      } catch (err) {
+        console.error("Failed to load files for panel", err);
+        setPanelFiles([]);
+      } finally {
+        setPanelLoading(false);
+      }
+    }
+  };
+
+  const closePanel = () => {
+    setPanel(null);
+    setPanelFiles([]);
+  };
+
+  const handlePanelAssign = async () => {
+    if (!panel || !panel.task) return;
+    try {
+      await api.updateTask(token, panel.task._id, {
+        assigned_to: parseInt(panelAssignTo, 10),
+        assigned_by: user.emp_id,
+        assigned_at: new Date().toISOString(),
+        updated_by: user.emp_id,
+      });
+      await loadTasks();
+      closePanel();
+    } catch (err) {
+      console.error("Assign from panel failed", err);
+      alert("Failed to assign task");
+    }
+  };
+
+  const handlePanelStatusChange = async () => {
+    if (!panel || !panel.task) return;
+    try {
+      await api.updateTaskStatus(token, panel.task._id, panelStatus);
+      await loadTasks();
+      closePanel();
+    } catch (err) {
+      console.error("Panel status change failed", err);
+      alert("Failed to change status");
+    }
+  };
+
+  const handlePanelAddRemark = async () => {
+    if (!panel || !panel.task || !panelRemark.trim()) return;
+    try {
+      await api.addRemark(token, user.emp_id, panel.task._id, panelRemark);
+      setTasks((prev) =>
+        prev.map((t) => {
+          if (t._id !== panel.task._id) return t;
+          const nextRemarks = Array.isArray(t.remarks)
+            ? [...t.remarks, { [user.emp_id]: panelRemark }]
+            : [{ [user.emp_id]: panelRemark }];
+          return { ...t, remarks: nextRemarks };
+        })
+      );
+      setPanelRemark("");
+    } catch (err) {
+      console.error("Failed to add remark from panel", err);
+      alert("Failed to add remark");
+    }
+  };
+
+  const handlePanelUpload = async (e) => {
+    if (!panel || !panel.task) return;
+    const file = e.target.files[0];
+    if (!file) return;
+    setPanelLoading(true);
+    try {
+      await api.uploadFileToTask(token, panel.task._id, file);
+      const res = await api.getTaskFiles(token, panel.task._id);
+      setPanelFiles(res.files || []);
+      alert(`Uploaded ${file.name}`);
+    } catch (err) {
+      console.error("Upload failed", err);
+      alert("Upload failed");
+    } finally {
+      setPanelLoading(false);
     }
   };
 
@@ -228,7 +335,6 @@ const Dashboard = () => {
       />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Welcome Section */}
         <div className="mb-8">
           <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">
             Welcome back, {userName}!
@@ -242,15 +348,12 @@ const Dashboard = () => {
           </p>
         </div>
 
-        {/* Controls */}
         <div className="mb-8 bg-gradient-to-br from-white via-blue-50/30 to-purple-50/30 rounded-3xl shadow-2xl p-8 border-2 border-white backdrop-blur-sm relative overflow-hidden">
-          {/* Decorative background elements */}
           <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-blue-400/10 to-purple-400/10 rounded-full blur-3xl"></div>
           <div className="absolute bottom-0 left-0 w-64 h-64 bg-gradient-to-tr from-pink-400/10 to-blue-400/10 rounded-full blur-3xl"></div>
 
           <div className="relative z-10 flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
             <div className="flex flex-col sm:flex-row gap-4 flex-1 w-full sm:w-auto">
-              {/* Search Input */}
               <div className="relative flex-1 max-w-md group">
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-2xl opacity-0 group-focus-within:opacity-100 blur transition-opacity duration-300"></div>
                 <div className="relative">
@@ -268,7 +371,6 @@ const Dashboard = () => {
                 </div>
               </div>
 
-              {/* Priority Filter */}
               <div className="relative group min-w-[200px]">
                 <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl opacity-0 group-focus-within:opacity-100 blur transition-opacity duration-300"></div>
                 <div className="relative">
@@ -305,16 +407,15 @@ const Dashboard = () => {
               </div>
             </div>
 
-            {/* Only non-developer (admin/manager) can create tasks */}
             {currentView !== "developer" && (
-  <button
-    onClick={() => setShowCreateModal(true)}
-    className="flex items-center gap-2 px-8 py-4 bg-blue-600 text-white rounded-2xl hover:bg-blue-700 hover:shadow-lg transition-all font-bold shadow-md"
-  >
-    <Plus size={22} />
-    <span>Create Task</span>
-  </button>
-)}
+              <button
+                onClick={() => setShowCreateModal(true)}
+                className="flex items-center gap-2 px-8 py-4 bg-blue-600 text-white rounded-2xl hover:bg-blue-700 hover:shadow-lg transition-all font-bold shadow-md"
+              >
+                <Plus size={22} />
+                <span>Create Task</span>
+              </button>
+            )}
           </div>
         </div>
 
@@ -323,27 +424,229 @@ const Dashboard = () => {
           onStatusChange={handleStatusChange}
           onAddRemark={handleAddRemark}
           onAssign={handleAssign}
+          onOpenPanel={openPanel}
           userRole={currentView}
           employees={managerEmployees}
-          token={token} // ✅ ADD THIS LINE
+          token={token}
           currentUserId={user.emp_id}
         />
-      </main>
 
-      {showCreateModal && (
-        <CreateTaskModal
-          token={token}
-          empId={user.emp_id}
-          currentRole={currentView}
-          employees={managerEmployees} // for manager assigning to developers
-          managers={managers} // for admin selecting reviewer (manager)
-          onClose={() => setShowCreateModal(false)}
-          onSuccess={() => {
-            setShowCreateModal(false);
-            loadTasks();
-          }}
-        />
-      )}
+        {panel && (
+          <aside className="fixed right-6 top-24 w-96 max-h-[70vh] overflow-y-auto bg-white rounded-3xl shadow-2xl border-2 border-gray-100 z-50">
+            <div className="p-4 flex items-start justify-between border-b border-gray-200">
+              <div>
+                <h3 className="font-bold text-lg">{panel.task.title}</h3>
+                <p className="text-xs text-gray-500">{panel.action}</p>
+              </div>
+              <button
+                onClick={closePanel}
+                className="p-2 hover:bg-gray-100 rounded-lg"
+              >
+                <X size={18} />
+              </button>
+            </div>
+            <div className="p-4 space-y-4">
+              {panel.action === "assign" && (
+                <div className="space-y-3">
+                  <label className="text-sm font-semibold">Assign To</label>
+                  <select
+                    value={panelAssignTo}
+                    onChange={(e) => setPanelAssignTo(e.target.value)}
+                    className="w-full px-3 py-2 border rounded-md"
+                  >
+                    <option value="">Select developer...</option>
+                    {managerEmployees.map((emp) => (
+                      <option key={emp.emp_id} value={emp.emp_id}>
+                        {emp.name} (ID: {emp.emp_id})
+                      </option>
+                    ))}
+                  </select>
+                  <div className="flex justify-end">
+                    <button
+                      onClick={handlePanelAssign}
+                      disabled={!panelAssignTo}
+                      className="px-3 py-1.5 bg-blue-600 text-white rounded-md text-sm"
+                    >
+                      Assign
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {panel.action === "status" && (
+                <div className="space-y-3">
+                  <label className="text-sm font-semibold">Change Status</label>
+                  <select
+                    value={panelStatus}
+                    onChange={(e) => setPanelStatus(e.target.value)}
+                    className="w-full px-3 py-2 border rounded-md"
+                  >
+                    <option value="To Do">To Do</option>
+                    <option value="In Progress">In Progress</option>
+                    <option value="Review">Review</option>
+                    <option value="Done">Done</option>
+                  </select>
+                  <div className="flex justify-end">
+                    <button
+                      onClick={handlePanelStatusChange}
+                      className="px-3 py-1.5 bg-blue-600 text-white rounded-md text-sm"
+                    >
+                      Update
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {(panel.action === "remarks" || panel.action === "addRemark") && (
+                <div className="space-y-3">
+                  <div className="space-y-2">
+                    {(panel.task.remarks || []).length === 0 ? (
+                      <p className="text-sm text-gray-500">No remarks yet</p>
+                    ) : (
+                      (panel.task.remarks || []).map((r, i) => (
+                        <div key={i} className="p-3 bg-gray-50 rounded-md">
+                          <p className="text-sm">
+                            {typeof r === "object"
+                              ? Object.entries(r)
+                                  .map(([k, v]) => `${k}: ${v}`)
+                                  .join(", ")
+                              : r}
+                          </p>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                  <div>
+                    <label className="text-sm font-semibold">Add Remark</label>
+                    <div className="flex gap-2 mt-2">
+                      <input
+                        value={panelRemark}
+                        onChange={(e) => setPanelRemark(e.target.value)}
+                        className="flex-1 px-3 py-2 border rounded-md"
+                        placeholder="Write a remark..."
+                      />
+                      <button
+                        onClick={handlePanelAddRemark}
+                        className="px-3 py-1.5 bg-emerald-600 text-white rounded-md text-sm"
+                      >
+                        <Send size={16} />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {panel.action === "files" && (
+                <div className="space-y-3">
+                  <div>
+                    <label className="text-sm font-semibold">Files</label>
+                    <div className="space-y-2 mt-2">
+                      {panelLoading ? (
+                        <p className="text-sm text-gray-500">Loading...</p>
+                      ) : panelFiles.length === 0 ? (
+                        <p className="text-sm text-gray-500">
+                          No files attached
+                        </p>
+                      ) : (
+                        panelFiles.map((f) => (
+                          <div
+                            key={f.file_id}
+                            className="flex items-center justify-between p-2 bg-gray-50 rounded-md"
+                          >
+                            <div className="min-w-0">
+                              <p className="text-sm font-medium truncate">
+                                {f.file_name}
+                              </p>
+                              <p className="text-xs text-gray-400">
+                                {(f.file_size / 1024).toFixed(1)} KB
+                              </p>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <button
+                                onClick={async () => {
+                                  try {
+                                    const fileData = await api.downloadFile(
+                                      token,
+                                      f.file_id
+                                    );
+                                    if (
+                                      fileData.file_type.startsWith("image/")
+                                    ) {
+                                      const imgWindow = window.open(
+                                        "",
+                                        "_blank"
+                                      );
+                                      imgWindow.document.write(
+                                        `<html><body style=\"margin:0;padding:20px;background:#f8fafc;\"><img src=\"data:${fileData.file_type};base64,${fileData.file_data}\" style=\"max-width:90vw;max-height:90vh;border-radius:12px;\"><p style=\"text-align:center;\">${fileData.file_name}</p></body></html>`
+                                      );
+                                    } else {
+                                      await api.downloadFileBlob(
+                                        token,
+                                        f.file_id,
+                                        f.file_name
+                                      );
+                                    }
+                                  } catch (err) {
+                                    console.error("Preview failed", err);
+                                    alert("Preview failed");
+                                  }
+                                }}
+                                className="p-2 rounded-md hover:bg-gray-100"
+                              >
+                                <Eye size={16} />
+                              </button>
+                              <button
+                                onClick={async () => {
+                                  try {
+                                    await api.downloadFileBlob(
+                                      token,
+                                      f.file_id,
+                                      f.file_name
+                                    );
+                                  } catch (err) {
+                                    console.error("Download failed", err);
+                                    alert("Download failed");
+                                  }
+                                }}
+                                className="p-2 rounded-md hover:bg-gray-100"
+                              >
+                                <Download size={16} />
+                              </button>
+                            </div>
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  </div>
+                  <div>
+                    <label className="text-sm font-semibold">Upload File</label>
+                    <input
+                      type="file"
+                      onChange={handlePanelUpload}
+                      className="mt-2"
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+          </aside>
+        )}
+
+        {showCreateModal && (
+          <CreateTaskModal
+            token={token}
+            empId={user.emp_id}
+            currentRole={currentView}
+            employees={managerEmployees}
+            managers={managers}
+            onClose={() => setShowCreateModal(false)}
+            onSuccess={() => {
+              setShowCreateModal(false);
+              loadTasks();
+            }}
+          />
+        )}
+      </main>
     </div>
   );
 };

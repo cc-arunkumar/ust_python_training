@@ -23,12 +23,13 @@ const TaskCard = ({
   onAddRemark,
   canEdit,
   onAssign,
+  onOpenPanel,
   employees = [],
   token,
   currentUserId,
 }) => {
   const [showMenu, setShowMenu] = useState(false);
-  const [activeModal, setActiveModal] = useState(null); // 'assign', 'status', 'remarks', 'files', 'addRemark'
+  // activeModal removed: panels are rendered at Dashboard-level now
   const [remark, setRemark] = useState("");
   const [addingRemark, setAddingRemark] = useState(false);
   const [assignee, setAssignee] = useState(task.assigned_to || "");
@@ -127,21 +128,9 @@ const TaskCard = ({
     [token]
   );
 
-  // Load files when files modal opens
-  useEffect(() => {
-    if (activeModal === "files") {
-      loadTaskFiles();
-    }
-  }, [activeModal, loadTaskFiles]);
+  // Files loading will be handled by the dashboard panel when opened
 
-  const handleAddRemark = async () => {
-    if (!remark.trim()) return;
-    setAddingRemark(true);
-    await onAddRemark(task._id, remark);
-    setRemark("");
-    setAddingRemark(false);
-    setActiveModal(null);
-  };
+  // Adding remarks is handled by the dashboard panel (calls onAddRemark)
 
   // ✅ FIXED: Auto "In Progress" when manager assigns task
   const handleAssign = async () => {
@@ -180,7 +169,7 @@ const TaskCard = ({
         alert(`✅ Task assigned to employee ID ${assignee} successfully!`);
       }
 
-      setActiveModal(null);
+      // close menu; dashboard panel will handle status changes if needed
       setShowMenu(false);
     } catch (error) {
       console.error("Assignment failed:", error);
@@ -255,32 +244,7 @@ const TaskCard = ({
     return a.getTime() - b.getTime();
   }
 
-  // Clear notifications when the remarks modal is opened (ensure badge removed)
-  useEffect(() => {
-    let cancelled = false;
-    const maybeClear = async () => {
-      if (
-        activeModal === "remarks" &&
-        notificationCount > 0 &&
-        currentUserId &&
-        token
-      ) {
-        // Optimistically clear local badge so UI reflects opened notifications immediately
-        if (!cancelled) setNotificationCount(0);
-        try {
-          await api.clearTaskNotifications(token, task._id);
-        } catch (err) {
-          // If server clear fails, log it. We keep the badge cleared locally to reflect that
-          // the user has opened the notifications; a full refresh will reconcile server state.
-          console.error("Failed to clear notifications on modal open", err);
-        }
-      }
-    };
-    maybeClear();
-    return () => {
-      cancelled = true;
-    };
-  }, [activeModal, notificationCount, currentUserId, token, task._id]);
+  // Notification clearing is handled at the Dashboard level when the remarks panel opens.
 
   return (
     <>
@@ -303,17 +267,11 @@ const TaskCard = ({
 
               {/* Notification Bell */}
               <button
-                onClick={async (e) => {
+                onClick={(e) => {
                   e.stopPropagation();
-                  try {
-                    if (currentUserId) {
-                      await api.clearTaskNotifications(token, task._id);
-                      setNotificationCount(0);
-                    }
-                  } catch (err) {
-                    console.error("Failed to clear notification", err);
-                  }
-                  setActiveModal("remarks");
+                  // Ask dashboard to open the remarks panel for this task
+                  if (typeof onOpenPanel === "function")
+                    onOpenPanel("remarks", task);
                 }}
                 className="relative p-2 hover:bg-gray-100 rounded-lg transition-colors group-hover:bg-gray-50"
                 title={`Notifications: ${notificationCount}`}
@@ -348,7 +306,8 @@ const TaskCard = ({
                       <button
                         onClick={() => {
                           setShowMenu(false);
-                          setActiveModal("assign");
+                          if (typeof onOpenPanel === "function")
+                            onOpenPanel("assign", task);
                         }}
                         className="w-full px-4 py-3 text-left text-sm hover:bg-gradient-to-r hover:from-indigo-50 hover:to-blue-50 flex items-center gap-3 text-gray-700 hover:text-indigo-700 font-medium transition-all border-l-4 border-transparent hover:border-indigo-400"
                       >
@@ -359,8 +318,9 @@ const TaskCard = ({
 
                     <button
                       onClick={() => {
-                        setActiveModal("status");
                         setShowMenu(false);
+                        if (typeof onOpenPanel === "function")
+                          onOpenPanel("status", task);
                       }}
                       className="w-full px-4 py-3 text-left text-sm hover:bg-gradient-to-r hover:from-purple-50 hover:to-pink-50 flex items-center gap-3 text-gray-700 hover:text-purple-700 font-medium transition-all border-l-4 border-transparent hover:border-purple-400"
                     >
@@ -371,8 +331,9 @@ const TaskCard = ({
                     {task.remarks && task.remarks.length > 0 && (
                       <button
                         onClick={() => {
-                          setActiveModal("remarks");
                           setShowMenu(false);
+                          if (typeof onOpenPanel === "function")
+                            onOpenPanel("remarks", task);
                         }}
                         className="w-full px-4 py-3 text-left text-sm hover:bg-gray-50 flex items-center gap-3 text-gray-700 font-medium transition-all border-l-4 border-transparent hover:border-gray-400"
                       >
@@ -384,8 +345,9 @@ const TaskCard = ({
                     {canAddRemarkNow && (
                       <button
                         onClick={() => {
-                          setActiveModal("addRemark");
                           setShowMenu(false);
+                          if (typeof onOpenPanel === "function")
+                            onOpenPanel("addRemark", task);
                         }}
                         className="w-full px-4 py-3 text-left text-sm hover:bg-gradient-to-r hover:from-blue-50 hover:to-cyan-50 flex items-center gap-3 text-gray-700 hover:text-blue-700 font-medium transition-all border-l-4 border-transparent hover:border-blue-400"
                       >
@@ -398,7 +360,8 @@ const TaskCard = ({
                       <button
                         onClick={() => {
                           setShowMenu(false);
-                          setActiveModal("files");
+                          if (typeof onOpenPanel === "function")
+                            onOpenPanel("files", task);
                         }}
                         className="w-full px-4 py-3 text-left text-sm hover:bg-gradient-to-r hover:from-emerald-50 hover:to-teal-50 flex items-center gap-3 text-gray-700 hover:text-emerald-700 font-medium transition-all border-l-4 border-transparent hover:border-emerald-400"
                       >
@@ -457,7 +420,7 @@ const TaskCard = ({
               <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white shadow-sm">
                 <Calendar size={14} />
               </div>
-              
+
               <div className="flex-1">
                 <span className="text-gray-500 font-medium block">
                   Due date
@@ -494,261 +457,7 @@ const TaskCard = ({
         </div>
       </div>
 
-      {/* Modals */}
-      {activeModal && (
-        <div
-          className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
-          onClick={() => setActiveModal(null)}
-        >
-          <div
-            className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-hidden border border-gray-200/50"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="sticky top-0 bg-gradient-to-r from-gray-50 to-white/50 backdrop-blur border-b-2 border-gray-200 p-6 flex items-center justify-between shadow-sm">
-              <h3 className="font-bold text-xl bg-gradient-to-r from-gray-900 via-gray-800 to-gray-700 bg-clip-text text-transparent">
-                {activeModal === "assign" && "👤 Assign Task"}
-                {activeModal === "status" && "📋 Change Status"}
-                {activeModal === "remarks" && "💬 Task Remarks"}
-                {activeModal === "files" && "📎 Manage Files"}
-                {activeModal === "addRemark" && "✍️ Add Remark"}
-              </h3>
-              <button
-                onClick={() => setActiveModal(null)}
-                className="p-2 hover:bg-gray-200 rounded-xl transition-all group"
-              >
-                <X
-                  size={24}
-                  className="text-gray-500 group-hover:text-gray-700"
-                />
-              </button>
-            </div>
-
-            <div className="p-6 max-h-[60vh] overflow-y-auto custom-scrollbar">
-              {/* Assign Modal */}
-              {activeModal === "assign" && (
-                <div className="space-y-4">
-                  <select
-                    value={assignee}
-                    onChange={(e) => setAssignee(e.target.value)}
-                    className="w-full px-4 py-4 border-2 border-indigo-200 rounded-2xl text-sm focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 bg-white/50 backdrop-blur-sm font-semibold shadow-sm"
-                  >
-                    <option value="">Select developer to assign</option>
-                    {employees.map((emp) => (
-                      <option
-                        key={emp.id || emp.emp_id}
-                        value={emp.emp_id ?? emp.id}
-                      >
-                        {emp.name} (ID: {emp.emp_id ?? emp.id})
-                      </option>
-                    ))}
-                  </select>
-                  <button
-                    onClick={handleAssign}
-                    disabled={!assignee}
-                    className="w-full px-6 py-4 bg-gradient-to-r from-indigo-600 to-blue-600 text-white text-sm rounded-2xl font-bold shadow-lg hover:from-indigo-700 hover:to-blue-700 hover:shadow-xl hover:scale-[1.02] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                  >
-                    <UserPlus size={20} />
-                    Assign Task
-                  </button>
-                </div>
-              )}
-
-              {/* Status Modal */}
-              {activeModal === "status" && (
-                <div className="space-y-4">
-                  {task.status === "To Do" && !task.assigned_to && (
-                    <div className="text-sm text-orange-600 bg-gradient-to-r from-orange-50 to-red-50 px-4 py-3 rounded-2xl border-2 border-orange-200 font-medium shadow-sm">
-                      ⚠️ Please assign this task before changing status
-                    </div>
-                  )}
-                  <select
-                    value={task.status}
-                    onChange={(e) => {
-                      onStatusChange(task, e.target.value);
-                      setActiveModal(null);
-                    }}
-                    disabled={
-                      !canEdit || (task.status === "To Do" && !task.assigned_to)
-                    }
-                    className="w-full px-4 py-4 border-2 border-purple-200 rounded-2xl text-sm focus:ring-4 focus:ring-purple-500/20 focus:border-purple-500 disabled:bg-gray-100 disabled:cursor-not-allowed font-semibold shadow-sm bg-white/50 backdrop-blur-sm"
-                  >
-                    <option value="To Do">📋 To Do</option>
-                    <option value="In Progress">⚡ In Progress</option>
-                    <option value="Review">👁️ Review</option>
-                    <option value="Done">✅ Done</option>
-                  </select>
-                </div>
-              )}
-
-              {/* Remarks Modal */}
-              {activeModal === "remarks" && (
-                <div className="space-y-3">
-                  {!task.remarks || task.remarks.length === 0 ? (
-                    <div className="text-center py-12 text-gray-500">
-                      <MessageSquare
-                        size={48}
-                        className="mx-auto mb-4 opacity-30"
-                      />
-                      <p className="text-lg font-medium">No remarks yet</p>
-                      <p className="text-sm">Remarks will appear here</p>
-                    </div>
-                  ) : (
-                    task.remarks.map((r, i) => (
-                      <div
-                        key={i}
-                        className="bg-gradient-to-r from-gray-50 to-blue-50 p-4 rounded-2xl border border-gray-200 shadow-sm hover:shadow-md transition-all"
-                      >
-                        <div className="flex items-start gap-3">
-                          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-gray-400 to-gray-500 flex items-center justify-center text-white text-sm font-bold flex-shrink-0 shadow-md">
-                            {i + 1}
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <p className="text-gray-800 font-medium mb-1">
-                              {typeof r === "object"
-                                ? Object.keys(r)[0] || "Remark"
-                                : "Remark"}
-                            </p>
-                            <p className="text-sm text-gray-700 leading-relaxed">
-                              {typeof r === "object"
-                                ? Object.entries(r)
-                                    .map(([k, v]) => `${k}: ${v}`)
-                                    .join(", ")
-                                : r}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    ))
-                  )}
-                </div>
-              )}
-
-              {/* Files Modal */}
-              {activeModal === "files" && (
-                <div className="space-y-4">
-                  <div className="p-5 bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl border-2 border-dashed border-emerald-200 shadow-inner">
-                    <input
-                      key={fileInputKey}
-                      ref={fileInputRef}
-                      type="file"
-                      onChange={handleFileUpload}
-                      className="hidden"
-                      accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif"
-                    />
-                    <button
-                      onClick={() => fileInputRef.current?.click()}
-                      disabled={uploading}
-                      className="w-full flex items-center justify-center gap-3 px-6 py-4 text-sm font-bold bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-xl hover:from-emerald-600 hover:to-teal-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg hover:shadow-xl hover:scale-[1.02]"
-                    >
-                      {uploading ? (
-                        <>
-                          <Loader2 className="w-5 h-5 animate-spin" />
-                          Uploading...
-                        </>
-                      ) : (
-                        <>
-                          <Upload size={20} />
-                          {selectedFileName || "Choose file to upload"}
-                        </>
-                      )}
-                    </button>
-                    <p className="text-xs text-emerald-600 mt-3 text-center font-medium">
-                      📎 Supports PDF, DOC, Images (Max 10MB)
-                    </p>
-                  </div>
-
-                  {taskFiles.length > 0 ? (
-                    <div className="space-y-3 max-h-64 overflow-y-auto custom-scrollbar">
-                      {taskFiles.map((file) => (
-                        <div
-                          key={file.file_id}
-                          className="flex items-center justify-between p-4 bg-white rounded-xl border border-gray-200 hover:shadow-lg hover:border-emerald-300 transition-all group"
-                        >
-                          <div className="flex items-center gap-3 flex-1 min-w-0">
-                            <div className="w-10 h-10 bg-gradient-to-br from-gray-400 to-gray-500 rounded-xl flex items-center justify-center text-white font-bold text-sm shadow-md flex-shrink-0">
-                              {file.file_name.split(".").pop()?.toUpperCase() ||
-                                "F"}
-                            </div>
-                            <div className="min-w-0 flex-1">
-                              <p className="font-semibold text-sm text-gray-900 truncate group-hover:text-emerald-700">
-                                {file.file_name}
-                              </p>
-                              <p className="text-xs text-gray-500 font-mono">
-                                {(file.file_size / 1024).toFixed(1)} KB
-                              </p>
-                            </div>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <button
-                              onClick={() => handlePreviewFile(file.file_id)}
-                              className="p-2.5 text-gray-500 hover:text-emerald-600 hover:bg-emerald-50 rounded-xl transition-all shadow-sm hover:shadow-md group-hover:scale-110"
-                              title="Preview"
-                            >
-                              <Eye size={18} />
-                            </button>
-                            <button
-                              onClick={() =>
-                                handleDownloadFile(file.file_id, file.file_name)
-                              }
-                              className="p-3 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all shadow-sm hover:shadow-md group-hover:scale-110"
-                              title="Download"
-                            >
-                              <Download size={20} />
-                            </button>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="text-center py-12 text-gray-500 border-2 border-dashed border-gray-200 rounded-2xl">
-                      <File size={48} className="mx-auto mb-4 opacity-30" />
-                      <p className="text-lg font-semibold">No files attached</p>
-                      <p className="text-sm mt-1">
-                        Upload files using the button above
-                      </p>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* Add Remark Modal */}
-              {activeModal === "addRemark" && (
-                <div className="space-y-4">
-                  <input
-                    type="text"
-                    value={remark}
-                    onChange={(e) => setRemark(e.target.value)}
-                    placeholder="Enter your remark here..."
-                    className="w-full px-5 py-4 border-2 border-blue-200 rounded-2xl text-sm focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 bg-white/50 backdrop-blur-sm font-semibold shadow-sm"
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" && !addingRemark && remark.trim()) {
-                        handleAddRemark();
-                      }
-                    }}
-                  />
-                  <button
-                    onClick={handleAddRemark}
-                    disabled={addingRemark || !remark.trim()}
-                    className="w-full px-6 py-4 bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-2xl text-sm font-bold hover:from-blue-700 hover:to-cyan-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg hover:shadow-xl hover:scale-[1.02] flex items-center justify-center gap-2"
-                  >
-                    {addingRemark ? (
-                      <>
-                        <Loader2 className="w-5 h-5 animate-spin" />
-                        Adding Remark...
-                      </>
-                    ) : (
-                      <>
-                        <Send size={20} />
-                        Add Remark
-                      </>
-                    )}
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Modals removed: dashboard-level panel handles assign/status/remarks/files */}
     </>
   );
 };

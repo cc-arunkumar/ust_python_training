@@ -161,11 +161,15 @@ def update_task_status_only(task_id: str, status_update: TaskStatusUpdate, user:
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@task_router.patch("/tasks/{id}/{task_id}/remarks", tags=["Tasks"])
-def update_task_remarks_only(task_id: str, remarks_update: TaskRemarksUpdate, user: str = Depends(get_current_user)):
+@task_router.patch("/tasks/{emp_id}/{task_id}/remarks", tags=["Tasks"])
+def update_task_remarks_only(emp_id: int, task_id: str, remarks_update: TaskRemarksUpdate, user: str = Depends(get_current_user)):
     try:
-        emp_id = int(user)
-        auth_user = get_User_by_id(emp_id)
+        # Ensure the authenticated user matches the emp_id in the path for security
+        auth_emp_id = int(user)
+        if auth_emp_id != emp_id:
+            raise HTTPException(status_code=403, detail="Forbidden: mismatched user")
+
+        auth_user = get_User_by_id(auth_emp_id)
         if not auth_user:
             raise HTTPException(status_code=401, detail="User not found")
 
@@ -174,10 +178,13 @@ def update_task_remarks_only(task_id: str, remarks_update: TaskRemarksUpdate, us
         if not any(r in roles for r in ["manager", "developer"]):
             raise HTTPException(status_code=403, detail="Forbidden: manager or developer role required to update task remarks")
 
-        modified_count = update_task_remarks(emp_id, task_id, remarks_update)
+        modified_count = update_task_remarks(auth_emp_id, task_id, remarks_update)
         if modified_count == 0:
             raise HTTPException(status_code=404, detail="Task not found or no changes made")
         return {"modified_count": modified_count}
+    except HTTPException:
+        # re-raise HTTP exceptions as-is
+        raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
