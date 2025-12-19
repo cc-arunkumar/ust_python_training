@@ -215,6 +215,7 @@ const Dashboard = () => {
               recentTasks.map((task) => (
                 <div
                   key={task.t_id}
+                  
                   // onClick={() => navigate(`/tasks/${task.t_id}`)}
                   className="p-4 border border-gray-200 rounded-lg hover:border-primary-300 hover:shadow-md transition-all duration-200 cursor-pointer"
                 >
@@ -269,7 +270,7 @@ const Dashboard = () => {
             <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
               <span className="text-gray-700">Active Tasks</span>
               <span className="font-bold text-green-600">
-                {stats.inProgressTasks}
+                {stats.inProgressTasks+stats.reviewTasks}
               </span>
             </div>
             <div className="flex items-center justify-between p-3 bg-orange-50 rounded-lg">

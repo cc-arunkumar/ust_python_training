@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { employeeAPI } from "../services/api";
-import { Plus, Search, Edit, Trash2 } from "lucide-react";
+import { Plus, Search, Edit, Trash2, X as XIcon } from "lucide-react";
+import { userAPI } from "../services/api";
 import type { Employee } from "../types";
 
 const Employees = () => {
@@ -72,7 +73,7 @@ const Employees = () => {
   }
 
   return (
-    <div className="space-y-6 animate-fade-in">
+    <div className="space-y-6 animate-fade-in text-sm">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold text-gray-800 mb-2">Employees</h1>
@@ -225,6 +226,60 @@ const EmployeeModal: React.FC<{
   });
   const [assigningRole, setAssigningRole] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [managers, setManagers] = useState<{ e_id?: number; name?: string }[]>(
+    []
+  );
+
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        // try to fetch users who have Manager role
+        let mgrUsers: any[] = [];
+        try {
+          mgrUsers = await userAPI.getByRole("Manager");
+        } catch (err) {
+          // fallback: fetch all and filter client-side
+          const all = await userAPI.getAll("");
+          mgrUsers = (all || []).filter((u: any) => {
+            const r = (u as any).role;
+            if (Array.isArray(r)) return r.includes("Manager");
+            if (typeof r === "string") {
+              const trimmed = r.trim();
+              if (trimmed.startsWith("[") && trimmed.endsWith("]")) {
+                try {
+                  const parsed = JSON.parse(trimmed);
+                  return Array.isArray(parsed) && parsed.includes("Manager");
+                } catch (_e) {
+                  return trimmed.includes("Manager");
+                }
+              }
+              return trimmed.includes("Manager");
+            }
+            return false;
+          });
+        }
+
+        const resolved = await Promise.all(
+          mgrUsers.map(async (u: any) => {
+            try {
+              const emp = await employeeAPI.getById(u.e_id, "Manager");
+              return { e_id: u.e_id, name: emp?.name };
+            } catch (_e) {
+              return { e_id: u.e_id, name: undefined };
+            }
+          })
+        );
+        if (!mounted) return;
+        setManagers(resolved || []);
+      } catch (err) {
+        console.debug("Failed to load managers:", err);
+      }
+    })();
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -259,101 +314,127 @@ const EmployeeModal: React.FC<{
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 animate-fade-in">
-      <div className="bg-white rounded-xl shadow-xl max-w-lg w-full animate-scale-in">
-        <div className="p-6 border-b border-gray-200">
-          <h2 className="text-2xl font-bold text-gray-800">
+      <div
+        className="relative z-10 bg-white rounded-lg shadow-xl w-full max-w-md md:max-w-[28rem] md:h-[28rem] overflow-hidden animate-scale-in"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex items-center justify-between px-4 py-3 border-b">
+          <h2 className="text-lg font-medium text-gray-800">
             {employee ? "Edit Employee" : "Add New Employee"}
           </h2>
+          <button
+            type="button"
+            onClick={onClose}
+            className="text-gray-500 hover:text-gray-700 p-1 rounded"
+            aria-label="Close"
+          >
+            <XIcon size={16} />
+          </button>
         </div>
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Name *
-            </label>
-            <input
-              type="text"
-              required
-              value={formData.name}
-              onChange={(e) =>
-                setFormData({ ...formData, name: e.target.value })
-              }
-              className="input-field"
-              pattern="^[a-zA-Zà-ÿÀ-ÿ' -]+$"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Email *
-            </label>
-            <input
-              type="email"
-              required
-              value={formData.email}
-              onChange={(e) =>
-                setFormData({ ...formData, email: e.target.value })
-              }
-              className="input-field"
-              pattern="^[a-zA-Z0-9_.+-]+@ust\.com$"
-            />
-            <p className="text-xs text-gray-500 mt-1">Must end with @ust.com</p>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Designation *
-            </label>
-            <input
-              type="text"
-              required
-              value={formData.designation}
-              onChange={(e) =>
-                setFormData({ ...formData, designation: e.target.value })
-              }
-              className="input-field"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Manager ID *
-            </label>
-            <input
-              type="number"
-              required
-              value={formData.mgr_id}
-              onChange={(e) =>
-                setFormData({ ...formData, mgr_id: e.target.value })
-              }
-              className="input-field"
-            />
-          </div>
-          {!employee && (
+
+        <form onSubmit={handleSubmit} className="flex flex-col h-full">
+          <div className="px-4 py-3 overflow-auto flex-1 space-y-3 pb-20">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Assign Roles
+                Name *
               </label>
-              <div className="space-y-2">
-                {["Admin", "Manager", "Developer"].map((role) => (
-                  <label key={role} className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      checked={assigningRole.includes(role)}
-                      onChange={(e) => {
-                        if (e.target.checked) {
-                          setAssigningRole([...assigningRole, role]);
-                        } else {
-                          setAssigningRole(
-                            assigningRole.filter((r) => r !== role)
-                          );
-                        }
-                      }}
-                      className="rounded"
-                    />
-                    <span className="text-sm text-gray-700">{role}</span>
-                  </label>
-                ))}
+              <input
+                type="text"
+                required
+                value={formData.name}
+                onChange={(e) =>
+                  setFormData({ ...formData, name: e.target.value })
+                }
+                className="input-field"
+                pattern="^[a-zA-Zà-ÿÀ-ÿ' -]+$"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Email *
+              </label>
+              <input
+                type="email"
+                required
+                value={formData.email}
+                onChange={(e) =>
+                  setFormData({ ...formData, email: e.target.value })
+                }
+                className="input-field"
+                pattern="^[a-zA-Z0-9_.+-]+@ust\\.com$"
+              />
+              <p className="text-xs text-gray-500 mt-1">
+                Must end with @ust.com
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Designation *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={formData.designation}
+                  onChange={(e) =>
+                    setFormData({ ...formData, designation: e.target.value })
+                  }
+                  className="input-field"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Manager *
+                </label>
+                <select
+                  value={formData.mgr_id}
+                  onChange={(e) =>
+                    setFormData({ ...formData, mgr_id: e.target.value })
+                  }
+                  className="input-field"
+                >
+                  <option value="">-- Select manager --</option>
+                  {managers.map((m) => (
+                    <option key={m.e_id} value={String(m.e_id)}>
+                      {m.name ? String(m.name) : `#${m.e_id}`}
+                    </option>
+                  ))}
+                </select>
               </div>
             </div>
-          )}
-          <div className="flex gap-3 pt-4">
+
+            {!employee && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Assign Roles
+                </label>
+                <div className="grid grid-cols-1 gap-2">
+                  {["Admin", "Manager", "Developer"].map((role) => (
+                    <label key={role} className="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        checked={assigningRole.includes(role)}
+                        onChange={(e) => {
+                          if (e.target.checked)
+                            setAssigningRole([...assigningRole, role]);
+                          else
+                            setAssigningRole(
+                              assigningRole.filter((r) => r !== role)
+                            );
+                        }}
+                        className="rounded"
+                      />
+                      <span className="text-sm text-gray-700">{role}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div className="sticky bottom-0 bg-white px-4 py-3 border-t flex gap-3 z-20">
             <button
               type="submit"
               className="btn-primary flex-1"

@@ -629,7 +629,7 @@ const TaskColumn = ({
               remainingDays !== null &&
               (remainingDays <= 2 || remainingDays < 0);
             const urgencyClass = isUrgent
-              ? "border-2 border-red-500 bg-red-800 text-red-800 shadow-lg transform scale-105 animate-pulse"
+              ? "border-2 border-red-500 bg-red-300 text-red-800 shadow-lg transform scale-105 animate-pulse"
               : "";
 
             return (

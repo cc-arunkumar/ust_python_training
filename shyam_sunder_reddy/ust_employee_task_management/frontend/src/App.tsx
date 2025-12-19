@@ -6,6 +6,7 @@ import {
 } from "react-router-dom";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import Login from "./pages/Login";
+import Dashboard from "./pages/Dashboard";
 // Dashboard page removed — default index now routes to Tasks
 import Tasks from "./pages/Tasks";
 import TaskDetail from "./pages/TaskDetail";
@@ -57,7 +58,7 @@ function AppRoutes() {
         }
       >
         {/* index route now defaults to Tasks */}
-        <Route index element={<Tasks />} />
+        <Route index element={<Dashboard />} />
         <Route path="tasks" element={<Tasks />} />
         <Route path="tasks/:id" element={<TaskDetail />} />
         <Route path="employees" element={<Employees />} />
