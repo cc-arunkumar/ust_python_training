@@ -11,6 +11,8 @@ import {
   MessageSquare,
   UserPlus,
   Calendar,
+  Loader2,
+  Upload
 } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -344,23 +346,135 @@ const Dashboard = () => {
     }
   };
 
-  const handlePanelUpload = async (e) => {
-    if (!panel || !panel.task) return;
-    const file = e.target.files[0];
-    if (!file) return;
-    setPanelLoading(true);
-    try {
-      await api.uploadFileToTask(token, panel.task._id, file);
-      const res = await api.getTaskFiles(token, panel.task._id);
-      setPanelFiles(res.files || []);
-      alert(`Uploaded ${file.name}`);
-    } catch (err) {
-      console.error("Upload failed", err);
-      alert("Upload failed");
-    } finally {
-      setPanelLoading(false);
+
+const handlePanelUpload = async (e) => {
+  if (!panel || !panel.task) return;
+  
+  const file = e.target.files[0];
+  if (!file) return;
+  
+  setPanelLoading(true);
+  
+  try {
+    // Upload the file
+    await api.uploadFileToTask(token, panel.task._id, file);
+    
+    // Reload the files list
+    const res = await api.getTaskFiles(token, panel.task._id);
+    setPanelFiles(res.files || []);
+    
+    // Reset the file input
+    e.target.value = '';
+    
+    // Show success message
+    alert(`✅ "${file.name}" uploaded successfully!`);
+  } catch (err) {
+    console.error("Upload failed:", err);
+    alert(`❌ Upload failed: ${err.message || "Unknown error"}`);
+  } finally {
+    setPanelLoading(false);
+  }
+};
+
+  // Add these handler functions in Dashboard.jsx (after handlePanelUpload):
+
+const handlePreviewFile = async (fileId, fileName, fileType) => {
+  try {
+    const fileData = await api.downloadFile(token, fileId);
+    
+    if (fileData.file_type.startsWith("image/")) {
+      // Open image in new window
+      const imgWindow = window.open("", "_blank");
+      imgWindow.document.write(`
+        <html>
+          <head>
+            <title>${fileName}</title>
+            <style>
+              body {
+                margin: 0;
+                padding: 20px;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                min-height: 100vh;
+                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+              }
+              .container {
+                background: white;
+                border-radius: 20px;
+                padding: 30px;
+                box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+                max-width: 90vw;
+                max-height: 90vh;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+              }
+              img {
+                max-width: 100%;
+                max-height: 70vh;
+                border-radius: 12px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+              }
+              .filename {
+                margin-top: 20px;
+                color: #64748b;
+                font-size: 18px;
+                font-weight: 600;
+                text-align: center;
+              }
+            </style>
+          </head>
+          <body>
+            <div class="container">
+              <img src="data:${fileData.file_type};base64,${fileData.file_data}" alt="${fileName}">
+              <p class="filename">${fileName}</p>
+            </div>
+          </body>
+        </html>
+      `);
+    } else if (fileData.file_type === "application/pdf") {
+      // Open PDF in new window
+      const pdfWindow = window.open("", "_blank");
+      pdfWindow.document.write(`
+        <html>
+          <head>
+            <title>${fileName}</title>
+            <style>
+              body { margin: 0; padding: 0; }
+              iframe { width: 100vw; height: 100vh; border: none; }
+            </style>
+          </head>
+          <body>
+            <iframe src="data:application/pdf;base64,${fileData.file_data}"></iframe>
+          </body>
+        </html>
+      `);
+    } else {
+      // For other file types, trigger download
+      await api.downloadFileBlob(token, fileId, fileName);
+      alert(`📥 Downloading ${fileName}...`);
     }
-  };
+  } catch (error) {
+    console.error("Preview failed:", error);
+    alert(`❌ Preview failed: ${error.message}`);
+  }
+};
+
+const handleDownloadFile = async (fileId, fileName) => {
+  try {
+    await api.downloadFileBlob(token, fileId, fileName);
+    alert(`✅ Downloaded ${fileName} successfully!`);
+  } catch (error) {
+    console.error("Download failed:", error);
+    alert(`❌ Download failed: ${error.message}`);
+  }
+};
+
+// Now replace the files panel section with this updated version:
+
+
 
   const filteredTasks = tasks.filter((task) => {
     const matchesSearch =
@@ -638,97 +752,97 @@ const Dashboard = () => {
               )}
 
               {panel.action === "files" && (
-                <div className="space-y-3">
-                  <div>
-                    <label className="text-sm font-semibold">Files</label>
-                    <div className="space-y-2 mt-2">
-                      {panelLoading ? (
-                        <p className="text-sm text-gray-500">Loading...</p>
-                      ) : panelFiles.length === 0 ? (
-                        <p className="text-sm text-gray-500">
-                          No files attached
-                        </p>
-                      ) : (
-                        panelFiles.map((f) => (
-                          <div
-                            key={f.file_id}
-                            className="flex items-center justify-between p-2 bg-gray-50 rounded-md"
-                          >
-                            <div className="min-w-0">
-                              <p className="text-sm font-medium truncate">
-                                {f.file_name}
-                              </p>
-                              <p className="text-xs text-gray-400">
-                                {(f.file_size / 1024).toFixed(1)} KB
-                              </p>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <button
-                                onClick={async () => {
-                                  try {
-                                    const fileData = await api.downloadFile(
-                                      token,
-                                      f.file_id
-                                    );
-                                    if (
-                                      fileData.file_type.startsWith("image/")
-                                    ) {
-                                      const imgWindow = window.open(
-                                        "",
-                                        "_blank"
-                                      );
-                                      imgWindow.document.write(
-                                        `<html><body style=\"margin:0;padding:20px;background:#f8fafc;\"><img src=\"data:${fileData.file_type};base64,${fileData.file_data}\" style=\"max-width:90vw;max-height:90vh;border-radius:12px;\"><p style=\"text-align:center;\">${fileData.file_name}</p></body></html>`
-                                      );
-                                    } else {
-                                      await api.downloadFileBlob(
-                                        token,
-                                        f.file_id,
-                                        f.file_name
-                                      );
-                                    }
-                                  } catch (err) {
-                                    console.error("Preview failed", err);
-                                    alert("Preview failed");
-                                  }
-                                }}
-                                className="p-2 rounded-md hover:bg-gray-100"
-                              >
-                                <Eye size={16} />
-                              </button>
-                              <button
-                                onClick={async () => {
-                                  try {
-                                    await api.downloadFileBlob(
-                                      token,
-                                      f.file_id,
-                                      f.file_name
-                                    );
-                                  } catch (err) {
-                                    console.error("Download failed", err);
-                                    alert("Download failed");
-                                  }
-                                }}
-                                className="p-2 rounded-md hover:bg-gray-100"
-                              >
-                                <Download size={16} />
-                              </button>
-                            </div>
-                          </div>
-                        ))
-                      )}
-                    </div>
-                  </div>
-                  <div>
-                    <label className="text-sm font-semibold">Upload File</label>
-                    <input
-                      type="file"
-                      onChange={handlePanelUpload}
-                      className="mt-2"
-                    />
-                  </div>
+  <div className="space-y-4">
+    <div>
+      <label className="text-sm font-semibold block mb-3 flex items-center gap-2">
+        <File size={16} className="text-gray-600" />
+        Attached Files
+      </label>
+      <div className="space-y-2">
+        {panelLoading ? (
+          <div className="flex items-center justify-center py-8">
+            <Loader2 className="animate-spin text-blue-600" size={32} />
+            <span className="ml-3 text-gray-600">Loading files...</span>
+          </div>
+        ) : panelFiles.length === 0 ? (
+          <div className="text-center py-8 bg-gray-50 rounded-xl border-2 border-dashed border-gray-200">
+            <File size={40} className="mx-auto text-gray-300 mb-2" />
+            <p className="text-sm text-gray-500 font-medium">No files attached</p>
+            <p className="text-xs text-gray-400 mt-1">Upload a file below</p>
+          </div>
+        ) : (
+          panelFiles.map((f) => (
+            <div
+              key={f.file_id}
+              className="flex items-center justify-between p-3 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl border border-blue-100 hover:shadow-md transition-all group"
+            >
+              <div className="flex items-center gap-3 min-w-0 flex-1">
+                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white shadow-sm flex-shrink-0">
+                  <File size={18} />
                 </div>
-              )}
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-semibold text-gray-800 truncate">
+                    {f.file_name}
+                  </p>
+                  <p className="text-xs text-gray-500">
+                    {(f.file_size / 1024).toFixed(1)} KB
+                  </p>
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-2 flex-shrink-0 ml-2">
+                <button
+                  onClick={() => handlePreviewFile(f.file_id, f.file_name, f.file_type)}
+                  className="p-2 rounded-lg hover:bg-blue-100 transition-colors group-hover:scale-110 transform duration-200"
+                  title="Preview"
+                >
+                  <Eye size={18} className="text-blue-600" />
+                </button>
+                <button
+                  onClick={() => handleDownloadFile(f.file_id, f.file_name)}
+                  className="p-2 rounded-lg hover:bg-purple-100 transition-colors group-hover:scale-110 transform duration-200"
+                  title="Download"
+                >
+                  <Download size={18} className="text-purple-600" />
+                </button>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+    </div>
+
+    <div className="pt-4 border-t border-gray-200">
+      <label className="text-sm font-semibold block mb-3 flex items-center gap-2">
+        <Upload size={16} className="text-gray-600" />
+        Upload New File
+      </label>
+      
+      <div className="relative">
+        <input
+          type="file"
+          onChange={handlePanelUpload}
+          className="hidden"
+          id="panel-file-upload"
+        />
+        <label
+          htmlFor="panel-file-upload"
+          className="flex items-center justify-center gap-3 px-6 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl cursor-pointer transition-all shadow-lg hover:shadow-xl font-semibold group"
+        >
+          <Upload size={20} className="group-hover:scale-110 transition-transform" />
+          <span>Choose File to Upload</span>
+        </label>
+      </div>
+      
+      {panelLoading && (
+        <div className="mt-3 flex items-center gap-2 text-sm text-blue-600 bg-blue-50 px-4 py-2 rounded-lg">
+          <Loader2 className="animate-spin" size={16} />
+          <span>Uploading...</span>
+        </div>
+      )}
+    </div>
+  </div>
+)}
 
               {panel.action === "edit" && (
   <div className="space-y-4">
