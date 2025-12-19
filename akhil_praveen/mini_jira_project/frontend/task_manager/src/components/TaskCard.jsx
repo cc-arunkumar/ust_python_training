@@ -16,6 +16,7 @@ import {
 import api from "../api/api";
 import { useEffect } from "react";
 import computeRemarkId from "../utils/remarkId";
+import { subscribe } from "../utils/events";
 import { STATUS_CONFIG, PRIORITY_COLORS } from "../utils/constants";
 
 function TaskCard({
@@ -315,17 +316,24 @@ function TaskCard({
 
     evaluate();
     // refresh unread count when storage changes (other components mark remarks read)
-    try {
-      window.addEventListener("storage", evaluate);
-      window.addEventListener("remarks:updated", evaluate);
-    } catch (e) {
-      // ignore if unavailable in some environments
-    }
+    const unsubStorage = (() => {
+      try {
+        window.addEventListener("storage", evaluate);
+        return () => window.removeEventListener("storage", evaluate);
+      } catch (e) {
+        return () => {};
+      }
+    })();
+
+    // subscribe to in-app events (reliable same-window)
+    const unsubPub = subscribe("remarks:updated", evaluate);
     return () => {
       mounted = false;
       try {
-        window.removeEventListener("storage", evaluate);
-        window.removeEventListener("remarks:updated", evaluate);
+        unsubStorage();
+      } catch (e) {}
+      try {
+        unsubPub();
       } catch (e) {}
     };
   }, [

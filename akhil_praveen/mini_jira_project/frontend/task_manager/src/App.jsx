@@ -283,7 +283,7 @@ function App() {
     );
   }
 
-  const canManageEmployees = role.includes("ADMIN");
+  const canManageEmployees = role.includes("ADMIN") || role.includes("MANAGER");
   const canCreateTasks = role.includes("ADMIN") || role.includes("MANAGER");
   const openTaskDetail = (taskId) => {
     setActiveTab("tasks");
@@ -305,6 +305,7 @@ function App() {
         onLogout={handleLogout}
         canManageEmployees={canManageEmployees}
         onRoleChange={handleRoleChange}
+        onRefresh={loadData}
       />
 
       <main className="container mx-auto bg-gray-200">
@@ -325,6 +326,7 @@ function App() {
             employees={employees}
             onRefresh={loadData}
             role={role}
+            currentEmpId={currentEmpId}
           />
         )}
       </main>

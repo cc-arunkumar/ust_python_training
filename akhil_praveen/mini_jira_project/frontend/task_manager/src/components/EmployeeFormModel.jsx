@@ -1,20 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import { X, User, Mail, Briefcase, UserCheck } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import { X, User, Mail, Briefcase, UserCheck } from "lucide-react";
 
-function EmployeeFormModal({ employee, employees, onClose, onSave }) {
+function EmployeeFormModal({ employee, employees, onClose, onSave, role }) {
   const [formData, setFormData] = useState({
-    emp_name: '',
-    email: '',
-    designation: '',
+    emp_name: "",
+    email: "",
+    designation: "",
     manager_id: null,
   });
 
   useEffect(() => {
     if (employee) {
       setFormData({
-        emp_name: employee.emp_name || '',
-        email: employee.email || '',
-        designation: employee.designation || '',
+        emp_name: employee.emp_name || "",
+        email: employee.email || "",
+        designation: employee.designation || "",
         manager_id: employee.manager_id || null,
       });
     }
@@ -36,10 +36,12 @@ function EmployeeFormModal({ employee, employees, onClose, onSave }) {
             </div>
             <div>
               <h2 className="text-2xl font-bold text-gray-800">
-                {employee ? 'Edit Employee' : 'Add New Employee'}
+                {employee ? "Edit Employee" : "Add New Employee"}
               </h2>
               <p className="text-sm text-gray-600">
-                {employee ? 'Update employee details' : 'Enter employee information'}
+                {employee
+                  ? "Update employee details"
+                  : "Enter employee information"}
               </p>
             </div>
           </div>
@@ -50,7 +52,7 @@ function EmployeeFormModal({ employee, employees, onClose, onSave }) {
             <X size={24} className="text-gray-600" />
           </button>
         </div>
-        
+
         <form onSubmit={handleSubmit} className="space-y-5">
           {/* Name */}
           <div>
@@ -113,25 +115,40 @@ function EmployeeFormModal({ employee, employees, onClose, onSave }) {
               <UserCheck size={16} />
               Reports To
             </label>
-            <select
-              value={formData.manager_id || ''}
-              onChange={(e) =>
-                setFormData({
-                  ...formData,
-                  manager_id: e.target.value ? parseInt(e.target.value) : null,
-                })
-              }
-              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-white cursor-pointer appearance-none transition-all"
-            >
-              <option value="">No Manager</option>
-              {employees
-                .filter((emp) => !employee || emp.emp_id !== employee.emp_id)
-                .map((emp) => (
-                  <option key={emp.emp_id} value={emp.emp_id}>
-                    {emp.emp_name}
-                  </option>
-                ))}
-            </select>
+            {/* If current role is MANAGER and we're editing an employee, disallow changing reports-to */}
+            {role && role.includes("MANAGER") && employee ? (
+              <input
+                type="text"
+                readOnly
+                value={
+                  employees.find((e) => e.emp_id === formData.manager_id)
+                    ?.emp_name || "No Manager"
+                }
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl bg-gray-50 text-gray-700 focus:outline-none"
+              />
+            ) : (
+              <select
+                value={formData.manager_id || ""}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    manager_id: e.target.value
+                      ? parseInt(e.target.value)
+                      : null,
+                  })
+                }
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-white cursor-pointer appearance-none transition-all"
+              >
+                <option value="">No Manager</option>
+                {employees
+                  .filter((emp) => !employee || emp.emp_id !== employee.emp_id)
+                  .map((emp) => (
+                    <option key={emp.emp_id} value={emp.emp_id}>
+                      {emp.emp_name}
+                    </option>
+                  ))}
+              </select>
+            )}
           </div>
 
           {/* Action Buttons */}
@@ -147,7 +164,7 @@ function EmployeeFormModal({ employee, employees, onClose, onSave }) {
               type="submit"
               className="px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl hover:shadow-lg font-semibold transition-all hover:scale-105 active:scale-95"
             >
-              {employee ? 'Update Employee' : 'Create Employee'}
+              {employee ? "Update Employee" : "Create Employee"}
             </button>
           </div>
         </form>

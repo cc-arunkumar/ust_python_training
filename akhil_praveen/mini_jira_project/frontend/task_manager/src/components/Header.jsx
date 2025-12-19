@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { LogOut, List, Users, Sparkles } from "lucide-react";
 import computeRemarkId from "../utils/remarkId";
+import { subscribe } from "../utils/events";
 
 function Header({
   role,
@@ -9,6 +10,7 @@ function Header({
   onLogout,
   canManageEmployees,
   onRoleChange,
+  onRefresh,
 }) {
   const username = localStorage.getItem("username") || "User";
   const storedRolesRaw =
@@ -19,6 +21,41 @@ function Header({
     .filter(Boolean);
   const roles = storedRoles.length ? storedRoles : [role].filter(Boolean);
   const activeRole = localStorage.getItem("role") || role;
+
+  useEffect(() => {
+    // Refresh app data when relevant in-app events occur (remarks or generic app updates)
+    const handler = (payload) => {
+      try {
+        onRefresh && onRefresh();
+      } catch (e) {}
+    };
+
+    const unsubRemarks = subscribe("remarks:updated", handler);
+    const unsubApp = subscribe("app:updated", handler);
+
+    // also listen for storage events that indicate read remarks changed in other tabs
+    const storageHandler = (ev) => {
+      try {
+        if (!ev || !ev.key) return;
+        if (/^task_\d+_read_remarks$/.test(ev.key)) {
+          onRefresh && onRefresh();
+        }
+      } catch (e) {}
+    };
+    window.addEventListener("storage", storageHandler);
+
+    return () => {
+      try {
+        unsubRemarks && unsubRemarks();
+      } catch (e) {}
+      try {
+        unsubApp && unsubApp();
+      } catch (e) {}
+      try {
+        window.removeEventListener("storage", storageHandler);
+      } catch (e) {}
+    };
+  }, [onRefresh]);
 
   return (
     <header className="bg-white border-b border-gray-200 shadow-sm sticky top-0 z-50 backdrop-blur-lg bg-white/95">

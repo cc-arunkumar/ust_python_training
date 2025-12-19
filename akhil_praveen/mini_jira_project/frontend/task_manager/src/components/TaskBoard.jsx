@@ -1,9 +1,10 @@
 import React, { useState, useMemo, useEffect } from "react";
-import { Plus, Search, RefreshCw, Filter } from "lucide-react";
+import { Plus, Search, Filter } from "lucide-react";
 import TaskCard from "./TaskCard";
 import TaskFormModal from "./TaskFormModel";
 import TaskDetailModal from "./TaskDetailModal";
 import { STATUS_CONFIG, STATUSES, PRIORITIES } from "../utils/constants";
+import { subscribe } from "../utils/events";
 
 function TaskBoard({
   tasks = [],
@@ -32,7 +33,7 @@ function TaskBoard({
   const [promptStatus, setPromptStatus] = useState(null);
   const [promptText, setPromptText] = useState("");
   const [dragOverStatus, setDragOverStatus] = useState(null);
-  const [isRefreshing, setIsRefreshing] = useState(false);
+  // removed manual refresh button; auto-refresh handled via in-app events
 
   const canMarkDone =
     (userRole || "").toUpperCase().includes("ADMIN") ||
@@ -97,11 +98,7 @@ function TaskBoard({
     handleCloseForm();
   };
 
-  const handleRefresh = async () => {
-    setIsRefreshing(true);
-    await onRefresh();
-    setTimeout(() => setIsRefreshing(false), 500);
-  };
+  // manual refresh removed
 
   const handleDragOver = (e, status) => {
     e.preventDefault();
@@ -223,6 +220,71 @@ function TaskBoard({
     }
   }, [openTaskId, tasks]);
 
+  // Auto-refresh when in-app events (remarks/app updates) or storage changes occur
+  useEffect(() => {
+    let mounted = true;
+    const handler = async (payload) => {
+      if (!mounted) return;
+      try {
+        if (onRefresh) {
+          setIsRefreshing(true);
+          await onRefresh();
+          setTimeout(() => setIsRefreshing(false), 400);
+        }
+      } catch (e) {
+        try {
+          setIsRefreshing(false);
+        } catch (e) {}
+      }
+    };
+
+    const unsubRemarks = (() => {
+      try {
+        return subscribe("remarks:updated", handler);
+      } catch (e) {
+        return null;
+      }
+    })();
+
+    const unsubApp = (() => {
+      try {
+        return subscribe("app:updated", handler);
+      } catch (e) {
+        return null;
+      }
+    })();
+
+    const storageHandler = (ev) => {
+      try {
+        if (!ev || !ev.key) return;
+        if (/^task_\d+_read_remarks$/.test(ev.key)) {
+          handler({ source: "storage" });
+          return;
+        }
+        if (/^tasks?_/.test(ev.key) || /^employees?_/.test(ev.key)) {
+          handler({ source: "storage" });
+        }
+      } catch (e) {}
+    };
+
+    try {
+      window.addEventListener("storage", storageHandler);
+    } catch (e) {}
+
+    return () => {
+      mounted = false;
+      try {
+        unsubRemarks && unsubRemarks();
+      } catch (e) {}
+      try {
+        unsubApp && unsubApp();
+      } catch (e) {}
+      try {
+        window.removeEventListener("storage", storageHandler);
+      } catch (e) {}
+    };
+  }, [onRefresh]);
+
   return (
     <div className="container mx-auto px-4 py-4">
       {/* Header Controls */}
@@ -277,15 +339,7 @@ function TaskBoard({
             New Task
           </button>
 
-          <button
-            onClick={handleRefresh}
-            className={`px-2.5 py-2 rounded-lg border border-gray-200 hover:bg-gray-50 transition-all ${
-              isRefreshing ? "animate-spin" : ""
-            }`}
-            title="Refresh"
-          >
-            <RefreshCw size={16} className="text-gray-600" />
-          </button>
+          {/* Manual refresh removed — board auto-updates on events */}
         </div>
       </div>
 
@@ -391,6 +445,8 @@ function TaskBoard({
           employees={employees}
           onClose={handleCloseForm}
           onSave={handleSaveTask}
+          userRole={userRole}
+          currentEmpId={currentEmpId}
         />
       )}
 

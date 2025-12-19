@@ -50,15 +50,14 @@ function TaskFormModal({
   // compute visible employees based on role and currentEmpId
   const visibleEmployees = React.useMemo(() => {
     const roleUpper = (userRole || "").toUpperCase();
-    if (roleUpper.includes("ADMIN")) return employees || [];
+    // Admins should not be able to set assignee
+    if (roleUpper.includes("ADMIN")) return [];
     if (roleUpper.includes("MANAGER")) {
       if (currentEmpId == null) return [];
+      // managers can only assign their direct reports (exclude the manager themself)
       return (employees || []).filter((e) => {
         try {
-          return (
-            Number(e.manager_id) === Number(currentEmpId) ||
-            Number(e.emp_id) === Number(currentEmpId)
-          );
+          return Number(e.manager_id) === Number(currentEmpId);
         } catch (ex) {
           return false;
         }
@@ -82,8 +81,8 @@ function TaskFormModal({
   // compute visible reviewers and whether reviewer select should be locked
   const visibleReviewers = React.useMemo(() => {
     const roleUpper = (userRole || "").toUpperCase();
-    // If manager (and not admin), restrict reviewer to the manager themself
-    if (roleUpper.includes("MANAGER") && !roleUpper.includes("ADMIN")) {
+    // If manager, restrict reviewer to the manager themself
+    if (roleUpper.includes("MANAGER")) {
       if (currentEmpId == null) return [];
       return (employees || []).filter(
         (e) => Number(e.emp_id) === Number(currentEmpId)
@@ -95,14 +94,42 @@ function TaskFormModal({
 
   const lockReviewer = React.useMemo(() => {
     const roleUpper = (userRole || "").toUpperCase();
-    // lock only when a manager (not admin) is creating a new task
-    return (
-      roleUpper.includes("MANAGER") && !roleUpper.includes("ADMIN") && !task
-    );
+    // lock when a manager is creating a new task (regardless of admin flags)
+    return roleUpper.includes("MANAGER") && !task;
   }, [userRole, task]);
+
+  const lockAssignForAdmin = React.useMemo(() => {
+    const roleUpper = (userRole || "").toUpperCase();
+    return roleUpper.includes("ADMIN");
+  }, [userRole]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const roleUpper = (userRole || "").toUpperCase();
+
+    // Admins are not allowed to assign tasks to users. Enforce on client-side by
+    // clearing assigned_to and letting reviewer be set.
+    if (roleUpper.includes("ADMIN")) {
+      if (formData.assigned_to) {
+        // silently remove assignment (avoid surprising UX); log for debugging
+        console.info("Admin assignment cleared by client policy");
+      }
+      formData.assigned_to = null;
+    }
+
+    // Managers can only assign to their direct reports
+    if (roleUpper.includes("MANAGER") && formData.assigned_to) {
+      const allowed = (employees || []).some(
+        (e) =>
+          Number(e.manager_id) === Number(currentEmpId) &&
+          Number(e.emp_id) === Number(formData.assigned_to)
+      );
+      if (!allowed) {
+        alert("Managers can only assign tasks to their direct reports.");
+        return;
+      }
+    }
 
     if (
       formData.assigned_to &&
@@ -265,34 +292,47 @@ function TaskFormModal({
                   <UserCheck size={16} />
                   Reviewer
                 </label>
-                <select
-                  value={formData.reviewer}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      reviewer: e.target.value ? parseInt(e.target.value) : "",
-                    })
-                  }
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white cursor-pointer appearance-none font-medium text-gray-700"
-                  disabled={lockReviewer}
-                >
-                  <option value="">Select Reviewer</option>
-                  {(visibleReviewers || []).map((emp) => (
-                    <option
-                      key={emp.emp_id}
-                      value={emp.emp_id}
-                      disabled={formData.assigned_to === emp.emp_id}
-                    >
-                      {emp.emp_name}{" "}
-                      {emp.designation ? `(${emp.designation})` : ""}
-                    </option>
-                  ))}
-                </select>
-                {lockReviewer && (
-                  <p className="text-xs text-gray-500 mt-1">
-                    Reviewer is set to you (manager) and cannot be changed when
-                    creating a task.
-                  </p>
+                {lockReviewer ? (
+                  <div className="flex items-center justify-between px-4 py-3 border-2 border-gray-200 rounded-xl bg-gray-50 text-gray-700">
+                    <div>
+                      {(() => {
+                        const me = (employees || []).find(
+                          (e) => Number(e.emp_id) === Number(currentEmpId)
+                        );
+                        return me
+                          ? `${me.emp_name} ${
+                              me.designation ? `(${me.designation})` : ""
+                            }`
+                          : "You";
+                      })()}
+                    </div>
+                    <div className="text-xs text-gray-500">(Reviewer)</div>
+                  </div>
+                ) : (
+                  <select
+                    value={formData.reviewer}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        reviewer: e.target.value
+                          ? parseInt(e.target.value)
+                          : "",
+                      })
+                    }
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white cursor-pointer appearance-none font-medium text-gray-700"
+                  >
+                    <option value="">Select Reviewer</option>
+                    {(visibleReviewers || []).map((emp) => (
+                      <option
+                        key={emp.emp_id}
+                        value={emp.emp_id}
+                        disabled={formData.assigned_to === emp.emp_id}
+                      >
+                        {emp.emp_name}{" "}
+                        {emp.designation ? `(${emp.designation})` : ""}
+                      </option>
+                    ))}
+                  </select>
                 )}
               </div>
             </div>

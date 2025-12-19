@@ -345,13 +345,10 @@ export default function TaskDetailModal({
         storageArea: localStorage,
       });
       window.dispatchEvent(sev);
-      try {
-        window.dispatchEvent(
-          new CustomEvent("remarks:updated", {
-            detail: { taskId: task.task_id },
-          })
-        );
-      } catch (e) {}
+      // also publish via in-app pub/sub
+      // lazy require to avoid circular import ordering issues
+      const { publish } = require("../utils/events");
+      publish("remarks:updated", { taskId: task.task_id });
     } catch (e) {}
   };
 

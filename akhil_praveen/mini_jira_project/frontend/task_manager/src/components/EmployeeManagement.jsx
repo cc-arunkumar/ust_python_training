@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import {
   Plus,
   Edit2,
@@ -10,10 +10,21 @@ import {
 } from "lucide-react";
 import EmployeeFormModal from "./EmployeeFormModel";
 import api from "../api/api";
+import { publish } from "../utils/events";
 
-function EmployeeManagement({ employees, onRefresh, role }) {
+function EmployeeManagement({ employees, onRefresh, role, currentEmpId }) {
   const [showForm, setShowForm] = useState(false);
   const [editingEmployee, setEditingEmployee] = useState(null);
+
+  // For admins show all employees. For managers show only direct reports.
+  const visibleEmployees = useMemo(() => {
+    if (!role) return employees;
+    if (role.includes("ADMIN")) return employees;
+    if (role.includes("MANAGER")) {
+      return employees.filter((e) => e.manager_id === currentEmpId);
+    }
+    return employees;
+  }, [employees, role, currentEmpId]);
 
   const handleEdit = (emp) => {
     setEditingEmployee(emp);
@@ -24,6 +35,10 @@ function EmployeeManagement({ employees, onRefresh, role }) {
     try {
       await api.updateEmployee(empId, { status: newStatus });
       onRefresh();
+      // notify other in-app components that employees changed
+      try {
+        publish("app:updated", { resource: "employees", id: empId });
+      } catch (e) {}
     } catch (err) {
       alert(err.message);
     }
@@ -39,6 +54,9 @@ function EmployeeManagement({ employees, onRefresh, role }) {
       setShowForm(false);
       setEditingEmployee(null);
       onRefresh();
+      try {
+        publish("app:updated", { resource: "employees" });
+      } catch (e) {}
     } catch (err) {
       alert(err.message);
     }
@@ -64,18 +82,22 @@ function EmployeeManagement({ employees, onRefresh, role }) {
             <p className="text-sm text-gray-600">Manage your team members</p>
           </div>
         </div>
-        <button
-          onClick={() => setShowForm(true)}
-          className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-5 py-3 rounded-xl flex items-center gap-2 hover:shadow-lg hover:scale-105 active:scale-95 transition-all font-semibold"
-        >
-          <Plus size={20} />
-          Add Employee
-        </button>
+        {role && role.includes("ADMIN") ? (
+          <button
+            onClick={() => setShowForm(true)}
+            className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-5 py-3 rounded-xl flex items-center gap-2 hover:shadow-lg hover:scale-105 active:scale-95 transition-all font-semibold"
+          >
+            <Plus size={20} />
+            Add Employee
+          </button>
+        ) : (
+          <div className="text-sm text-gray-600">Showing your team</div>
+        )}
       </div>
 
       {/* Employee Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-        {employees.map((emp) => {
+        {visibleEmployees.map((emp) => {
           const manager = employees.find((e) => e.emp_id === emp.manager_id);
 
           return (
@@ -119,7 +141,7 @@ function EmployeeManagement({ employees, onRefresh, role }) {
                       title="Change status"
                     >
                       <option value="ACTIVE">Active</option>
-                      <option value="INACTIVE">Inactive</option>
+                      <option value="INACTIVE">InActive</option>
                     </select>
                   )}
                 </div>
@@ -147,7 +169,7 @@ function EmployeeManagement({ employees, onRefresh, role }) {
                     className={`inline-block px-2 py-1 text-xs rounded-full font-medium ${
                       (emp.status || "ACTIVE") === "ACTIVE"
                         ? "bg-green-100 text-green-800"
-                        : "bg-gray-100 text-gray-600"
+                        : "bg-red-100 text-red-600"
                     }`}
                   >
                     {(emp.status || "ACTIVE").toUpperCase()}
@@ -179,7 +201,7 @@ function EmployeeManagement({ employees, onRefresh, role }) {
       </div>
 
       {/* Empty State */}
-      {employees.length === 0 && (
+      {visibleEmployees.length === 0 && (
         <div className="text-center py-16 bg-white rounded-2xl border-2 border-dashed border-gray-200">
           <Users size={48} className="mx-auto text-gray-300 mb-4" />
           <h3 className="text-xl font-bold text-gray-600 mb-2">
@@ -188,13 +210,17 @@ function EmployeeManagement({ employees, onRefresh, role }) {
           <p className="text-gray-500 mb-4">
             Start by adding your first team member
           </p>
-          <button
-            onClick={() => setShowForm(true)}
-            className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-5 py-2 rounded-lg inline-flex items-center gap-2 hover:shadow-lg transition-all"
-          >
-            <Plus size={18} />
-            Add First Employee
-          </button>
+          {role && role.includes("ADMIN") ? (
+            <button
+              onClick={() => setShowForm(true)}
+              className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-5 py-2 rounded-lg inline-flex items-center gap-2 hover:shadow-lg transition-all"
+            >
+              <Plus size={18} />
+              Add First Employee
+            </button>
+          ) : (
+            <div className="text-sm text-gray-500">No team members to show</div>
+          )}
         </div>
       )}
 
@@ -204,6 +230,8 @@ function EmployeeManagement({ employees, onRefresh, role }) {
           employees={employees}
           onClose={handleCloseForm}
           onSave={handleSave}
+          role={role}
+          currentEmpId={currentEmpId}
         />
       )}
     </div>
