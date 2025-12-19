@@ -1,32 +1,37 @@
-import React, { useState } from 'react';
-import { X, User, Mail, Briefcase, UserCog } from 'lucide-react';
+import React, { useState } from "react";
+import { X, User, Mail, Briefcase, UserCog } from "lucide-react";
 
 const CreateEmployeeModal = ({ token, managerId, onClose, onSuccess }) => {
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    designation: '',
-    manager_id: managerId
+    name: "",
+    email: "",
+    designation: "",
+    manager_id: managerId,
   });
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: name === 'manager_id' ? parseInt(value) || '' : value
+      [name]: name === "manager_id" ? parseInt(value) || "" : value,
     }));
   };
 
   const handleSubmit = async () => {
-    setError('');
+    setError("");
     setLoading(true);
 
     try {
       // Validate required fields
-      if (!formData.name || !formData.email || !formData.designation || !formData.manager_id) {
-        throw new Error('Please fill in all required fields');
+      if (
+        !formData.name ||
+        !formData.email ||
+        !formData.designation ||
+        !formData.manager_id
+      ) {
+        throw new Error("Please fill in all required fields");
       }
 
       // Employee payload (matches backend Employee model)
@@ -34,23 +39,23 @@ const CreateEmployeeModal = ({ token, managerId, onClose, onSuccess }) => {
         name: formData.name,
         email: formData.email,
         designation: formData.designation,
-        manager_id: formData.manager_id
+        manager_id: formData.manager_id,
       };
 
       // Make API call to create employee
-      const API_BASE_URL = 'http://localhost:8000/api/v1'
-      
+      const API_BASE_URL = "http://localhost:8000/api/v1";
+
       const response = await fetch(`${API_BASE_URL}/employees`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(employeePayload)
+        body: JSON.stringify(employeePayload),
       });
 
       if (!response.ok) {
-        let errorMessage = 'Failed to create employee';
+        let errorMessage = "Failed to create employee";
         try {
           const errorData = await response.json();
           errorMessage = errorData.message || errorData.detail || errorMessage;
@@ -69,8 +74,8 @@ const CreateEmployeeModal = ({ token, managerId, onClose, onSuccess }) => {
 
       onSuccess();
     } catch (err) {
-      console.error('Error creating employee:', err);
-      setError(err.message || 'Failed to create employee');
+      console.error("Error creating employee:", err);
+      setError(err.message || "Failed to create employee");
     } finally {
       setLoading(false);
     }
@@ -84,7 +89,7 @@ const CreateEmployeeModal = ({ token, managerId, onClose, onSuccess }) => {
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-gradient-to-tr from-pink-400/10 to-blue-400/10 rounded-full blur-3xl -z-10"></div>
 
         {/* Header */}
-        <div className="relative bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 px-8 py-6 flex items-center justify-between">
+        <div className="relative bg-blue-600 px-8 py-6 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
               <User className="text-white" size={24} />
@@ -192,11 +197,10 @@ const CreateEmployeeModal = ({ token, managerId, onClose, onSuccess }) => {
               type="button"
               onClick={handleSubmit}
               disabled={loading}
-              className="flex-1 px-6 py-4 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white rounded-xl hover:shadow-2xl font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 relative overflow-hidden group"
+              className="flex-1 px-6 py-4 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 relative overflow-hidden group"
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <span className="relative z-10">
-                {loading ? 'Creating...' : '✨ Create Employee'}
+                {loading ? "Creating..." : " Create Employee"}
               </span>
             </button>
           </div>

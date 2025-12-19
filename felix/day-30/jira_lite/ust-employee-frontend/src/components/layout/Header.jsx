@@ -1,31 +1,47 @@
-import React, { useState, useEffect } from 'react';
-import { LogOut, ChevronDown, Users, LayoutDashboard, Shield, Mail, Phone, Briefcase, Calendar } from 'lucide-react';
-import { useAuth } from '../../contexts/AuthContext';
-import { api } from '../../services/api';
+import React, { useState, useEffect } from "react";
+import {
+  LogOut,
+  ChevronDown,
+  Users,
+  LayoutDashboard,
+  Shield,
+  Mail,
+  Phone,
+  Briefcase,
+  Calendar,
+} from "lucide-react";
+import { useAuth } from "../../contexts/AuthContext";
+import { api } from "../../services/api";
 
-const Header = ({ currentView, userRoles, onChangeView, onNavigate, onUserNameFetched }) => {
+const Header = ({
+  currentView,
+  userRoles,
+  onChangeView,
+  onNavigate,
+  onUserNameFetched,
+}) => {
   const { user, logout, token } = useAuth();
   const [showRoleDropdown, setShowRoleDropdown] = useState(false);
   const [showUserDetails, setShowUserDetails] = useState(false);
-  const [userName, setUserName] = useState('');
+  const [userName, setUserName] = useState("");
   const [userDetails, setUserDetails] = useState(null);
 
   useEffect(() => {
     const fetchUserName = async () => {
       try {
         const userData = await api.getEmployeeById(token, user.emp_id);
-        const name = userData?.name || user.name || 'User';
+        const name = userData?.name || user.name || "User";
         setUserName(name);
         setUserDetails(userData);
-        
+
         if (onUserNameFetched) {
           onUserNameFetched(name);
         }
       } catch (err) {
-        console.error('Failed to fetch user name:', err);
-        const fallbackName = user.name || 'User';
+        console.error("Failed to fetch user name:", err);
+        const fallbackName = user.name || "User";
         setUserName(fallbackName);
-        
+
         if (onUserNameFetched) {
           onUserNameFetched(fallbackName);
         }
@@ -45,13 +61,13 @@ const Header = ({ currentView, userRoles, onChangeView, onNavigate, onUserNameFe
   };
 
   const canAccessEmployees = userRoles?.some((role) =>
-    ['admin', 'manager'].includes(role)
+    ["admin", "manager"].includes(role)
   );
 
-  const canAccessUsers = userRoles?.includes('admin');
+  const canAccessUsers = userRoles?.includes("admin");
 
   return (
-    <header className="bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 shadow-xl sticky top-0 z-40 backdrop-blur-sm">
+    <header className="bg-blue-400">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo and Title */}
@@ -68,8 +84,8 @@ const Header = ({ currentView, userRoles, onChangeView, onNavigate, onUserNameFe
           {onNavigate && (
             <nav className="flex items-center gap-2">
               <button
-                onClick={() => onNavigate('/dashboard')}
-                className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white rounded-xl transition-all duration-200 shadow-lg hover:shadow-cyan-500/50 transform hover:scale-105"
+                onClick={() => onNavigate("/dashboard")}
+                className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:from-cyan-400 hover:to-blue-400 text-white rounded-xl transition-all duration-200 shadow-lg hover:shadow-cyan-500/50 transform hover:scale-105"
               >
                 <LayoutDashboard size={18} />
                 <span className="hidden sm:inline font-medium">Dashboard</span>
@@ -77,18 +93,20 @@ const Header = ({ currentView, userRoles, onChangeView, onNavigate, onUserNameFe
 
               {canAccessEmployees && (
                 <button
-                  onClick={() => onNavigate('/employees')}
-                  className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white rounded-xl transition-all duration-200 shadow-lg hover:shadow-cyan-500/50 transform hover:scale-105"
+                  onClick={() => onNavigate("/employees")}
+                  className="flex items-center gap-2 px-4 py-2  bg-blue-600 hover:from-cyan-400 hover:to-blue-400 text-white rounded-xl transition-all duration-200 shadow-lg hover:shadow-cyan-500/50 transform hover:scale-105"
                 >
                   <Users size={18} />
-                  <span className="hidden sm:inline font-medium">Employees</span>
+                  <span className="hidden sm:inline font-medium">
+                    Employees
+                  </span>
                 </button>
               )}
 
               {canAccessUsers && (
                 <button
-                  onClick={() => onNavigate('/users')}
-                  className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white rounded-xl transition-all duration-200 shadow-lg hover:shadow-cyan-500/50 transform hover:scale-105"
+                  onClick={() => onNavigate("/users")}
+                  className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:from-cyan-400 hover:to-blue-400 text-white rounded-xl transition-all duration-200 shadow-lg hover:shadow-cyan-500/50 transform hover:scale-105"
                 >
                   <Shield size={18} />
                   <span className="hidden sm:inline font-medium">Users</span>
@@ -99,8 +117,12 @@ const Header = ({ currentView, userRoles, onChangeView, onNavigate, onUserNameFe
               {currentView && (
                 <div className="hidden lg:flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20 shadow-lg">
                   <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                  <span className="text-xs text-white/80 font-medium">Role:</span>
-                  <span className="text-sm font-bold text-white capitalize">{currentView}</span>
+                  <span className="text-xs text-white/80 font-medium">
+                    Role:
+                  </span>
+                  <span className="text-sm font-bold text-white capitalize">
+                    {currentView}
+                  </span>
                 </div>
               )}
             </nav>
@@ -113,16 +135,16 @@ const Header = ({ currentView, userRoles, onChangeView, onNavigate, onUserNameFe
               <div className="relative">
                 <button
                   onClick={() => setShowRoleDropdown(!showRoleDropdown)}
-                  className="flex items-center gap-3 px-5 py-3 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white rounded-xl transition-all duration-200 shadow-lg hover:shadow-cyan-500/50 transform hover:scale-105 hover:-translate-y-1 group relative overflow-hidden"
+                  className="flex items-center gap-3 px-5 py-3 bg-blue-600 hover:from-cyan-400 hover:to-blue-400 text-white rounded-xl transition-all duration-200 shadow-lg hover:shadow-cyan-500/50 transform hover:scale-105 hover:-translate-y-1 group relative overflow-hidden"
                 >
                   <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent rounded-2xl blur animate-pulse opacity-75 group-hover:opacity-100 transition-opacity"></div>
                   <div className="w-3 h-3 bg-white rounded-full shadow-lg animate-ping group-hover:animate-none"></div>
                   <span className="relative z-10 text-sm font-bold bg-gradient-to-r from-white via-emerald-50 to-cyan-50 bg-clip-text text-transparent drop-shadow-lg">
                     {currentView}
                   </span>
-                  <ChevronDown 
-                    size={18} 
-                    className="relative z-10 text-white/90 group-hover:rotate-180 transition-transform duration-300" 
+                  <ChevronDown
+                    size={18}
+                    className="relative z-10 text-white/90 group-hover:rotate-180 transition-transform duration-300"
                   />
                 </button>
 
@@ -134,8 +156,8 @@ const Header = ({ currentView, userRoles, onChangeView, onNavigate, onUserNameFe
                         onClick={() => handleRoleChange(role)}
                         className={`w-full px-4 py-3 text-left text-sm font-semibold rounded-xl transition-all duration-200 shadow-sm hover:shadow-lg transform hover:scale-[1.02] hover:-translate-y-0.5 group capitalize ${
                           currentView === role
-                            ? 'bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white rounded-xl transition-all duration-200 shadow-lg hover:shadow-cyan-500/50 transform hover:scale-105'
-                            : 'bg-gradient-to-r from-gray-50 to-white text-gray-700 border-2 border-gray-200 hover:from-emerald-50 hover:to-teal-50 hover:text-emerald-700 hover:border-emerald-300'
+                            ? "bg-blue-600 hover:from-cyan-400 hover:to-blue-400 text-white rounded-xl transition-all duration-200 shadow-lg hover:shadow-cyan-500/50 transform hover:scale-105"
+                            : "bg-gradient-to-r from-gray-50 to-white text-gray-700 border-2 border-gray-200 hover:from-emerald-50 hover:to-teal-50 hover:text-emerald-700 hover:border-emerald-300"
                         }`}
                       >
                         <span className="flex items-center gap-2">
@@ -168,7 +190,7 @@ const Header = ({ currentView, userRoles, onChangeView, onNavigate, onUserNameFe
                     </div>
                     <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-400 rounded-full border-2 border-white shadow-sm"></div>
                   </div>
-                  
+
                   {/* User Details */}
                   <div className="text-left">
                     <p className="text-sm font-bold text-white leading-tight">
@@ -179,9 +201,11 @@ const Header = ({ currentView, userRoles, onChangeView, onNavigate, onUserNameFe
                     </p>
                   </div>
 
-                  <ChevronDown 
-                    size={16} 
-                    className={`text-white/90 transition-transform duration-300 ${showUserDetails ? 'rotate-180' : ''}`}
+                  <ChevronDown
+                    size={16}
+                    className={`text-white/90 transition-transform duration-300 ${
+                      showUserDetails ? "rotate-180" : ""
+                    }`}
                   />
                 </button>
 
@@ -197,16 +221,18 @@ const Header = ({ currentView, userRoles, onChangeView, onNavigate, onUserNameFe
 
               {/* User Details Dropdown */}
               {showUserDetails && (
-                <div className="absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200 z-50">
+                <div className="absolute right-0 mt-2 w-80 bg-blue-50 rounded-xl shadow-2xl border border-gray-100 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200 z-50">
                   {/* Header */}
-                  <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-4">
+                  <div className="bg-blue-600 p-4">
                     <div className="flex items-center gap-3">
                       <div className="w-14 h-14 bg-white rounded-full flex items-center justify-center text-blue-600 font-bold text-2xl shadow-lg">
                         {userName.charAt(0).toUpperCase()}
                       </div>
                       <div className="text-white">
                         <h3 className="font-bold text-lg">{userName}</h3>
-                        <p className="text-sm text-white/80">Employee ID: {user.emp_id}</p>
+                        <p className="text-sm text-white/80">
+                          Employee ID: {user.emp_id}
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -215,54 +241,89 @@ const Header = ({ currentView, userRoles, onChangeView, onNavigate, onUserNameFe
                   <div className="p-4 space-y-3">
                     {userDetails?.email && (
                       <div className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-                        <Mail size={18} className="text-blue-600 mt-0.5 flex-shrink-0" />
+                        <Mail
+                          size={18}
+                          className="text-blue-600 mt-0.5 flex-shrink-0"
+                        />
                         <div className="flex-1 min-w-0">
-                          <p className="text-xs text-gray-500 font-medium">Email</p>
-                          <p className="text-sm text-gray-800 font-semibold break-all">{userDetails.email}</p>
+                          <p className="text-xs text-gray-500 font-medium">
+                            Email
+                          </p>
+                          <p className="text-sm text-gray-800 font-semibold break-all">
+                            {userDetails.email}
+                          </p>
                         </div>
                       </div>
                     )}
 
                     {userDetails?.phone && (
                       <div className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-                        <Phone size={18} className="text-green-600 mt-0.5 flex-shrink-0" />
+                        <Phone
+                          size={18}
+                          className="text-green-600 mt-0.5 flex-shrink-0"
+                        />
                         <div className="flex-1">
-                          <p className="text-xs text-gray-500 font-medium">Phone</p>
-                          <p className="text-sm text-gray-800 font-semibold">{userDetails.phone}</p>
+                          <p className="text-xs text-gray-500 font-medium">
+                            Phone
+                          </p>
+                          <p className="text-sm text-gray-800 font-semibold">
+                            {userDetails.phone}
+                          </p>
                         </div>
                       </div>
                     )}
 
                     {userDetails?.designation && (
                       <div className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-                        <Briefcase size={18} className="text-purple-600 mt-0.5 flex-shrink-0" />
+                        <Briefcase
+                          size={18}
+                          className="text-purple-600 mt-0.5 flex-shrink-0"
+                        />
                         <div className="flex-1">
-                          <p className="text-xs text-gray-500 font-medium">Designation</p>
-                          <p className="text-sm text-gray-800 font-semibold">{userDetails.designation}</p>
+                          <p className="text-xs text-gray-500 font-medium">
+                            Designation
+                          </p>
+                          <p className="text-sm text-gray-800 font-semibold">
+                            {userDetails.designation}
+                          </p>
                         </div>
                       </div>
                     )}
 
                     {userDetails?.department && (
                       <div className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-                        <Users size={18} className="text-indigo-600 mt-0.5 flex-shrink-0" />
+                        <Users
+                          size={18}
+                          className="text-indigo-600 mt-0.5 flex-shrink-0"
+                        />
                         <div className="flex-1">
-                          <p className="text-xs text-gray-500 font-medium">Department</p>
-                          <p className="text-sm text-gray-800 font-semibold">{userDetails.department}</p>
+                          <p className="text-xs text-gray-500 font-medium">
+                            Department
+                          </p>
+                          <p className="text-sm text-gray-800 font-semibold">
+                            {userDetails.department}
+                          </p>
                         </div>
                       </div>
                     )}
 
                     {userDetails?.date_of_joining && (
                       <div className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-                        <Calendar size={18} className="text-orange-600 mt-0.5 flex-shrink-0" />
+                        <Calendar
+                          size={18}
+                          className="text-orange-600 mt-0.5 flex-shrink-0"
+                        />
                         <div className="flex-1">
-                          <p className="text-xs text-gray-500 font-medium">Joined</p>
+                          <p className="text-xs text-gray-500 font-medium">
+                            Joined
+                          </p>
                           <p className="text-sm text-gray-800 font-semibold">
-                            {new Date(userDetails.date_of_joining).toLocaleDateString('en-US', { 
-                              year: 'numeric', 
-                              month: 'long', 
-                              day: 'numeric' 
+                            {new Date(
+                              userDetails.date_of_joining
+                            ).toLocaleDateString("en-US", {
+                              year: "numeric",
+                              month: "long",
+                              day: "numeric",
                             })}
                           </p>
                         </div>
@@ -271,12 +332,17 @@ const Header = ({ currentView, userRoles, onChangeView, onNavigate, onUserNameFe
 
                     {userRoles && userRoles.length > 0 && (
                       <div className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-                        <Shield size={18} className="text-red-600 mt-0.5 flex-shrink-0" />
+                        <Shield
+                          size={18}
+                          className="text-red-600 mt-0.5 flex-shrink-0"
+                        />
                         <div className="flex-1">
-                          <p className="text-xs text-gray-500 font-medium mb-1">Roles</p>
+                          <p className="text-xs text-gray-500 font-medium mb-1">
+                            Roles
+                          </p>
                           <div className="flex flex-wrap gap-2">
                             {userRoles.map((role) => (
-                              <span 
+                              <span
                                 key={role}
                                 className="px-2 py-1 bg-gradient-to-r from-blue-500 to-purple-500 text-white text-xs font-semibold rounded-lg capitalize"
                               >
@@ -297,9 +363,12 @@ const Header = ({ currentView, userRoles, onChangeView, onNavigate, onUserNameFe
 
       {/* Mobile Role Indicator */}
       {userRoles && userRoles.length === 1 && (
-        <div className="sm:hidden border-t border-white/20 px-4 py-2 bg-white/10 backdrop-blur-sm">
-          <p className="text-xs text-white/80">
-            Role: <span className="font-semibold capitalize text-white">{currentView}</span>
+        <div className="sm:hidden border-t border-white/20 px-4 py-2 bg-blue-600">
+          <p className="text-xs text-white/90">
+            Role:{" "}
+            <span className="font-semibold capitalize text-white">
+              {currentView}
+            </span>
           </p>
         </div>
       )}

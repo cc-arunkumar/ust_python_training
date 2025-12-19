@@ -384,9 +384,9 @@ const Dashboard = () => {
                     className="w-full pl-12 pr-12 py-4 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-purple-500/20 focus:border-purple-500 bg-white transition-all outline-none appearance-none cursor-pointer font-semibold text-gray-700 shadow-lg hover:shadow-xl"
                   >
                     <option value="All">All Priorities</option>
-                    <option value="Low">🟢 Low Priority</option>
-                    <option value="Medium">🟡 Medium Priority</option>
-                    <option value="High">🔴 High Priority</option>
+                    <option value="Low"> Low Priority</option>
+                    <option value="Medium"> Medium Priority</option>
+                    <option value="High"> High Priority</option>
                   </select>
                   <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
                     <svg
