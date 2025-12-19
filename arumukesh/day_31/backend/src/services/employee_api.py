@@ -19,10 +19,33 @@ router = APIRouter(
 
 # ==================== ADMIN DEPENDENCY ====================
 def admin_only(current_user: User = Depends(get_current_user)):
-    if current_user.role.lower() != "admin":
+    # Support both token-provided `roles` list and DB `role` string
+    roles = []
+    if hasattr(current_user, "roles") and isinstance(current_user.roles, (list, tuple)):
+        roles = [r.lower() for r in current_user.roles if isinstance(r, str)]
+    elif hasattr(current_user, "role") and isinstance(current_user.role, str):
+        roles = [r.strip().lower() for r in current_user.role.split(",") if r.strip()]
+
+    if "admin" not in roles:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Admin privileges required"
+        )
+    return current_user
+
+
+def manager_or_admin(current_user: User = Depends(get_current_user)):
+    # Allow managers and admins to access certain read-only endpoints (e.g., dropdowns)
+    roles = []
+    if hasattr(current_user, "roles") and isinstance(current_user.roles, (list, tuple)):
+        roles = [r.lower() for r in current_user.roles if isinstance(r, str)]
+    elif hasattr(current_user, "role") and isinstance(current_user.role, str):
+        roles = [r.strip().lower() for r in current_user.role.split(",") if r.strip()]
+
+    if not ("admin" in roles or "manager" in roles):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Admin or Manager privileges required"
         )
     return current_user
 
@@ -64,7 +87,7 @@ async def create_employee(
     status_code=status.HTTP_200_OK
 )
 async def get_all_employees(
-    _: User = Depends(admin_only),
+    _: User = Depends(manager_or_admin),
     db: Session = Depends(get_db)
 ):
     return db.query(Employee).all()
@@ -78,7 +101,7 @@ async def get_all_employees(
 )
 async def get_employee_by_id(
     emp_id: str,
-    _: User = Depends(admin_only),
+    _: User = Depends(manager_or_admin),
     db: Session = Depends(get_db)
 ):
     employee = db.query(Employee).filter(Employee.emp_id == emp_id).first()

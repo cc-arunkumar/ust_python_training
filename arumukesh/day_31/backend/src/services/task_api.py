@@ -6,7 +6,7 @@ from pydantic import BaseModel
 from src.database.db_creation import Tasks, Employee, User
 from src.services.auth import get_current_user,get_db
 from src.models.models import TaskCreate, TaskUpdate, TaskResponse
-
+from datetime import datetime
 router = APIRouter(
     prefix="/api/v1/tasks",
     tags=["Tasks"]
@@ -15,20 +15,42 @@ router = APIRouter(
 # ==================== HELPERS ====================
 
 def is_admin(user: User):
-    return user.role.lower() == "admin"
+    # Support both legacy `role` string and token-provided `roles` list
+    roles = []
+    if hasattr(user, "roles") and isinstance(user.roles, (list, tuple)):
+        roles = [r.lower() for r in user.roles if isinstance(r, str)]
+    elif hasattr(user, "role") and isinstance(user.role, str):
+        roles = [r.strip().lower() for r in user.role.split(",") if r.strip()]
+
+    return "admin" in roles
 
 def is_manager(user: User):
-    return user.role.lower() == "manager"
+    roles = []
+    if hasattr(user, "roles") and isinstance(user.roles, (list, tuple)):
+        roles = [r.lower() for r in user.roles if isinstance(r, str)]
+    elif hasattr(user, "role") and isinstance(user.role, str):
+        roles = [r.strip().lower() for r in user.role.split(",") if r.strip()]
+
+    return "manager" in roles
 
 def is_developer(user: User):
-    return user.role.lower() == "developer"
+    roles = []
+    if hasattr(user, "roles") and isinstance(user.roles, (list, tuple)):
+        roles = [r.lower() for r in user.roles if isinstance(r, str)]
+    elif hasattr(user, "role") and isinstance(user.role, str):
+        roles = [r.strip().lower() for r in user.role.split(",") if r.strip()]
+
+    return "developer" in roles
 
 
 def get_manager_team_ids(db: Session, manager_id: str):
     """Return list of employee IDs reporting to this manager"""
+    # manager_id may be int (from users table) or str (from employee table).
+    # Normalize to string for comparison with Employee.mgr_id (which is a string column).
+    mid = str(manager_id)
     return [
         emp.emp_id
-        for emp in db.query(Employee).filter(Employee.mgr_id == manager_id).all()
+        for emp in db.query(Employee).filter(Employee.mgr_id == mid).all()
     ]
 
 
@@ -43,33 +65,54 @@ def get_task_or_404(db: Session, t_id: int):
 # In your tasks router file
 from sqlalchemy import exists
 
-@router.post("", response_model=TaskResponse, status_code=status.HTTP_201_CREATED)
+@router.post(
+    "",
+    response_model=TaskResponse,
+    status_code=status.HTTP_201_CREATED
+)
 async def create_task(
     task: TaskCreate,
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
+    """
+    Create a new task (Admin and Manager only)
+    """
+    # Allow both admin and manager to create tasks
     if not (is_admin(current_user) or is_manager(current_user)):
-        raise HTTPException(status_code=403, detail="Not authorized to create tasks")
-
-    # NEW: Check if reviewer has at least one subordinate (i.e., is a manager)
-    is_manager_reviewer = db.query(
-        exists().where(Employee.mgr_id == task.reviewer)
-    ).scalar()
-
-    reviewer_exists = db.query(Employee).filter(Employee.emp_id == task.reviewer).first() is not None
-
-    if not reviewer_exists:
-        raise HTTPException(status_code=400, detail="Reviewer does not exist")
+        raise HTTPException(
+            status_code=403, 
+            detail="Only Admin and Manager can create tasks"
+        )
     
-    if not is_manager_reviewer:
-        raise HTTPException(status_code=400, detail="Reviewer must be a manager (must have subordinates)")
-
-    db_task = Tasks(**task.model_dump())
-    db.add(db_task)
-    db.commit()
-    db.refresh(db_task)
-    return db_task
+    try:
+        new_task = Tasks(
+            title=task.title,
+            description=task.description,
+            created_by=str(current_user.emp_id),
+            assigned_to=task.assigned_to,
+            assigned_by=str(current_user.emp_id),
+            assigned_at=datetime.now(),
+            priority=task.priority,
+            status=task.status,
+            reviewer=task.reviewer,
+            expected_closure=task.expected_closure,
+            remarks=task.remarks
+        )
+        
+        db.add(new_task)
+        db.commit()
+        
+        # Query back instead of refresh
+        created_task = db.query(Tasks).filter(Tasks.t_id == new_task.t_id).first()
+        
+        return created_task
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error creating task: {str(e)}"
+        )
 # ==================== GET ALL TASKS ====================
 @router.get(
     "",
@@ -88,6 +131,12 @@ async def get_all_tasks(
         return db.query(Tasks).filter(
             Tasks.assigned_to.in_(team_ids)
         ).all()
+
+    # Developers should be able to see tasks assigned to them
+    if is_developer(current_user):
+        # normalize comparison by casting to string
+        my_id = str(current_user.emp_id)
+        return db.query(Tasks).filter(Tasks.assigned_to == my_id).all()
 
     raise HTTPException(status_code=403, detail="Not authorized to view tasks")
 
@@ -113,6 +162,12 @@ async def get_task_by_id(
         if task.assigned_to not in team_ids:
             raise HTTPException(status_code=403, detail="Access denied")
         return task
+
+    # Allow developer if they are the assignee or the reviewer
+    if is_developer(current_user):
+        my_id = str(current_user.emp_id)
+        if task.assigned_to == my_id or task.reviewer == my_id:
+            return task
 
     raise HTTPException(status_code=403, detail="Access denied")
 
@@ -157,23 +212,26 @@ async def update_task(
 
 
 # ==================== UPDATE TASK STATUS ====================
+
+class StatusPayload(BaseModel):
+    status: str
+
+
 @router.patch(
     "/{t_id}/status",
     response_model=TaskResponse,
     status_code=status.HTTP_200_OK
 )
-
-class StatusUpdate(BaseModel):
-    t_id:int
-    status:str
 async def update_task_status(
-    status_update:StatusUpdate,
+    t_id: int,
+    status_payload: StatusPayload,
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    task = get_task_or_404(db,status_update.t_id)
+    # Use t_id from path for clarity; body contains only the new status
+    task = get_task_or_404(db, t_id)
 
-    if status_update.status is None:
+    if status_payload.status is None:
         raise HTTPException(status_code=400, detail="Status is required")
 
     # Admin cannot change status
@@ -187,8 +245,8 @@ async def update_task_status(
     ):
         raise HTTPException(status_code=403, detail="Not authorized to change status")
 
-    task.status = status_update.status
-    task.updated_by = current_user.emp_id
+    task.status = status_payload.status
+    task.updated_by = str(current_user.emp_id)
 
     db.commit()
     db.refresh(task)

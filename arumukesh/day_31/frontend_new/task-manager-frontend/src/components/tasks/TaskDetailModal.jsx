@@ -1,41 +1,54 @@
-import React from 'react'
-import Modal from '../common/Modal'
-import Badge from '../common/Badge'
-import { formatDate, formatDateTime } from '../../utils/helpers'
-import { STATUS_LABELS, PRIORITY_LABELS } from '../../utils/constants'
+import React, { useState } from "react";
+import Modal from "../common/Modal";
+import Badge from "../common/Badge";
+import { formatDate, formatDateTime } from "../../utils/helpers";
+import { STATUS_LABELS, PRIORITY_LABELS } from "../../utils/constants";
+import { useAuth } from "../../context/AuthContext";
+import Select from "../common/Select";
+import Button from "../common/Button";
+import { taskApi } from "../../services/taskApi";
+import { toast } from "react-toastify";
 
 const TaskDetailModal = ({ task, isOpen, onClose, onUpdate }) => {
-  if (!task) return null
-
+  if (!task) return null;
+  const { isManager, isAdmin } = useAuth();
+  const [priority, setPriority] = useState(task.priority);
+  const [saving, setSaving] = useState(false);
   const getPriorityVariant = (priority) => {
     switch (priority) {
-      case 'high': return 'danger'
-      case 'medium': return 'warning'
-      case 'low': return 'success'
-      default: return 'default'
+      case "high":
+        return "danger";
+      case "medium":
+        return "warning";
+      case "low":
+        return "success";
+      default:
+        return "default";
     }
-  }
+  };
 
   const getStatusVariant = (status) => {
     switch (status) {
-      case 'completed': return 'success'
-      case 'in_progress': return 'info'
-      case 'in_review': return 'warning'
-      case 'pending': return 'default'
-      default: return 'default'
+      case "completed":
+        return "success";
+      case "in_progress":
+        return "info";
+      case "in_review":
+        return "warning";
+      case "pending":
+        return "default";
+      default:
+        return "default";
     }
-  }
+  };
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      title="Task Details"
-      size="large"
-    >
+    <Modal isOpen={isOpen} onClose={onClose} title="Task Details" size="large">
       <div className="space-y-4">
         <div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">{task.title}</h3>
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            {task.title}
+          </h3>
           <p className="text-gray-600">{task.description}</p>
         </div>
 
@@ -48,9 +61,47 @@ const TaskDetailModal = ({ task, isOpen, onClose, onUpdate }) => {
           </div>
           <div>
             <p className="text-sm text-gray-500 mb-1">Priority</p>
-            <Badge variant={getPriorityVariant(task.priority)}>
-              {PRIORITY_LABELS[task.priority]}
-            </Badge>
+            {isAdmin() || isManager() ? (
+              <div className="flex items-center gap-2">
+                <Select
+                  name="priority"
+                  value={priority}
+                  onChange={(e) => setPriority(e.target.value)}
+                  options={[
+                    { value: "high", label: PRIORITY_LABELS["high"] },
+                    { value: "medium", label: PRIORITY_LABELS["medium"] },
+                    { value: "low", label: PRIORITY_LABELS["low"] },
+                  ]}
+                />
+                <Button
+                  variant="primary"
+                  onClick={async () => {
+                    if (priority === task.priority) return;
+                    try {
+                      setSaving(true);
+                      await taskApi.updateTaskPriority(task.t_id, priority);
+                      toast.success("Priority updated");
+                      onUpdate?.();
+                    } catch (err) {
+                      console.error("Failed to update priority", err);
+                      toast.error(
+                        err.response?.data?.detail ||
+                          "Failed to update priority"
+                      );
+                    } finally {
+                      setSaving(false);
+                    }
+                  }}
+                  loading={saving}
+                >
+                  Save
+                </Button>
+              </div>
+            ) : (
+              <Badge variant={getPriorityVariant(task.priority)}>
+                {PRIORITY_LABELS[task.priority]}
+              </Badge>
+            )}
           </div>
         </div>
 
@@ -91,7 +142,9 @@ const TaskDetailModal = ({ task, isOpen, onClose, onUpdate }) => {
           {task.actual_closure && (
             <div>
               <p className="text-sm text-gray-500">Actual Closure</p>
-              <p className="font-medium">{formatDateTime(task.actual_closure)}</p>
+              <p className="font-medium">
+                {formatDateTime(task.actual_closure)}
+              </p>
             </div>
           )}
         </div>
@@ -99,12 +152,14 @@ const TaskDetailModal = ({ task, isOpen, onClose, onUpdate }) => {
         {task.remarks && (
           <div>
             <p className="text-sm text-gray-500 mb-1">Remarks</p>
-            <p className="text-gray-700 bg-gray-50 p-3 rounded">{task.remarks}</p>
+            <p className="text-gray-700 bg-gray-50 p-3 rounded">
+              {task.remarks}
+            </p>
           </div>
         )}
       </div>
     </Modal>
-  )
-}
+  );
+};
 
-export default TaskDetailModal
+export default TaskDetailModal;
