@@ -12,6 +12,7 @@ ROLE_PERMISSIONS = {
         "user:read",
         "user:update",
         "user:delete",
+        "task:add_remark",
     },
     "MANAGER": {
         "employee:read_all",
@@ -21,13 +22,16 @@ ROLE_PERMISSIONS = {
         "task:review",
         "task:read_all",
         "task:read_one",
+        "task:add_remark", 
     },
     "EMPLOYEE": {
         "employee:read_one",
         "task:read_own",      # 🔑 IMPORTANT
         "task:update",
-         "task:read_one",
+        "task:read_one",
         "file:upload",
+        "task:add_remark",      # ← Add this (CRITICAL!)
+        "file:upload",  
     }
 }
 

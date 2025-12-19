@@ -54,32 +54,21 @@ const TaskCard = ({ task, token, onUpdateTask }) => {
     setError('');
 
     try {
-      const formData = new FormData();
-      formData.append('task_id', task.task_id);
-      formData.append('remark', remark);
-      if (file) {
-        formData.append('file', file);
-      }
-
-      const response = await fetch('/api/tasks/remark', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-        body: formData,
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to submit remark');
-      }
-
-      const data = await response.json();
+      // Import api from your services
+      const { api } = await import('../../services/api');
+      
+      // Call the new API method
+      const data = await api.addTaskRemark(task.task_id, remark, file, token);
       
       // Update task with new remark
       if (onUpdateTask) {
+        const updatedRemarks = Array.isArray(task.remarks) 
+          ? [...task.remarks, data.remark]
+          : [data.remark];
+          
         onUpdateTask({
           ...task,
-          remarks: [...(task.remarks || []), data.remark]
+          remarks: updatedRemarks
         });
       }
 

@@ -1,143 +1,126 @@
-const API_BASE_URL = "http://127.0.0.1:8000";  // Or use import.meta.env.VITE_API_URL
+const API_BASE_URL = "http://127.0.0.1:8000";
 
-// JWT Decode Utility
+// ================= JWT Decode =================
 export const decodeToken = (token) => {
   try {
-    const base64Url = token.split('.')[1];
-    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    const jsonPayload = decodeURIComponent(atob(base64).split('').map((c) => {
-      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-    }).join(''));
-    return JSON.parse(jsonPayload);
-  } catch (error) {
-    console.error('Failed to decode token:', error);
+    const base64Url = token.split(".")[1];
+    const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+    return JSON.parse(atob(base64));
+  } catch {
     return null;
   }
 };
 
-// API Service
+// ================= API SERVICE =================
 export const api = {
+  // ---------- AUTH ----------
   login: async (emp_id, password) => {
-  const url = `${API_BASE_URL}/auth/login?emp_id=${encodeURIComponent(emp_id)}&password=${encodeURIComponent(password)}`;
+    const res = await fetch(
+      `${API_BASE_URL}/auth/login?emp_id=${emp_id}&password=${password}`,
+      { method: "POST" }
+    );
 
-  const response = await fetch(url, {
-    method: 'POST',
-  });
+    if (!res.ok) throw new Error("Login failed");
+    return res.json();
+  },
 
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}));
-    throw new Error(errorData.detail || 'Login failed');
-  }
-
-  return response.json();
-},
-
+  // ---------- TASKS ----------
   getTasks: async (token) => {
-    const response = await fetch(`${API_BASE_URL}/tasks/`, {
-      headers: { 'Authorization': `Bearer ${token}` },
+    const res = await fetch(`${API_BASE_URL}/tasks/`, {
+      headers: { Authorization: `Bearer ${token}` },
     });
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.detail || 'Failed to fetch tasks');
-    }
-    return response.json();
+
+    if (!res.ok) throw new Error("Failed to fetch tasks");
+    return res.json();
   },
 
-  updateTaskStatus: async (taskId, status, remarks = '', token) => {
-    const response = await fetch(`${API_BASE_URL}/tasks/${taskId}`, {
-      method: 'PATCH',
+  // ---------- ADD TASK REMARK (with optional file) ----------
+  addTaskRemark: async (taskId, remark, file, token) => {
+    const formData = new FormData();
+    if (remark) formData.append("remark", remark);
+    if (file) formData.append("file", file);
+
+    const res = await fetch(`${API_BASE_URL}/tasks/${taskId}/remarks`, {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({ status_: status, remarks }),
+      body: formData,
     });
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.detail || 'Failed to update task');
+
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error(text || "Failed to add remark");
     }
-    return response.json();
+
+    return res.json();
   },
 
+  updateTaskStatus: async (taskId, status, remarks, token) => {
+    const res = await fetch(`${API_BASE_URL}/tasks/${taskId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        status_: status,
+        remarks,
+      }),
+    });
+
+    if (!res.ok) throw new Error("Failed to update task");
+    return res.json();
+  },
+
+  // ---------- SAVE REMARKS (SQL) ----------
+  saveTaskRemarks: async (taskId, remarks, token) => {
+    const res = await fetch(`${API_BASE_URL}/tasks/${taskId}/remarks`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ remarks }),
+    });
+
+    if (!res.ok) throw new Error("Saving remarks failed");
+    return res.json();
+  },
+
+  // ---------- FILE UPLOAD (Mongo + Disk) ----------
+  uploadTaskFile: async (taskId, file, token) => {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const res = await fetch(`${API_BASE_URL}/files/upload`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: formData,
+    });
+
+    if (!res.ok) throw new Error("File upload failed");
+    return res.json();
+  },
+
+  // ---------- EMPLOYEES ----------
   getEmployees: async (token) => {
-    const response = await fetch(`${API_BASE_URL}/employees/`, {
-      headers: { 'Authorization': `Bearer ${token}` },
+    const res = await fetch(`${API_BASE_URL}/employees/`, {
+      headers: { Authorization: `Bearer ${token}` },
     });
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.detail || 'Failed to fetch employees');
-    }
-    return response.json();
-  },
 
-  createEmployee: async (employeeData, token) => {
-    const response = await fetch(`${API_BASE_URL}/employees/`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
-      },
-      body: JSON.stringify(employeeData),
-    });
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.detail || 'Failed to create employee');
-    }
-    return response.json();
-  },
-
-  updateEmployee: async (empId, employeeData, token) => {
-    const response = await fetch(`${API_BASE_URL}/employees/${empId}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
-      },
-      body: JSON.stringify(employeeData),
-    });
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.detail || 'Failed to update employee');
-    }
-    return response.json();
-  },
-
-  deleteEmployee: async (empId, token) => {
-    const response = await fetch(`${API_BASE_URL}/employees/${empId}`, {
-      method: 'DELETE',
-      headers: { 'Authorization': `Bearer ${token}` },
-    });
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.detail || 'Failed to delete employee');
-    }
-    return response.json();
-  },
-
-  createTask: async (taskData, token) => {
-    const response = await fetch(`${API_BASE_URL}/tasks/`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
-      },
-      body: JSON.stringify(taskData),
-    });
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.detail || 'Failed to create task');
-    }
-    return response.json();
+    if (!res.ok) throw new Error("Failed to fetch employees");
+    return res.json();
   },
 
   getEmployee: async (empId, token) => {
-    const response = await fetch(`${API_BASE_URL}/employees/${empId}`, {
-      headers: { 'Authorization': `Bearer ${token}` },
+    const res = await fetch(`${API_BASE_URL}/employees/${empId}`, {
+      headers: { Authorization: `Bearer ${token}` },
     });
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.detail || 'Employee not found');
-    }
-    return response.json();
+
+    if (!res.ok) throw new Error("Employee not found");
+    return res.json();
   },
 };
