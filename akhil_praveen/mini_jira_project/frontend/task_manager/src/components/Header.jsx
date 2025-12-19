@@ -9,6 +9,7 @@ function Header({
   onTabChange,
   onLogout,
   canManageEmployees,
+  canManageUsers,
   onRoleChange,
   onRefresh,
 }) {
@@ -103,6 +104,20 @@ function Header({
             >
               <Users size={14} className="inline mr-1.5" />
               Employees
+            </button>
+          )}
+
+          {canManageUsers && (
+            <button
+              onClick={() => onTabChange("users")}
+              className={`px-3 py-1.5 rounded-lg font-medium transition-all text-sm ${
+                activeTab === "users"
+                  ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md"
+                  : "hover:bg-gray-100 text-gray-700"
+              }`}
+            >
+              <Users size={14} className="inline mr-1.5" />
+              Users
             </button>
           )}
 

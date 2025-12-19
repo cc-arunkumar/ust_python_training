@@ -121,6 +121,35 @@ class ApiService {
       method: "DELETE",
     });
   }
+
+  // Users (Admin)
+  getUsers() {
+    return this.request("/users/");
+  }
+
+  getUser(id) {
+    return this.request(`/users/${id}`);
+  }
+
+  createUser(data) {
+    return this.request("/users/", {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+  }
+
+  updateUser(id, data) {
+    return this.request(`/users/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(data),
+    });
+  }
+
+  deleteUser(id) {
+    return this.request(`/users/${id}`, {
+      method: "DELETE",
+    });
+  }
 }
 
 const api = new ApiService();

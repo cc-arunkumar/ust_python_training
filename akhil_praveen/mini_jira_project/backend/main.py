@@ -25,3 +25,6 @@ app.add_middleware(
 app.include_router(login_router)
 app.include_router(emp_router)
 app.include_router(task_router)
+from routers.users import users_router
+
+app.include_router(users_router)

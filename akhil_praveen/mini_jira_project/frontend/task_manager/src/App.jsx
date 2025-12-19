@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Login from "./components/Login";
 import Header from "./components/Header";
+import UsersManagement from "./components/UsersManagement";
 import TaskBoard from "./components/TaskBoard";
 import EmployeeManagement from "./components/EmployeeManagement";
 import api from "./api/api";
@@ -11,8 +12,10 @@ function App() {
   const [currentEmpId, setCurrentEmpId] = useState(null);
   const [tasks, setTasks] = useState([]);
   const [employees, setEmployees] = useState([]);
+  const [users, setUsers] = useState([]);
   const [activeTab, setActiveTab] = useState("tasks");
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [openTaskId, setOpenTaskId] = useState(null);
 
   useEffect(() => {
@@ -88,6 +91,7 @@ function App() {
   const loadData = async () => {
     setLoading(true);
     try {
+      // Load tasks and employees first. Users endpoint may not exist on some backends.
       const [tasksData, employeesData] = await Promise.all([
         api.getTasks(),
         api.getEmployees(),
@@ -101,10 +105,57 @@ function App() {
       }));
       setTasks(normalized);
       setEmployees(employeesData);
+
+      // Try loading users but treat 404 (Not Found) as non-fatal (some backends don't expose /users)
+      try {
+        const usersData = await api.getUsers();
+        const normalizedUsers = Array.isArray(usersData)
+          ? usersData
+          : usersData && usersData.users
+          ? usersData.users
+          : [];
+        setUsers(normalizedUsers);
+      } catch (uErr) {
+        // if users endpoint missing, log and continue without surfacing a global error
+        const msg = (uErr && uErr.message) || String(uErr);
+        if (msg.toLowerCase().includes("not found")) {
+          console.info("Users endpoint not found, continuing without users");
+          setUsers([]);
+        } else if (
+          msg.toLowerCase().includes("not authenticated") ||
+          msg.toLowerCase().includes("unauthorized") ||
+          msg.toLowerCase().includes("invalid or expired token")
+        ) {
+          // auth issue affects all endpoints — rethrow to be handled by outer catch
+          throw uErr;
+        } else {
+          console.warn("Failed to load users, continuing:", uErr);
+          setUsers([]);
+        }
+      }
     } catch (err) {
       console.error("Failed to load data:", err);
       const errorMessage = err.message || "Unknown error occurred";
-      alert("Failed to load data: " + errorMessage);
+      setError(errorMessage);
+      // if backend indicates authentication issue, force logout so user can re-login
+      const lower = (errorMessage || "").toLowerCase();
+      if (
+        lower.includes("unauthorized") ||
+        lower.includes("not authenticated") ||
+        lower.includes("invalid or expired token")
+      ) {
+        try {
+          localStorage.removeItem("token");
+          localStorage.removeItem("role");
+          localStorage.removeItem("roles");
+          localStorage.removeItem("emp_id");
+        } catch (e) {}
+        setIsAuthenticated(false);
+      }
+      // also alert for visibility
+      try {
+        alert("Failed to load data: " + errorMessage);
+      } catch (e) {}
     } finally {
       setLoading(false);
     }
@@ -283,7 +334,17 @@ function App() {
     );
   }
 
+  // If there was an error loading data, show a banner but still render the app so user can login/inspect
+  const errorBanner =
+    error && error.length ? (
+      <div className="bg-red-50 border-l-4 border-red-400 p-4 m-4 rounded">
+        <div className="text-red-800 font-semibold">Data load error</div>
+        <div className="text-sm text-red-700">{error}</div>
+      </div>
+    ) : null;
+
   const canManageEmployees = role.includes("ADMIN") || role.includes("MANAGER");
+  const canManageUsers = role.includes("ADMIN");
   const canCreateTasks = role.includes("ADMIN") || role.includes("MANAGER");
   const openTaskDetail = (taskId) => {
     setActiveTab("tasks");
@@ -304,9 +365,12 @@ function App() {
         onTabChange={setActiveTab}
         onLogout={handleLogout}
         canManageEmployees={canManageEmployees}
+        canManageUsers={canManageUsers}
         onRoleChange={handleRoleChange}
         onRefresh={loadData}
       />
+
+      {errorBanner}
 
       <main className="container mx-auto bg-gray-200">
         {activeTab === "tasks" ? (
@@ -321,14 +385,16 @@ function App() {
             onSaveTask={handleSaveTask}
             openTaskId={openTaskId}
           />
-        ) : (
+        ) : activeTab === "employees" ? (
           <EmployeeManagement
             employees={employees}
             onRefresh={loadData}
             role={role}
             currentEmpId={currentEmpId}
           />
-        )}
+        ) : activeTab === "users" ? (
+          <UsersManagement users={users} onRefresh={loadData} role={role} />
+        ) : null}
       </main>
     </div>
   );
