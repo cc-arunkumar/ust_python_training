@@ -1,0 +1,7 @@
+/* Old v3 way – remove these */
+/* @tailwind base;
+@tailwind components;
+@tailwind utilities; */
+
+/* New v4 way – just one line */
+@import "tailwindcss";

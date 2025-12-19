@@ -1,0 +1,6 @@
+@import "tailwindcss";
+
+@source "./index.html";
+@source "./src/**/*.{js,ts,jsx,tsx}";
+
+/* Your custom styles go here if needed */
