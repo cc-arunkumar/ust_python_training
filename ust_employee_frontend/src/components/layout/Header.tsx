@@ -186,9 +186,9 @@ const Header: React.FC<HeaderProps> = ({
           >
             <Menu className="h-5 w-5" />
           </button>
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
-            <img src="/favicon.ico" alt="UST" className="h-5 w-5" />
-          </div>
+
+          <img src="/favicon.ico" alt="UST" className="h-5 w-5" />
+
           <div className="flex items-center gap-3">
             <div className="flex h-50 w-50 items-center justify-center text-black rounded-lg ">
               <div className="text-2xl font-bold">Jira-Lite</div>
@@ -318,13 +318,11 @@ const Header: React.FC<HeaderProps> = ({
             {/* Popup image – same style, bigger */}
             {showFull && (
               <div className="absolute top-12 right-0 z-50">
-                <div className="h-40 w-40 rounded-full border-2 border-primary/20 bg-white shadow-lg overflow-hidden">
-                  <img
-                    src="https://wallpaperaccess.com/full/8946245.jpg"
-                    alt="UST"
-                    className="h-full w-full object-contain"
-                  />
-                </div>
+                <img
+                  src="https://wallpaperaccess.com/full/8946245.jpg"
+                  alt="UST"
+                  className="h-full w-full object-contain"
+                />
               </div>
             )}
           </div>

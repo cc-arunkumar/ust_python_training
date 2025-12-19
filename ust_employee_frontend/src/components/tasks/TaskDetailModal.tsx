@@ -50,6 +50,7 @@ const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
     deleteTask,
     updateTaskPriority,
     updateTaskReviewer,
+    updateTaskExpectedClosure,
     reviewDecision,
     loadRemarks,
   } = useTasks();
@@ -68,6 +69,21 @@ const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
   const [selectedReviewer, setSelectedReviewer] = useState(
     stripNonDigits(task.reviewer) || ""
   );
+  const formatToDateInput = (iso?: string | null) => {
+    if (!iso) return "";
+    try {
+      return new Date(iso).toISOString().slice(0, 10);
+    } catch {
+      return "";
+    }
+  };
+  const [expectedClosureVal, setExpectedClosureVal] = useState<string>(
+    formatToDateInput(task.expected_closure)
+  );
+
+  useEffect(() => {
+    setExpectedClosureVal(formatToDateInput(task.expected_closure));
+  }, [task.expected_closure]);
   const { employees, getEmployeeById } = useEmployees();
   const [managersList, setManagersList] = useState<
     { emp_id: number | string | undefined; name: string; e_id: string }[]
@@ -148,6 +164,8 @@ const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
     ((viewMode === "employee" && task.status === "IN_PROGRESS") ||
       (isReviewer && task.status === "REVIEW"));
   const canAssign = viewMode === "admin" || viewMode === "manager";
+  const canEditMeta =
+    (viewMode === "admin" || viewMode === "manager") && task.status !== "DONE";
   const canDelete = viewMode === "admin";
 
   const getNextStatus = (): TaskStatus | null => {
@@ -290,21 +308,137 @@ const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
             <div className="flex items-center gap-2 text-sm">
               <Calendar className="h-4 w-4 text-muted-foreground" />
               <span className="text-muted-foreground">Due:</span>
-              <span className="font-medium">
-                {format(new Date(task.expected_closure), "MMM d, yyyy")}
-              </span>
+              {canEditMeta ? (
+                <input
+                  type="date"
+                  value={expectedClosureVal}
+                  onChange={(e) => {
+                    const v = e.target.value;
+                    setExpectedClosureVal(v);
+                    // null means clear the expected closure
+                    updateTaskExpectedClosure(
+                      task.t_id,
+                      v || null,
+                      user?.e_id || ""
+                    );
+                  }}
+                  className="font-medium bg-transparent"
+                />
+              ) : (
+                <span className="font-medium">
+                  {task.expected_closure
+                    ? format(new Date(task.expected_closure), "MMM d, yyyy")
+                    : "Not set"}
+                </span>
+              )}
             </div>
+
             <div className="flex items-center gap-2 text-sm">
               <User className="h-4 w-4 text-muted-foreground" />
               <span className="text-muted-foreground">Assignee:</span>
-              <span className="font-medium">
-                {assignee?.name || "Unassigned"}
-              </span>
+              {canEditMeta && task.status !== "TO_DO" ? (
+                <div className="w-40">
+                  <Select
+                    value={selectedAssignee}
+                    onValueChange={(value) => {
+                      setSelectedAssignee(value);
+                      // call assignTask with current reviewer (if any) and logged-in user as assigned_by
+                      assignTask(
+                        task.t_id,
+                        value,
+                        user?.e_id || "",
+                        selectedReviewer || undefined
+                      );
+                    }}
+                  >
+                    <SelectTrigger>
+                      <SelectValue>
+                        {selectedAssignee ? (
+                          getEmployeeById(selectedAssignee)?.name || ""
+                        ) : (
+                          <span className="text-muted-foreground">
+                            Select assignee
+                          </span>
+                        )}
+                      </SelectValue>
+                    </SelectTrigger>
+                    <SelectContent>
+                      {employees.map((emp) => (
+                        <SelectItem key={emp.e_id} value={String(emp.e_id)}>
+                          {emp.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              ) : (
+                <span className="font-medium">
+                  {assignee?.name || "Unassigned"}
+                </span>
+              )}
             </div>
+
             <div className="flex items-center gap-2 text-sm">
               <User className="h-4 w-4 text-muted-foreground" />
               <span className="text-muted-foreground">Reviewer:</span>
-              <span className="font-medium">{reviewer?.name || "Not set"}</span>
+              {canEditMeta && task.status !== "TO_DO" ? (
+                <div className="w-40">
+                  <Select
+                    value={selectedReviewer}
+                    onValueChange={(value) => {
+                      setSelectedReviewer(value);
+                      updateTaskReviewer(task.t_id, value, user?.e_id || "");
+                    }}
+                  >
+                    <SelectTrigger>
+                      <SelectValue>
+                        {selectedReviewer ? (
+                          getEmployeeById(selectedReviewer)?.name || ""
+                        ) : (
+                          <span className="text-muted-foreground">
+                            Select reviewer
+                          </span>
+                        )}
+                      </SelectValue>
+                    </SelectTrigger>
+                    <SelectContent>
+                      {(managersList.length > 0
+                        ? managersList
+                        : employees.filter((emp) => {
+                            const desig = (emp.designation || "")
+                              .toString()
+                              .toLowerCase();
+                            const hasRole = Array.isArray(emp.roles)
+                              ? emp.roles.some(
+                                  (r: any) =>
+                                    String(r)
+                                      .toLowerCase()
+                                      .includes("manager") ||
+                                    String(r).toLowerCase().includes("lead")
+                                )
+                              : false;
+                            return (
+                              desig.includes("manager") ||
+                              desig.includes("lead") ||
+                              hasRole
+                            );
+                          })
+                      ).map((m: any) => (
+                        <SelectItem
+                          key={m.e_id || String(m.emp_id)}
+                          value={m.e_id || String(m.emp_id)}
+                        >
+                          {m.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              ) : (
+                <span className="font-medium">
+                  {reviewer?.name || "Not set"}
+                </span>
+              )}
             </div>
           </div>
 

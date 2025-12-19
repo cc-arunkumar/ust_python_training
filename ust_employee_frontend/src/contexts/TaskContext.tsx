@@ -33,6 +33,11 @@ interface TaskContextType {
     priority: string,
     updatedBy: string
   ) => void;
+  updateTaskExpectedClosure: (
+    taskId: string,
+    expectedClosure: string | null,
+    updatedBy: string
+  ) => void;
   updateTaskReviewer: (
     taskId: string,
     reviewer: string,
@@ -313,6 +318,67 @@ export const TaskProvider: React.FC<{ children: React.ReactNode }> = ({
         } catch (err: any) {
           console.error("Failed to update priority", err);
           let msg = "Failed to update priority";
+          const data = err?.response?.data;
+          if (data) {
+            if (typeof data === "string") msg = data;
+            else if (data?.detail) msg = String(data.detail);
+            else if (data?.message) msg = String(data.message);
+            else msg = JSON.stringify(data);
+          } else if (err?.message) {
+            msg = String(err.message);
+          }
+          toast.error(msg);
+        }
+      })();
+    },
+    []
+  );
+
+  /* -------------------- Update Expected Closure (Admin / Manager) -------------------- */
+  const updateTaskExpectedClosure = useCallback(
+    (taskId: string, expectedClosure: string | null, updatedBy: string) => {
+      (async () => {
+        try {
+          const stripDigits = (s?: string | number) => {
+            if (s == null) return "";
+            return String(s).replace(/\D/g, "");
+          };
+
+          const taskIdNum = Number(stripDigits(taskId));
+          if (!Number.isFinite(taskIdNum)) {
+            toast.error("Invalid task id");
+            return;
+          }
+
+          const payload: any = {
+            expected_closure: expectedClosure
+              ? new Date(expectedClosure).toISOString()
+              : null,
+          };
+
+          const res = await api.patch(`/api/tasks/${taskIdNum}`, payload);
+          const updated = res.data;
+
+          setTasks((prev) =>
+            prev.map((task) =>
+              task.t_id === taskId
+                ? {
+                    ...task,
+                    expected_closure:
+                      updated.expected_closure ||
+                      expectedClosure ||
+                      task.expected_closure,
+                    updated_by: updated.updated_by || task.updated_by,
+                    updated_at: updated.updated_at || new Date().toISOString(),
+                  }
+                : task
+            )
+          );
+
+          toast.success("Expected closure updated");
+        } catch (err: any) {
+          console.error("Failed to update expected closure", err);
+          let msg = "Failed to update expected closure";
           const data = err?.response?.data;
           if (data) {
             if (typeof data === "string") msg = data;
@@ -659,6 +725,7 @@ export const TaskProvider: React.FC<{ children: React.ReactNode }> = ({
         createTask,
         assignTask,
         updateTaskPriority,
+        updateTaskExpectedClosure,
         updateTaskReviewer,
         addRemark,
         loadRemarks,

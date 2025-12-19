@@ -1,6 +1,8 @@
 import React, { useState, useMemo } from "react";
 import { DragDropContext, DropResult } from "@hello-pangea/dnd";
 import { Task, TaskStatus, Role } from "@/types";
+import { Input } from "@/components/ui/input";
+import { Search } from "lucide-react";
 import { useTasks } from "@/contexts/TaskContext";
 import { useAuth } from "@/contexts/AuthContext";
 import KanbanColumn from "./KanbanColumn";
@@ -18,6 +20,7 @@ const TaskBoard: React.FC<TaskBoardProps> = ({ viewMode }) => {
   const { tasks, updateTaskStatus, reviewDecision, updatingTasks } = useTasks();
   const { user, isAdmin, isManager } = useAuth();
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [attachmentTask, setAttachmentTask] = useState<Task | null>(null);
 
@@ -33,24 +36,41 @@ const TaskBoard: React.FC<TaskBoardProps> = ({ viewMode }) => {
   }, []);
 
   const filteredTasks = useMemo(() => {
-    if (viewMode === "admin") {
-      return tasks;
-    }
-    if (viewMode === "manager") {
-      // Manager sees tasks they created, assigned, or are reviewer of.
-      // Additionally, managers should be able to view all open (TO_DO) tasks.
-      return tasks.filter(
-        (t) =>
-          t.status === "TO_DO" ||
-          t.created_by === user?.e_id ||
-          t.assigned_by === user?.e_id ||
-          t.reviewer === user?.e_id
+    const base = (() => {
+      if (viewMode === "admin") {
+        return tasks;
+      }
+      if (viewMode === "manager") {
+        // Manager sees tasks they created, assigned, or are reviewer of.
+        // Additionally, managers should be able to view all open (TO_DO) tasks.
+        return tasks.filter(
+          (t) =>
+            t.status === "TO_DO" ||
+            t.created_by === user?.e_id ||
+            t.assigned_by === user?.e_id ||
+            t.reviewer === user?.e_id
+        );
+      }
+      // Employee (developer) sees only their assigned tasks. Unassigned TO_DO tasks
+      // should not be visible to other employees.
+      return tasks.filter((t) => t.assigned_to === user?.e_id);
+    })();
+
+    const term = String(searchTerm || "")
+      .trim()
+      .toLowerCase();
+    if (!term) return base;
+
+    return base.filter((t) => {
+      return (
+        (t.title || "").toLowerCase().includes(term) ||
+        (t.description || "").toLowerCase().includes(term) ||
+        String(t.t_id || "")
+          .toLowerCase()
+          .includes(term)
       );
-    }
-    // Employee (developer) sees only their assigned tasks. Unassigned TO_DO tasks
-    // should not be visible to other employees.
-    return tasks.filter((t) => t.assigned_to === user?.e_id);
-  }, [tasks, viewMode, user?.e_id]);
+    });
+  }, [tasks, viewMode, user?.e_id, searchTerm]);
 
   const tasksByStatus = useMemo(() => {
     const grouped: Record<TaskStatus, Task[]> = {
@@ -141,13 +161,31 @@ const TaskBoard: React.FC<TaskBoardProps> = ({ viewMode }) => {
   return (
     <div className="p-6">
       <div className="mb-6">
-        <h2 className="text-2xl font-bold text-foreground">Task Board</h2>
-        <p className="text-muted-foreground text-sm">
-          {viewMode === "admin" && "Viewing all tasks across the organization"}
-          {viewMode === "manager" &&
-            "Viewing tasks you manage, review, and open (TO_DO) tasks"}
-          {viewMode === "employee" && "Viewing your assigned tasks"}
-        </p>
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <h2 className="text-2xl font-bold text-foreground">Task Board</h2>
+            <p className="text-muted-foreground text-sm">
+              {viewMode === "admin" &&
+                "Viewing all tasks across the organization"}
+              {viewMode === "manager" &&
+                "Viewing tasks you manage, review, and open (TO_DO) tasks"}
+              {viewMode === "employee" && "Viewing your assigned tasks"}
+            </p>
+          </div>
+
+          <div className="relative flex-1 max-w-sm">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Search tasks..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-9"
+            />
+            <div className="text-sm text-muted-foreground mt-1 text-right">
+              {filteredTasks.length} task{filteredTasks.length !== 1 ? "s" : ""}
+            </div>
+          </div>
+        </div>
       </div>
 
       <DragDropContext onDragEnd={handleDragEnd}>
