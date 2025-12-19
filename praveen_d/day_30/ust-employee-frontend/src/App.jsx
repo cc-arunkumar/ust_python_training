@@ -78,6 +78,14 @@ const App = () => {
     }
   }, [token]);
 
+  // Helper to support user.role being string or array
+  const hasRole = (role) => {
+    if (!user || user.role == null) return false;
+    return Array.isArray(user.role)
+      ? user.role.includes(role)
+      : user.role === role;
+  };
+
   const fetchEmployeeDetails = async (empId, authToken) => {
     try {
       console.log("[DEBUG] Fetching employee details for:", empId);
@@ -185,13 +193,22 @@ const App = () => {
           console.log(
             "[DEBUG] Fetching tasks for user:",
             user.emp_id,
-            "role:",
-            user.role
+            "user.role:",
+            user.role,
+            "selectedRole:",
+            selectedRole
           );
 
           let tasksData = [];
 
-          if (user.role === "EMPLOYEE") {
+          // Determine effective role: prefer selectedRole (user choice), otherwise infer from user.role
+          const effectiveRole = selectedRole
+            ? selectedRole
+            : hasRole("EMPLOYEE") && !hasRole("ADMIN") && !hasRole("MANAGER")
+            ? "EMPLOYEE"
+            : null;
+
+          if (effectiveRole === "EMPLOYEE") {
             const allTasks = await api.getTasks(token);
             console.log("[DEBUG] All tasks from backend:", allTasks.length);
             console.log("[DEBUG] Filtering for emp_id:", user.emp_id);
@@ -212,8 +229,22 @@ const App = () => {
 
           // Fetch employees for ADMIN or MANAGER
           try {
-            if (user.role === "ADMIN" || user.role === "MANAGER") {
-              console.log("[DEBUG] Fetching employees for role:", user.role);
+            // Fetch employees when the effective role (selected by user) allows it
+            const effectiveRoleForEmployees =
+              selectedRole ||
+              (hasRole("ADMIN") || hasRole("MANAGER")
+                ? hasRole("ADMIN")
+                  ? "ADMIN"
+                  : "MANAGER"
+                : null);
+            if (
+              effectiveRoleForEmployees === "ADMIN" ||
+              effectiveRoleForEmployees === "MANAGER"
+            ) {
+              console.log(
+                "[DEBUG] Fetching employees for role:",
+                effectiveRoleForEmployees
+              );
               const emps = await api.getEmployees(token);
               console.log("[DEBUG] Employees loaded:", emps.length);
               setEmployees(emps);
@@ -235,14 +266,15 @@ const App = () => {
 
       fetchData();
     }
-  }, [token, user]);
+  }, [token, user, selectedRole]);
 
   // Determine dashboard based on role
   useEffect(() => {
     if (user && token && !loading) {
-      console.log("[DEBUG] Determining view for role:", user.role);
+      console.log("[DEBUG] Determining view for user.role:", user.role);
 
-      if (user.role === "ADMIN" || user.role === "MANAGER") {
+      // If user has elevated roles, let them pick which dashboard to use
+      if (hasRole("ADMIN") || hasRole("MANAGER")) {
         setCurrentView("roleSelector");
       } else {
         setSelectedRole("EMPLOYEE");
@@ -272,19 +304,17 @@ const App = () => {
       {currentView === "roleSelector" && (
         <RoleSelector user={user} onRoleSelect={handleRoleSelect} />
       )}
-      {currentView === "dashboard" &&
-        selectedRole === "EMPLOYEE" &&
-        user?.role === "EMPLOYEE" && (
-          <EmployeeDashboard
-            user={user}
-            tasks={tasks}
-            token={token}
-            onLogout={handleLogout}
-            onError={setError}
-            error={error}
-            onUpdateTasks={handleUpdateTasks}
-          />
-        )}
+      {currentView === "dashboard" && selectedRole === "EMPLOYEE" && (
+        <EmployeeDashboard
+          user={user}
+          tasks={tasks}
+          token={token}
+          onLogout={handleLogout}
+          onError={setError}
+          error={error}
+          onUpdateTasks={handleUpdateTasks}
+        />
+      )}
 
       {currentView === "dashboard" && selectedRole === "MANAGER" && (
         <ManagerDashboard

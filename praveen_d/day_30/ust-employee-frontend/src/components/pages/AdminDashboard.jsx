@@ -113,7 +113,7 @@ const AdminDashboard = ({
   }, [adminTasks]);
 
   // Filter potential managers (assuming all employees can be managers; adjust if role field exists)
-  const managers = employees.filter(emp => emp.emp_id !== user?.emp_id); // Exclude self if needed
+  const managers = employees.filter((emp) => emp.emp_id !== user?.emp_id); // Exclude self if needed
 
   const handleCreateEmployee = async (e) => {
     e.preventDefault();
@@ -213,7 +213,11 @@ const AdminDashboard = ({
     try {
       // Update the employee's mgr_id
       const updateData = { mgr_id: assignForm.manager_id };
-      const updated = await api.updateEmployee(assignForm.employee_id, updateData, token);
+      const updated = await api.updateEmployee(
+        assignForm.employee_id,
+        updateData,
+        token
+      );
       onUpdateEmployee(updated);
       setShowAssignEmployee(false);
       setAssignForm({ employee_id: "", manager_id: "" });
@@ -245,7 +249,9 @@ const AdminDashboard = ({
             </div>
           </div>
           <div className="flex items-center gap-4">
-            {user?.role === "ADMIN" && (
+            {(Array.isArray(user?.role)
+              ? user.role.includes("ADMIN")
+              : user?.role === "ADMIN") && (
               <button
                 onClick={onSwitchRole}
                 className="text-gray-600 hover:text-gray-900"
@@ -525,21 +531,26 @@ const AdminDashboard = ({
           <div className="bg-white rounded-xl shadow border p-6">
             <div className="flex items-center gap-2 mb-4">
               <UserCheck size={20} className="text-emerald-600" />
-              <h3 className="text-lg font-semibold">Assign Employee to Manager</h3>
+              <h3 className="text-lg font-semibold">
+                Assign Employee to Manager
+              </h3>
             </div>
             <p className="text-gray-600 mb-6">
               Select an employee and assign them to a manager below.
             </p>
             {employees.length === 0 ? (
               <div className="text-center text-gray-500 py-8">
-                No employees available. Create employees first in the Employees tab.
+                No employees available. Create employees first in the Employees
+                tab.
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Current Assignments Table */}
                 <div className="space-y-4">
-                  <h4 className="font-medium text-gray-700">Current Assignments</h4>
-                  {employees.filter(emp => emp.mgr_id).length === 0 ? (
+                  <h4 className="font-medium text-gray-700">
+                    Current Assignments
+                  </h4>
+                  {employees.filter((emp) => emp.mgr_id).length === 0 ? (
                     <p className="text-gray-500 text-sm">No assignments yet.</p>
                   ) : (
                     <div className="overflow-x-auto">
@@ -552,12 +563,16 @@ const AdminDashboard = ({
                         </thead>
                         <tbody>
                           {employees
-                            .filter(emp => emp.mgr_id)
+                            .filter((emp) => emp.mgr_id)
                             .map((emp) => (
                               <tr key={emp.emp_id} className="border-t">
-                                <td className="px-3 py-2">{emp.name} ({emp.emp_id})</td>
                                 <td className="px-3 py-2">
-                                  {employees.find(m => m.emp_id === emp.mgr_id)?.name || emp.mgr_id}
+                                  {emp.name} ({emp.emp_id})
+                                </td>
+                                <td className="px-3 py-2">
+                                  {employees.find(
+                                    (m) => m.emp_id === emp.mgr_id
+                                  )?.name || emp.mgr_id}
                                 </td>
                               </tr>
                             ))}
@@ -578,7 +593,10 @@ const AdminDashboard = ({
                       <select
                         value={assignForm.employee_id}
                         onChange={(e) =>
-                          setAssignForm({ ...assignForm, employee_id: e.target.value })
+                          setAssignForm({
+                            ...assignForm,
+                            employee_id: e.target.value,
+                          })
                         }
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500"
                         required
@@ -599,7 +617,10 @@ const AdminDashboard = ({
                       <select
                         value={assignForm.manager_id}
                         onChange={(e) =>
-                          setAssignForm({ ...assignForm, manager_id: e.target.value })
+                          setAssignForm({
+                            ...assignForm,
+                            manager_id: e.target.value,
+                          })
                         }
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500"
                         required
@@ -615,7 +636,11 @@ const AdminDashboard = ({
                     </div>
                     <button
                       type="submit"
-                      disabled={loading || !assignForm.employee_id || !assignForm.manager_id}
+                      disabled={
+                        loading ||
+                        !assignForm.employee_id ||
+                        !assignForm.manager_id
+                      }
                       className="w-full bg-emerald-600 text-white py-2 rounded-lg hover:bg-emerald-700 disabled:opacity-50 font-medium transition"
                     >
                       {loading ? "Assigning..." : "Assign Employee"}
@@ -996,8 +1021,6 @@ const AdminDashboard = ({
 };
 
 export default AdminDashboard;
-
-
 
 // import { useState, useMemo } from "react";
 // import {

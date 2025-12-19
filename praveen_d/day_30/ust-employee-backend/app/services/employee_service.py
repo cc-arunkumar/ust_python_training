@@ -15,7 +15,14 @@ class Employee(Base):
 
 
 def create_employee(db:Session, emp:EmployeeSchema):
-    new_emp=Employee(**emp.dict())
+    data = emp.dict()
+    # If designation provided as list, store as comma-separated string in SQL column
+    if isinstance(data.get('designation'), list):
+        data['designation'] = ','.join(data['designation'])
+    # Normalize empty manager id to None so DB stores NULL instead of empty string
+    if 'mgr_id' in data and (data['mgr_id'] is None or str(data['mgr_id']).strip() == ''):
+        data['mgr_id'] = None
+    new_emp=Employee(**data)
     db.add(new_emp)
     db.commit()
     db.refresh(new_emp)
@@ -37,7 +44,13 @@ def update_employee(db: Session, emp_id: str, emp_data: EmployeeSchema):
     if not emp:
         return None
 
-    for key, value in emp_data.dict().items():
+    incoming = emp_data.dict()
+    if isinstance(incoming.get('designation'), list):
+        incoming['designation'] = ','.join(incoming['designation'])
+    # Normalize empty manager id to None so DB stores NULL instead of empty string
+    if 'mgr_id' in incoming and (incoming['mgr_id'] is None or str(incoming['mgr_id']).strip() == ''):
+        incoming['mgr_id'] = None
+    for key, value in incoming.items():
         setattr(emp, key, value)
 
     db.commit()
