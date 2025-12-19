@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from app.core.database import Base, engine
 from app.api import auth, employee, task,user
+from app.api import task_files
 from fastapi.middleware.cors import CORSMiddleware
 
 Base.metadata.create_all(bind=engine)
@@ -20,3 +21,4 @@ app.include_router(auth.router, tags=["Auth"])
 app.include_router(employee.router, tags=["Employees"])
 app.include_router(task.router, tags=["Tasks"])
 app.include_router(user.router, tags=["Users"])
+app.include_router(task_files.router)

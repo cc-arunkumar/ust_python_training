@@ -2,11 +2,13 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
 import { AuthProvider } from "./context/AuthContext";
+import { NotificationProvider } from "./context/NotificationContext";
 import { Toaster } from "react-hot-toast";
 import "./index.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
+    <NotificationProvider>
     <AuthProvider>
       <App />
       <Toaster
@@ -17,5 +19,6 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         }}
       />
     </AuthProvider>
+    </NotificationProvider>
   </React.StrictMode>
 );

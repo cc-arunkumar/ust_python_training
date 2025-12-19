@@ -15,6 +15,9 @@ from app.schemas.task import (
 from app.utils.logger import log_action
 
 router = APIRouter(prefix="/tasks", tags=["Tasks"])
+# app/crud/task.py
+def task_exists(db, task_id: int) -> bool:
+    return db.query(Task).filter(Task.t_id == task_id).first() is not None
 
 
 # -------------------------------------------------
