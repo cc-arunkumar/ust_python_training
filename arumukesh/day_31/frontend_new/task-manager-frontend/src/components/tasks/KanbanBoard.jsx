@@ -1,43 +1,54 @@
-import React, { useState, useEffect } from 'react'
-import { DndProvider, useDrag, useDrop } from 'react-dnd'
-import { HTML5Backend } from 'react-dnd-html5-backend'
-import { useAuth } from '../../context/AuthContext'
-import { taskApi } from '../../services/taskApi'
-import { toast } from 'react-toastify'
-import TaskCard from './TaskCard'
-import TaskDetailModal from './TaskDetailModal'
-import LoadingSpinner from '../common/LoadingSpinner'
-import { isValidStatusTransition, sortByPriority } from '../../utils/helpers'
-import { STATUS_LABELS } from '../../utils/constants'
+import React, { useState, useEffect } from "react";
+import { DndProvider, useDrag, useDrop } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
+import { useAuth } from "../../context/AuthContext";
+import { taskApi } from "../../services/taskApi";
+import { toast } from "react-toastify";
+import TaskCard from "./TaskCard";
+import TaskDetailModal from "./TaskDetailModal";
+import LoadingSpinner from "../common/LoadingSpinner";
+import { isValidStatusTransition, sortByPriority } from "../../utils/helpers";
+import { STATUS_LABELS } from "../../utils/constants";
 
-const ITEM_TYPE = 'TASK'
+const ITEM_TYPE = "TASK";
 
 const DraggableTask = ({ task, canDrag, onClick }) => {
   const [, drag] = useDrag({
     type: ITEM_TYPE,
     item: { id: task.t_id, currentStatus: task.status },
     canDrag: () => canDrag,
-  })
+  });
 
   return (
-    <div ref={canDrag ? drag : null} className={canDrag ? 'cursor-move' : 'cursor-default'}>
+    <div
+      ref={canDrag ? drag : null}
+      className={canDrag ? "cursor-move" : "cursor-default"}
+    >
       <TaskCard task={task} onClick={onClick} />
     </div>
-  )
-}
+  );
+};
 
-const KanbanColumn = ({ status, tasks, onDrop, label, bgColor, canDragTask, onTaskClick }) => {
+const KanbanColumn = ({
+  status,
+  tasks,
+  onDrop,
+  label,
+  bgColor,
+  canDragTask,
+  onTaskClick,
+}) => {
   const [{ isOver }, drop] = useDrop({
     accept: ITEM_TYPE,
     drop: (item) => onDrop(item.id, status, item.currentStatus),
     collect: (monitor) => ({
       isOver: monitor.isOver(),
     }),
-  })
+  });
 
   return (
-    <div className="flex-1 min-w-[280px]">
-      <div className={`${bgColor} p-3 rounded-t-lg border-b-2 border-gray-300`}>
+    <div className="flex-1 min-w-[220px] max-w-[260px]">
+      <div className={`${bgColor} p-3 border-b-2 border-gray-300`}>
         <h3 className="font-semibold text-gray-800 flex items-center justify-between">
           <span>{label}</span>
           <span className="text-sm bg-white px-2 py-1 rounded-full">
@@ -48,12 +59,13 @@ const KanbanColumn = ({ status, tasks, onDrop, label, bgColor, canDragTask, onTa
       <div
         ref={drop}
         className={`
-          min-h-[500px] p-3 bg-gray-50 rounded-b-lg border-2 border-dashed
-          ${isOver ? 'border-primary-400 bg-primary-50' : 'border-gray-300'}
+          min-h-[420px] p-3 bg-gray-50 border-2 border-dashed
+          ${isOver ? "border-primary-400 bg-primary-50" : "border-gray-300"}
         `}
+        style={{ borderRadius: 0 }}
       >
         <div className="space-y-3">
-          {tasks.map(task => (
+          {tasks.map((task) => (
             <DraggableTask
               key={task.t_id}
               task={task}
@@ -62,105 +74,105 @@ const KanbanColumn = ({ status, tasks, onDrop, label, bgColor, canDragTask, onTa
             />
           ))}
           {tasks.length === 0 && (
-            <div className="text-center text-gray-400 py-8">
-              No tasks
-            </div>
+            <div className="text-center text-gray-400 py-8">No tasks</div>
           )}
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
 const KanbanBoard = () => {
-  const { user } = useAuth()
-  const [tasks, setTasks] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [selectedTask, setSelectedTask] = useState(null)
+  const { user } = useAuth();
+  const [tasks, setTasks] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedTask, setSelectedTask] = useState(null);
 
   const canDragTask = (task) => {
-    if (task.status === 'completed') return false
-    
-    const userEmpId = String(user.emp_id)
-    const isReviewer = String(task.reviewer) === userEmpId
-    const isAssignee = String(task.assigned_to) === userEmpId
-    
+    if (task.status === "completed") return false;
+
+    const userEmpId = String(user.emp_id);
+    const isReviewer = String(task.reviewer) === userEmpId;
+    const isAssignee = String(task.assigned_to) === userEmpId;
+
     if (isReviewer) {
-      return task.status === 'in_review'
+      return task.status === "in_review";
     }
-    
+
     if (isAssignee) {
-      return task.status === 'pending' || task.status === 'in_progress'
+      return task.status === "pending" || task.status === "in_progress";
     }
-    
-    return false
-  }
+
+    return false;
+  };
 
   const fetchTasks = async () => {
     try {
-      setLoading(true)
-      const data = await taskApi.getAllTasks()
-      setTasks(data)
+      setLoading(true);
+      const data = await taskApi.getAllTasks();
+      setTasks(data);
     } catch (error) {
-      console.error('Error fetching tasks:', error)
-      toast.error('Failed to load tasks')
+      console.error("Error fetching tasks:", error);
+      toast.error("Failed to load tasks");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
-    fetchTasks()
-  }, [])
+    fetchTasks();
+  }, []);
 
   const handleDrop = async (taskId, newStatus, currentStatus) => {
-    if (newStatus === currentStatus) return
+    if (newStatus === currentStatus) return;
 
-    const task = tasks.find(t => t.t_id === taskId)
-    if (!task) return
+    const task = tasks.find((t) => t.t_id === taskId);
+    if (!task) return;
 
-    const userEmpId = String(user.emp_id)
-    const isReviewer = String(task.reviewer) === userEmpId
-    const isAssignee = String(task.assigned_to) === userEmpId
+    const userEmpId = String(user.emp_id);
+    const isReviewer = String(task.reviewer) === userEmpId;
+    const isAssignee = String(task.assigned_to) === userEmpId;
 
     // Validate transition
-    const userRoles = user.roles?.map(r => r.toLowerCase()) || []
+    const userRoles = user.roles?.map((r) => r.toLowerCase()) || [];
     const valid = isValidStatusTransition(
-      currentStatus, 
-      newStatus, 
-      userRoles[0], 
-      isReviewer, 
+      currentStatus,
+      newStatus,
+      userRoles[0],
+      isReviewer,
       isAssignee
-    )
+    );
 
     if (!valid) {
-      toast.error('Invalid status transition')
-      return
+      toast.error("Invalid status transition");
+      return;
     }
 
     try {
-      await taskApi.updateTaskStatus(taskId, newStatus)
-      toast.success('Task status updated successfully')
-      fetchTasks()
+      await taskApi.updateTaskStatus(taskId, newStatus);
+      toast.success("Task status updated successfully");
+      fetchTasks();
     } catch (error) {
-      console.error('Error updating task status:', error)
-      toast.error('Failed to update task status')
+      console.error("Error updating task status:", error);
+      toast.error("Failed to update task status");
     }
-  }
+  };
 
   const handleTaskClick = (task) => {
-    setSelectedTask(task)
-  }
+    setSelectedTask(task);
+  };
 
   const groupedTasks = {
-    pending: sortByPriority(tasks.filter(t => t.status === 'pending')),
-    in_progress: sortByPriority(tasks.filter(t => t.status === 'in_progress')),
-    in_review: sortByPriority(tasks.filter(t => t.status === 'in_review')),
-    completed: sortByPriority(tasks.filter(t => t.status === 'completed')),
-  }
+    pending: sortByPriority(tasks.filter((t) => t.status === "pending")),
+    in_progress: sortByPriority(
+      tasks.filter((t) => t.status === "in_progress")
+    ),
+    in_review: sortByPriority(tasks.filter((t) => t.status === "in_review")),
+    completed: sortByPriority(tasks.filter((t) => t.status === "completed")),
+  };
 
   if (loading) {
-    return <LoadingSpinner fullScreen text="Loading tasks..." />
+    return <LoadingSpinner fullScreen text="Loading tasks..." />;
   }
 
   return (
@@ -215,7 +227,7 @@ const KanbanBoard = () => {
         />
       )}
     </DndProvider>
-  )
-}
+  );
+};
 
-export default KanbanBoard
+export default KanbanBoard;
