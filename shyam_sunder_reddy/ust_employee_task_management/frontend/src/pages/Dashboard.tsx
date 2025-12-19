@@ -215,7 +215,7 @@ const Dashboard = () => {
               recentTasks.map((task) => (
                 <div
                   key={task.t_id}
-                  onClick={() => navigate(`/tasks/${task.t_id}`)}
+                  // onClick={() => navigate(`/tasks/${task.t_id}`)}
                   className="p-4 border border-gray-200 rounded-lg hover:border-primary-300 hover:shadow-md transition-all duration-200 cursor-pointer"
                 >
                   <div className="flex items-start justify-between mb-2">

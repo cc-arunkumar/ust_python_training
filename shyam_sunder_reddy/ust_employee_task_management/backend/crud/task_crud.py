@@ -43,7 +43,8 @@ def add_task(new_task: TaskReqRes, role, user):
             q = get_user_by_id(task.reviewer)
             if "Manager" not in q.role:
                 q.role.append("Manager")
-
+        if task.assigned_to==task.reviewer:
+            raise HTTPException(status_code=400, detail="Assigned To and Reviewer cannot be the same user")
         session.add(task)
         session.commit()
         session.refresh(task)

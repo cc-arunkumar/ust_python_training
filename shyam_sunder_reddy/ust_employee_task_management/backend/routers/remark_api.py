@@ -1,4 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends, UploadFile, File, Form
+from fastapi.responses import StreamingResponse
+from bson import ObjectId
+from database.mongo_db import fs
 from typing import List, Optional
 from models.remark import RemarkReqRes,RemarkResponse
 from utils.auth import get_current_user
@@ -106,3 +109,30 @@ def delete_remark_by_id_api(id: str, role: str, user=Depends(get_current_user)):
 
     resp = delete_remark_by_id(id, role_clean, user)
     return resp
+
+
+@remark_router.get("/file/{file_id}")
+def get_file(file_id: str, user=Depends(get_current_user)):
+    """Stream a file from GridFS by its id.
+
+    Returns 400 for invalid ids, 404 when file not found, and streams the
+    file with its original content type and filename when present.
+    """
+    # validate id
+    try:
+        oid = ObjectId(file_id)
+    except Exception:
+        raise HTTPException(status_code=400, detail="invalid file id")
+
+    try:
+        grid_out = fs.get(oid)
+    except Exception:
+        # GridFS raises if not found
+        raise HTTPException(status_code=404, detail="Not Found")
+
+    content_type = getattr(grid_out, "content_type", "application/octet-stream")
+    filename = getattr(grid_out, "filename", "file")
+
+    headers = {"Content-Disposition": f'attachment; filename="{filename}"'}
+
+    return StreamingResponse(grid_out, media_type=content_type, headers=headers)

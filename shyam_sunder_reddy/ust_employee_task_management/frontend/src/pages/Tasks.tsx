@@ -1,8 +1,16 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { taskAPI } from "../services/api";
-import { Plus, Search, X as XIcon, MessageSquare, Eye } from "lucide-react";
-import { employeeAPI, userAPI, remarkAPI } from "../services/api";
+import {
+  Plus,
+  Search,
+  X as XIcon,
+  MessageSquare,
+  Eye,
+  User as UserIcon,
+  Edit as EditIcon,
+} from "lucide-react";
+import api, { employeeAPI, userAPI, remarkAPI } from "../services/api";
 import { useNavigate } from "react-router-dom";
 import type { Task, User } from "../types";
 
@@ -13,12 +21,12 @@ const getCardPriorityClass = (priority?: string) => {
   switch (priority.toLowerCase()) {
     case "high":
       // stronger red border and shadow
-      return "border border-red-300 shadow-md hover:shadow-lg";
+      return "border border-red-300 bg-red-50 shadow-md hover:shadow-lg";
     case "medium":
       // stronger yellow border and shadow
-      return "border border-yellow-300 shadow-md hover:shadow-lg";
+      return "border border-yellow-300 bg-yellow-50 shadow-md hover:shadow-lg";
     case "low":
-      return "border border-green-200 shadow-sm hover:shadow-md";
+      return "border border-green-200 bg-green-50 shadow-sm hover:shadow-md";
     default:
       return "border border-gray-100 shadow-sm";
   }
@@ -115,13 +123,43 @@ const Tasks = () => {
 
   // Group tasks by status for Kanban-style board
   const normalizeStatus = (status?: string) => status || "TO_DO";
+  // sort tasks by priority: high -> medium -> low
+  const priorityRank: Record<string, number> = {
+    high: 0,
+    medium: 1,
+    low: 2,
+  };
+
+  const sortByPriority = (arr: Task[]) =>
+    arr.slice().sort((a, b) => {
+      const pa = (a.priority || "").toLowerCase();
+      const pb = (b.priority || "").toLowerCase();
+      const ra = priorityRank[pa] ?? 99;
+      const rb = priorityRank[pb] ?? 99;
+      if (ra !== rb) return ra - rb;
+      // fallback: newer tasks first if created/updated timestamps exist
+      if ((a as any).updated_at && (b as any).updated_at) {
+        return (
+          new Date((b as any).updated_at).getTime() -
+          new Date((a as any).updated_at).getTime()
+        );
+      }
+      return 0;
+    });
+
   const columns = {
-    TO_DO: filteredTasks.filter((t) => normalizeStatus(t.status) === "TO_DO"),
-    IN_PROGRESS: filteredTasks.filter(
-      (t) => normalizeStatus(t.status) === "IN_PROGRESS"
+    TO_DO: sortByPriority(
+      filteredTasks.filter((t) => normalizeStatus(t.status) === "TO_DO")
     ),
-    REVIEW: filteredTasks.filter((t) => normalizeStatus(t.status) === "REVIEW"),
-    DONE: filteredTasks.filter((t) => normalizeStatus(t.status) === "DONE"),
+    IN_PROGRESS: sortByPriority(
+      filteredTasks.filter((t) => normalizeStatus(t.status) === "IN_PROGRESS")
+    ),
+    REVIEW: sortByPriority(
+      filteredTasks.filter((t) => normalizeStatus(t.status) === "REVIEW")
+    ),
+    DONE: sortByPriority(
+      filteredTasks.filter((t) => normalizeStatus(t.status) === "DONE")
+    ),
   };
 
   const updateTaskInState = (updated: Task) => {
@@ -310,6 +348,7 @@ const Tasks = () => {
             setDetailTask(t);
             setShowDetailModal(true);
           }}
+          onCreateClick={() => setShowCreateModal(true)}
           draggedTask={draggedTask}
           setDraggedTask={setDraggedTask}
           onEditClick={(t: Task) => setEditingTask(t)}
@@ -457,6 +496,7 @@ interface TaskColumnProps {
   onStatusChange: (task: Task, newStatus: string) => void;
   onAddRemark?: (task: Task) => void;
   onViewDetails?: (task: Task) => void;
+  onCreateClick?: () => void;
   draggedTask: Task | null;
   setDraggedTask: (task: Task | null) => void;
   onEditClick?: (task: Task) => void;
@@ -480,7 +520,44 @@ const TaskColumn = ({
   onAddRemark,
   onViewDetails,
   activeRole,
+  onCreateClick,
 }: TaskColumnProps) => {
+  const [employeeDetails, setEmployeeDetails] = useState<Record<number, any>>(
+    {}
+  );
+  const [showEmployeeFor, setShowEmployeeFor] = useState<number | null>(null);
+  const [showEmployeeRole, setShowEmployeeRole] = useState<string | null>(null);
+
+  const handleAssigneeClick = async (
+    e: React.MouseEvent,
+    assigneeId?: number,
+    roleType?: "Assignee" | "Reviewer"
+  ) => {
+    e.stopPropagation();
+    if (!assigneeId) return;
+    // toggle if already shown
+    if (showEmployeeFor === assigneeId) {
+      setShowEmployeeFor(null);
+      setShowEmployeeRole(null);
+      return;
+    }
+    // if we already fetched, just show and set the role label
+    if (employeeDetails[assigneeId]) {
+      setShowEmployeeFor(assigneeId);
+      setShowEmployeeRole(roleType || null);
+      return;
+    }
+    try {
+      const roleToUse = activeRole || "";
+      const emp = await employeeAPI.getById(assigneeId, roleToUse);
+      setEmployeeDetails((prev) => ({ ...prev, [assigneeId]: emp }));
+      setShowEmployeeFor(assigneeId);
+      setShowEmployeeRole(roleType || null);
+    } catch (err) {
+      console.error("Error fetching employee:", err);
+      alert("Failed to load employee details");
+    }
+  };
   return (
     <div
       className={`flex flex-col rounded-2xl border border-gray-100 ${bgColor} p-3 sm:p-4 min-h-[260px]`}
@@ -502,6 +579,18 @@ const TaskColumn = ({
         <div className="flex items-center gap-2">
           <span className={`w-2 h-2 rounded-full ${dotColor}`} />
           <h2 className="text-sm font-semibold text-gray-800">{title}</h2>
+          {onCreateClick && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onCreateClick();
+              }}
+              title="Create task"
+              className="p-1 rounded text-primary-600 hover:bg-primary-100"
+            >
+              <Plus size={14} />
+            </button>
+          )}
           <span className="text-xs px-2 py-0.5 rounded-full bg-white text-gray-600 border border-gray-200">
             {count}
           </span>
@@ -515,104 +604,236 @@ const TaskColumn = ({
             No tasks
           </div>
         ) : (
-          tasks.map((task) => (
-            <button
-              key={task.t_id}
-              onClick={() =>
-                onEditClick
-                  ? onEditClick(task)
-                  : navigate(`/tasks/${task.t_id}`)
-              }
-              className={`w-full text-left bg-white rounded-xl ${getCardPriorityClass(
-                task.priority
-              )} px-3 py-3 hover:border-primary-200 transition-all duration-200 overflow-hidden`}
-              draggable
-              onDragStart={() => setDraggedTask(task)}
-              onDragEnd={() => setDraggedTask(null)}
-            >
-              {/* Top row: task id, eye (details), remark, priority */}
-              <div className="flex items-center gap-2 mb-2">
-                <p className="text-xs text-gray-400 mb-0.5 flex-shrink-0">
-                  #{task.t_id ?? ""}
+          tasks.map((task) => {
+            // compute days remaining for expected_closure
+            const remainingDays = task.expected_closure
+              ? Math.ceil(
+                  (new Date(task.expected_closure).getTime() - Date.now()) /
+                    (1000 * 60 * 60 * 24)
+                )
+              : null;
+
+            const dueText =
+              remainingDays === null
+                ? "-"
+                : remainingDays < 0
+                ? `Overdue: ${Math.abs(remainingDays)}d`
+                : remainingDays === 0
+                ? `Due today`
+                : `Due in ${remainingDays}d`;
+
+            // Make tasks that are due in 1 day much more prominent:
+            // stronger red border, slightly darker background, red text, shadow and a subtle pop animation
+            // Urgent: due in 1 day OR already overdue -> make card pop
+            const isUrgent =
+              remainingDays !== null &&
+              (remainingDays <= 2 || remainingDays < 0);
+            const urgencyClass = isUrgent
+              ? "border-2 border-red-500 bg-red-800 text-red-800 shadow-lg transform scale-105 animate-pulse"
+              : "";
+
+            return (
+              <button
+                key={task.t_id}
+                onClick={() =>
+                  onViewDetails
+                    ? onViewDetails(task)
+                    : navigate(`/tasks/${task.t_id}`)
+                }
+                className={`w-full text-left rounded-xl ${getCardPriorityClass(
+                  task.priority
+                )} ${urgencyClass} px-3 py-3 hover:border-primary-200 transition-all duration-200 overflow-hidden`}
+                draggable
+                onDragStart={() => setDraggedTask(task)}
+                onDragEnd={() => setDraggedTask(null)}
+              >
+                {/* Top row: task id, eye (details), remark, priority */}
+                <div className="flex items-center gap-2 mb-2">
+                  <p className="text-xs text-gray-400 mb-0.5 flex-shrink-0">
+                    #{task.t_id ?? ""}
+                  </p>
+
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onViewDetails && onViewDetails(task);
+                    }}
+                    className="p-1 rounded-full text-gray-500 hover:bg-gray-100 transition-colors flex-shrink-0"
+                    title="View task details & remarks"
+                  >
+                    <Eye size={14} />
+                  </button>
+
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onAddRemark && onAddRemark(task);
+                    }}
+                    className={`p-1 rounded-full text-gray-500 hover:bg-gray-100 transition-colors flex-shrink-0 ${
+                      (task.status || "TO_DO") === "IN_PROGRESS" ||
+                      (task.status || "TO_DO") === "REVIEW"
+                        ? "cursor-pointer"
+                        : "opacity-40 pointer-events-none"
+                    }`}
+                    title={
+                      (task.status || "TO_DO") === "IN_PROGRESS" ||
+                      (task.status || "TO_DO") === "REVIEW"
+                        ? "Add remark"
+                        : "Remarks disabled for this status"
+                    }
+                  >
+                    <MessageSquare size={14} />
+                  </button>
+
+                  <button
+                    className={`inline-flex items-center whitespace-nowrap px-2 py-0.5 rounded-full text-[11px] font-medium border ${getPriorityColor(
+                      task.priority
+                    )} max-w-[72px] truncate overflow-hidden ml-1 flex-shrink-0`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      const next =
+                        task.priority === "high"
+                          ? "medium"
+                          : task.priority === "medium"
+                          ? "low"
+                          : "high";
+                      onPriorityChange(task, next);
+                    }}
+                    disabled={activeRole === "Developer"}
+                    title="Click to change priority"
+                  >
+                    {task.priority}
+                  </button>
+                </div>
+
+                <h3 className="text-sm font-semibold text-gray-800 line-clamp-2 mb-1">
+                  {task.title}
+                </h3>
+
+                <p className="text-xs text-gray-500 mb-3 line-clamp-2">
+                  {task.description}
                 </p>
 
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onViewDetails && onViewDetails(task);
-                  }}
-                  className="p-1 rounded-full text-gray-500 hover:bg-gray-100 transition-colors flex-shrink-0"
-                  title="View task details & remarks"
-                >
-                  <Eye size={14} />
-                </button>
+                <div className="flex items-center justify-between text-[11px] text-gray-400">
+                  <div className="flex items-center gap-3">
+                    {task.expected_closure && <span>{dueText}</span>}
+                  </div>
 
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onAddRemark && onAddRemark(task);
-                  }}
-                  className={`p-1 rounded-full text-gray-500 hover:bg-gray-100 transition-colors flex-shrink-0 ${
-                    (task.status || "TO_DO") === "IN_PROGRESS" ||
-                    (task.status || "TO_DO") === "REVIEW"
-                      ? "cursor-pointer"
-                      : "opacity-40 pointer-events-none"
-                  }`}
-                  title={
-                    (task.status || "TO_DO") === "IN_PROGRESS" ||
-                    (task.status || "TO_DO") === "REVIEW"
-                      ? "Add remark"
-                      : "Remarks disabled for this status"
-                  }
-                >
-                  <MessageSquare size={14} />
-                </button>
+                  <div className="flex items-center gap-2 relative">
+                    {/* Assignee icon: click to fetch and show employee details inline */}
+                    {task.assigned_to ? (
+                      <button
+                        onClick={(e) =>
+                          handleAssigneeClick(e, task.assigned_to, "Assignee")
+                        }
+                        title={`Assignee: ${task.assigned_to}`}
+                        className="p-1 rounded-md text-gray-500 hover:bg-gray-100 transition-colors"
+                      >
+                        <UserIcon size={14} />
+                      </button>
+                    ) : (
+                      <div className="text-gray-300 text-[11px]">—</div>
+                    )}
 
-                <button
-                  className={`inline-flex items-center whitespace-nowrap px-2 py-0.5 rounded-full text-[11px] font-medium border ${getPriorityColor(
-                    task.priority
-                  )} max-w-[72px] truncate overflow-hidden ml-1 flex-shrink-0`}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    const next =
-                      task.priority === "high"
-                        ? "medium"
-                        : task.priority === "medium"
-                        ? "low"
-                        : "high";
-                    onPriorityChange(task, next);
-                  }}
-                  disabled={activeRole === "Developer"}
-                  title="Click to change priority"
-                >
-                  {task.priority}
-                </button>
-              </div>
+                    {/* Reviewer icon: click to view reviewer employee details */}
+                    {task.reviewer ? (
+                      <button
+                        onClick={(e) =>
+                          handleAssigneeClick(e, task.reviewer, "Reviewer")
+                        }
+                        title={`Reviewer: ${task.reviewer}`}
+                        className="p-1 rounded-md text-gray-500 hover:bg-gray-100 transition-colors"
+                      >
+                        <UserIcon size={14} />
+                      </button>
+                    ) : null}
 
-              <h3 className="text-sm font-semibold text-gray-800 line-clamp-2 mb-1">
-                {task.title}
-              </h3>
+                    {/* Inline edit icon: open inline editor when allowed (not for Developers) */}
+                    {activeRole !== "Developer" ? (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onEditClick && onEditClick(task);
+                        }}
+                        title="Edit task inline"
+                        className="p-1 rounded-md text-gray-500 hover:bg-gray-100 transition-colors"
+                      >
+                        <EditIcon size={14} />
+                      </button>
+                    ) : (
+                      <div
+                        title="You are not authorized to edit tasks"
+                        className="p-1 rounded-md text-gray-300"
+                      >
+                        <EditIcon size={14} />
+                      </div>
+                    )}
 
-              <p className="text-xs text-gray-500 mb-3 line-clamp-2">
-                {task.description}
-              </p>
-
-              <div className="flex items-center justify-between text-[11px] text-gray-400">
-                <div className="flex items-center gap-3">
-                  {task.expected_closure && (
-                    <span>
-                      {new Date(task.expected_closure).toLocaleDateString()}
-                    </span>
-                  )}
-                  {task.assigned_to && (
-                    <span>Assignee: {task.assigned_to}</span>
-                  )}
+                    {/* (Popup moved out) */}
+                  </div>
                 </div>
-              </div>
-            </button>
-          ))
+              </button>
+            );
+          })
         )}
       </div>
+
+      {/* Employee detail modal popup (renders once per column) */}
+      {showEmployeeFor !== null && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div
+            className="absolute inset-0 bg-black/30"
+            onClick={() => setShowEmployeeFor(null)}
+          />
+          <div
+            className="relative z-10 bg-white rounded-lg shadow-xl w-full max-w-sm p-4 animate-scale-in"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-800">
+                  {showEmployeeRole
+                    ? `${showEmployeeRole} — Employee ${showEmployeeFor}`
+                    : `Employee ${showEmployeeFor}`}
+                </p>
+                <p className="text-xs text-gray-500">Profile</p>
+              </div>
+              <button
+                onClick={() => setShowEmployeeFor(null)}
+                className="text-gray-400 hover:text-gray-600 ml-2"
+                title="Close"
+              >
+                <XIcon size={16} />
+              </button>
+            </div>
+            <div className="mt-3 text-sm text-gray-700">
+              {employeeDetails[showEmployeeFor as number] ? (
+                <div className="space-y-1">
+                  <div className="text-sm font-semibold">
+                    {(employeeDetails[showEmployeeFor as number] as any).name}
+                  </div>
+                  <div className="text-xs text-gray-500">
+                    {
+                      (employeeDetails[showEmployeeFor as number] as any)
+                        .designation
+                    }
+                  </div>
+                  <div className="text-xs text-gray-500">
+                    {(employeeDetails[showEmployeeFor as number] as any).email}
+                  </div>
+                  <div className="text-xs text-gray-500">
+                    Manager ID:{" "}
+                    {(employeeDetails[showEmployeeFor as number] as any)
+                      .mgr_id ?? "-"}
+                  </div>
+                </div>
+              ) : (
+                <div className="text-xs text-gray-500">Loading...</div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
@@ -1598,14 +1819,51 @@ const TaskDetailModal: React.FC<{
                   <li key={r._id} className="border rounded p-2 text-xs">
                     <div className="text-gray-700">{r.comment}</div>
                     <div className="text-gray-500 text-[11px] mt-1">
-                      By: {r.created_by ?? "-"} •{" "}
+                      {/* By: {r.created_by ?? "-"} •{" "} */}
                       {r.created_at
                         ? new Date(r.created_at).toLocaleString()
                         : "-"}
                     </div>
                     {r.file_name && (
-                      <div className="text-xs text-blue-600 mt-1">
-                        Attachment: {r.file_name}
+                      <div className="text-xs mt-1">
+                        {r.file_id ? (
+                          <button
+                            onClick={async (e) => {
+                              e.stopPropagation();
+                              try {
+                                const resp = await api.get(
+                                  `/Remark/file/${r.file_id}`,
+                                  { responseType: "blob" }
+                                );
+                                const blob = new Blob([resp.data], {
+                                  type:
+                                    resp.headers["content-type"] ||
+                                    "application/octet-stream",
+                                });
+                                const url = URL.createObjectURL(blob);
+                                const a = document.createElement("a");
+                                a.href = url;
+                                a.download = r.file_name || "file";
+                                document.body.appendChild(a);
+                                a.click();
+                                a.remove();
+                                URL.revokeObjectURL(url);
+                              } catch (err) {
+                                console.error("Failed to download file:", err);
+                                alert(
+                                  "Failed to download attachment. Make sure you are logged in."
+                                );
+                              }
+                            }}
+                            className="text-blue-600 underline"
+                          >
+                            Attachment: {r.file_name}
+                          </button>
+                        ) : (
+                          <span className="text-blue-600">
+                            Attachment: {r.file_name}
+                          </span>
+                        )}
                       </div>
                     )}
                   </li>

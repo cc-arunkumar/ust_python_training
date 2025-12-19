@@ -1,7 +1,6 @@
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import {
-  LayoutDashboard,
   CheckSquare,
   Users,
   UserCog,
@@ -41,8 +40,7 @@ const LayoutNew = () => {
   }, [user?.e_id, activeRole]);
 
   const menuItems = [
-    { icon: LayoutDashboard, label: "Dashboard", path: "/" },
-    { icon: CheckSquare, label: "Tasks", path: "/tasks" },
+    { icon: CheckSquare, label: "Task Board", path: "/tasks" },
     { icon: Users, label: "Employees", path: "/employees" },
     { icon: UserCog, label: "Users", path: "/users" },
   ];
