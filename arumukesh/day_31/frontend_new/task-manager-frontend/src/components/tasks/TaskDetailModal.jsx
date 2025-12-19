@@ -8,12 +8,14 @@ import Select from "../common/Select";
 import Button from "../common/Button";
 import { taskApi } from "../../services/taskApi";
 import { toast } from "react-toastify";
+import RemarksChatModal from "./RemarksChatModal";
 
 const TaskDetailModal = ({ task, isOpen, onClose, onUpdate }) => {
   if (!task) return null;
   const { isManager, isAdmin } = useAuth();
   const [priority, setPriority] = useState(task.priority);
   const [saving, setSaving] = useState(false);
+  const [showRemarks, setShowRemarks] = useState(false);
   const getPriorityVariant = (priority) => {
     switch (priority) {
       case "high":
@@ -149,14 +151,20 @@ const TaskDetailModal = ({ task, isOpen, onClose, onUpdate }) => {
           )}
         </div>
 
-        {task.remarks && (
+        <div>
+          <p className="text-sm text-gray-500 mb-1">Remarks</p>
           <div>
-            <p className="text-sm text-gray-500 mb-1">Remarks</p>
-            <p className="text-gray-700 bg-gray-50 p-3 rounded">
-              {task.remarks}
-            </p>
+            <Button variant="ghost" onClick={() => setShowRemarks(true)}>
+              Open Remarks Chat
+            </Button>
           </div>
-        )}
+        </div>
+
+        <RemarksChatModal
+          taskId={task.t_id}
+          isOpen={showRemarks}
+          onClose={() => setShowRemarks(false)}
+        />
       </div>
     </Modal>
   );
