@@ -88,6 +88,36 @@ class ApiService {
     });
   }
 
+  // Upload a file for a task (multipart/form-data). Returns file metadata from server.
+  async uploadTaskFile(id, file) {
+    const token = localStorage.getItem("token");
+    const headers = {
+      ...(token && { Authorization: `Bearer ${token}` }),
+    };
+    const form = new FormData();
+    form.append("file", file);
+
+    const response = await fetch(`${API_BASE}/tasks/${id}/upload`, {
+      method: "POST",
+      headers,
+      body: form,
+    });
+
+    if (response.status === 401) {
+      localStorage.removeItem("token");
+      localStorage.removeItem("role");
+      window.location.reload();
+      throw new Error("Unauthorized");
+    }
+
+    if (!response.ok) {
+      const err = await response.json().catch(() => ({}));
+      throw new Error(err.detail || "File upload failed");
+    }
+
+    return response.json();
+  }
+
   // fetch reviews stored in Mongo for a task
   getTaskReviews(id) {
     return this.request(`/tasks/${id}/reviews`);

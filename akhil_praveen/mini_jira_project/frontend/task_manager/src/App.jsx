@@ -188,7 +188,12 @@ function App() {
     }
   };
 
-  const handleUpdateStatus = async (taskId, status, review) => {
+  const handleUpdateStatus = async (
+    taskId,
+    status,
+    review,
+    attachmentFile = null
+  ) => {
     try {
       console.log("App.handleUpdateStatus:", {
         taskId,
@@ -211,16 +216,19 @@ function App() {
       const isManagerRole =
         roleUpper.includes("MANAGER") || roleUpper.includes("ADMIN");
 
+      // Determine if this will be reviewer or developer remark (used for attachments too)
+      const isReviewerRemark =
+        roleUpper.includes("MANAGER") ||
+        roleUpper.includes("ADMIN") ||
+        (task &&
+          currentEmpId != null &&
+          Number(currentEmpId) === Number(task.reviewer));
+
       // Prepare extra fields for role-specific remarks
       const extra = {};
       const clientRemarksToInject = [];
 
       if (review && review.trim()) {
-        // Determine if this is a reviewer remark or developer remark
-        // Manager/Admin OR designated reviewer = reviewer remarks
-        // Otherwise = developer remarks
-        const isReviewerRemark = isManagerRole || isReviewer;
-
         if (isReviewerRemark) {
           // Store as reviewer remarks
           extra.reviewer_review = review.trim();
@@ -256,6 +264,40 @@ function App() {
         }
       }
 
+      // If an attachment file was provided, upload it first and include returned metadata
+      let uploadedAttachment = null;
+      if (attachmentFile) {
+        try {
+          const res = await api.uploadTaskFile(taskId, attachmentFile);
+          uploadedAttachment = res;
+          if (isReviewerRemark) {
+            extra.reviewer_attachment = res;
+            clientRemarksToInject.push({
+              from: "reviewer",
+              text: review && review.trim() ? review.trim() : "",
+              by: username,
+              byEmpId: currentEmpId,
+              ts: nowTs,
+              attachment: res,
+            });
+          } else {
+            extra.developer_attachment = res;
+            clientRemarksToInject.push({
+              from: "developer",
+              text: review && review.trim() ? review.trim() : "",
+              by: username,
+              byEmpId: currentEmpId,
+              ts: nowTs,
+              attachment: res,
+            });
+          }
+        } catch (e) {
+          console.error("Failed to upload attachment:", e);
+          alert("Failed to upload attachment: " + (e.message || e));
+          return;
+        }
+      }
+
       // Optimistic UI: add client remarks immediately
       if (clientRemarksToInject.length) {
         setTasks((prev) =>
@@ -286,6 +328,16 @@ function App() {
           : review && review.trim()
           ? review.trim()
           : null;
+
+      // Debug: log payload about to be sent to PATCH /tasks/{id}/status
+      try {
+        console.debug("PATCH payload:", {
+          taskId,
+          status,
+          review: topLevelReview,
+          extra: Object.keys(extra).length ? extra : undefined,
+        });
+      } catch (e) {}
 
       await api.updateTaskStatus(
         taskId,

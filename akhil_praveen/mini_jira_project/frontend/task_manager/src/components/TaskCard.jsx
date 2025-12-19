@@ -33,6 +33,7 @@ function TaskCard({
   const [showReviewInput, setShowReviewInput] = useState(false);
   const [pendingStatus, setPendingStatus] = useState(null);
   const [reviewText, setReviewText] = useState("");
+  const [reviewFile, setReviewFile] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
 
@@ -186,11 +187,16 @@ function TaskCard({
     }
 
     onUpdateStatus &&
-      onUpdateStatus(task.task_id, pendingStatus, reviewText.trim() || null);
-
+      onUpdateStatus(
+        task.task_id,
+        pendingStatus,
+        reviewText.trim() || null,
+        reviewFile
+      );
     setShowReviewInput(false);
     setPendingStatus(null);
     setReviewText("");
+    setReviewFile(null);
   };
 
   const cancelReview = () => {
@@ -616,6 +622,28 @@ function TaskCard({
             rows="2"
             autoFocus
           />
+          <div className="flex items-center gap-2 mb-2">
+            <label className="text-xs text-gray-600 flex items-center gap-2">
+              <input
+                type="file"
+                onChange={(e) => {
+                  const f = e.target.files && e.target.files[0];
+                  if (f) setReviewFile(f);
+                }}
+              />
+            </label>
+            {reviewFile && (
+              <div className="text-xs text-gray-700 flex items-center gap-2">
+                <span>{reviewFile.name}</span>
+                <button
+                  className="text-red-500 text-[10px]"
+                  onClick={() => setReviewFile(null)}
+                >
+                  Remove
+                </button>
+              </div>
+            )}
+          </div>
           <div className="flex gap-2">
             <button
               onClick={submitReview}

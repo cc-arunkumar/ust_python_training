@@ -33,6 +33,7 @@ function TaskBoard({
   const [promptTask, setPromptTask] = useState(null);
   const [promptStatus, setPromptStatus] = useState(null);
   const [promptText, setPromptText] = useState("");
+  const [promptFile, setPromptFile] = useState(null);
   const [dragOverStatus, setDragOverStatus] = useState(null);
   const [showNotifications, setShowNotifications] = useState(false);
   // removed manual refresh button; auto-refresh handled via in-app events
@@ -588,6 +589,26 @@ function TaskBoard({
               onChange={(e) => setPromptText(e.target.value)}
               placeholder="Add remarks (optional)"
             />
+            <div className="mb-3">
+              <input
+                type="file"
+                onChange={(e) => {
+                  const f = e.target.files && e.target.files[0];
+                  if (f) setPromptFile(f);
+                }}
+              />
+              {promptFile && (
+                <div className="text-xs text-gray-600 mt-2 flex items-center gap-2">
+                  <span>{promptFile.name}</span>
+                  <button
+                    className="text-red-500 text-[11px]"
+                    onClick={() => setPromptFile(null)}
+                  >
+                    Remove
+                  </button>
+                </div>
+              )}
+            </div>
             <div className="flex gap-2">
               <button
                 className="flex-1 bg-indigo-600 text-white py-2 rounded"
@@ -597,10 +618,12 @@ function TaskBoard({
                   const status = promptStatus;
                   const text =
                     promptText && promptText.trim() ? promptText.trim() : null;
+                  const file = promptFile || null;
                   setPromptTask(null);
                   setPromptStatus(null);
                   setPromptText("");
-                  await onUpdateStatus(tid, status, text);
+                  setPromptFile(null);
+                  await onUpdateStatus(tid, status, text, file);
                 }}
               >
                 Submit

@@ -1,19 +1,25 @@
 import React, { useState, useEffect } from "react";
-import { X, Edit, Clock, MoreVertical } from "lucide-react";
+import { X, Edit, Clock, MoreVertical, Paperclip } from "lucide-react";
 import api from "../api/api";
+import { API_BASE } from "../utils/constants";
 import computeRemarkId from "../utils/remarkId";
 
 function normalizeRemarks(task = {}) {
   const remarks = [];
 
-  function pushRemark(from, text, by, ts) {
-    if (!text || String(text).trim() === "") return;
+  function pushRemark(from, text, by, ts, attachment = null) {
+    // Allow remarks that have either text or an attachment (or both).
+    const hasText = text && String(text).trim() !== "";
+    const hasAttachment = !!attachment;
+    if (!hasText && !hasAttachment) return;
+
     remarks.push({
       from: from || "unknown",
-      text: String(text).trim(),
+      text: hasText ? String(text).trim() : "",
       by: by || null,
       byEmpId: null,
       ts: ts || null,
+      attachment: attachment || null,
     });
   }
 
@@ -62,7 +68,11 @@ function normalizeRemarks(task = {}) {
           it.createdAt ||
           it.timestamp ||
           null;
-        pushRemark(from || "unknown", text, by, ts);
+
+        const attachmentRaw =
+          it.attachment || it.file || it.file_id || it.fileId || null;
+
+        pushRemark(from || "unknown", text, by, ts, attachmentRaw);
       });
     }
   });
@@ -74,7 +84,8 @@ function normalizeRemarks(task = {}) {
         "developer",
         r.text || r.remark || r.comment || r.review,
         r.by || r.developer_by,
-        r.ts || r.developer_ts || r.timestamp
+        r.ts || r.developer_ts || r.timestamp,
+        r.attachment || null
       )
     );
   }
@@ -86,7 +97,8 @@ function normalizeRemarks(task = {}) {
         "reviewer",
         r.text || r.remark || r.comment || r.review,
         r.by || r.reviewer_by,
-        r.ts || r.reviewer_ts || r.timestamp
+        r.ts || r.reviewer_ts || r.timestamp,
+        r.attachment || null
       )
     );
   }
@@ -94,8 +106,6 @@ function normalizeRemarks(task = {}) {
   // client-side optimistic remarks (injected locally)
   if (Array.isArray(task._clientRemarks)) {
     task._clientRemarks.forEach((r) => {
-      // preserve byEmpId when provided by App optimistic injection
-      const idx = remarks.length;
       if (!r) return;
       remarks.push({
         from: r.from || "client",
@@ -103,6 +113,7 @@ function normalizeRemarks(task = {}) {
         by: r.by || null,
         byEmpId: r.byEmpId || null,
         ts: r.ts || null,
+        attachment: r.attachment || null,
       });
     });
   }
@@ -113,7 +124,8 @@ function normalizeRemarks(task = {}) {
       "developer",
       task.developer_remark,
       task.developer_by,
-      task.developer_ts
+      task.developer_ts,
+      null
     );
   }
 
@@ -122,7 +134,8 @@ function normalizeRemarks(task = {}) {
       "developer",
       task.developer_review,
       task.developer_by,
-      task.developer_ts
+      task.developer_ts,
+      null
     );
   }
 
@@ -132,7 +145,8 @@ function normalizeRemarks(task = {}) {
       "reviewer",
       task.reviewer_remark,
       task.reviewer_by,
-      task.reviewer_ts
+      task.reviewer_ts,
+      null
     );
   }
 
@@ -141,7 +155,8 @@ function normalizeRemarks(task = {}) {
       "reviewer",
       task.reviewer_review,
       task.reviewer_by,
-      task.reviewer_ts
+      task.reviewer_ts,
+      null
     );
   }
 
@@ -185,10 +200,7 @@ export default function TaskDetailModal({
       }
     };
 
-    // initial fetch
     fetchReviews();
-
-    // poll for new reviews while modal is open (every 5s)
     intervalId = setInterval(fetchReviews, 5000);
 
     return () => {
@@ -198,7 +210,6 @@ export default function TaskDetailModal({
   }, [task.task_id]);
 
   useEffect(() => {
-    // Load read remarks from localStorage
     const key = `task_${task.task_id}_read_remarks`;
     const stored = localStorage.getItem(key);
     if (stored) {
@@ -213,12 +224,8 @@ export default function TaskDetailModal({
   const assignee = employees.find((e) => e.emp_id === task.assigned_to);
   const reviewer = employees.find((e) => e.emp_id === task.reviewer);
 
-  // combine normalized task remarks with server-stored reviews
   const normalized = normalizeRemarks(task);
   const serverMapped = (serverReviews || []).map((s) => {
-    // Normalize role values coming from backend. Backend may store 'MANAGER', 'ADMIN',
-    // 'DEVELOPER' or canonical 'reviewer'/'developer'. Map them to 'reviewer' or 'developer'
-    // so the UI groups remarks correctly.
     const roleRaw = (s.role || "").toString().toLowerCase();
     let fromNorm = "reviewer";
     if (roleRaw.includes("dev") || roleRaw.includes("developer"))
@@ -228,9 +235,31 @@ export default function TaskDetailModal({
     else if (roleRaw.includes("manager") || roleRaw.includes("admin"))
       fromNorm = "reviewer";
 
+    let attachment = null;
+    try {
+      const a = s.attachment;
+      if (a) {
+        const fileId =
+          a.file_id || a.fileId || (a._id && String(a._id)) || a.id || null;
+        const filename =
+          a.filename || a.name || a.file_name || a.original_name || null;
+        const size = a.size || a.length || a.bytes || null;
+        const content_type =
+          a.content_type || a.contentType || a.mimetype || a.type || null;
+        attachment = {
+          file_id: fileId ? String(fileId) : null,
+          filename: filename || null,
+          size: typeof size === "number" ? size : null,
+          content_type: content_type || null,
+        };
+      }
+    } catch (e) {
+      attachment = null;
+    }
+
     return {
       from: fromNorm,
-      text: s.review || s.message || s.comment,
+      text: s.review || s.message || s.comment || "",
       by:
         s.reviewed_by_name ||
         s.reviewed_by_emp_id ||
@@ -238,15 +267,15 @@ export default function TaskDetailModal({
         null,
       byEmpId: s.reviewed_by_emp_id || s.reviewed_by_user_id || null,
       ts: s.created_at || null,
+      attachment,
     };
   });
 
-  // merge normalized client-side remarks with server-stored reviews
-  const remarks = [...normalized, ...serverMapped]
-    // ensure we have a consistent ts string for sorting
-    .map((r) => ({ ...r, ts: r.ts ? String(r.ts) : null }));
+  const remarks = [...normalized, ...serverMapped].map((r) => ({
+    ...r,
+    ts: r.ts ? String(r.ts) : null,
+  }));
 
-  // sort remarks chronologically (oldest first). Remarks without ts go last
   remarks.sort((a, b) => {
     if (!a.ts && !b.ts) return 0;
     if (!a.ts) return 1;
@@ -259,8 +288,6 @@ export default function TaskDetailModal({
     return ta - tb;
   });
 
-  // Separate remarks by role while preserving chronological order
-  // For the chat view we'll keep a single ordered remarks array and decide side per item
   const otherRemarks = remarks.filter((r) => {
     const from = String(r.from || "").toLowerCase();
     return (
@@ -273,42 +300,26 @@ export default function TaskDetailModal({
     );
   });
 
-  function isNewRemark(r, index) {
+  function isNewRemark(r) {
     if (!r || !r.ts) return false;
 
-    // Create deterministic unique ID for this remark (stable across components)
-    const remarkId = (() => {
-      const from = String(r.from || "unknown").replace(/\s+/g, "_");
-      const ts = String(r.ts || "").replace(/\s+/g, "_");
-      const by = String(r.byEmpId || r.by || "").replace(/\s+/g, "_");
-      const txt = String(r.text || "")
-        .slice(0, 30)
-        .replace(/\s+/g, "_");
-      return `${from}_${ts}_${by}_${txt}`;
-    })();
-
-    // Check if already read
+    const remarkId = computeRemarkId(r);
     if (readRemarks.has(remarkId)) return false;
 
-    // Don't mark remarks as new for the author themselves
-    // Some remarks include numeric byEmpId (optimistic or server); check that first
     if (r.byEmpId && currentEmpId && Number(r.byEmpId) === Number(currentEmpId))
       return false;
 
-    // Normalize role to decide who should see it as 'new'
     const fromRaw = String(r.from || "").toLowerCase();
     const fromNorm =
       fromRaw.includes("dev") || fromRaw.includes("developer")
         ? "developer"
         : "reviewer";
 
-    // If it's a reviewer remark, only the assignee (developer) should see it as new
     if (fromNorm === "reviewer") {
       if (currentEmpId && Number(currentEmpId) !== Number(task.assigned_to))
         return false;
     }
 
-    // If it's a developer remark, only the reviewer should see it as new
     if (fromNorm === "developer") {
       if (currentEmpId && Number(currentEmpId) !== Number(task.reviewer))
         return false;
@@ -317,25 +328,19 @@ export default function TaskDetailModal({
     const then = Date.parse(r.ts);
     if (isNaN(then)) return false;
     const age = Date.now() - then;
-    // Mark as new if within last 7 days
     return age < 7 * 24 * 60 * 60 * 1000;
   }
 
-  // use shared computeRemarkId
-
-  const markAsRead = (r, index) => {
+  const markAsRead = (r) => {
     const remarkId = computeRemarkId(r);
-
     const newReadRemarks = new Set(readRemarks);
     newReadRemarks.add(remarkId);
     setReadRemarks(newReadRemarks);
 
-    // Save to localStorage
     const key = `task_${task.task_id}_read_remarks`;
     localStorage.setItem(key, JSON.stringify([...newReadRemarks]));
-    // notify other components in this window by dispatching a StorageEvent-like event
+
     try {
-      const key = `task_${task.task_id}_read_remarks`;
       const newValue = localStorage.getItem(key);
       const sev = new StorageEvent("storage", {
         key,
@@ -345,8 +350,6 @@ export default function TaskDetailModal({
         storageArea: localStorage,
       });
       window.dispatchEvent(sev);
-      // also publish via in-app pub/sub
-      // lazy require to avoid circular import ordering issues
       const { publish } = require("../utils/events");
       publish("remarks:updated", { taskId: task.task_id });
     } catch (e) {}
@@ -366,14 +369,14 @@ export default function TaskDetailModal({
       const key = `task_${task.task_id}_read_remarks`;
       localStorage.setItem(key, JSON.stringify([...newRead]));
       setShowRemarksMenu(false);
-      // notify parent (e.g., TaskBoard) so badges/update can refresh immediately
+
       try {
         onMarkAllRead();
       } catch (e) {
         console.warn("onMarkAllRead callback failed:", e);
       }
+
       try {
-        const key = `task_${task.task_id}_read_remarks`;
         const newValue = localStorage.getItem(key);
         const sev = new StorageEvent("storage", {
           key,
@@ -383,13 +386,11 @@ export default function TaskDetailModal({
           storageArea: localStorage,
         });
         window.dispatchEvent(sev);
-        try {
-          window.dispatchEvent(
-            new CustomEvent("remarks:updated", {
-              detail: { taskId: task.task_id },
-            })
-          );
-        } catch (e) {}
+        window.dispatchEvent(
+          new CustomEvent("remarks:updated", {
+            detail: { taskId: task.task_id },
+          })
+        );
       } catch (e) {}
     } catch (e) {
       console.error("Failed to mark all read:", e);
@@ -412,36 +413,46 @@ export default function TaskDetailModal({
     }
   };
 
+  const getAttachmentUrl = (attachment) => {
+    if (!attachment) return null;
+    const fileId =
+      attachment.file_id ||
+      attachment.fileId ||
+      (attachment._id && String(attachment._id)) ||
+      attachment.id ||
+      null;
+    if (!fileId) return null;
+    return `${API_BASE}/tasks/${task.task_id}/attachments/${fileId}`;
+  };
+
   const RemarksSection = ({ title, remarks, type }) => (
     <div>
       <h4 className="text-sm font-semibold text-gray-700 mb-2">{title}</h4>
       <div className="space-y-3">
         {remarks.length ? (
           remarks.map((r, i) => {
-            const isNew = isNewRemark(r, i);
+            const isNew = isNewRemark(r);
             const remarkId = `${type}_${i}`;
+            const attachmentUrl = getAttachmentUrl(r.attachment);
 
             return (
               <div
                 key={remarkId}
                 className="relative bg-gray-50 rounded-lg p-3 border border-gray-200"
-                onClick={() => isNew && markAsRead(r, i)}
+                onClick={() => isNew && markAsRead(r)}
               >
-                {/* New Badge */}
                 {isNew && (
                   <span className="absolute -top-2 -left-2 bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm animate-pulse">
                     NEW
                   </span>
                 )}
 
-                {/* Index Number */}
                 <div className="flex items-start gap-3">
                   <div className="flex-shrink-0 w-6 h-6 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-xs font-semibold">
                     {i + 1}
                   </div>
 
                   <div className="flex-1">
-                    {/* Metadata */}
                     <div className="flex items-center gap-2 text-xs text-gray-500 mb-1">
                       {r.by && (
                         <span className="font-medium text-gray-700">
@@ -456,10 +467,27 @@ export default function TaskDetailModal({
                       )}
                     </div>
 
-                    {/* Remark Text */}
-                    <div className="text-sm text-gray-800 whitespace-pre-wrap">
-                      {r.text}
-                    </div>
+                    {r.text && (
+                      <div className="text-sm text-gray-800 whitespace-pre-wrap mb-2">
+                        {r.text}
+                      </div>
+                    )}
+
+                    {attachmentUrl && (
+                      <a
+                        href={attachmentUrl}
+                        target="_blank"
+                        rel="noreferrer noopener"
+                        download={r.attachment?.filename || undefined}
+                        className="inline-flex items-center gap-1 text-xs text-indigo-600 hover:text-indigo-800 font-medium underline"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <Paperclip size={12} />
+                        {r.attachment?.filename || "attachment"}
+                        {r.attachment?.size &&
+                          ` (${Math.round(r.attachment.size / 1024)} KB)`}
+                      </a>
+                    )}
                   </div>
                 </div>
               </div>
@@ -473,7 +501,7 @@ export default function TaskDetailModal({
       </div>
     </div>
   );
-  // Auto-scroll chat to bottom when remarks change
+
   useEffect(() => {
     try {
       if (chatRef.current) {
@@ -485,7 +513,6 @@ export default function TaskDetailModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
       <div className="w-full max-w-3xl bg-white rounded-xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
-        {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b bg-gradient-to-r from-indigo-50 to-purple-50">
           <div className="flex-1">
             <h2 className="text-lg font-bold text-gray-800">{task.title}</h2>
@@ -499,6 +526,7 @@ export default function TaskDetailModal({
               )}
             </div>
           </div>
+
           <div className="flex items-center gap-2">
             <button
               onClick={() => onEdit()}
@@ -516,14 +544,13 @@ export default function TaskDetailModal({
           </div>
         </div>
 
-        {/* Scrollable Content */}
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
           {fetchError && (
             <div className="bg-red-50 border border-red-200 text-red-700 p-3 rounded">
               Failed to load server reviews: {fetchError}
             </div>
           )}
-          {/* Description */}
+
           <div>
             <h3 className="text-sm font-semibold text-gray-600 mb-2">
               Description
@@ -533,7 +560,6 @@ export default function TaskDetailModal({
             </p>
           </div>
 
-          {/* Assignment Info */}
           <div className="grid grid-cols-2 gap-4">
             <div className="bg-blue-50 p-3 rounded-lg">
               <h4 className="text-xs font-semibold text-blue-900 mb-1">
@@ -553,7 +579,6 @@ export default function TaskDetailModal({
             </div>
           </div>
 
-          {/* Chat-style remarks (reviewer left / developer right) */}
           <div>
             <div className="flex items-center justify-between mb-2">
               <h4 className="text-sm font-semibold text-gray-700">Remarks</h4>
@@ -583,9 +608,10 @@ export default function TaskDetailModal({
                 )}
               </div>
             </div>
+
             <div
               ref={chatRef}
-              className="max-h-64 shadow-md border-1  overflow-y-auto space-y-3 p-3 bg-gray-50 rounded"
+              className="max-h-64 shadow-md border overflow-y-auto space-y-3 p-3 bg-gray-50 rounded"
             >
               {remarks.length ? (
                 remarks.map((r, i) => {
@@ -595,8 +621,9 @@ export default function TaskDetailModal({
                       ? "developer"
                       : "reviewer";
                   const isLeft = fromNorm === "reviewer";
-                  const isNew = isNewRemark(r, i);
+                  const isNew = isNewRemark(r);
                   const remarkId = `${fromNorm}_${i}`;
+                  const attachmentUrl = getAttachmentUrl(r.attachment);
 
                   return (
                     <div
@@ -604,22 +631,24 @@ export default function TaskDetailModal({
                       className={`flex ${
                         isLeft ? "justify-start" : "justify-end"
                       }`}
-                      onClick={() => isNew && markAsRead(r, i)}
+                      onClick={() => isNew && markAsRead(r)}
                     >
                       <div
                         className={`${
                           isLeft
-                            ? "bg-white border"
+                            ? "bg-white border border-gray-200"
                             : "bg-indigo-600 text-white"
-                        } rounded-lg p-3 max-w-[70%] border-gray-200`}
+                        } rounded-lg p-3 max-w-[70%]`}
                       >
-                        <div className="flex items-center gap-2 text-xs text-gray-500 mb-1">
+                        <div
+                          className={`flex items-center gap-2 text-xs mb-1 ${
+                            isLeft ? "text-gray-500" : "text-white/80"
+                          }`}
+                        >
                           {r.by && (
                             <span
-                              className={`${
-                                isLeft
-                                  ? "text-gray-700 font-medium"
-                                  : "text-white font-medium"
+                              className={`font-medium ${
+                                isLeft ? "text-gray-700" : "text-white"
                               }`}
                             >
                               {r.by}
@@ -643,9 +672,32 @@ export default function TaskDetailModal({
                             </span>
                           )}
                         </div>
-                        <div className="text-sm whitespace-pre-wrap">
-                          {r.text}
-                        </div>
+
+                        {r.text && (
+                          <div className="text-sm whitespace-pre-wrap mb-2">
+                            {r.text}
+                          </div>
+                        )}
+
+                        {attachmentUrl && (
+                          <a
+                            href={attachmentUrl}
+                            target="_blank"
+                            rel="noreferrer noopener"
+                            download={r.attachment?.filename || undefined}
+                            className={`inline-flex items-center gap-1 text-xs font-semibold underline ${
+                              isLeft
+                                ? "text-indigo-600 hover:text-indigo-800"
+                                : "text-white hover:text-white/80"
+                            }`}
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <Paperclip size={12} />
+                            {r.attachment?.filename || "attachment"}
+                            {r.attachment?.size &&
+                              ` (${Math.round(r.attachment.size / 1024)} KB)`}
+                          </a>
+                        )}
                       </div>
                     </div>
                   );
@@ -658,7 +710,6 @@ export default function TaskDetailModal({
             </div>
           </div>
 
-          {/* Other Remarks (non reviewer/dev roles) */}
           {otherRemarks.length > 0 && (
             <RemarksSection
               title="Other Remarks"
