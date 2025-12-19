@@ -52,10 +52,6 @@ const Sidebar: React.FC<SidebarProps> = ({
             onClick={onToggle}
             className="flex items-center gap-3 w-full px-2 py-2 rounded hover:bg-muted"
           >
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
-              <img src="/favicon.ico" alt="UST" className="h-5 w-5" />
-            </div>
-
             {isOpen ? (
               <div className="text-left">
                 <div className="text-sm font-semibold">UST Task Manager</div>

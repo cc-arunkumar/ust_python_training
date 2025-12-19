@@ -84,7 +84,7 @@ const Dashboard: React.FC = () => {
                       style={{ height: `${Math.max(8, counts.todo * 12)}px` }}
                     />
                   </div>
-                  <span className="text-xs">To Do ({counts.todo})</span>
+                  <span className="text-xs">To Do </span>
                 </div>
 
                 <div className="flex flex-col items-center gap-2 w-1/4">
@@ -96,9 +96,7 @@ const Dashboard: React.FC = () => {
                       }}
                     />
                   </div>
-                  <span className="text-xs">
-                    In Progress ({counts.inProgress})
-                  </span>
+                  <span className="text-xs">In Progress</span>
                 </div>
 
                 <div className="flex flex-col items-center gap-2 w-1/4">
@@ -108,7 +106,7 @@ const Dashboard: React.FC = () => {
                       style={{ height: `${Math.max(8, counts.review * 12)}px` }}
                     />
                   </div>
-                  <span className="text-xs">Review ({counts.review})</span>
+                  <span className="text-xs">Review </span>
                 </div>
 
                 <div className="flex flex-col items-center gap-2 w-1/4">
@@ -118,7 +116,7 @@ const Dashboard: React.FC = () => {
                       style={{ height: `${Math.max(8, counts.done * 12)}px` }}
                     />
                   </div>
-                  <span className="text-xs">Done ({counts.done})</span>
+                  <span className="text-xs">Done </span>
                 </div>
               </div>
             </div>

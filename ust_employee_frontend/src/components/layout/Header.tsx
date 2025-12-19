@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import {
   Shield,
@@ -21,7 +21,7 @@ import {
 import { useTasks } from "@/contexts/TaskContext";
 import { useEmployees } from "@/contexts/EmployeesContext";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useNavigate, useLocation } from "react-router-dom";
 
 type ViewMode = "admin" | "manager" | "employee";
@@ -55,6 +55,8 @@ const Header: React.FC<HeaderProps> = ({
       .join("")
       .toUpperCase();
   };
+
+  const [showFull, setShowFull] = useState(false);
 
   // track read notification ids (persisted in localStorage)
   const [readNotifications, setReadNotifications] = React.useState<string[]>(
@@ -184,10 +186,12 @@ const Header: React.FC<HeaderProps> = ({
           >
             <Menu className="h-5 w-5" />
           </button>
-
+          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
+            <img src="/favicon.ico" alt="UST" className="h-5 w-5" />
+          </div>
           <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
-              <LayoutDashboard className="h-5 w-5 text-primary-foreground" />
+            <div className="flex h-50 w-50 items-center justify-center text-black rounded-lg ">
+              <div className="text-2xl font-bold">Jira-Lite</div>
             </div>
           </div>
 
@@ -297,11 +301,33 @@ const Header: React.FC<HeaderProps> = ({
               {user?.role.join(", ")}
             </span>
           </div>
-          <Avatar className="h-9 w-9 border-2 border-primary/20">
-            <AvatarFallback className="bg-primary/10 text-primary text-sm font-semibold">
-              {user?.employee?.name ? getInitials(user.employee.name) : "U"}
-            </AvatarFallback>
-          </Avatar>
+          <div className="relative">
+            {/* Avatar */}
+            <Avatar
+              onClick={() => setShowFull((v) => !v)}
+              className="h-9 w-9 border-2 border-primary/20 cursor-pointer overflow-hidden"
+            >
+              <AvatarImage
+                src="https://wallpaperaccess.com/full/8946245.jpg"
+                alt="UST"
+                className="object-cover"
+              />
+              <AvatarFallback>U</AvatarFallback>
+            </Avatar>
+
+            {/* Popup image – same style, bigger */}
+            {showFull && (
+              <div className="absolute top-12 right-0 z-50">
+                <div className="h-40 w-40 rounded-full border-2 border-primary/20 bg-white shadow-lg overflow-hidden">
+                  <img
+                    src="https://wallpaperaccess.com/full/8946245.jpg"
+                    alt="UST"
+                    className="h-full w-full object-contain"
+                  />
+                </div>
+              </div>
+            )}
+          </div>
           <div className="flex items-center gap-2">
             <Button
               variant="ghost"
