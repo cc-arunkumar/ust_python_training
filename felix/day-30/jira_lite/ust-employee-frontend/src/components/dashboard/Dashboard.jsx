@@ -217,6 +217,7 @@ const Dashboard = () => {
       reviewer: parseInt(panelReviewer, 10),
       expected_completion_date: panelExpectedCompletion,
       updated_by: user.emp_id,
+      assigned_to:parseInt(panelAssignTo,10),
     };
     
     await api.updateTask(token, panel.task._id, updateData);
@@ -766,23 +767,53 @@ const Dashboard = () => {
     </div>
 
     <div>
-      <label className="text-sm font-semibold block mb-2">Reviewer</label>
+      {currentView === "manager" && 
+      (<label className="text-sm font-semibold block mb-2">Developer</label>)
+      }
+      {currentView === "admin" && 
+      (<label className="text-sm font-semibold block mb-2">Reviewer</label>)
+      }
       <select
-        value={panelReviewer}
-        onChange={(e) => setPanelReviewer(e.target.value)}
+        value={currentView === "manager" ? panelAssignTo : panelReviewer}
+        onChange={(e) => 
+          currentView === "manager" 
+            ? setPanelAssignTo(e.target.value) 
+            : currentView === "admin" 
+            ? setPanelReviewer(e.target.value)
+            : null
+        }
         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
       >
-        <option value="">Select reviewer...</option>
-        {currentView === "manager" && managerEmployees.map((emp) => (
-          <option key={emp.emp_id} value={emp.emp_id}>
-            {emp.name} (ID: {emp.emp_id})
+        {currentView === "manager" &&
+        (<option value="">Select developer...</option>)
+        }
+        {currentView === "admin" &&
+        (<option value="">Select reviewer...</option>)
+        }
+        {currentView === "manager" && managerEmployees.map((emp) => {
+          const empId = emp.emp_id || emp.id;
+        const empName = emp.name || `Employee ${empId}`;
+        
+        console.log("Rendering employee:", empId, empName); // ✅ Debug
+        
+        return (
+          <option key={empId} value={empId}>
+            {empName} (ID: {empId})
           </option>
-        ))}
-        {currentView === "admin" && managers.map((mgr) => (
-          <option key={mgr.emp_id} value={mgr.emp_id}>
-            {mgr.name} (ID: {mgr.emp_id})
+        );
+})}
+        {currentView === "admin" && managers.map((mgr) => {
+          const empId = mgr.emp_id || mgr.id;
+        const empName = mgr.name || `Employee ${empId}`;
+        
+        console.log("Rendering employee:", empId, empName); // ✅ Debug
+        
+        return (
+          <option key={empId} value={empId}>
+            {empName} (ID: {empId})
           </option>
-        ))}
+        );
+        })}
       </select>
     </div>
 
