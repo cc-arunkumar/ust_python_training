@@ -131,7 +131,13 @@ def update_one_task(task_id: str, task_update: TaskUpdate, user: str = Depends(g
         if not any(r in roles for r in ["admin", "manager"]):
             raise HTTPException(status_code=403, detail="Forbidden: admin or manager role required to update tasks")
 
-        updated_fields = task_update.__dict__
+        # Only send fields that are explicitly provided (not None) to avoid
+        # overwriting existing values in the DB with nulls.
+        updated_fields = {k: v for k, v in task_update.__dict__.items() if v is not None}
+        if not updated_fields:
+            # nothing to update
+            raise HTTPException(status_code=400, detail="No updatable fields provided")
+
         modified_count = update_task(task_id, updated_fields)
         if modified_count == 0:
             raise HTTPException(status_code=404, detail="Task not found or no changes made")
