@@ -27,7 +27,7 @@ from services.task_service import (
     update_task,
     patch_status
 )
-from database.mongodb import save_task_file_bytes, save_remark
+from database.mongodb import save_task_file_bytes, save_remark, get_remarks_for_task
 from utils.notifications import notify_task_created
 
 router = APIRouter(prefix="/api/tasks", tags=["Tasks"])
@@ -342,6 +342,46 @@ async def get_task_file(
             "Content-Length": str(file_data["length"]),
         }
     )
+
+
+# ---------- Remarks: create / list (stored in MongoDB) ----------
+@router.post("/{task_id}/remarks")
+async def post_task_remark(
+    task_id: int,
+    payload: dict,
+    current=Depends(role_guard(["Admin", "Manager", "Employee"]))
+):
+    comment = payload.get("comment") or payload.get("remarks") or ""
+    if not comment:
+        raise HTTPException(status_code=400, detail="Missing comment")
+
+    # determine creator id where possible
+    try:
+        created_by_digits = re.sub(r"\D", "", str(current.get("user").emp_id))
+        created_by = int(created_by_digits) if created_by_digits else None
+    except Exception:
+        created_by = None
+
+    try:
+        inserted = save_remark(task_id, comment, created_by)
+        if not inserted:
+            raise Exception("save failed")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to save remark: {e}")
+
+    return {"id": str(inserted), "task_id": task_id, "comment": comment, "created_by": created_by}
+
+
+@router.get("/{task_id}/remarks")
+async def list_task_remarks(
+    task_id: int,
+    current=Depends(role_guard(["Admin", "Manager", "Employee"]))
+):
+    try:
+        docs = get_remarks_for_task(task_id)
+        return docs
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch remarks: {e}")
 
 # ---------- Send to Review ----------
 @router.patch("/{task_id}/send-to-review")

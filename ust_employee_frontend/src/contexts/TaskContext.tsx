@@ -46,6 +46,7 @@ interface TaskContextType {
     reviewer?: string
   ) => void;
   addRemark: (taskId: string, comment: string, createdBy: string) => void;
+  loadRemarks: (taskId: string) => Promise<void>;
   deleteTask: (taskId: string) => void;
   getTaskById: (taskId: string) => Task | undefined;
 }
@@ -570,10 +571,68 @@ export const TaskProvider: React.FC<{ children: React.ReactNode }> = ({
         created_at: new Date().toISOString(),
       };
 
+      // optimistic local add
       setRemarks((prev) => [...prev, newRemark]);
+
+      // persist to backend (best-effort)
+      (async () => {
+        try {
+          const stripDigits = (s?: string | number) => {
+            if (s == null) return "";
+            return String(s).replace(/\D/g, "");
+          };
+          const taskIdNum = Number(stripDigits(taskId));
+          if (!Number.isFinite(taskIdNum)) return;
+
+          await api.post(`/api/tasks/${taskIdNum}/remarks`, { comment });
+          // refresh remarks for this task
+          await loadRemarks(taskId);
+        } catch (err) {
+          // ignore — we already have optimistic remark
+          console.warn("Failed to persist remark", err);
+        }
+      })();
     },
     [remarks.length]
   );
+
+  const loadRemarks = useCallback(async (taskId: string) => {
+    try {
+      const stripDigits = (s?: string | number) => {
+        if (s == null) return "";
+        return String(s).replace(/\D/g, "");
+      };
+      const taskIdNum = Number(stripDigits(taskId));
+      if (!Number.isFinite(taskIdNum)) return;
+
+      const res = await api.get(`/api/tasks/${taskIdNum}/remarks`);
+      if (Array.isArray(res.data)) {
+        // map server docs to Remark[] expected shape
+        const mapped: Remark[] = res.data.map((d: any, idx: number) => ({
+          id: d.id ? String(d.id) : `Rsrv${taskId}_${idx}`,
+          // normalize task_id to the same prefixed format used in tasks (e.g. T012)
+          task_id: d.task_id
+            ? `T${String(d.task_id).padStart(3, "0")}`
+            : String(taskId),
+          comment: d.comment,
+          created_by: d.created_by
+            ? `E${String(d.created_by).padStart(3, "0")}`
+            : "",
+          created_at: d.created_at
+            ? new Date(d.created_at).toISOString()
+            : new Date().toISOString(),
+        }));
+
+        // replace remarks for this task
+        setRemarks((prev) => {
+          const others = prev.filter((r) => r.task_id !== taskId);
+          return [...others, ...mapped];
+        });
+      }
+    } catch (err) {
+      console.warn("Failed to load remarks", err);
+    }
+  }, []);
 
   /* -------------------- Delete Task (UI only) -------------------- */
 
@@ -602,6 +661,7 @@ export const TaskProvider: React.FC<{ children: React.ReactNode }> = ({
         updateTaskPriority,
         updateTaskReviewer,
         addRemark,
+        loadRemarks,
         deleteTask,
         getTaskById,
       }}

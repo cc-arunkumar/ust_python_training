@@ -17,6 +17,24 @@ fs = gridfs.GridFS(db, collection="files")
 remarks_collection = db["remarks"]
 
 
+def get_remarks_for_task(task_id: int):
+    """Return a list of remark documents for a given task id, sorted by created_at ascending."""
+    try:
+        cursor = remarks_collection.find({"task_id": int(task_id)}).sort("created_at", 1)
+        results = []
+        for doc in cursor:
+            results.append({
+                "id": str(doc.get("_id")),
+                "task_id": int(doc.get("task_id")),
+                "comment": doc.get("comment"),
+                "created_by": doc.get("created_by"),
+                "created_at": doc.get("created_at"),
+            })
+        return results
+    except Exception:
+        return []
+
+
 def log_activity(emp_id: Optional[int], action: str, task_id: int):
     """Insert a simple activity log document into MongoDB.
 

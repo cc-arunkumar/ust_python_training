@@ -51,6 +51,7 @@ const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
     updateTaskPriority,
     updateTaskReviewer,
     reviewDecision,
+    loadRemarks,
   } = useTasks();
   const { user } = useAuth();
   const [newRemark, setNewRemark] = useState("");
@@ -109,6 +110,15 @@ const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
   }, []);
 
   const taskRemarks = remarks.filter((r) => r.task_id === task.t_id);
+
+  useEffect(() => {
+    // load persisted remarks for this task from backend when modal opens
+    try {
+      loadRemarks(task.t_id);
+    } catch (e) {
+      // ignore
+    }
+  }, [task.t_id]);
   // Resolve assignee/reviewer robustly: accept prefixed id (E001) or numeric id present on the task
   const resolveId = (val?: string | number) => {
     if (val == null) return undefined;
