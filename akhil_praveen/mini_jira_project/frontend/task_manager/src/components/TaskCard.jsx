@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import api from "../api/api";
 import { useEffect } from "react";
+import computeRemarkId from "../utils/remarkId";
 import { STATUS_CONFIG, PRIORITY_COLORS } from "../utils/constants";
 
 function TaskCard({
@@ -226,15 +227,7 @@ function TaskCard({
       } catch (e) {}
     }
 
-    const createId = (r) => {
-      const from = String(r.from || "unknown").replace(/\s+/g, "_");
-      const ts = String(r.ts || "").replace(/\s+/g, "_");
-      const by = String(r.byEmpId || r.by || "").replace(/\s+/g, "_");
-      const txt = String(r.text || "")
-        .slice(0, 30)
-        .replace(/\s+/g, "_");
-      return `${from}_${ts}_${by}_${txt}`;
-    };
+    // use shared computeRemarkId for deterministic ids
 
     const evaluate = async () => {
       try {
@@ -288,7 +281,7 @@ function TaskCard({
         // apply role-aware new logic: reviewer remarks are new for assignee; developer remarks new for reviewer
         const count = all.reduce((acc, r) => {
           if (!r || !r.ts) return acc;
-          const id = createId(r);
+          const id = computeRemarkId(r);
           if (readSet.has(id)) return acc;
           // exclude self-authored
           if (
@@ -321,8 +314,19 @@ function TaskCard({
     };
 
     evaluate();
+    // refresh unread count when storage changes (other components mark remarks read)
+    try {
+      window.addEventListener("storage", evaluate);
+      window.addEventListener("remarks:updated", evaluate);
+    } catch (e) {
+      // ignore if unavailable in some environments
+    }
     return () => {
       mounted = false;
+      try {
+        window.removeEventListener("storage", evaluate);
+        window.removeEventListener("remarks:updated", evaluate);
+      } catch (e) {}
     };
   }, [
     task.task_id,

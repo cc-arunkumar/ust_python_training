@@ -1,5 +1,6 @@
 import React from "react";
 import { LogOut, List, Users, Sparkles } from "lucide-react";
+import computeRemarkId from "../utils/remarkId";
 
 function Header({
   role,

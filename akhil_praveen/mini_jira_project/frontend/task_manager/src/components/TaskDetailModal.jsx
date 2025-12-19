@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { X, Edit, Clock, MoreVertical } from "lucide-react";
 import api from "../api/api";
+import computeRemarkId from "../utils/remarkId";
 
 function normalizeRemarks(task = {}) {
   const remarks = [];
@@ -320,15 +321,7 @@ export default function TaskDetailModal({
     return age < 7 * 24 * 60 * 60 * 1000;
   }
 
-  const computeRemarkId = (r) => {
-    const from = String(r.from || "unknown").replace(/\s+/g, "_");
-    const ts = String(r.ts || "").replace(/\s+/g, "_");
-    const by = String(r.byEmpId || r.by || "").replace(/\s+/g, "_");
-    const txt = String(r.text || "")
-      .slice(0, 30)
-      .replace(/\s+/g, "_");
-    return `${from}_${ts}_${by}_${txt}`;
-  };
+  // use shared computeRemarkId
 
   const markAsRead = (r, index) => {
     const remarkId = computeRemarkId(r);
@@ -340,6 +333,26 @@ export default function TaskDetailModal({
     // Save to localStorage
     const key = `task_${task.task_id}_read_remarks`;
     localStorage.setItem(key, JSON.stringify([...newReadRemarks]));
+    // notify other components in this window by dispatching a StorageEvent-like event
+    try {
+      const key = `task_${task.task_id}_read_remarks`;
+      const newValue = localStorage.getItem(key);
+      const sev = new StorageEvent("storage", {
+        key,
+        newValue,
+        oldValue: null,
+        url: window.location.href,
+        storageArea: localStorage,
+      });
+      window.dispatchEvent(sev);
+      try {
+        window.dispatchEvent(
+          new CustomEvent("remarks:updated", {
+            detail: { taskId: task.task_id },
+          })
+        );
+      } catch (e) {}
+    } catch (e) {}
   };
 
   const [showRemarksMenu, setShowRemarksMenu] = useState(false);
@@ -362,6 +375,25 @@ export default function TaskDetailModal({
       } catch (e) {
         console.warn("onMarkAllRead callback failed:", e);
       }
+      try {
+        const key = `task_${task.task_id}_read_remarks`;
+        const newValue = localStorage.getItem(key);
+        const sev = new StorageEvent("storage", {
+          key,
+          newValue,
+          oldValue: null,
+          url: window.location.href,
+          storageArea: localStorage,
+        });
+        window.dispatchEvent(sev);
+        try {
+          window.dispatchEvent(
+            new CustomEvent("remarks:updated", {
+              detail: { taskId: task.task_id },
+            })
+          );
+        } catch (e) {}
+      } catch (e) {}
     } catch (e) {
       console.error("Failed to mark all read:", e);
     }
