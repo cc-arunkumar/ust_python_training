@@ -43,6 +43,13 @@ const Dashboard = () => {
   const [panelAssignTo, setPanelAssignTo] = useState("");
   const [panelStatus, setPanelStatus] = useState("");
 
+  const [panelTitle, setPanelTitle] = useState("");
+  const [panelDescription, setPanelDescription] = useState("");
+  const [panelPriority, setPanelPriority] = useState("");
+  const [panelReviewer, setPanelReviewer] = useState("");
+  const [panelExpectedCompletion, setPanelExpectedCompletion] = useState("");
+
+
   const handleUserNameFetched = (name) => setUserName(name);
 
   useEffect(() => {
@@ -189,12 +196,56 @@ const Dashboard = () => {
     }
   };
 
+  const handlePanelEditTask = async () => {
+  if (!panel || !panel.task) return;
+  
+  if (!panelTitle.trim()) {
+    alert("Title is required");
+    return;
+  }
+  
+  if (!panelDescription.trim()) {
+    alert("Description is required");
+    return;
+  }
+  
+  try {
+    const updateData = {
+      title: panelTitle,
+      description: panelDescription,
+      priority: panelPriority,
+      reviewer: parseInt(panelReviewer, 10),
+      expected_completion_date: panelExpectedCompletion,
+      updated_by: user.emp_id,
+    };
+    
+    await api.updateTask(token, panel.task._id, updateData);
+    await loadTasks();
+    closePanel();
+    alert("✅ Task updated successfully!");
+  } catch (err) {
+    console.error("Failed to update task", err);
+    alert("❌ Failed to update task: " + (err.message || err));
+  }
+};
+
   // Panel helpers
   const openPanel = async (action, task) => {
     setPanel({ action, task });
     setPanelRemark("");
     setPanelAssignTo(task.assigned_to || "");
     setPanelStatus(task.status || "");
+
+    if (action === "edit") {
+    setPanelTitle(task.title || "");
+    setPanelDescription(task.description || "");
+    setPanelPriority(task.priority || "Low");
+    setPanelReviewer(task.reviewer || "");
+    const dueDate = task.expected_completion_date 
+      ? new Date(task.expected_completion_date).toISOString().slice(0, 10)
+      : "";
+    setPanelExpectedCompletion(dueDate);
+  }
 
     if (action === "remarks") {
       try {
@@ -234,12 +285,24 @@ const Dashboard = () => {
   const handlePanelAssign = async () => {
     if (!panel || !panel.task) return;
     try {
+      const employeeId = parseInt(panelAssignTo, 10);
       await api.updateTask(token, panel.task._id, {
-        assigned_to: parseInt(panelAssignTo, 10),
+        assigned_to: employeeId,
         assigned_by: user.emp_id,
         assigned_at: new Date().toISOString(),
         updated_by: user.emp_id,
       });
+      if (panel.task.status === "To Do") {
+      try {
+        await api.updateTaskStatus(token, panel.task._id, "In Progress");
+        alert(`✅ Task assigned to employee ID ${employeeId} and moved to In Progress!`);
+      } catch (statusError) {
+        console.warn("Auto status update failed:", statusError);
+        alert(`✅ Task assigned to employee ID ${employeeId}!`);
+      }
+    } else {
+      alert(`✅ Task assigned to employee ID ${employeeId}!`);
+    }
       await loadTasks();
       closePanel();
     } catch (err) {
@@ -447,31 +510,68 @@ const Dashboard = () => {
             </div>
             <div className="p-4 space-y-4">
               {panel.action === "assign" && (
-                <div className="space-y-3">
-                  <label className="text-sm font-semibold">Assign To</label>
-                  <select
-                    value={panelAssignTo}
-                    onChange={(e) => setPanelAssignTo(e.target.value)}
-                    className="w-full px-3 py-2 border rounded-md"
-                  >
-                    <option value="">Select developer...</option>
-                    {managerEmployees.map((emp) => (
-                      <option key={emp.emp_id} value={emp.emp_id}>
-                        {emp.name} (ID: {emp.emp_id})
-                      </option>
-                    ))}
-                  </select>
-                  <div className="flex justify-end">
-                    <button
-                      onClick={handlePanelAssign}
-                      disabled={!panelAssignTo}
-                      className="px-3 py-1.5 bg-blue-600 text-white rounded-md text-sm"
-                    >
-                      Assign
-                    </button>
-                  </div>
-                </div>
-              )}
+  <div className="space-y-3">
+    <label className="text-sm font-semibold block">Assign To</label>
+    
+    {/* ✅ Debug info - remove after fixing */}
+    {managerEmployees.length === 0 && (
+      <p className="text-xs text-amber-600 bg-amber-50 p-2 rounded">
+        ⚠️ No employees found. Make sure employees are added under this manager.
+      </p>
+    )}
+    
+    <select
+      value={panelAssignTo}
+      onChange={(e) => {
+        console.log("Selected employee ID:", e.target.value); // ✅ Debug
+        setPanelAssignTo(e.target.value);
+      }}
+      className="w-full px-3 py-2 border rounded-md"
+    >
+      <option value="">Select developer...</option>
+      {managerEmployees.map((emp) => {
+        // ✅ Handle both emp_id and id fields
+        const empId = emp.emp_id || emp.id;
+        const empName = emp.name || `Employee ${empId}`;
+        
+        console.log("Rendering employee:", empId, empName); // ✅ Debug
+        
+        return (
+          <option key={empId} value={empId}>
+            {empName} (ID: {empId})
+          </option>
+        );
+      })}
+    </select>
+    
+    {/* ✅ Show current selection */}
+    {panelAssignTo && (
+      <p className="text-xs text-green-600 bg-green-50 p-2 rounded">
+        Selected: Employee ID {panelAssignTo}
+      </p>
+    )}
+    
+    <div className="flex justify-end gap-2">
+      <button
+        onClick={closePanel}
+        className="px-3 py-1.5 bg-gray-100 text-gray-700 rounded-md text-sm hover:bg-gray-200"
+      >
+        Cancel
+      </button>
+      <button
+        onClick={handlePanelAssign}
+        disabled={!panelAssignTo}
+        className={`px-3 py-1.5 rounded-md text-sm font-semibold ${
+          panelAssignTo 
+            ? 'bg-blue-600 text-white hover:bg-blue-700' 
+            : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+        }`}
+      >
+        Assign Task
+      </button>
+    </div>
+  </div>
+)}
 
               {panel.action === "status" && (
                 <div className="space-y-3">
@@ -628,6 +728,90 @@ const Dashboard = () => {
                   </div>
                 </div>
               )}
+
+              {panel.action === "edit" && (
+  <div className="space-y-4">
+    <div>
+      <label className="text-sm font-semibold block mb-2">Title</label>
+      <input
+        type="text"
+        value={panelTitle}
+        onChange={(e) => setPanelTitle(e.target.value)}
+        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+        placeholder="Task title..."
+      />
+    </div>
+
+    <div>
+      <label className="text-sm font-semibold block mb-2">Description</label>
+      <textarea
+        value={panelDescription}
+        onChange={(e) => setPanelDescription(e.target.value)}
+        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none min-h-[100px]"
+        placeholder="Task description..."
+      />
+    </div>
+
+    <div>
+      <label className="text-sm font-semibold block mb-2">Priority</label>
+      <select
+        value={panelPriority}
+        onChange={(e) => setPanelPriority(e.target.value)}
+        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+      >
+        <option value="Low">Low</option>
+        <option value="Medium">Medium</option>
+        <option value="High">High</option>
+      </select>
+    </div>
+
+    <div>
+      <label className="text-sm font-semibold block mb-2">Reviewer</label>
+      <select
+        value={panelReviewer}
+        onChange={(e) => setPanelReviewer(e.target.value)}
+        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+      >
+        <option value="">Select reviewer...</option>
+        {currentView === "manager" && managerEmployees.map((emp) => (
+          <option key={emp.emp_id} value={emp.emp_id}>
+            {emp.name} (ID: {emp.emp_id})
+          </option>
+        ))}
+        {currentView === "admin" && managers.map((mgr) => (
+          <option key={mgr.emp_id} value={mgr.emp_id}>
+            {mgr.name} (ID: {mgr.emp_id})
+          </option>
+        ))}
+      </select>
+    </div>
+
+    <div>
+      <label className="text-sm font-semibold block mb-2">Expected Completion Date</label>
+      <input
+        type="date"
+        value={panelExpectedCompletion}
+        onChange={(e) => setPanelExpectedCompletion(e.target.value)}
+        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+      />
+    </div>
+
+    <div className="flex justify-end gap-2 pt-2">
+      <button
+        onClick={closePanel}
+        className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+      >
+        Cancel
+      </button>
+      <button
+        onClick={handlePanelEditTask}
+        className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold"
+      >
+        Update Task
+      </button>
+    </div>
+  </div>
+)}
             </div>
           </aside>
         )}

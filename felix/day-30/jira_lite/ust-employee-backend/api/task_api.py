@@ -133,6 +133,7 @@ def update_one_task(task_id: str, task_update: TaskUpdate, user: str = Depends(g
 
         # Only send fields that are explicitly provided (not None) to avoid
         # overwriting existing values in the DB with nulls.
+        # print("Task update data:", task_update.__dict__.items())
         updated_fields = {k: v for k, v in task_update.__dict__.items() if v is not None}
         if not updated_fields:
             # nothing to update
@@ -149,6 +150,7 @@ def update_one_task(task_id: str, task_update: TaskUpdate, user: str = Depends(g
 @task_router.patch("/tasks/{task_id}/status", tags=["Tasks"])
 def update_task_status_only(task_id: str, status_update: TaskStatusUpdate, user: str = Depends(get_current_user)):
     try:
+        
         emp_id = int(user)
         auth_user = get_User_by_id(emp_id)
         if not auth_user:
@@ -158,7 +160,7 @@ def update_task_status_only(task_id: str, status_update: TaskStatusUpdate, user:
         print("Roles of auth user:", roles)
         if not any(r in roles for r in ["manager", "developer"]):
             raise HTTPException(status_code=403, detail="Forbidden: manager or developer role required to update task status")
-
+        
         modified_count = update_task_status(task_id, status_update)
         if modified_count == 0:
             raise HTTPException(status_code=404, detail="Task not found or no changes made")

@@ -13,6 +13,7 @@ import {
   Eye,
   X,
   Bell,
+  Edit,
 } from "lucide-react";
 import { PRIORITY_COLORS } from "../../utils/constants";
 import { api } from "../../services/api";
@@ -273,34 +274,34 @@ const TaskCard = ({
   };
 
   const saveDueDate = async (e) => {
-    e && e.stopPropagation();
-    if (!token) {
-      alert("Not authenticated");
-      return;
-    }
-    if (!currentUserId) {
-      alert("Unknown user id");
-      return;
-    }
+  e && e.stopPropagation();
+  if (!token) {
+    alert("Not authenticated");
+    return;
+  }
+  if (!currentUserId) {
+    alert("Unknown user id");
+    return;
+  }
 
-    try {
-      // prepare payload - backend will normalize date string
-      const payload = {
-        expected_completion_date: newDueDate || null,
-        updated_by: currentUserId,
-      };
-      await api.updateTask(token, task._id, payload);
+  try {
+    // ✅ ONLY send the fields we want to update
+    const payload = {
+      expected_completion_date: newDueDate || null,
+      updated_by: currentUserId,
+    };
+    
+    await api.updateTask(token, task._id, payload);
 
-      // update local display
-      setLocalDueDate(newDueDate || null);
-      setEditingDue(false);
-      // Optionally inform parent via onStatusChange or other callback - omitted to keep change local
-      alert("✅ Due date updated");
-    } catch (err) {
-      console.error("Failed to update due date", err);
-      alert("❌ Failed to update due date: " + (err.message || err));
-    }
-  };
+    // update local display
+    setLocalDueDate(newDueDate || null);
+    setEditingDue(false);
+    alert("✅ Due date updated");
+  } catch (err) {
+    console.error("Failed to update due date", err);
+    alert("❌ Failed to update due date: " + (err.message || err));
+  }
+};
 
   // helper to compute difference in ms (dueDate - now)
   function dateDiffInMs(a, b) {
@@ -432,6 +433,19 @@ const TaskCard = ({
                         Manage Files ({taskFiles.length})
                       </button>
                     )}
+                    {canEdit && (
+  <button
+    onClick={() => {
+      setShowMenu(false);
+      if (typeof onOpenPanel === "function")
+        onOpenPanel("edit", task);
+    }}
+    className="w-full px-4 py-3 text-left text-sm hover:bg-gradient-to-r hover:from-amber-50 hover:to-yellow-50 flex items-center gap-3 text-gray-700 hover:text-amber-700 font-medium transition-all border-l-4 border-transparent hover:border-amber-400"
+  >
+    <Edit size={18} />
+    Edit Task
+  </button>
+)}
                   </div>
                 )}
               </div>

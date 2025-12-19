@@ -43,6 +43,8 @@ class TaskCreate(BaseModel):
         return value
 
 class TaskUpdate(BaseModel):
+    title: Optional[str] = None  # ✅ ADD THIS
+    description: Optional[str] = None  # ✅ ADD THIS
     status: Optional[Literal['To Do', 'In Progress','Review', 'Done']] = None
     remarks: Optional[List[dict]] = None
     assigned_to: Optional[int] = None
@@ -53,7 +55,8 @@ class TaskUpdate(BaseModel):
     updated_by: int
     updated_at: datetime = datetime.now()
     actual_completion_date: Optional[date] = None
-    priority: Optional[Literal['Low', 'Medium', 'High']] ='Low'
+    priority: Optional[Literal['Low', 'Medium', 'High']] = None
+    reviewer: Optional[int] = None  # ✅ ADD THIS
 
     @field_validator("expected_completion_date", mode="before")
     @classmethod
@@ -62,7 +65,6 @@ class TaskUpdate(BaseModel):
             return value
 
         if isinstance(value, str):
-            # accept ISO date strings, with or without time
             value = datetime.fromisoformat(value.replace("Z", "+00:00"))
 
         return value

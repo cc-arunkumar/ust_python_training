@@ -85,6 +85,7 @@ def update_task_status(task_id:str, status_update:TaskStatusUpdate):
             {"_id": oid},
             {"$set": {"status": status_update.status}}
         )
+        print("Status update result:", result.raw_result)
         return result.modified_count
     except (InvalidId, TypeError):
         raise ValueError(f"Invalid task_id: {task_id}") 
