@@ -493,81 +493,108 @@ const TaskCard = ({
             </div>
 
             {/* Due date (click to edit) */}
-            {editingDue ? (
-              <div
-                className="flex items-center gap-2 px-3 py-2 rounded-xl border border-purple-100"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <div className="w-6 h-6 rounded-lg bg-purple-500 flex items-center justify-center text-white shadow-sm">
-                  <Calendar size={14} />
-                </div>
 
-                <div className="flex-1 flex items-center gap-3">
-                  <input
-                    type="date"
-                    value={newDueDate}
-                    onChange={(e) => setNewDueDate(e.target.value)}
-                    className="px-3 py-2 border rounded-lg text-sm outline-none"
-                  />
+{editingDue ? (
+  <div
+    className="flex flex-col gap-3 bg-gradient-to-r from-purple-50 to-pink-50 px-4 py-4 rounded-xl border-2 border-purple-200 shadow-sm"
+    onClick={(e) => e.stopPropagation()}
+  >
+    <div className="flex items-center gap-2 mb-2">
+      <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white shadow-md">
+        <Calendar size={16} />
+      </div>
+      <span className="text-sm font-bold text-purple-900">
+        Update Due Date
+      </span>
+    </div>
 
-                  <div className="ml-auto flex items-center gap-2">
-                    <button
-                      onClick={saveDueDate}
-                      className="px-3 py-1 bg-blue-600 text-white rounded-md text-sm font-semibold"
-                    >
-                      Save
-                    </button>
-                    <button
-                      onClick={cancelDueEdit}
-                      className="px-3 py-1 bg-gray-100 text-gray-700 rounded-md text-sm"
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <div
-                className="flex items-center gap-2 bg-gradient-to-r from-purple-50 to-pink-50 px-3 py-2 rounded-xl border border-purple-100 cursor-pointer"
-                onClick={openDueEditor}
-              >
-                <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white shadow-sm">
-                  <Calendar size={14} />
-                </div>
+    <div className="flex items-center gap-2">
+      <div className="relative flex-1">
+        <input
+          type="date"
+          value={newDueDate}
+          onChange={(e) => setNewDueDate(e.target.value)}
+          className="w-full px-4 py-2.5 border-2 border-purple-200 rounded-xl text-sm font-medium text-gray-700 outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all bg-white shadow-sm hover:shadow-md"
+        />
+      </div>
+    </div>
 
-                <div className="flex-1">
-                  <span className="text-gray-500 font-medium block">
-                    Due date
-                  </span>
-                  <span className="font-bold text-gray-800 block">
-                    {localDueDate
-                      ? new Date(localDueDate).toLocaleDateString()
-                      : "Not set"}
-                  </span>
-                </div>
-                {isOverdue ? (
-                  <div className="flex items-center">
-                    <span
-                      className="ml-2 w-3 h-3 rounded-full bg-red-500 animate-pulse ring-2 ring-red-300"
-                      title="Overdue"
-                      aria-label="Overdue"
-                    ></span>
-                  </div>
-                ) : isDueSoon ? (
-                  <div className="flex items-center">
-                    <span
-                      className="ml-2 w-3 h-3 rounded-full bg-amber-400 animate-pulse ring-2 ring-amber-200"
-                      title={`Due in ${daysLeft} day${
-                        daysLeft === 1 ? "" : "s"
-                      }`}
-                      aria-label={`Due in ${daysLeft} day${
-                        daysLeft === 1 ? "" : "s"
-                      }`}
-                    ></span>
-                  </div>
-                ) : null}
-              </div>
-            )}
+    <div className="flex items-center gap-2 pt-2">
+      <button
+        onClick={saveDueDate}
+        className="flex-1 px-4 py-2.5 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-xl text-sm font-bold shadow-md hover:shadow-lg transform hover:scale-[1.02] transition-all duration-200 flex items-center justify-center gap-2"
+      >
+        
+        Save
+      </button>
+      <button
+        onClick={cancelDueEdit}
+        className="flex-1 px-4 py-2.5 bg-white hover:bg-gray-50 text-gray-700 border-2 border-gray-200 hover:border-gray-300 rounded-xl text-sm font-semibold shadow-sm hover:shadow-md transform hover:scale-[1.02] transition-all duration-200 flex items-center justify-center gap-2"
+      >
+        {/* <X size={16} /> */}
+        Cancel
+      </button>
+    </div>
+  </div>
+) : (
+  <div
+    className="flex items-center gap-2 bg-gradient-to-r from-purple-50 to-pink-50 px-3 py-2 rounded-xl border border-purple-100 cursor-pointer hover:shadow-md hover:border-purple-300 transition-all duration-200 group"
+    onClick={openDueEditor}
+  >
+    <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white shadow-sm group-hover:scale-110 transition-transform duration-200">
+      <Calendar size={14} />
+    </div>
+
+    <div className="flex-1">
+      <span className="text-gray-500 font-medium block text-xs">
+        Due date
+      </span>
+      <span className="font-bold text-gray-800 block text-sm">
+        {localDueDate
+          ? new Date(localDueDate).toLocaleDateString('en-US', {
+              month: 'short',
+              day: 'numeric',
+              year: 'numeric'
+            })
+          : "Not set"}
+      </span>
+    </div>
+
+    <div className="flex items-center gap-2">
+      {isOverdue && (
+        <div className="flex flex-col items-center">
+          <span className="w-3 h-3 rounded-full bg-red-500 animate-pulse ring-2 ring-red-300" />
+          <span className="text-[10px] font-bold text-red-600 mt-1">
+            OVERDUE
+          </span>
+        </div>
+      )}
+      {!isOverdue && isDueSoon && (
+        <div className="flex flex-col items-center">
+          <span className="w-3 h-3 rounded-full bg-amber-400 animate-pulse ring-2 ring-amber-200" />
+          <span className="text-[10px] font-bold text-amber-600 mt-1">
+            {daysLeft}D LEFT
+          </span>
+        </div>
+      )}
+      
+      {/* Edit hint icon */}
+      <svg
+        className="w-4 h-4 text-purple-400 opacity-0 group-hover:opacity-100 transition-opacity"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+        />
+      </svg>
+    </div>
+  </div>
+)}
           </div>
         </div>
       </div>
