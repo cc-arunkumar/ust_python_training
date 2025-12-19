@@ -7,6 +7,7 @@ from sqlalchemy.orm import Session
 from app.schemas.schemas import TaskSchema
 from app.utils.file_upload import save_file, delete_file
 from app.utils.mongo_serializer import serialize_mongo
+from app.database.mongodb_connection import notifications_collection
 
 
 def _has_role(user, role_name: str) -> bool:
@@ -81,6 +82,32 @@ def add_remark(task_id: int, comment: str, e_id: int, file=None, role: str = Non
 
         result = remarks_collection.insert_one(remark)
         remark["_id"] = result.inserted_id
+        # Create notifications for other participants (assigned user and reviewer)
+        try:
+            notif_targets = []
+            if getattr(task, "assigned_to", None) and task.assigned_to != user_eid:
+                notif_targets.append(int(task.assigned_to))
+            if getattr(task, "reviewer", None) and task.reviewer != user_eid:
+                # ensure reviewer is included (if different from assignee)
+                if int(task.reviewer) not in notif_targets and task.reviewer != user_eid:
+                    notif_targets.append(int(task.reviewer))
+
+            for to_eid in notif_targets:
+                notifications_collection.insert_one(
+                    {
+                        "type": "remark",
+                        "task_id": int(task_id),
+                        "remark_id": str(result.inserted_id),
+                        "to_eid": int(to_eid),
+                        "from_eid": int(user_eid) if user_eid else None,
+                        "message": f"New remark on task {task_id}",
+                        "read": False,
+                        "created_at": datetime.now(timezone.utc),
+                    }
+                )
+        except Exception:
+            # non-fatal: notifications should not block remark creation
+            pass
         return serialize_mongo(remark)
     except HTTPException:
         raise
@@ -93,6 +120,57 @@ def add_remark(task_id: int, comment: str, e_id: int, file=None, role: str = Non
 def get_remarks_by_task(task_id: int):
     docs = list(remarks_collection.find({"task_id": task_id}))
     return [serialize_mongo(d) for d in docs]
+
+
+def get_all_remarks_for_user(user):
+    """Return remarks visible to the given user.
+
+    - Admin and Manager: see all remarks
+    - Developer: see remarks they created or remarks on tasks assigned to them
+    """
+    try:
+        if _has_role(user, "Admin") or _has_role(user, "Manager"):
+            docs = list(remarks_collection.find({}).sort("created_at", -1).limit(1000))
+            return [serialize_mongo(d) for d in docs]
+
+        # Developer: fetch remarks created by them or on tasks assigned to them
+        user_eid = getattr(user, "e_id", None)
+        if _has_role(user, "Developer") and user_eid is not None:
+            # remarks created by this user
+            own = list(remarks_collection.find({"created_by": int(user_eid)}))
+
+            # remarks whose task is assigned to this user
+            # find unique task_ids from remarks, then query mysql for assignments
+            task_ids = list({d.get("task_id") for d in list(remarks_collection.find({})) if d.get("task_id")})
+
+            assigned_task_ids = []
+            if task_ids:
+                session: Session = get_connection()
+                try:
+                    tasks = (
+                        session.query(TaskSchema.t_id)
+                        .filter(TaskSchema.t_id.in_(task_ids), TaskSchema.assigned_to == int(user_eid))
+                        .all()
+                    )
+                    assigned_task_ids = [t[0] for t in tasks]
+                finally:
+                    session.close()
+
+            assigned = []
+            if assigned_task_ids:
+                assigned = list(remarks_collection.find({"task_id": {"$in": assigned_task_ids}}))
+
+            # merge unique remarks
+            combined = {str(r.get("_id")): r for r in (own + assigned)}
+            docs = list(combined.values())
+            # sort by created_at desc
+            docs.sort(key=lambda x: x.get("created_at") or 0, reverse=True)
+            return [serialize_mongo(d) for d in docs]
+
+        # default: no remarks
+        return []
+    except Exception:
+        return []
 
 
 def update_remark(remark_id: str, comment: str | None, file, e_id: int, role: str):

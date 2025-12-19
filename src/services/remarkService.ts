@@ -20,12 +20,21 @@ export const remarkService = {
     task_id: number,
     role?: string
   ): Promise<Remark[]> => {
-    // Backend route: GET /api/Remark/getbytask?task_id=<id>&role=<Role>
-    const url = `/api/Remark/getbytask?task_id=${task_id}${
+    // Backend route: GET /Remark/getbytask?task_id=<id>&role=<Role>
+    const url = `/Remark/getbytask?task_id=${task_id}${
       role ? `&role=${encodeURIComponent(role)}` : ""
     }`;
     const response = await api.get(url);
     return response.data || [];
+  },
+
+  // Get all remarks visible to the user
+  getAllRemarks: async (role?: string): Promise<Remark[]> => {
+    const url = role
+      ? `/Remark/list?role=${encodeURIComponent(role)}`
+      : `/Remark/list`;
+    const resp = await api.get(url);
+    return resp.data || [];
   },
 
   // Create new remark
@@ -42,7 +51,7 @@ export const remarkService = {
     form.append("comment", remark.comment);
     form.append("role", role);
     if (file) form.append("file", file);
-    const response = await api.post(`/api/Remark/create`, form, {
+    const response = await api.post(`/Remark/create`, form, {
       headers: { "Content-Type": "multipart/form-data" },
     });
     return response.data;
@@ -61,7 +70,7 @@ export const remarkService = {
     if (comment) form.append("comment", comment);
     if (role) form.append("role", role);
     if (file) form.append("file", file);
-    const response = await api.put(`/api/Remark/update`, form, {
+    const response = await api.put(`/Remark/update`, form, {
       headers: { "Content-Type": "multipart/form-data" },
     });
     return response.data;
@@ -71,7 +80,7 @@ export const remarkService = {
   deleteRemark: async (remark_id: string, role: string): Promise<void> => {
     // Backend expects /api/Remark/delete?id=<remark_id>&role=<Role>
     await api.delete(
-      `/api/Remark/delete?id=${encodeURIComponent(
+      `/Remark/delete?id=${encodeURIComponent(
         remark_id
       )}&role=${encodeURIComponent(role)}`
     );

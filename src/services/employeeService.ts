@@ -76,15 +76,18 @@ export const employeeService = {
   createEmployee: async (
     employee: EmployeeCreateRequest,
     role?: string,
-    initialRole?: string
+    initialRoles?: string[]
   ): Promise<Employee> => {
-    const url = role
-      ? `/Employee/create?role=${encodeURIComponent(role)}${
-          initialRole ? `&initial_role=${encodeURIComponent(initialRole)}` : ""
-        }`
-      : `/Employee/create${
-          initialRole ? `?initial_role=${encodeURIComponent(initialRole)}` : ""
-        }`;
+    // Build query string: role and repeated initial_roles parameters if provided
+    const params: string[] = [];
+    if (role) params.push(`role=${encodeURIComponent(role)}`);
+    if (initialRoles && initialRoles.length > 0) {
+      for (const r of initialRoles) {
+        params.push(`initial_roles=${encodeURIComponent(r)}`);
+      }
+    }
+    const qs = params.length ? `?${params.join("&")}` : "";
+    const url = `/Employee/create${qs}`;
     const response = await api.post(url, employee);
     return response.data;
   },

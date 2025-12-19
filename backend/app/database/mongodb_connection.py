@@ -16,6 +16,7 @@ mongodb = client[MONGO_DB]
 # Collections
 remarks_collection = mongodb["remarks"]
 logs_collection = mongodb["logs"]
+notifications_collection = mongodb["notifications"]
 
 # GridFS for file upload / download
 fs = GridFS(mongodb)

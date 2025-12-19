@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { taskService } from "@/services/taskService";
 import { mapBackendTaskToFrontend } from "@/lib/utils";
 import KanbanBoard from "@/components/tasks/KanbanBoard";
 import { Task, TaskStatus, Priority } from "@/types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -13,6 +16,21 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
+  Search,
+  Filter,
+  Calendar,
+  User,
+  MessageSquare,
+  Clock,
+  ListTodo,
+} from "lucide-react";
+import { format } from "date-fns";
+import { useAuth } from "@/context/AuthContext";
+import { useToast } from "@/hooks/use-toast";
+import { userService } from "@/services/userService";
+import { employeeService } from "@/services/employeeService";
+import { remarkService } from "@/services/remarkService";
+import {
   Dialog,
   DialogContent,
   DialogDescription,
@@ -20,32 +38,35 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { useAuth } from "@/context/AuthContext";
-import { employeeService } from "@/services/employeeService";
-import { useToast } from "@/hooks/use-toast";
-import { format } from "date-fns";
-import { remarkService } from "@/services/remarkService";
-import {
-  Search,
-  Filter,
-  Calendar,
-  User,
-  MessageSquare,
-  Clock,
-} from "lucide-react";
 
 const TaskBoard: React.FC = () => {
   const { currentRole, user } = useAuth();
+  const navigate = useNavigate();
   const { toast } = useToast();
   const [tasks, setTasks] = useState<Task[]>([]);
   // simplified: no manager view modes — always show fetched tasks
   const [employeeNames, setEmployeeNames] = useState<Record<string, string>>(
     {}
   );
+  const [employeeDetails, setEmployeeDetails] = useState<
+    Record<
+      string,
+      { name: string; designation?: string; mgr_id?: number; mgr_name?: string }
+    >
+  >({});
 
   useEffect(() => {
+    // Developers shouldn't access the full TaskBoard — redirect them to My Tasks
+    if (currentRole === "developer") {
+      try {
+        navigate("/my-tasks", { replace: true });
+        return;
+      } catch (e) {
+        // ignore navigation errors
+      }
+    }
     let mounted = true;
-    const fetchTasks = async () => {
+    const reloadTasks = async () => {
       if (!user?.id) return;
       try {
         const backendRoleMap: { [k: string]: string } = {
@@ -58,7 +79,7 @@ const TaskBoard: React.FC = () => {
         let backendTasksRaw: any[] = [];
 
         if (currentRole === "manager") {
-          // Managers should see tasks they review (reviewer == manager.e_id)
+          // Managers should see tasks they created OR tasks assigned to them
           const resp = await taskService.getTasks(
             1,
             1000,
@@ -66,8 +87,10 @@ const TaskBoard: React.FC = () => {
             undefined,
             backendRole
           );
-          // taskService.getTasks returns PaginatedResponse<Task>
-          backendTasksRaw = resp.data || [];
+          const all = resp.data || [];
+          backendTasksRaw = all.filter(
+            (t: any) => t.assigned_to === e_id || t.created_by === e_id
+          );
         } else if (currentRole === "admin") {
           // Admin sees all tasks
           const resp = await taskService.getTasks(
@@ -85,20 +108,62 @@ const TaskBoard: React.FC = () => {
 
         if (!mounted) return;
         const frontTasksAll = backendTasksRaw.map(mapBackendTaskToFrontend);
-        // Keep all tasks in state for manager so we can switch views client-side
-        // Show all fetched tasks directly (removed created/assigned/reviewer filters)
         setTasks(frontTasksAll);
       } catch (err) {
         console.error("Error fetching tasks", err);
       }
     };
 
-    fetchTasks();
+    reloadTasks();
 
     return () => {
       mounted = false;
     };
   }, [user?.id, currentRole]);
+
+  // Expose reloadTasks so other handlers can refresh the task list after actions
+  // (we recreate the function here to avoid changing the effect signature.)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const reloadTasks = async () => {
+    if (!user?.id) return;
+    try {
+      const backendRoleMap: { [k: string]: string } = {
+        admin: "Admin",
+        manager: "Manager",
+        developer: "Developer",
+      };
+      const backendRole = backendRoleMap[currentRole] || "Developer";
+      const e_id = parseInt(user.id, 10);
+      let backendTasksRaw: any[] = [];
+
+      if (currentRole === "manager") {
+        const resp = await taskService.getTasks(
+          1,
+          1000,
+          undefined,
+          undefined,
+          backendRole
+        );
+        backendTasksRaw = resp.data || [];
+      } else if (currentRole === "admin") {
+        const resp = await taskService.getTasks(
+          1,
+          1000,
+          undefined,
+          undefined,
+          backendRole
+        );
+        backendTasksRaw = resp.data || [];
+      } else {
+        backendTasksRaw = await taskService.getMyTasks(e_id, backendRole);
+      }
+
+      const frontTasksAll = backendTasksRaw.map(mapBackendTaskToFrontend);
+      setTasks(frontTasksAll);
+    } catch (err) {
+      console.error("Error fetching tasks", err);
+    }
+  };
 
   const getEmployeeName = async (id?: string) => {
     if (!id) return undefined;
@@ -115,6 +180,36 @@ const TaskBoard: React.FC = () => {
         backendRole
       );
       setEmployeeNames((s) => ({ ...s, [id]: emp.name }));
+      setEmployeeDetails((s) => ({
+        ...s,
+        [id]: {
+          name: emp.name,
+          designation: emp.designation,
+          mgr_id: emp.mgr_id,
+        },
+      }));
+
+      // If manager id exists, fetch manager name
+      if (emp.mgr_id) {
+        try {
+          const mgr = await employeeService.getEmployeeCached(
+            emp.mgr_id,
+            backendRole
+          );
+          setEmployeeDetails((s) => ({
+            ...s,
+            [id]: {
+              name: s[id]?.name || emp.name || "",
+              designation: s[id]?.designation || emp.designation,
+              mgr_id: s[id]?.mgr_id || emp.mgr_id,
+              mgr_name: mgr.name,
+            },
+          }));
+        } catch (e) {
+          // ignore
+        }
+      }
+
       return emp.name;
     } catch (err) {
       return undefined;
@@ -128,6 +223,92 @@ const TaskBoard: React.FC = () => {
   const [loadingRemarks, setLoadingRemarks] = useState(false);
   const [newRemark, setNewRemark] = useState("");
   const [remarkFile, setRemarkFile] = useState<File | null>(null);
+
+  // Create Task modal state
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [createLoading, setCreateLoading] = useState(false);
+  const [createEmployees, setCreateEmployees] = useState<any[]>([]);
+  const [createManagers, setCreateManagers] = useState<any[]>([]);
+  const [createPreferredColumn, setCreatePreferredColumn] = useState<
+    "todo" | "inprogress" | "review" | "done" | null
+  >(null);
+  const [createForm, setCreateForm] = useState({
+    title: "",
+    description: "",
+    priority: "medium",
+    expected_closure: "",
+    assigned_to: undefined as number | undefined,
+    reviewer: undefined as number | undefined,
+  });
+  const [createErrors, setCreateErrors] = useState<any>({});
+
+  // Fetch assignable employees and managers when create modal opens
+  useEffect(() => {
+    let mounted = true;
+    const fetchLists = async () => {
+      if (!showCreateModal) return;
+      try {
+        const backendRoleMap: { [k: string]: string } = {
+          admin: "Admin",
+          manager: "Manager",
+          developer: "Developer",
+        };
+        const backendRole = backendRoleMap[currentRole] || "Manager";
+
+        // employees (assignable)
+        try {
+          const list = await employeeService.getAssignableEmployees(
+            backendRole
+          );
+          if (mounted) setCreateEmployees(list || []);
+        } catch (e) {
+          // fallback
+          try {
+            const resp = await employeeService.getEmployees(
+              1,
+              100,
+              backendRole
+            );
+            if (mounted) setCreateEmployees(resp.data || []);
+          } catch {
+            if (mounted) setCreateEmployees([]);
+          }
+        }
+
+        // managers
+        try {
+          const mgrs = await userService.getUsersByRole("Manager");
+          const detailed = await Promise.all(
+            mgrs.map(async (u: any) => {
+              try {
+                const emp = await employeeService.getEmployeeById(
+                  u.e_id,
+                  backendRole
+                );
+                return emp;
+              } catch {
+                return {
+                  e_id: u.e_id,
+                  name: `Manager ${u.e_id}`,
+                  designation: "Manager",
+                };
+              }
+            })
+          );
+          if (mounted) setCreateManagers(detailed || []);
+        } catch (e) {
+          if (mounted) setCreateManagers([]);
+        }
+      } catch (err) {
+        console.error("Error fetching create modal lists", err);
+      }
+    };
+
+    fetchLists();
+    return () => {
+      mounted = false;
+    };
+  }, [showCreateModal, currentRole]);
 
   // When a task is selected, ensure we populate employee names and load remarks
   useEffect(() => {
@@ -485,8 +666,18 @@ const TaskBoard: React.FC = () => {
           </p>
         </div>
 
+        {/* Debug / quick-info panel: shows how many tasks loaded and allows manual reload */}
+        <div className="hidden md:flex items-center gap-4">
+          <div className="text-sm text-muted-foreground">
+            Loaded tasks: <span className="font-medium">{tasks.length}</span>
+          </div>
+          <Button size="sm" variant="outline" onClick={() => reloadTasks()}>
+            Reload tasks
+          </Button>
+        </div>
+
         {/* Filters */}
-        <div className="flex flex-col sm:flex-row gap-3">
+        <div className="flex flex-col sm:flex-row gap-3 items-center">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
@@ -513,6 +704,19 @@ const TaskBoard: React.FC = () => {
               <SelectItem value="low">Low</SelectItem>
             </SelectContent>
           </Select>
+          {(currentRole === "admin" || currentRole === "manager") && (
+            <Button
+              variant="gradient"
+              className="gap-2"
+              onClick={() => {
+                setCreatePreferredColumn(null);
+                setShowCreateModal(true);
+              }}
+            >
+              <ListTodo className="h-4 w-4" />
+              Create Task
+            </Button>
+          )}
         </div>
       </div>
 
@@ -523,9 +727,253 @@ const TaskBoard: React.FC = () => {
             tasks={filteredTasks}
             onTaskClick={handleTaskClick}
             onTaskMove={handleTaskMove}
+            onAddTask={(columnId) => {
+              // columnId is one of frontend ids: todo, inprogress, review, done
+              setCreatePreferredColumn(columnId as any);
+              setShowCreateModal(true);
+            }}
           />
         </div>
       </div>
+
+      {/* Create Task Modal (inline) */}
+      <Dialog open={showCreateModal} onOpenChange={setShowCreateModal}>
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-semibold">Create Task</h2>
+              <div className="text-sm text-muted-foreground">
+                Fill required fields and create
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <div>
+                <Label>Title *</Label>
+                <Input
+                  value={createForm.title}
+                  onChange={(e) =>
+                    setCreateForm((s) => ({ ...s, title: e.target.value }))
+                  }
+                  placeholder="Task title"
+                />
+              </div>
+
+              <div>
+                <Label>Description *</Label>
+                <Textarea
+                  value={createForm.description}
+                  onChange={(e) =>
+                    setCreateForm((s) => ({
+                      ...s,
+                      description: e.target.value,
+                    }))
+                  }
+                  className="min-h-[100px]"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div>
+                  <Label>Priority</Label>
+                  <Select
+                    value={createForm.priority}
+                    onValueChange={(v) =>
+                      setCreateForm((s) => ({ ...s, priority: v }))
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="high">High</SelectItem>
+                      <SelectItem value="medium">Medium</SelectItem>
+                      <SelectItem value="low">Low</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label>Expected Closure</Label>
+                  <Input
+                    type="date"
+                    value={createForm.expected_closure}
+                    onChange={(e) =>
+                      setCreateForm((s) => ({
+                        ...s,
+                        expected_closure: e.target.value,
+                      }))
+                    }
+                    min={new Date().toISOString().split("T")[0]}
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div>
+                  <Label>Assign To</Label>
+                  <Select
+                    value={createForm.assigned_to?.toString() || "none"}
+                    onValueChange={(v) =>
+                      setCreateForm((s) => ({
+                        ...s,
+                        assigned_to: v === "none" ? undefined : parseInt(v),
+                      }))
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select employee (optional)" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none">None</SelectItem>
+                      {createEmployees.map((e) => (
+                        <SelectItem key={e.e_id} value={e.e_id.toString()}>
+                          <div className="flex flex-col">
+                            <span>{e.name}</span>
+                            <span className="text-xs text-muted-foreground">
+                              {e.designation}
+                            </span>
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label>Reviewer</Label>
+                  <Select
+                    value={createForm.reviewer?.toString() || "none"}
+                    onValueChange={(v) =>
+                      setCreateForm((s) => ({
+                        ...s,
+                        reviewer: v === "none" ? undefined : parseInt(v),
+                      }))
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select reviewer (optional)" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none">None</SelectItem>
+                      {createManagers.map((m) => (
+                        <SelectItem key={m.e_id} value={m.e_id.toString()}>
+                          <div className="flex flex-col">
+                            <span>{m.name}</span>
+                            <span className="text-xs text-muted-foreground">
+                              {m.designation}
+                            </span>
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="flex gap-2 justify-end pt-2">
+                <Button
+                  variant="outline"
+                  onClick={() => setShowCreateModal(false)}
+                  disabled={createLoading}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  variant="gradient"
+                  onClick={async () => {
+                    // simple validation
+                    if (
+                      !createForm.title.trim() ||
+                      !createForm.description.trim()
+                    ) {
+                      setCreateErrors({
+                        form: "Title and description are required",
+                      });
+                      return;
+                    }
+                    setCreateLoading(true);
+                    try {
+                      const backendRoleMap: { [k: string]: string } = {
+                        admin: "Admin",
+                        manager: "Manager",
+                        developer: "Developer",
+                      };
+                      const backendRole =
+                        backendRoleMap[currentRole] || "Manager";
+                      const payload: any = {
+                        title: createForm.title.trim(),
+                        description: createForm.description.trim(),
+                        priority: createForm.priority,
+                        expected_closure: createForm.expected_closure
+                          ? new Date(createForm.expected_closure).toISOString()
+                          : undefined,
+                        ...(createForm.assigned_to !== undefined
+                          ? { assigned_to: createForm.assigned_to }
+                          : {}),
+                        ...(createForm.reviewer !== undefined
+                          ? { reviewer: createForm.reviewer }
+                          : {}),
+                      };
+
+                      // Create task and get the created record back
+                      const created: any = await taskService.createTask(
+                        payload,
+                        backendRole
+                      );
+
+                      // If user requested a specific column (e.g., created from a column + button),
+                      // move the newly created task to that status if it's not the default.
+                      if (created && created.t_id && createPreferredColumn) {
+                        const frontToBack: Record<string, string> = {
+                          todo: "to_do",
+                          inprogress: "in_progress",
+                          review: "review",
+                          done: "done",
+                        };
+                        const desired = frontToBack[createPreferredColumn];
+                        if (desired && desired !== "to_do") {
+                          try {
+                            await taskService.updateTaskStatus(
+                              created.t_id,
+                              { status: desired as any },
+                              backendRole
+                            );
+                          } catch (moveErr) {
+                            console.warn(
+                              "Failed to move created task to column",
+                              moveErr
+                            );
+                          }
+                        }
+                      }
+
+                      toast({ title: "Success", description: "Task created" });
+                      setShowCreateModal(false);
+                      setCreatePreferredColumn(null);
+                      // reload tasks to show new task in board
+                      await reloadTasks();
+                    } catch (err: any) {
+                      console.error("Failed to create task", err);
+                      toast({
+                        title: "Error",
+                        description:
+                          err?.response?.data?.detail ||
+                          "Failed to create task",
+                        variant: "destructive",
+                      });
+                    } finally {
+                      setCreateLoading(false);
+                    }
+                  }}
+                >
+                  Create
+                </Button>
+              </div>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* Task Detail Dialog */}
       <Dialog open={!!selectedTask} onOpenChange={() => setSelectedTask(null)}>
@@ -563,11 +1011,23 @@ const TaskBoard: React.FC = () => {
                   <span className="text-sm text-muted-foreground flex items-center gap-2">
                     <User className="h-4 w-4" /> Assigned To
                   </span>
-                  <span className="text-sm font-medium">
+                  <div className="text-sm font-medium">
                     {selectedTask.assignedTo
-                      ? employeeNames[selectedTask.assignedTo] || "Loading..."
+                      ? employeeDetails[selectedTask.assignedTo]?.name ||
+                        employeeNames[selectedTask.assignedTo] ||
+                        "Loading..."
                       : "Unassigned"}
-                  </span>
+                    {selectedTask.assignedTo && (
+                      <div className="text-xs text-muted-foreground">
+                        {employeeDetails[selectedTask.assignedTo]?.designation}
+                        {employeeDetails[selectedTask.assignedTo]?.mgr_name
+                          ? ` • Reports to ${
+                              employeeDetails[selectedTask.assignedTo].mgr_name
+                            }`
+                          : ""}
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 {/* Reviewer */}
@@ -576,9 +1036,19 @@ const TaskBoard: React.FC = () => {
                     <span className="text-sm text-muted-foreground flex items-center gap-2">
                       <MessageSquare className="h-4 w-4" /> Reviewer
                     </span>
-                    <span className="text-sm font-medium">
-                      {employeeNames[selectedTask.reviewer] || "Loading..."}
-                    </span>
+                    <div className="text-sm font-medium">
+                      {employeeDetails[selectedTask.reviewer]?.name ||
+                        employeeNames[selectedTask.reviewer] ||
+                        "Loading..."}
+                      <div className="text-xs text-muted-foreground">
+                        {employeeDetails[selectedTask.reviewer]?.designation}
+                        {employeeDetails[selectedTask.reviewer]?.mgr_name
+                          ? ` • Reports to ${
+                              employeeDetails[selectedTask.reviewer].mgr_name
+                            }`
+                          : ""}
+                      </div>
+                    </div>
                   </div>
                 )}
 
@@ -639,12 +1109,28 @@ const TaskBoard: React.FC = () => {
                                 }`
                               : ""}
                           </div>
+                          {r.file_id && (
+                            <div className="mt-2">
+                              <a
+                                href={`/api/Remark/file?file_id=${encodeURIComponent(
+                                  r.file_id
+                                )}`}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="text-sm text-primary underline"
+                              >
+                                {r.file_name || "Attachment"}
+                              </a>
+                            </div>
+                          )}
                         </div>
                       ))}
                     </div>
                   )}
 
-                  {isEditingTask && (
+                  {(isEditingTask ||
+                    (currentRole === "developer" &&
+                      selectedTask?.assignedTo === user?.id)) && (
                     <div className="mt-3 space-y-2">
                       <textarea
                         className="w-full border rounded p-2 text-sm"
@@ -693,6 +1179,8 @@ const TaskBoard: React.FC = () => {
                                 backendRole
                               );
                               setRemarks(r || []);
+                              // refresh task list so other users / cards see the change
+                              await reloadTasks();
                               setNewRemark("");
                               setRemarkFile(null);
                               toast({

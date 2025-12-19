@@ -26,7 +26,7 @@ interface FormState {
   email: string;
   designation: string;
   mgr_id?: number;
-  role?: string;
+  roles?: string[];
 }
 
 const AddEmployee: React.FC = () => {
@@ -41,7 +41,7 @@ const AddEmployee: React.FC = () => {
     email: "",
     designation: "",
     mgr_id: undefined,
-    role: "developer",
+    roles: ["developer"],
   });
   const [managers, setManagers] = useState<Employee[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -149,7 +149,7 @@ const AddEmployee: React.FC = () => {
             mgr_id: form.mgr_id,
           },
           backendRole,
-          form.role
+          form.roles
         );
         toast({
           title: "Success",
@@ -232,20 +232,40 @@ const AddEmployee: React.FC = () => {
 
             {currentRole === "admin" && (
               <div>
-                <Label>Assign Role</Label>
-                <Select
-                  value={form.role}
-                  onValueChange={(v) => handleChange("role", v)}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select role for user" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="developer">Developer</SelectItem>
-                    <SelectItem value="manager">Manager</SelectItem>
-                    <SelectItem value="admin">Admin</SelectItem>
-                  </SelectContent>
-                </Select>
+                <Label>Assign Role(s)</Label>
+                <div className="flex gap-4 mt-2">
+                  {[
+                    { key: "Admin", label: "Admin" },
+                    { key: "Manager", label: "Manager" },
+                    { key: "Developer", label: "Developer" },
+                  ].map((r) => {
+                    const checked = (form.roles || []).includes(
+                      r.key.toLowerCase() === "developer"
+                        ? "developer"
+                        : r.key.toLowerCase()
+                    );
+                    // We'll store role values as lowercase strings ('admin','manager','developer') to match frontend conventions
+                    const roleValue = r.key.toLowerCase();
+                    return (
+                      <label
+                        key={r.key}
+                        className="inline-flex items-center gap-2"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={(form.roles || []).includes(roleValue)}
+                          onChange={(e) => {
+                            const next = new Set(form.roles || []);
+                            if (e.target.checked) next.add(roleValue);
+                            else next.delete(roleValue);
+                            handleChange("roles", Array.from(next));
+                          }}
+                        />
+                        <span className="capitalize text-sm">{r.label}</span>
+                      </label>
+                    );
+                  })}
+                </div>
               </div>
             )}
 

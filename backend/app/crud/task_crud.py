@@ -6,6 +6,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy import or_
 from fastapi import HTTPException
 from datetime import datetime, timezone
+from app.database.mongodb_connection import notifications_collection
 
 
 def add_task(new_task: TaskReqRes, role, user):
@@ -48,6 +49,30 @@ def add_task(new_task: TaskReqRes, role, user):
         session.add(task)
         session.commit()
         session.refresh(task)
+        # Notify assigned user and reviewer that a task was created
+        try:
+            notif_targets = []
+            if getattr(task, "assigned_to", None) and task.assigned_to != user.e_id:
+                notif_targets.append(int(task.assigned_to))
+            if getattr(task, "reviewer", None) and task.reviewer != user.e_id:
+                if int(task.reviewer) not in notif_targets:
+                    notif_targets.append(int(task.reviewer))
+
+            for to_eid in notif_targets:
+                notifications_collection.insert_one(
+                    {
+                        "type": "task_created",
+                        "task_id": int(task.t_id),
+                        "to_eid": int(to_eid),
+                        "from_eid": int(user.e_id) if user and getattr(user, 'e_id', None) else None,
+                        "message": f"You were assigned/mentioned in task {task.t_id}",
+                        "read": False,
+                        "created_at": datetime.now(timezone.utc),
+                    }
+                )
+        except Exception:
+            # non-fatal
+            pass
         return TaskReqRes.model_validate(task)
     except SQLAlchemyError as e:
         if session:
@@ -65,11 +90,12 @@ def get_all_tasks(role, user):
         if role == "Manager":
             if "Manager" in user.roles:
                 # Managers should see tasks they review, tasks they created, and tasks they assigned
+                # Managers should see tasks they review, tasks they created, and tasks assigned TO them
                 tasks = session.query(TaskSchema).filter(
                     or_(
                         TaskSchema.reviewer == user.e_id,
                         TaskSchema.created_by == user.e_id,
-                        TaskSchema.assigned_by == user.e_id,
+                        TaskSchema.assigned_to == user.e_id,
                     )
                 ).all()
             else:
@@ -134,6 +160,28 @@ def get_task_by_status(status, role, user):
         return new_data
     except SQLAlchemyError as e:
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+
+
+def get_task_stats(role, user):
+    """Return counts of tasks grouped by status for tasks visible to the user."""
+    try:
+        tasks = get_all_tasks(role, user)
+        # tasks is a list of TaskReqRes objects (or dict-like)
+        counts = {}
+        for t in tasks:
+            s = getattr(t, "status", None) or t.get("status") if isinstance(t, dict) else None
+            if not s:
+                continue
+            counts[s] = counts.get(s, 0) + 1
+
+        # Normalize to expected statuses
+        all_statuses = ["to_do", "in_progress", "review", "done"]
+        result = [{"status": s, "count": int(counts.get(s, 0))} for s in all_statuses]
+        return result
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 def update_task(
@@ -202,6 +250,29 @@ def update_task(
         session.refresh(t)
 
         # Return updated task as a response
+        # Notify participants (assigned user and reviewer) about task update
+        try:
+            notif_targets = []
+            if t.assigned_to and t.assigned_to != user.e_id:
+                notif_targets.append(int(t.assigned_to))
+            if t.reviewer and t.reviewer != user.e_id:
+                if int(t.reviewer) not in notif_targets:
+                    notif_targets.append(int(t.reviewer))
+
+            for to_eid in notif_targets:
+                notifications_collection.insert_one(
+                    {
+                        "type": "task_update",
+                        "task_id": int(t_id),
+                        "to_eid": int(to_eid),
+                        "from_eid": int(user.e_id) if user and getattr(user, 'e_id', None) else None,
+                        "message": f"Task {t_id} updated",
+                        "read": False,
+                        "created_at": datetime.now(timezone.utc),
+                    }
+                )
+        except Exception:
+            pass
         return TaskReqRes.model_validate(t)
 
     except SQLAlchemyError as e:

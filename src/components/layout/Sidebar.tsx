@@ -11,6 +11,7 @@ import {
   X,
   Kanban,
 } from "lucide-react";
+import { TrendingUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface SidebarProps {
@@ -33,7 +34,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       name: "Task Board",
       href: "/tasks",
       icon: Kanban,
-      roles: ["admin", "manager", "developer"],
+      // Hide Task Board from developers — they should use My Tasks only
+      roles: ["admin", "manager"],
     },
     {
       name: "My Tasks",
@@ -52,6 +54,12 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       href: "/settings",
       icon: Settings,
       roles: ["admin"],
+    },
+    {
+      name: "Analytics",
+      href: "/analytics",
+      icon: TrendingUp,
+      roles: ["admin", "manager", "developer"],
     },
   ];
 

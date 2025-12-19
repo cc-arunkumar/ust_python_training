@@ -1,5 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends
 from app.crud.task_crud import add_task, get_all_tasks, get_task_by_id,patch_priority,get_task_by_status,patch_status,update_task, delete_task
+from app.crud.task_crud import get_task_stats
 from app.core.security import get_current_user
 from app.models.models import TaskReqRes, UserRole
 from typing import List
@@ -135,3 +136,16 @@ async def update_task_priority(t_id: int, priority: str, role: str, user=Depends
         return patch_priority(t_id=t_id, priority=priority, role=role, user=user)
     except HTTPException as e:
         raise e
+
+
+
+@task_router.get("/stats")
+def task_stats(role: str, user=Depends(get_current_user)):
+    try:
+        if role not in user.roles:
+            raise HTTPException(status_code=403, detail="User does not have the mentioned role")
+        return get_task_stats(role, user)
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Internal Server Error: {str(e)}")

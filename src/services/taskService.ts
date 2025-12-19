@@ -155,4 +155,15 @@ export const taskService = {
     const data: Task[] = resp.data || [];
     return data.filter((t) => t.created_by === e_id) || [];
   },
+
+  // Get aggregated stats for tasks (counts by status)
+  getStats: async (
+    role?: string
+  ): Promise<Array<{ status: string; count: number }>> => {
+    const url = role
+      ? `/Task/stats?role=${encodeURIComponent(role)}`
+      : `/Task/stats`;
+    const resp = await api.get(url);
+    return resp.data || [];
+  },
 };

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, Query
 from app.crud.employee_crud import get_all_employees, add_employee, get_by_employee_id, update_employee, delete_employee
 from app.models.models import EmployeeReqRes
 from typing import List
@@ -32,12 +32,18 @@ def get_all(role: str, user=Depends(get_current_user)):
         raise HTTPException(status_code=500, detail=f"Internal Server Error: {str(e)}")
 
 @employee_router.post("/create")
-def add_new_employee(role: str, new_emp: EmployeeReqRes, initial_role: str | None = None, user=Depends(get_current_user)):
+def add_new_employee(
+    role: str,
+    new_emp: EmployeeReqRes,
+    initial_roles: list[str] | None = Query(None),
+    user=Depends(get_current_user),
+):
     try:
         if role != "Admin":
             raise HTTPException(status_code=403, detail="Only Admin can create employees.")
 
-        new_employee = add_employee(new_emp, role, user, initial_role)
+        # Pass list of initial roles (if any) to CRUD layer
+        new_employee = add_employee(new_emp, role, user, initial_roles)
         return {"detail": "Employee Added Successfully", "employee": new_employee}
     except HTTPException as e:
         raise e  # Re-raise the specific HTTPException

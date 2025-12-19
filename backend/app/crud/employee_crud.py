@@ -7,7 +7,7 @@ from app.models.models import UserReqRes
 from app.crud.users_crud import add_user, normalize_role_param
 from app.crud.users_crud import get_user_by_id
 
-def add_employee(new_emp: EmployeeReqRes, role: str, user, initial_role: str | None = None):
+def add_employee(new_emp: EmployeeReqRes, role: str, user, initial_roles: list[str] | None = None):
     session = None
     try:
         if role != "Admin":
@@ -28,21 +28,32 @@ def add_employee(new_emp: EmployeeReqRes, role: str, user, initial_role: str | N
         session.add(new_employee)
         session.commit()
         session.refresh(new_employee)
-        # Create an associated user in users table. Use initial_role if provided,
-        # otherwise default to Developer.
-        # Normalize incoming role (e.g. 'developer' -> 'Developer') so Pydantic/DB accept it.
-        if initial_role:
-            nr = normalize_role_param(initial_role)
-            assigned_roles = [nr] if nr else ["Developer"]
-        else:
-            assigned_roles = ["Developer"]
+        # Create an associated user in users table.
+        # Support multiple initial roles (list). Normalize using users_crud helpers.
+        assigned_roles = ["Developer"]
+        if initial_roles:
+            try:
+                from app.crud.users_crud import _ensure_roles_list
+
+                norm = _ensure_roles_list(initial_roles)
+                if norm:
+                    assigned_roles = norm
+            except Exception:
+                # Fallback: try to normalize each via normalize_role_param
+                vals = []
+                for r in initial_roles:
+                    nr = normalize_role_param(r)
+                    if nr:
+                        vals.append(nr)
+                if vals:
+                    assigned_roles = vals
 
         # Build UserReqRes with normalized roles
         user_data = UserReqRes(
             e_id=new_employee.e_id,
             password="password123",
             roles=assigned_roles,
-            status="active"
+            status="active",
         )
         add_user(user_data)
         return EmployeeReqRes.model_validate(new_employee)  # Convert to Pydantic model

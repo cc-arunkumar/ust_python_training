@@ -130,7 +130,18 @@ const DroppableColumn: React.FC<{
             {tasks.length}
           </span>
         </div>
-        {/* Removed + create button on To Do column as per UX request */}
+        {/* Optional + create button to add a task directly to this column */}
+        {canCreateTask && onAddTask && (
+          <div>
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() => onAddTask(column.id)}
+            >
+              <Plus className="h-4 w-4" />
+            </Button>
+          </div>
+        )}
       </div>
 
       {/* Tasks */}

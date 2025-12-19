@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { Role } from "@/types";
 import { Button } from "@/components/ui/button";
@@ -20,10 +21,12 @@ import {
   Users,
   Code,
   Bell,
-  Search,
   Menu,
 } from "lucide-react";
 import ThemeToggle from "@/components/ui/themeToggle";
+import notificationService, {
+  Notification,
+} from "@/services/notificationService";
 
 const roleIcons: Record<Role, React.ElementType> = {
   admin: Shield,
@@ -44,6 +47,11 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
   const { user, currentRole, switchRole, logout } = useAuth();
+  const navigate = useNavigate();
+  const [notifications, setNotifications] = React.useState<Notification[]>([]);
+  const [unreadCount, setUnreadCount] = React.useState<number>(0);
+  // start polling notifications
+  useNotifications(setNotifications, setUnreadCount);
 
   if (!user) return null;
 
@@ -61,13 +69,13 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
           <Menu className="h-5 w-5" />
         </Button>
 
-        <div className="relative hidden md:block">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <input
-            type="text"
-            placeholder="Search tasks..."
-            className="h-10 w-64 rounded-lg bg-secondary/10 pl-10 pr-4 text-sm outline-none focus:ring-2 focus:ring-primary transition-all"
-          />
+        <div className="hidden md:block">
+          <div className="text-sm text-muted-foreground">
+            Welcome back,{" "}
+            <span className="font-semibold text-primary-foreground">
+              {user.name.split(" ")[0]}
+            </span>
+          </div>
         </div>
       </div>
 
@@ -121,7 +129,78 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
           </Badge>
         )}
 
-        {/* Notifications removed */}
+        {/* Notifications */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="icon" className="relative">
+              <Bell className="h-5 w-5" />
+              {unreadCount > 0 && (
+                <span className="absolute -top-1 -right-1 inline-flex items-center justify-center px-1.5 py-0.5 text-xs font-medium leading-none rounded-full bg-destructive text-destructive-foreground">
+                  {unreadCount}
+                </span>
+              )}
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-80">
+            <DropdownMenuLabel>Notifications</DropdownMenuLabel>
+            <div className="max-h-64 overflow-y-auto">
+              {notifications.length === 0 && (
+                <div className="p-3 text-sm text-muted-foreground">
+                  No notifications
+                </div>
+              )}
+              {notifications.map((n) => (
+                <DropdownMenuItem
+                  key={n.id}
+                  className={`flex flex-col items-start gap-1 py-2 ${
+                    n.read ? "" : "bg-secondary/5"
+                  }`}
+                  onClick={async () => {
+                    try {
+                      await notificationService.markRead(n.id);
+                      // update local state to mark as read
+                      setNotifications((prev) =>
+                        prev.map((p) =>
+                          p.id === n.id ? { ...p, read: true } : p
+                        )
+                      );
+                      setUnreadCount((c) => Math.max(0, c - 1));
+                      // navigate to task if present
+                      if (n.task_id) navigate(`/task/${n.task_id}`);
+                    } catch (e) {
+                      // ignore
+                    }
+                  }}
+                >
+                  <div className="text-sm font-medium">
+                    {n.message || "Notification"}
+                  </div>
+                  <div className="text-xs text-muted-foreground">
+                    {n.created_at
+                      ? new Date(n.created_at).toLocaleString()
+                      : ""}
+                  </div>
+                </DropdownMenuItem>
+              ))}
+            </div>
+            <DropdownMenuSeparator />
+            <div className="px-3 py-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={async () => {
+                  await notificationService.markAllRead();
+                  await fetchNotificationsOnce(
+                    setNotifications,
+                    setUnreadCount
+                  );
+                }}
+              >
+                Mark all read
+              </Button>
+            </div>
+          </DropdownMenuContent>
+        </DropdownMenu>
 
         {/* User Menu */}
         <DropdownMenu>
@@ -150,7 +229,10 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="gap-2 cursor-pointer">
+            <DropdownMenuItem
+              className="gap-2 cursor-pointer"
+              onClick={() => navigate("/profile")}
+            >
               <User className="h-4 w-4" />
               Profile
             </DropdownMenuItem>
@@ -168,5 +250,37 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
     </header>
   );
 };
+
+async function fetchNotificationsOnce(
+  setNotifications: any,
+  setUnreadCount: any
+) {
+  try {
+    const list = await notificationService.listNotifications(false);
+    setNotifications(list);
+    setUnreadCount(list.filter((n: Notification) => !n.read).length);
+  } catch (e) {
+    // ignore fetch errors
+  }
+}
+
+function useNotifications(setNotifications: any, setUnreadCount: any) {
+  React.useEffect(() => {
+    let mounted = true;
+    const fetchNotifications = async () => {
+      if (!mounted) return;
+      await fetchNotificationsOnce(setNotifications, setUnreadCount);
+    };
+    fetchNotifications();
+    const id = setInterval(fetchNotifications, 30_000);
+    return () => {
+      mounted = false;
+      clearInterval(id);
+    };
+  }, [setNotifications, setUnreadCount]);
+}
+
+// Hook usage inside module scope to avoid linter complaints in component
+// We'll call it inside the component render via a function reference
 
 export default Header;
