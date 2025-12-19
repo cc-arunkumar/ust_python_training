@@ -1,58 +1,57 @@
-import React, { useState, useEffect } from 'react';
-import { X, AlertCircle, UserPlus, Trash } from 'lucide-react';
-import ApiService from '../../services/api';
-import toast from 'react-hot-toast';
-import { useAuth } from '../../context/AuthContext'; 
+import React, { useState } from "react";
+import { X, AlertCircle, UserPlus } from "lucide-react";
+import ApiService from "../../services/api";
+import toast from "react-hot-toast";
+import { useAuth } from "../../context/AuthContext";
 
 const inputClass =
   "mt-1 w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm " +
   "focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition";
 
-const EmployeeModal = ({ employee, onClose, onSuccess }) => {
-  const { hasRole } = useAuth();  
+const UserModal = ({ user, onClose, onSuccess }) => {
+  const { hasRole } = useAuth();
+  const isAdmin = hasRole && hasRole("ADMIN");
+
   const [formData, setFormData] = useState({
-    emp_id: employee?.emp_id ?? '',
-    emp_name: employee?.emp_name ?? '',
-    email: employee?.email ?? '',
-    designation: employee?.designation ?? '',
-    manager_id: employee?.manager_id ?? '',
+    id: user?.id ?? user?.user_id ?? "",
+    email: user?.email ?? "",
+    full_name: user?.full_name ?? user?.name ?? "",
+    role: user?.role ?? (user?.roles ? user.roles.join(",") : ""),
+    password: "",
   });
 
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-
-  const isAdmin = hasRole("ADMIN"); // Check if user is an Admin
+  const [error, setError] = useState("");
 
   const handleChange = (field, value) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!isAdmin) return;
     setLoading(true);
-    setError('');
+    setError("");
 
     try {
       const payload = {
-        emp_id: Number(formData.emp_id),
-        emp_name: formData.emp_name.trim(),
         email: formData.email.trim(),
-        designation: formData.designation.trim(),
-        manager_id:
-          formData.manager_id === '' ? null : Number(formData.manager_id),
+        full_name: formData.full_name.trim(),
+        role: formData.role.trim(),
       };
 
-      if (employee) {
-        await ApiService.updateEmployee(employee.emp_id, payload);
-        toast.success('Employee updated successfully');
+      if (!user) {
+        if (formData.password) payload.password = formData.password;
+        await ApiService.createUser(payload);
+        toast.success("User created successfully");
       } else {
-        await ApiService.createEmployee(payload);
-        toast.success('Employee added successfully');
+        await ApiService.updateUser(user.id ?? user.user_id, payload);
+        toast.success("User updated successfully");
       }
 
       onSuccess();
     } catch (err) {
-      const msg = err?.response?.data?.detail || err.message || 'Operation failed';
+      const msg = err?.message || "Operation failed";
       setError(msg);
       toast.error(msg);
     } finally {
@@ -61,20 +60,19 @@ const EmployeeModal = ({ employee, onClose, onSuccess }) => {
   };
 
   const handleDelete = async () => {
-    if (!employee) return;
-    if (window.confirm(`Are you sure you want to delete employee ${employee.emp_name}?`)) {
-      setLoading(true);
-      try {
-        await ApiService.deleteEmployee(employee.emp_id);
-        toast.success('Employee deleted successfully');
-        onSuccess(); 
-      } catch (err) {
-        const msg = err?.response?.data?.detail || err.message || 'Operation failed';
-        setError(msg);
-        toast.error(msg);
-      } finally {
-        setLoading(false);
-      }
+    if (!user || !isAdmin) return;
+    if (!window.confirm(`Delete user ${user.email || user.full_name}?`)) return;
+    setLoading(true);
+    try {
+      await ApiService.deleteUser(user.id ?? user.user_id);
+      toast.success("User deleted successfully");
+      onSuccess();
+    } catch (err) {
+      const msg = err?.message || "Operation failed";
+      setError(msg);
+      toast.error(msg);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -84,7 +82,7 @@ const EmployeeModal = ({ employee, onClose, onSuccess }) => {
         <div className="w-full max-w-xl rounded-2xl bg-white shadow-xl border border-gray-200 p-6">
           <div className="text-center text-gray-600">
             <h2 className="text-lg font-semibold mb-4">Access Denied</h2>
-            <p>You do not have permission to manage employees.</p>
+            <p>You do not have permission to manage users.</p>
             <button
               onClick={onClose}
               className="mt-4 text-blue-600 hover:text-blue-700"
@@ -104,10 +102,13 @@ const EmployeeModal = ({ employee, onClose, onSuccess }) => {
           <div className="flex items-center gap-2">
             <UserPlus className="text-blue-600" />
             <h2 className="text-lg font-semibold text-gray-800">
-              {employee ? 'Edit Employee' : 'Add Employee'}
+              {user ? "Edit User" : "Add User"}
             </h2>
           </div>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-700">
+          <button
+            onClick={onClose}
+            className="text-gray-400 hover:text-gray-700"
+          >
             <X />
           </button>
         </div>
@@ -120,69 +121,59 @@ const EmployeeModal = ({ employee, onClose, onSuccess }) => {
         )}
 
         <form onSubmit={handleSubmit} className="px-6 py-6 space-y-4">
-          {!employee && (
+          {!user && (
             <div>
               <label className="text-sm font-medium text-gray-600">
-                Employee ID *
+                Email *
               </label>
               <input
-                type="number"
-                value={formData.emp_id}
-                onChange={(e) => handleChange('emp_id', e.target.value)}
+                type="email"
+                value={formData.email}
+                onChange={(e) => handleChange("email", e.target.value)}
                 required
                 className={inputClass}
               />
             </div>
           )}
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="text-sm font-medium text-gray-600">Name *</label>
-              <input
-                type="text"
-                value={formData.emp_name}
-                onChange={(e) => handleChange('emp_name', e.target.value)}
-                required
-                className={inputClass}
-              />
-            </div>
-
-            <div>
-              <label className="text-sm font-medium text-gray-600">Email *</label>
-              <input
-                type="email"
-                value={formData.email}
-                onChange={(e) => handleChange('email', e.target.value)}
-                required
-                className={inputClass}
-              />
-            </div>
-          </div>
-
           <div>
             <label className="text-sm font-medium text-gray-600">
-              Designation *
+              Full name *
             </label>
             <input
               type="text"
-              value={formData.designation}
-              onChange={(e) => handleChange('designation', e.target.value)}
+              value={formData.full_name}
+              onChange={(e) => handleChange("full_name", e.target.value)}
               required
               className={inputClass}
             />
           </div>
 
           <div>
-            <label className="text-sm font-medium text-gray-600">
-              Manager ID (Optional)
-            </label>
+            <label className="text-sm font-medium text-gray-600">Role *</label>
             <input
-              type="number"
-              value={formData.manager_id}
-              onChange={(e) => handleChange('manager_id', e.target.value)}
+              type="text"
+              value={formData.role}
+              onChange={(e) => handleChange("role", e.target.value)}
+              required
               className={inputClass}
             />
           </div>
+
+          {!user && (
+            <div>
+              <label className="text-sm font-medium text-gray-600">
+                Password
+              </label>
+              <input
+                type="password"
+                value={formData.password}
+                onChange={(e) => handleChange("password", e.target.value)}
+                className={inputClass}
+                placeholder="Optional - set password for new user"
+              />
+            </div>
+          )}
 
           <div className="flex gap-3 pt-6">
             <button
@@ -197,17 +188,17 @@ const EmployeeModal = ({ employee, onClose, onSuccess }) => {
               disabled={loading}
               className="flex-1 rounded-xl bg-blue-600 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:bg-blue-400 transition"
             >
-              {loading ? 'Saving...' : 'Save'}
+              {loading ? "Saving..." : "Save"}
             </button>
 
-            {employee && (
+            {user && (
               <button
                 type="button"
                 onClick={handleDelete}
                 disabled={loading}
                 className="flex-1 rounded-xl bg-red-600 py-2 text-sm font-medium text-white hover:bg-red-700 disabled:bg-red-400 transition"
               >
-                {loading ? 'Deleting...' : 'Delete'}
+                {loading ? "Deleting..." : "Delete"}
               </button>
             )}
           </div>
@@ -217,4 +208,4 @@ const EmployeeModal = ({ employee, onClose, onSuccess }) => {
   );
 };
 
-export default EmployeeModal;
+export default UserModal;

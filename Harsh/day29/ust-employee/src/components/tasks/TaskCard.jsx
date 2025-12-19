@@ -3,6 +3,7 @@ import { Draggable } from "@hello-pangea/dnd";
 import { Eye, Trash, Edit, User, Bell } from "lucide-react";
 import { PRIORITY_COLORS } from "../../utils/constants";
 import toast from "react-hot-toast";
+import ApiService from "../../services/api";
 
 const TaskCard = ({
   task,
@@ -11,9 +12,12 @@ const TaskCard = ({
   onEdit,
   onDelete,
   assignedEmployee,
+  onAttach,
 }) => {
   const [showNotes, setShowNotes] = useState(false);
+  const [notifications, setNotifications] = useState([]);
   const popoverRef = useRef(null);
+  // attach handled in edit modal (TaskModal)
 
   useEffect(() => {
     if (!showNotes) return;
@@ -36,6 +40,52 @@ const TaskCard = ({
       document.removeEventListener("keydown", handleKey);
     };
   }, [showNotes]);
+
+  // Fetch notifications for this task (best-effort). Merge with any task.notifications
+  useEffect(() => {
+    let mounted = true;
+
+    const loadNotifications = async () => {
+      if (!task || !task.task_id) return;
+      try {
+        const remote = await ApiService.getNotificationsForTask(task.task_id);
+        if (!mounted) return;
+
+        // Prefer backend notifications if available; fallback to task.notifications
+        if (Array.isArray(remote) && remote.length > 0) {
+          setNotifications(remote);
+        } else if (task.notifications && task.notifications.length > 0) {
+          // If backend doesn't have notifications endpoint, use task.notifications array
+          setNotifications(
+            task.notifications.map((n) => ({ message: n, is_read: false }))
+          );
+        } else {
+          setNotifications([]);
+        }
+      } catch (err) {
+        // ignore
+        setNotifications([]);
+      }
+    };
+
+    loadNotifications();
+
+    return () => {
+      mounted = false;
+    };
+  }, [task]);
+
+  const handleOpenNotes = async () => {
+    setShowNotes(true);
+
+    // Best-effort: mark notifications read in backend and update local state
+    try {
+      await ApiService.markNotificationsReadForTask(task.task_id);
+      setNotifications((prev) => prev.map((n) => ({ ...n, is_read: true })));
+    } catch (err) {
+      // ignore failure
+    }
+  };
   const handleDelete = () => {
     if (!onDelete) return;
     const confirm = window.confirm(
@@ -44,6 +94,8 @@ const TaskCard = ({
     if (!confirm) return;
     onDelete(task.task_id);
   };
+
+  // NOTE: Attach action moved to TaskModal (edit). Keeping placeholder prop for compatibility.
 
   const formatDate = (dateString) => {
     if (!dateString) return "No deadline";
@@ -72,30 +124,35 @@ const TaskCard = ({
               {task.title}
             </h4>
             <div className="relative">
-              <button
-                onClick={() => setShowNotes(true)}
-                aria-label={
-                  task.remarks || task.notifications
-                    ? "Has notifications"
-                    : "No notifications"
-                }
-                className={`p-2 rounded-md transition-colors ${
-                  (task.remarks && task.remarks.length > 0) ||
-                  (task.notifications && task.notifications.length > 0)
-                    ? "text-red-600 animate-pulse"
-                    : "text-slate-400"
-                }`}
-              >
-                <Bell size={18} />
-              </button>
-              {((task.notifications && task.notifications.length) || 0) +
-                ((task.remarks && task.remarks.length) || 0) >
-                0 && (
-                <span className="absolute -top-1 -right-1 bg-red-600 text-white text-[11px] rounded-full w-5 h-5 flex items-center justify-center">
-                  {((task.notifications && task.notifications.length) || 0) +
-                    ((task.remarks && task.remarks.length) || 0)}
-                </span>
-              )}
+              {
+                (() => {
+                  const remarksCount = (task.remarks && task.remarks.length) || 0;
+                  const unreadNotifications = Array.isArray(notifications)
+                    ? notifications.filter((n) => !n.is_read).length
+                    : 0;
+                  const totalBadge = unreadNotifications + remarksCount;
+
+                  return (
+                    <>
+                      <button
+                        onClick={handleOpenNotes}
+                        aria-label={totalBadge > 0 ? "Has notifications" : "No notifications"}
+                        className={`p-2 rounded-md transition-colors ${
+                          totalBadge > 0 ? "text-red-600 animate-pulse" : "text-slate-400"
+                        }`}
+                      >
+                        <Bell size={18} />
+                      </button>
+
+                      {totalBadge > 0 && (
+                        <span className="absolute -top-1 -right-1 bg-red-600 text-white text-[11px] rounded-full w-5 h-5 flex items-center justify-center">
+                          {totalBadge}
+                        </span>
+                      )}
+                    </>
+                  );
+                })()
+              }
             </div>
           </div>
 
@@ -160,10 +217,14 @@ const TaskCard = ({
                 </button>
               </div>
               <div className="space-y-2 max-h-44 overflow-auto">
-                {task.notifications && task.notifications.length > 0 ? (
-                  task.notifications.map((n, i) => (
-                    <div key={`n-${i}`} className="p-2 border rounded">
-                      <p className="text-sm text-slate-700">{n}</p>
+                {notifications && notifications.length > 0 ? (
+                  notifications.map((n, i) => (
+                    <div key={`n-${i}`} className="p-2 border rounded flex items-start gap-2">
+                      <div className={`w-2 h-2 rounded-full mt-1 ${n.is_read ? 'bg-slate-300' : 'bg-blue-500'}`} />
+                      <div>
+                        <p className="text-sm text-slate-700">{n.message || n.msg || n.text}</p>
+                        <div className="text-xs text-slate-400">{n.created_at ? new Date(n.created_at).toLocaleString() : ''}</div>
+                      </div>
                     </div>
                   ))
                 ) : task.remarks && task.remarks.length > 0 ? (

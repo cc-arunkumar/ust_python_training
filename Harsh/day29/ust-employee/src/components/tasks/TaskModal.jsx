@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { X, AlertCircle } from "lucide-react";
+import React, { useState, useEffect, useRef } from "react";
+import { X, AlertCircle, Trash } from "lucide-react";
 import ApiService from "../../services/api";
 import { TASK_STATUSES } from "../../utils/constants";
 
@@ -15,7 +15,6 @@ const TaskModal = ({ task, onClose, onSuccess }) => {
     description: task?.description || "",
     assigned_to: task?.assigned_to || "",
     reviewer: task?.reviewer || "",
-    status: task?.status || TASK_STATUSES.TODO,
     priority: task?.priority || "MEDIUM",
     expected_closure: task?.expected_closure || "",
   });
@@ -24,9 +23,73 @@ const TaskModal = ({ task, onClose, onSuccess }) => {
   const [error, setError] = useState("");
   const [files, setFiles] = useState([]);
   const [comment, setComment] = useState("");
+  const [employees, setEmployees] = useState([]);
+  const [existingAttachments, setExistingAttachments] = useState([]);
+  const [loadingAttachments, setLoadingAttachments] = useState(false);
+  const [attachedLabel, setAttachedLabel] = useState("");
 
   const handleChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleFileChange = (e) => {
+    const selectedFiles = Array.from(e.target.files || []);
+    if (selectedFiles.length === 0) return;
+
+    // If editing an existing task, upload immediately (create a remark with file)
+    if (task && task.task_id) {
+      (async () => {
+        try {
+          const names = [];
+          for (const f of selectedFiles) {
+            const res = await ApiService.createRemark(task.task_id, null, f);
+            // res should contain file_id and filename
+            const fileId = res.file_id || res.fileId || res.file_id;
+            const filename = res.filename || f.name;
+            const href = fileId
+              ? ApiService.getRemarkAttachmentUrl(fileId)
+              : null;
+            setExistingAttachments((prev) => [
+              ...prev,
+              { id: fileId, name: filename, href },
+            ]);
+            names.push(filename);
+          }
+          setAttachedLabel(
+            names.length === 1 ? names[0] : `${names.length} files`
+          );
+        } catch (err) {
+          setError(err.message || "Failed to upload attachment");
+        }
+      })();
+    } else {
+      setFiles((prev) => [...prev, ...selectedFiles]);
+      setAttachedLabel(
+        selectedFiles.length === 1
+          ? selectedFiles[0].name
+          : `${(files?.length || 0) + selectedFiles.length} files`
+      );
+    }
+  };
+
+  const handleDeleteFile = (fileName) => {
+    setFiles(files.filter((file) => file.name !== fileName));
+  };
+
+  const removeExistingAttachment = async (att) => {
+    // Optimistic UI removal
+    setExistingAttachments((prev) => prev.filter((a) => a !== att));
+    if (!att.id) return;
+    try {
+      // Attempt server delete; backend may or may not support this route
+      await ApiService.request(`/tasks/remarks/attachments/${att.id}`, {
+        method: "DELETE",
+      });
+    } catch (err) {
+      // rollback on failure
+      setExistingAttachments((prev) => [...prev, att]);
+      setError(err.message || "Failed to delete attachment");
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -43,7 +106,6 @@ const TaskModal = ({ task, onClose, onSuccess }) => {
         reviewer: formData.reviewer ? parseInt(formData.reviewer) : null,
       };
 
-      // include comment as remarks if provided
       if (comment && comment.trim().length > 0) {
         payload.remarks = [comment.trim()];
       }
@@ -51,18 +113,18 @@ const TaskModal = ({ task, onClose, onSuccess }) => {
       if (task) {
         const updated = await ApiService.updateTask(task.task_id, payload);
 
-        // upload files after update
-        if (files && files.length > 0) {
-          for (const f of files) {
-            await ApiService.uploadFile(task.task_id, f);
+        // Upload files after task update
+        if (files.length > 0) {
+          for (const file of files) {
+            await ApiService.uploadFile(task.task_id, file);
           }
         }
       } else {
         const created = await ApiService.createTask(payload);
 
-        if (files && files.length > 0 && created && created.task_id) {
-          for (const f of files) {
-            await ApiService.uploadFile(created.task_id, f);
+        if (created && created.task_id && files.length > 0) {
+          for (const file of files) {
+            await ApiService.uploadFile(created.task_id, file);
           }
         }
       }
@@ -74,6 +136,79 @@ const TaskModal = ({ task, onClose, onSuccess }) => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    const loadEmployees = async () => {
+      try {
+        const data = await ApiService.getEmployees();
+        setEmployees(data || []);
+      } catch (err) {
+        setError("Failed to load employees.");
+      }
+    };
+
+    loadEmployees();
+  }, []);
+
+  // Load existing attachments and remarks for the task when editing
+  useEffect(() => {
+    let mounted = true;
+    const loadAttachments = async () => {
+      if (!task || !task.task_id) return;
+      setLoadingAttachments(true);
+      try {
+        const t = await ApiService.getTask(task.task_id);
+        if (!mounted) return;
+        const atts = t.attachments || [];
+
+        let remarks = [];
+        try {
+          remarks = await ApiService.listRemarks(task.task_id);
+        } catch (e) {
+          // ignore
+        }
+
+        const combined = [];
+        (atts || []).forEach((a) => {
+          combined.push({
+            id: a.id || a.file_id || a._id || null,
+            name: a.file_name || a.filename || a.fileName || a.name || "file",
+            href: a.file_path || a.url || null,
+          });
+        });
+
+        (remarks || []).forEach((r) => {
+          if (r.file_id) {
+            combined.push({
+              id: r.file_id,
+              name: r.filename || r.fileName || r.name || "file",
+              href: ApiService.getRemarkAttachmentUrl(r.file_id),
+            });
+          }
+        });
+
+        if (mounted) {
+          setExistingAttachments(combined);
+          if (!attachedLabel) {
+            setAttachedLabel(
+              combined.length === 1
+                ? combined[0].name
+                : combined.length > 1
+                ? `${combined.length} files`
+                : ""
+            );
+          }
+        }
+      } catch (err) {
+        // ignore loading errors
+      } finally {
+        if (mounted) setLoadingAttachments(false);
+      }
+    };
+
+    loadAttachments();
+    return () => (mounted = false);
+  }, [task]);
 
   return (
     <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center p-4 z-50">
@@ -131,45 +266,41 @@ const TaskModal = ({ task, onClose, onSuccess }) => {
             />
           </div>
 
-          {/* Assign To */}
+          {/* Assign To (Dropdown) */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Assign To (Employee ID)
+              Assign To *
             </label>
-            <input
-              type="number"
+            <select
               value={formData.assigned_to}
               onChange={(e) => handleChange("assigned_to", e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-            />
+              required
+            >
+              <option value="">Select Employee</option>
+              {employees.map((emp) => (
+                <option key={emp.emp_id} value={emp.emp_id}>
+                  {emp.emp_name}
+                </option>
+              ))}
+            </select>
           </div>
 
-          {/* Reviewer */}
+          {/* Reviewer (Dropdown) */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Reviewer (Employee ID)
+              Reviewer *
             </label>
-            <input
-              type="number"
+            <select
               value={formData.reviewer}
               onChange={(e) => handleChange("reviewer", e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-
-          {/* Status */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Task Status *
-            </label>
-            <select
-              value={formData.status}
-              onChange={(e) => handleChange("status", e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              required
             >
-              {Object.values(TASK_STATUSES).map((status) => (
-                <option key={status} value={status}>
-                  {status.replace("_", " ")}
+              <option value="">Select Reviewer</option>
+              {employees.map((emp) => (
+                <option key={emp.emp_id} value={emp.emp_id}>
+                  {emp.emp_name}
                 </option>
               ))}
             </select>
@@ -214,13 +345,73 @@ const TaskModal = ({ task, onClose, onSuccess }) => {
             <input
               type="file"
               multiple
-              onChange={(e) => setFiles(Array.from(e.target.files || []))}
+              onChange={handleFileChange}
               className="w-full text-gray-700"
             />
-            <p className="text-xs text-slate-500 mt-1">
-              You can attach one or more files. Files will be uploaded and
-              linked to the task.
-            </p>
+            {files.length > 0 && (
+              <div className="mt-2">
+                <ul className="list-disc pl-4">
+                  {files.map((file) => (
+                    <li
+                      key={file.name}
+                      className="flex justify-between items-center"
+                    >
+                      <span>{file.name}</span>
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteFile(file.name)}
+                        className="text-red-600 hover:text-red-800"
+                      >
+                        <Trash size={14} />
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            {/* Existing attachments for editing tasks */}
+            {task && existingAttachments && existingAttachments.length > 0 && (
+              <div className="mt-4">
+                <div className="text-sm text-slate-600 mb-2">
+                  Existing Attachments
+                </div>
+                <div className="space-y-2">
+                  {existingAttachments.map((a) => (
+                    <div
+                      key={a.id || a.name}
+                      className="flex items-center justify-between border rounded px-3 py-2"
+                    >
+                      <div className="truncate text-sm text-slate-700 mr-2">
+                        {a.name}
+                      </div>
+                      <div className="flex items-center gap-2">
+                        {a.href ? (
+                          <a
+                            href={a.href}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-blue-600 text-xs font-medium hover:underline"
+                          >
+                            Download
+                          </a>
+                        ) : (
+                          <span className="text-xs text-slate-500">
+                            No link
+                          </span>
+                        )}
+                        <button
+                          type="button"
+                          onClick={() => removeExistingAttachment(a)}
+                          className="text-red-600 hover:text-red-800"
+                        >
+                          <Trash size={14} />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Feedback / Comment */}

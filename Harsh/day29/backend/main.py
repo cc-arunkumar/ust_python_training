@@ -8,6 +8,7 @@ from routers.employees import emp_router
 from routers.task import task_router
 from routers.login import login_router
 from routers.user import router as user_router
+from routers.remarks import router as remarks_router
 
 app = FastAPI(title="Jira Lite")
 
@@ -27,3 +28,4 @@ app.include_router(login_router)
 app.include_router(emp_router)
 app.include_router(task_router)
 app.include_router(user_router)
+app.include_router(remarks_router)

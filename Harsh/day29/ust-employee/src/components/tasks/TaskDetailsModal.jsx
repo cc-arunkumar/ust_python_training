@@ -1,12 +1,53 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { X, AlertCircle, User } from "lucide-react";
 import ApiService from "../../services/api";
+import { API_BASE_URL } from "../../utils/constants";
 
 const TaskDetailsModal = ({ task, onClose, onUpdate, assignedEmployee }) => {
   // TaskDetailsModal is view-only. Edits (status changes, uploads, feedback)
   // should be performed in the edit/create modal (TaskModal).
   // Keep minimal state for error reporting.
   const [error, setError] = useState("");
+  const [attachments, setAttachments] = useState([]);
+  const [remarks, setRemarks] = useState([]);
+
+  useEffect(() => {
+    let mounted = true;
+    const load = async () => {
+      try {
+        const data = await ApiService.getTask(task.task_id);
+        if (!mounted) return;
+        // attachments may be included directly on task; otherwise fall back to attachments endpoint
+        const atts = data.attachments || [];
+        if (atts && atts.length > 0) {
+          setAttachments(atts);
+          return;
+        }
+
+        // fallback: use attachments listing endpoint and filter client-side
+        try {
+          const fallback = await ApiService.getAttachmentsForTask(task.task_id);
+          if (!mounted) return;
+          setAttachments(fallback || []);
+        } catch (err) {
+          // ignore fallback failure
+        }
+        // try to load remarks from remarks endpoint
+        try {
+          const r = await ApiService.listRemarks(task.task_id);
+          if (!mounted) return;
+          setRemarks(r || []);
+        } catch (err) {
+          // ignore remarks fetch errors
+        }
+      } catch (err) {
+        // show minimal error for visibility
+        if (mounted) setError(err.message || "Failed to load attachments");
+      }
+    };
+    if (task && task.task_id) load();
+    return () => (mounted = false);
+  }, [task]);
 
   // No status/file handlers here — view-only modal.
 
@@ -114,15 +155,82 @@ const TaskDetailsModal = ({ task, onClose, onUpdate, assignedEmployee }) => {
                       {n}
                     </div>
                   ))}
-                {task.remarks &&
-                  task.remarks.map((r, i) => (
-                    <div key={`r-${i}`} className="text-sm text-slate-700">
-                      {r}
-                    </div>
-                  ))}
+                {remarks && remarks.length > 0
+                  ? remarks.map((r) => (
+                      <div
+                        key={`r-${r.id || r._id}`}
+                        className="text-sm text-slate-700"
+                      >
+                        {r.text}
+                      </div>
+                    ))
+                  : task.remarks &&
+                    task.remarks.map((r, i) => (
+                      <div key={`r-${i}`} className="text-sm text-slate-700">
+                        {r}
+                      </div>
+                    ))}
               </div>
             </div>
           )}
+
+          {/* Attachments (if any) */}
+          <div>
+            <div className="text-xs text-slate-500">Attachments</div>
+            <div className="mt-2 space-y-2">
+              {(() => {
+                // merge attachments from primary attachments list and remarks that have file_id
+                const combined = [...(attachments || [])];
+                (remarks || []).forEach((r) => {
+                  if (r.file_id) {
+                    combined.push({
+                      id: r.file_id,
+                      file_name: r.filename || r.fileName || r.filename,
+                    });
+                  }
+                });
+
+                if (combined.length === 0) {
+                  return (
+                    <div className="text-sm text-slate-500">No attachments</div>
+                  );
+                }
+
+                return combined.map((a) => {
+                  const href = a.file_path
+                    ? a.file_path.startsWith("http")
+                      ? a.file_path
+                      : `${API_BASE_URL}${a.file_path}`
+                    : a.id
+                    ? ApiService.getRemarkAttachmentUrl(a.id)
+                    : "#";
+                  const name =
+                    a.file_name || a.fileName || a.filename || "file";
+                  return (
+                    <div
+                      key={a.id || name}
+                      className="flex items-center justify-between border rounded px-3 py-2"
+                    >
+                      <div className="truncate text-sm text-slate-700 mr-2">
+                        {name}
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <a
+                          href={href}
+                          target="_blank"
+                          rel="noreferrer"
+                          download={name}
+                          className="text-blue-600 text-xs font-medium hover:underline"
+                        >
+                          Download
+                        </a>
+                      </div>
+                    </div>
+                  );
+                });
+              })()}
+            </div>
+          </div>
 
           <div className="flex justify-end">
             <button

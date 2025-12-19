@@ -5,6 +5,8 @@ import ApiService from "../../services/api";
 import TaskModal from "./TaskModal";
 import TaskDetailsModal from "./TaskDetailsModal";
 import KanbanColumn from "./KanbanColumn";
+import EmployeeModal from "../employees/EmployeeModal";
+import DashboardCharts from "./DashboardCharts";
 import { TASK_STATUSES } from "../../utils/constants";
 import toast, { Toaster } from "react-hot-toast";
 import { DragDropContext } from "@hello-pangea/dnd";
@@ -13,7 +15,7 @@ import { DragDropContext } from "@hello-pangea/dnd";
 const PRIORITY_ORDER = { high: 3, medium: 2, low: 1 };
 
 const KanbanBoard = ({ initialTasks, initialEmployees, onTasksChanged }) => {
-  const { hasRole } = useAuth();
+  const { hasRole, activeRole } = useAuth();
   const canEdit = hasRole("ADMIN") || hasRole("MANAGER");
 
   const [tasks, setTasks] = useState(initialTasks ?? []);
@@ -31,6 +33,8 @@ const KanbanBoard = ({ initialTasks, initialEmployees, onTasksChanged }) => {
   // priorityFilter now acts as a sorting preference (which priority to surface first)
   const [priorityFilter, setPriorityFilter] = useState("ALL");
   const [showEmployeesModal, setShowEmployeesModal] = useState(false);
+  const [showEmployeeEditor, setShowEmployeeEditor] = useState(false);
+  const [editingEmployee, setEditingEmployee] = useState(null);
   const [selectedEmployeeId, setSelectedEmployeeId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -51,8 +55,21 @@ const KanbanBoard = ({ initialTasks, initialEmployees, onTasksChanged }) => {
     }
 
     fetchTasks();
+    // if parent didn't provide employees, fetch them now
+    if (initialEmployees === undefined) fetchEmployees();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialTasks, initialEmployees]);
+
+  const fetchEmployees = async () => {
+    try {
+      const data = await ApiService.getEmployees();
+      setEmployees(data);
+    } catch (err) {
+      // don't break the board if employees fail to load
+      console.error("Failed to load employees", err);
+      toast.error(err.message || "Failed to load employees");
+    }
+  };
 
   const fetchTasks = async (force = false) => {
     try {
@@ -100,6 +117,12 @@ const KanbanBoard = ({ initialTasks, initialEmployees, onTasksChanged }) => {
   };
 
   const onDragEnd = async (result) => {
+    // Check if the user is an admin
+    if (activeRole === "ADMIN") {
+      toast.error("Admins cannot move tasks");
+      return; // Prevent task movement
+    }
+
     const { source, destination, draggableId } = result;
 
     if (!destination) return;
@@ -108,15 +131,40 @@ const KanbanBoard = ({ initialTasks, initialEmployees, onTasksChanged }) => {
     const fromStatus = source.droppableId;
     const toStatus = destination.droppableId;
 
+    if (activeRole === "MANAGER") {
+      // Managers can only move tasks from REVIEW to DONE or from REVIEW to ON_PROCESS
+      if (
+        fromStatus === "REVIEW" &&
+        !["DONE", "ON_PROCESS"].includes(toStatus)
+      ) {
+        toast.error(
+          "Managers can only move tasks from REVIEW to DONE or ON_PROCESS"
+        );
+        return;
+      }
+    }
+
     if (!canMove(fromStatus, toStatus)) {
       toast.error(`Cannot move task from ${fromStatus} to ${toStatus}`);
+      return;
+    }
+
+    // Permission guard: developers are not allowed to move tasks from REVIEW -> DONE
+    if (
+      fromStatus === "REVIEW" &&
+      toStatus === "DONE" &&
+      activeRole === "DEVELOPER"
+    ) {
+      toast.error(
+        "You don't have permission to move a task from Review to Done"
+      );
       return;
     }
 
     try {
       await ApiService.updateTaskStatus(draggableId, toStatus);
       toast.success(`Task moved to ${toStatus.replace("_", " ")}`);
-      // update local task status to keep filtered view
+      // Update local task status to keep filtered view
       setTasks((prev) =>
         prev.map((t) =>
           t.task_id.toString() === draggableId.toString()
@@ -191,6 +239,21 @@ const KanbanBoard = ({ initialTasks, initialEmployees, onTasksChanged }) => {
       });
   });
 
+  // Compute priority counts from filteredTasks
+  const priorityCounts = { HIGH: 0, MEDIUM: 0, LOW: 0 };
+  filteredTasks.forEach((t) => {
+    const p = (t.priority || "").toString().toUpperCase();
+    if (p === "HIGH") priorityCounts.HIGH += 1;
+    else if (p === "MEDIUM") priorityCounts.MEDIUM += 1;
+    else priorityCounts.LOW += 1;
+  });
+
+  // Compute status counts using groupedTasks
+  const statusCounts = {};
+  Object.values(TASK_STATUSES).forEach((s) => {
+    statusCounts[s] = groupedTasks[s] ? groupedTasks[s].length : 0;
+  });
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -208,10 +271,7 @@ const KanbanBoard = ({ initialTasks, initialEmployees, onTasksChanged }) => {
         <div className="max-w-7xl mx-auto flex items-center gap-4 flex-wrap">
           <h1 className="text-xl font-semibold flex-shrink-0">Task Board</h1>
 
-          {/* Right-side controls grouped and responsive
-              Order (from left to right when space permits): Employee | New Task | Search | Filter (extreme right)
-              On small screens controls will wrap, Employee button will show icon-only.
-          */}
+          {/* Right-side controls grouped and responsive */}
           <div className="ml-auto flex items-center gap-3 flex-wrap">
             {/* Employee button */}
             <button
@@ -229,13 +289,12 @@ const KanbanBoard = ({ initialTasks, initialEmployees, onTasksChanged }) => {
                 className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm flex items-center gap-2 hover:bg-blue-700 transition-colors"
               >
                 <Plus size={16} />
-                <span className="hidden xs:inline">New Task</span>
+                <span className=" xs:inline">New Task</span>
               </button>
             )}
 
-            {/* Search + Filter grouped so they sit at the extreme right on wide screens */}
+            {/* Search + Filter grouped */}
             <div className="flex items-center gap-3">
-              {/* Search moved to the far right visually (flex keeps group together) */}
               <div className="relative order-2 sm:order-1">
                 <input
                   type="search"
@@ -249,7 +308,7 @@ const KanbanBoard = ({ initialTasks, initialEmployees, onTasksChanged }) => {
                 </div>
               </div>
 
-              {/* Progress display (moved from layout) */}
+              {/* Progress display */}
               <div className="flex items-center gap-2 mr-2">
                 <div className="text-xs text-slate-500">Progress</div>
                 <div className="w-32 bg-slate-100 rounded-full h-2 overflow-hidden">
@@ -261,7 +320,7 @@ const KanbanBoard = ({ initialTasks, initialEmployees, onTasksChanged }) => {
                 <div className="text-xs text-slate-600 ml-2">{progress}%</div>
               </div>
 
-              {/* Priority filter (renamed to 'Filter') */}
+              {/* Priority filter */}
               <select
                 value={priorityFilter}
                 onChange={(e) => setPriorityFilter(e.target.value)}
@@ -285,6 +344,17 @@ const KanbanBoard = ({ initialTasks, initialEmployees, onTasksChanged }) => {
           {error}
         </div>
       )}
+
+      {/* BOARD */}
+      {/* Dashboard charts */}
+      <div className="px-6">
+        <div className="max-w-7xl mx-auto mt-6">
+          <DashboardCharts
+            priorityCounts={priorityCounts}
+            statusCounts={statusCounts}
+          />
+        </div>
+      </div>
 
       {/* BOARD */}
       <DragDropContext onDragEnd={onDragEnd}>
@@ -313,12 +383,25 @@ const KanbanBoard = ({ initialTasks, initialEmployees, onTasksChanged }) => {
           <div className="relative bg-white rounded-lg p-6 shadow-lg w-full max-w-3xl z-10">
             <div className="flex justify-between items-center mb-4">
               <h4 className="text-lg font-semibold">Employees</h4>
-              <button
-                onClick={() => setShowEmployeesModal(false)}
-                className="text-slate-500"
-              >
-                Close
-              </button>
+              <div className="flex items-center gap-3">
+                {hasRole("ADMIN") && (
+                  <button
+                    onClick={() => {
+                      setEditingEmployee(null);
+                      setShowEmployeeEditor(true);
+                    }}
+                    className="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700"
+                  >
+                    Add Employee
+                  </button>
+                )}
+                <button
+                  onClick={() => setShowEmployeesModal(false)}
+                  className="text-slate-500"
+                >
+                  Close
+                </button>
+              </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-72 overflow-auto">
@@ -343,7 +426,7 @@ const KanbanBoard = ({ initialTasks, initialEmployees, onTasksChanged }) => {
                         </div>
                       </div>
                     </div>
-                    <div className="flex-shrink-0">
+                    <div className="flex-shrink-0 flex items-center gap-2">
                       <button
                         onClick={() => {
                           setSelectedEmployeeId(emp.emp_id);
@@ -353,6 +436,37 @@ const KanbanBoard = ({ initialTasks, initialEmployees, onTasksChanged }) => {
                       >
                         Filter
                       </button>
+
+                      {hasRole("ADMIN") && (
+                        <>
+                          <button
+                            onClick={() => {
+                              setEditingEmployee(emp);
+                              setShowEmployeeEditor(true);
+                            }}
+                            className="px-2 py-1 text-sm bg-white border border-slate-200 rounded hover:bg-slate-50"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={async () => {
+                              if (!window.confirm(`Delete ${emp.emp_name}?`))
+                                return;
+                              try {
+                                await ApiService.deleteEmployee(emp.emp_id);
+                                toast.success("Employee deleted");
+                                // refresh list
+                                await fetchEmployees();
+                              } catch (err) {
+                                toast.error(err.message || "Failed to delete");
+                              }
+                            }}
+                            className="px-2 py-1 text-sm bg-white border border-red-200 text-red-600 rounded hover:bg-red-50"
+                          >
+                            Delete
+                          </button>
+                        </>
+                      )}
                     </div>
                   </div>
                 ))
@@ -373,6 +487,22 @@ const KanbanBoard = ({ initialTasks, initialEmployees, onTasksChanged }) => {
             )}
           </div>
         </div>
+      )}
+
+      {/* Employee Add/Edit Modal (reuses EmployeeModal) */}
+      {showEmployeeEditor && (
+        <EmployeeModal
+          employee={editingEmployee}
+          onClose={() => {
+            setEditingEmployee(null);
+            setShowEmployeeEditor(false);
+          }}
+          onSuccess={async () => {
+            setShowEmployeeEditor(false);
+            setEditingEmployee(null);
+            await fetchEmployees();
+          }}
+        />
       )}
 
       {/* MODALS */}

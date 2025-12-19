@@ -1,25 +1,18 @@
 import React, { useState, useEffect } from "react";
-import {
-  LogOut,
-  CheckSquare,
-  User,
-  RefreshCw,
-  LayoutGrid,
-  List,
-  Menu,
-} from "lucide-react";
+import { LogOut, CheckSquare, User, RefreshCw, Menu } from "lucide-react";
 
 import { useAuth } from "../../context/AuthContext";
 import EmployeesPage from "../employees/EmployeesPage";
-import TasksPage from "../tasks/TasksPage";
+import UsersPage from "../users/UsersPage";
 import KanbanBoard from "../tasks/KanbanBoard";
+// Note: TasksPage removed; KanbanBoard used as the default task view
 import ApiService from "../../services/api";
 
 const Layout = () => {
-  const { user, activeRole, logout, changeRole, hasMultipleRoles } = useAuth();
+  const { user, activeRole, logout, changeRole, hasMultipleRoles, hasRole } =
+    useAuth();
 
   const [currentPage, setCurrentPage] = useState("tasks");
-  const [taskView, setTaskView] = useState("list");
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
@@ -147,14 +140,9 @@ const Layout = () => {
   const renderPage = () => {
     if (currentPage === "employees")
       return <EmployeesPage initialEmployees={employees} />;
-    return taskView === "board" ? (
+    if (currentPage === "users") return <UsersPage />;
+    return (
       <KanbanBoard
-        initialTasks={tasks}
-        initialEmployees={employees}
-        onTasksChanged={loadDashboardData}
-      />
-    ) : (
-      <TasksPage
         initialTasks={tasks}
         initialEmployees={employees}
         onTasksChanged={loadDashboardData}
@@ -196,6 +184,16 @@ const Layout = () => {
             open={sidebarOpen}
             onClick={() => setCurrentPage("tasks")}
           />
+          {/* Users button (admin only) */}
+          {hasRole && hasRole("ADMIN") && (
+            <SidebarButton
+              icon={<User size={18} />}
+              label="Users"
+              active={currentPage === "users"}
+              open={sidebarOpen}
+              onClick={() => setCurrentPage("users")}
+            />
+          )}
           {/* Employees button moved into KanbanBoard header per UX change */}
         </nav>
       </aside>
@@ -205,23 +203,7 @@ const Layout = () => {
         {/* NAVBAR */}
         <header className="bg-white/80 backdrop-blur border-b border-slate-200 px-6 py-4 flex justify-between animate-slide-down">
           <div className="flex items-center gap-4">
-            {/* View buttons on extreme left */}
-            {currentPage === "tasks" && (
-              <div className="flex bg-slate-100 rounded-lg p-1 border border-slate-200">
-                <ViewButton
-                  active={taskView === "list"}
-                  icon={<List size={14} />}
-                  label="List"
-                  onClick={() => setTaskView("list")}
-                />
-                <ViewButton
-                  active={taskView === "board"}
-                  icon={<LayoutGrid size={14} />}
-                  label="Board"
-                  onClick={() => setTaskView("board")}
-                />
-              </div>
-            )}
+            {/* left header area (view toggles removed) */}
           </div>
 
           <div className="flex items-center gap-3">
@@ -321,18 +303,7 @@ const SidebarButton = ({ icon, label, active, open, onClick }) => (
   </button>
 );
 
-const ViewButton = ({ icon, label, active, onClick }) => (
-  <button
-    onClick={onClick}
-    className={`px-4 py-1.5 rounded-lg text-sm flex items-center gap-1 transition-all ${
-      active
-        ? "bg-white border border-slate-200 shadow"
-        : "text-slate-500 hover:text-slate-700"
-    }`}
-  >
-    {icon} {label}
-  </button>
-);
+// ViewButton removed — view toggles handled by KanbanBoard only now
 
 const ActionButton = ({ icon, label, onClick, danger }) => (
   <button
