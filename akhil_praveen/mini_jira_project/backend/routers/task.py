@@ -503,13 +503,14 @@ async def get_task_reviews(task_id: int,
     except Exception as e:
         raise HTTPException(500, f"Internal server error: {str(e)}")
 
+# Replace your existing download_attachment function with this:
 
 @task_router.get("/{task_id}/attachments/{file_id}")
 async def download_attachment(task_id: int, file_id: str,
                               db: Session = Depends(get_db),
                               user=Depends(get_current_user)):
     try:
-        # Basic authorization: reuse same checks as get_task and get_task_reviews
+        # Basic authorization
         task = db.query(Task).filter(Task.task_id == task_id).first()
         if not task:
             raise HTTPException(404, "Task not found")
@@ -531,41 +532,101 @@ async def download_attachment(task_id: int, file_id: str,
         else:
             raise HTTPException(403, "Insufficient permissions")
 
-        # attempt to load file from GridFS
+        # Convert file_id to ObjectId
         try:
             oid = ObjectId(file_id)
-        except Exception:
-            raise HTTPException(400, "Invalid file id")
-
-        try:
-            grid_out = await fs.open_download_stream(oid)
-            data = await grid_out.read()
-            content_type = None
-            try:
-                content_type = grid_out.metadata.get("content_type") if grid_out.metadata else None
-            except Exception:
-                content_type = None
-            # derive filename for Content-Disposition
-            filename = None
-            try:
-                filename = getattr(grid_out, "filename", None)
-            except Exception:
-                filename = None
-            if not filename:
-                try:
-                    filename = grid_out.metadata.get("filename") if grid_out.metadata else None
-                except Exception:
-                    filename = None
-            if not filename:
-                filename = f"attachment_{file_id}"
-
-            headers = {"Content-Disposition": f'attachment; filename="{filename}"'}
-            return StreamingResponse(io.BytesIO(data), media_type=content_type or "application/octet-stream", headers=headers)
+            print(f"Attempting to download file with ObjectId: {oid}")
         except Exception as e:
-            raise HTTPException(404, f"Attachment not found: {str(e)}")
+            print(f"Invalid ObjectId format: {file_id}, error: {e}")
+            raise HTTPException(400, f"Invalid file id format: {str(e)}")
+
+        # Fetch file from GridFS
+        try:
+            # Open the download stream
+            grid_out = await fs.open_download_stream(oid)
+            
+            # Read the file data
+            data = await grid_out.read()
+            
+            if not data:
+                raise HTTPException(404, "File is empty")
+            
+            # Get metadata
+            content_type = "application/octet-stream"
+            filename = f"attachment_{file_id}"
+            
+            # Try to get content_type from metadata
+            try:
+                if hasattr(grid_out, 'metadata') and grid_out.metadata:
+                    content_type = grid_out.metadata.get("content_type", content_type)
+            except Exception as e:
+                print(f"Could not get content_type from metadata: {e}")
+            
+            # Try to get filename
+            try:
+                if hasattr(grid_out, 'filename') and grid_out.filename:
+                    filename = grid_out.filename
+            except Exception as e:
+                print(f"Could not get filename: {e}")
+            
+            print(f"Successfully serving file: {filename}, size: {len(data)} bytes, type: {content_type}")
+            
+            # Return file as streaming response with proper headers
+            headers = {
+                "Content-Disposition": f'attachment; filename="{filename}"',
+            }
+            
+            return StreamingResponse(
+                io.BytesIO(data),
+                media_type=content_type,
+                headers=headers
+            )
+            
+        except Exception as e:
+            error_msg = str(e)
+            print(f"GridFS error for file_id {file_id}: {error_msg}")
+            
+            # Check if it's a "file not found" error
+            if "FileNotFound" in error_msg or "not found" in error_msg.lower() or "NoFile" in error_msg:
+                raise HTTPException(404, f"Attachment not found in storage. File ID: {file_id}")
+            else:
+                import traceback
+                traceback.print_exc()
+                raise HTTPException(500, f"Failed to retrieve attachment: {error_msg}")
 
     except HTTPException:
         raise
     except Exception as e:
+        print(f"Unexpected error in download_attachment: {str(e)}")
+        import traceback
+        traceback.print_exc()
         raise HTTPException(500, f"Internal server error: {str(e)}")
-    
+
+
+# OPTIONAL: Add this debug endpoint temporarily (add it right after the download_attachment function)
+@task_router.get("/{task_id}/attachments/{file_id}/debug")
+async def debug_attachment(task_id: int, file_id: str,
+                           db: Session = Depends(get_db),
+                           user=Depends(get_current_user)):
+    """Debug endpoint to check attachment metadata"""
+    try:
+        oid = ObjectId(file_id)
+        
+        # Check if file exists in GridFS
+        try:
+            grid_out = await fs.open_download_stream(oid)
+            data = await grid_out.read()
+            metadata = {
+                "exists": True,
+                "file_id": file_id,
+                "filename": getattr(grid_out, "filename", None),
+                "length": len(data),
+                "upload_date": str(getattr(grid_out, "upload_date", None)),
+                "content_type": grid_out.metadata.get("content_type") if hasattr(grid_out, "metadata") and grid_out.metadata else None,
+                "full_metadata": grid_out.metadata if hasattr(grid_out, "metadata") else None,
+            }
+            return metadata
+        except Exception as e:
+            return {"exists": False, "error": str(e), "file_id": file_id}
+    except Exception as e:
+        return {"error": f"Invalid ObjectId: {str(e)}", "file_id": file_id}

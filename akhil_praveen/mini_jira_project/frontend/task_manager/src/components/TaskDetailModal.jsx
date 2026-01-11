@@ -414,15 +414,72 @@ export default function TaskDetailModal({
   };
 
   const getAttachmentUrl = (attachment) => {
-    if (!attachment) return null;
+    if (!attachment) {
+      console.log("No attachment provided");
+      return null;
+    }
+    
+    console.log("Processing attachment:", attachment);
+    
     const fileId =
       attachment.file_id ||
       attachment.fileId ||
       (attachment._id && String(attachment._id)) ||
       attachment.id ||
       null;
-    if (!fileId) return null;
-    return `${API_BASE}/tasks/${task.task_id}/attachments/${fileId}`;
+    
+    if (!fileId) {
+      console.error("Could not extract file_id from attachment:", attachment);
+      return null;
+    }
+    
+    const url = `${API_BASE}/tasks/${task.task_id}/attachments/${fileId}`;
+    console.log("Generated attachment URL:", url);
+    
+    return url;
+  };
+
+  const handleDownloadAttachment = async (attachment) => {
+    const url = getAttachmentUrl(attachment);
+    if (!url) {
+      alert("Could not generate download URL");
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          ...(token && { Authorization: `Bearer ${token}` }),
+        },
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("Download failed:", response.status, errorText);
+        alert(`Download failed: ${response.status} - ${errorText}`);
+        return;
+      }
+
+      // Get the blob from response
+      const blob = await response.blob();
+      
+      // Create a download link and trigger it
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      link.download = attachment.filename || "attachment";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(downloadUrl);
+      
+      console.log("Download successful:", attachment.filename);
+    } catch (error) {
+      console.error("Download error:", error);
+      alert(`Download failed: ${error.message}`);
+    }
   };
 
   const RemarksSection = ({ title, remarks, type }) => (
@@ -474,19 +531,18 @@ export default function TaskDetailModal({
                     )}
 
                     {attachmentUrl && (
-                      <a
-                        href={attachmentUrl}
-                        target="_blank"
-                        rel="noreferrer noopener"
-                        download={r.attachment?.filename || undefined}
-                        className="inline-flex items-center gap-1 text-xs text-indigo-600 hover:text-indigo-800 font-medium underline"
-                        onClick={(e) => e.stopPropagation()}
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDownloadAttachment(r.attachment);
+                        }}
+                        className="inline-flex items-center gap-1 text-xs text-indigo-600 hover:text-indigo-800 font-medium underline cursor-pointer"
                       >
                         <Paperclip size={12} />
                         {r.attachment?.filename || "attachment"}
                         {r.attachment?.size &&
                           ` (${Math.round(r.attachment.size / 1024)} KB)`}
-                      </a>
+                      </button>
                     )}
                   </div>
                 </div>
@@ -528,6 +584,7 @@ export default function TaskDetailModal({
           </div>
 
           <div className="flex items-center gap-2">
+         
             <button
               onClick={() => onEdit()}
               className="px-4 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 transition flex items-center gap-2"
@@ -680,23 +737,22 @@ export default function TaskDetailModal({
                         )}
 
                         {attachmentUrl && (
-                          <a
-                            href={attachmentUrl}
-                            target="_blank"
-                            rel="noreferrer noopener"
-                            download={r.attachment?.filename || undefined}
-                            className={`inline-flex items-center gap-1 text-xs font-semibold underline ${
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDownloadAttachment(r.attachment);
+                            }}
+                            className={`inline-flex items-center gap-1 text-xs font-semibold underline cursor-pointer ${
                               isLeft
                                 ? "text-indigo-600 hover:text-indigo-800"
                                 : "text-white hover:text-white/80"
                             }`}
-                            onClick={(e) => e.stopPropagation()}
                           >
                             <Paperclip size={12} />
                             {r.attachment?.filename || "attachment"}
                             {r.attachment?.size &&
                               ` (${Math.round(r.attachment.size / 1024)} KB)`}
-                          </a>
+                          </button>
                         )}
                       </div>
                     </div>
