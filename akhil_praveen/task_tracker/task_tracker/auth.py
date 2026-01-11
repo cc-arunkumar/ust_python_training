@@ -1,3 +1,4 @@
+# auth.py
 from jose import jwt, JWTError
 from fastapi import HTTPException, status, Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
@@ -8,7 +9,7 @@ from models import UserDB, User
 
 SECRET_KEY = "UST-TaskTracker-Secret"
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 60
+ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 security = HTTPBearer()
 
