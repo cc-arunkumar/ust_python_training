@@ -9,9 +9,15 @@ import {
   ChevronDown,
   AlertCircle,
   GripVertical,
+  Bell,
   Calendar,
   Tag,
 } from "lucide-react";
+import api from "../api/api";
+import { useEffect } from "react";
+import computeRemarkId from "../utils/remarkId";
+import { subscribe } from "../utils/events";
+import { publish } from "../utils/events";
 import { STATUS_CONFIG, PRIORITY_COLORS } from "../utils/constants";
 
 function TaskCard({
@@ -27,7 +33,9 @@ function TaskCard({
   const [showReviewInput, setShowReviewInput] = useState(false);
   const [pendingStatus, setPendingStatus] = useState(null);
   const [reviewText, setReviewText] = useState("");
+  const [reviewFile, setReviewFile] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
 
   const statusIcons = {
     TO_DO: Clock,
@@ -179,11 +187,16 @@ function TaskCard({
     }
 
     onUpdateStatus &&
-      onUpdateStatus(task.task_id, pendingStatus, reviewText.trim() || null);
-
+      onUpdateStatus(
+        task.task_id,
+        pendingStatus,
+        reviewText.trim() || null,
+        reviewFile
+      );
     setShowReviewInput(false);
     setPendingStatus(null);
     setReviewText("");
+    setReviewFile(null);
   };
 
   const cancelReview = () => {
@@ -210,6 +223,186 @@ function TaskCard({
 
   const StatusIcon = statusIcons[task.status] || Clock;
 
+  // compute unread remarks count for this task (unread for current user)
+  useEffect(() => {
+    let mounted = true;
+    const key = `task_${task.task_id}_read_remarks`;
+    const stored = localStorage.getItem(key);
+    const readSet = new Set();
+    if (stored) {
+      try {
+        JSON.parse(stored).forEach((id) => readSet.add(id));
+      } catch (e) {}
+    }
+
+    // use shared computeRemarkId for deterministic ids
+
+    const evaluate = async () => {
+      try {
+        const server = await api.getTaskReviews(task.task_id);
+        if (!mounted) return;
+        const serverMapped = (server || []).map((s) => ({
+          from: (() => {
+            const roleRaw = (s.role || "").toString().toLowerCase();
+            if (roleRaw.includes("dev") || roleRaw.includes("developer"))
+              return "developer";
+            return "reviewer";
+          })(),
+          text: s.review || s.message || s.comment,
+          by: s.reviewed_by_name || null,
+          byEmpId: s.reviewed_by_emp_id || s.reviewed_by_user_id || null,
+          ts: s.created_at || null,
+        }));
+
+        // include client optimistic remarks
+        const client = Array.isArray(task._clientRemarks)
+          ? task._clientRemarks.map((r) => ({
+              from: r.from || "client",
+              text: r.text,
+              by: r.by || null,
+              byEmpId: r.byEmpId || null,
+              ts: r.ts || null,
+            }))
+          : [];
+
+        // include single fields
+        const fields = [];
+        if (task.reviewer_review)
+          fields.push({
+            from: "reviewer",
+            text: task.reviewer_review,
+            by: task.reviewer_by || null,
+            byEmpId: task.reviewer,
+            ts: task.reviewer_ts || null,
+          });
+        if (task.developer_review)
+          fields.push({
+            from: "developer",
+            text: task.developer_review,
+            by: task.developer_by || null,
+            byEmpId: task.assigned_to || null,
+            ts: task.developer_ts || null,
+          });
+
+        const all = [...serverMapped, ...client, ...fields];
+
+        // apply role-aware new logic: reviewer remarks are new for assignee; developer remarks new for reviewer
+        const count = all.reduce((acc, r) => {
+          if (!r || !r.ts) return acc;
+          const id = computeRemarkId(r);
+          if (readSet.has(id)) return acc;
+          // exclude self-authored
+          if (
+            r.byEmpId &&
+            currentEmpId &&
+            Number(r.byEmpId) === Number(currentEmpId)
+          )
+            return acc;
+          const from = String(r.from || "").toLowerCase();
+          if (from.includes("dev") || from.includes("developer")) {
+            // only reviewer should see developer remarks as new
+            if (currentEmpId && Number(currentEmpId) === Number(task.reviewer))
+              return acc + 1;
+            return acc;
+          } else {
+            // reviewer/manager remarks: only assignee
+            if (
+              currentEmpId &&
+              Number(currentEmpId) === Number(task.assigned_to)
+            )
+              return acc + 1;
+            return acc;
+          }
+        }, 0);
+
+        setUnreadCount(count);
+        try {
+          // find first unread remark to use as a short note
+          let firstUnread = null;
+          for (const r of all) {
+            if (!r || !r.ts) continue;
+            const id = computeRemarkId(r);
+            if (readSet.has(id)) continue;
+            if (
+              r.byEmpId &&
+              currentEmpId &&
+              Number(r.byEmpId) === Number(currentEmpId)
+            )
+              continue;
+
+            const from = String(r.from || "").toLowerCase();
+            if (from.includes("dev") || from.includes("developer")) {
+              if (
+                currentEmpId &&
+                Number(currentEmpId) === Number(task.reviewer)
+              ) {
+                firstUnread = r;
+                break;
+              }
+            } else {
+              if (
+                currentEmpId &&
+                Number(currentEmpId) === Number(task.assigned_to)
+              ) {
+                firstUnread = r;
+                break;
+              }
+            }
+          }
+
+          const note = firstUnread
+            ? `${(task.title || "").slice(0, 60)} — ${String(
+                firstUnread.text || ""
+              ).slice(0, 80)}`
+            : `${(task.title || "").slice(0, 80)}`;
+
+          publish("task:unread", {
+            taskId: task.task_id,
+            unreadCount: count,
+            note,
+          });
+        } catch (e) {
+          // ignore
+        }
+      } catch (e) {
+        // ignore errors; keep unread 0
+      }
+    };
+
+    evaluate();
+    // refresh unread count when storage changes (other components mark remarks read)
+    const unsubStorage = (() => {
+      try {
+        window.addEventListener("storage", evaluate);
+        return () => window.removeEventListener("storage", evaluate);
+      } catch (e) {
+        return () => {};
+      }
+    })();
+
+    // subscribe to in-app events (reliable same-window)
+    const unsubPub = subscribe("remarks:updated", evaluate);
+    return () => {
+      mounted = false;
+      try {
+        unsubStorage();
+      } catch (e) {}
+      try {
+        unsubPub();
+      } catch (e) {}
+    };
+  }, [
+    task.task_id,
+    task._clientRemarks,
+    task.reviewer_review,
+    task.developer_review,
+    task.reviewer_ts,
+    task.developer_ts,
+    currentEmpId,
+    task.reviewer,
+    task.assigned_to,
+  ]);
+
   return (
     <div
       draggable={task.status !== "DONE"}
@@ -227,8 +420,19 @@ function TaskCard({
         <GripVertical size={14} />
       </div>
 
+      {/* Notification badge (unread-only) */}
+      {unreadCount > 0 && (
+        // move notification slightly left and above to avoid overlap with status / priority
+        <div className="absolute top-2 right-2 z-40 flex items-center gap-1">
+          <Bell size={20} className="text-gray-500" />
+          <span className="text-[8px] font-bold bg-red-500 text-white rounded-full w-4 h-4 flex items-center justify-center">
+            {unreadCount > 99 ? "99+" : unreadCount}
+          </span>
+        </div>
+      )}
+
       {/* Priority Badge */}
-      <div className="absolute top-2 right-2">
+      <div className="absolute top-12 right-3 ">
         <span
           className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${priorityClasses} shadow-sm`}
         >
@@ -418,6 +622,28 @@ function TaskCard({
             rows="2"
             autoFocus
           />
+          <div className="flex items-center gap-2 mb-2">
+            <label className="text-xs text-gray-600 flex items-center gap-2">
+              <input
+                type="file"
+                onChange={(e) => {
+                  const f = e.target.files && e.target.files[0];
+                  if (f) setReviewFile(f);
+                }}
+              />
+            </label>
+            {reviewFile && (
+              <div className="text-xs text-gray-700 flex items-center gap-2">
+                <span>{reviewFile.name}</span>
+                <button
+                  className="text-red-500 text-[10px]"
+                  onClick={() => setReviewFile(null)}
+                >
+                  Remove
+                </button>
+              </div>
+            )}
+          </div>
           <div className="flex gap-2">
             <button
               onClick={submitReview}

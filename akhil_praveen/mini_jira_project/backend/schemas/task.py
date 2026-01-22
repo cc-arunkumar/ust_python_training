@@ -34,6 +34,11 @@ class TaskStatusPatch(BaseModel):
     reviewer_review: Optional[str] = None
     reviewer_by: Optional[str] = None
     reviewer_ts: Optional[str] = None
+    # optional role string sent by frontend to indicate active role (e.g. "MANAGER", "DEVELOPER")
+    role: Optional[str] = None
+    # Optional attachment metadata (returned from upload endpoint)
+    reviewer_attachment: Optional[dict] = None
+    developer_attachment: Optional[dict] = None
 
 
 class TaskResponse(TaskCreate):

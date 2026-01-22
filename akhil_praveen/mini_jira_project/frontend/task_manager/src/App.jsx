@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Login from "./components/Login";
 import Header from "./components/Header";
+import UsersManagement from "./components/UsersManagement";
 import TaskBoard from "./components/TaskBoard";
 import EmployeeManagement from "./components/EmployeeManagement";
 import api from "./api/api";
@@ -11,8 +12,11 @@ function App() {
   const [currentEmpId, setCurrentEmpId] = useState(null);
   const [tasks, setTasks] = useState([]);
   const [employees, setEmployees] = useState([]);
+  const [users, setUsers] = useState([]);
   const [activeTab, setActiveTab] = useState("tasks");
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [openTaskId, setOpenTaskId] = useState(null);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -87,6 +91,7 @@ function App() {
   const loadData = async () => {
     setLoading(true);
     try {
+      // Load tasks and employees first. Users endpoint may not exist on some backends.
       const [tasksData, employeesData] = await Promise.all([
         api.getTasks(),
         api.getEmployees(),
@@ -100,10 +105,57 @@ function App() {
       }));
       setTasks(normalized);
       setEmployees(employeesData);
+
+      // Try loading users but treat 404 (Not Found) as non-fatal (some backends don't expose /users)
+      try {
+        const usersData = await api.getUsers();
+        const normalizedUsers = Array.isArray(usersData)
+          ? usersData
+          : usersData && usersData.users
+          ? usersData.users
+          : [];
+        setUsers(normalizedUsers);
+      } catch (uErr) {
+        // if users endpoint missing, log and continue without surfacing a global error
+        const msg = (uErr && uErr.message) || String(uErr);
+        if (msg.toLowerCase().includes("not found")) {
+          console.info("Users endpoint not found, continuing without users");
+          setUsers([]);
+        } else if (
+          msg.toLowerCase().includes("not authenticated") ||
+          msg.toLowerCase().includes("unauthorized") ||
+          msg.toLowerCase().includes("invalid or expired token")
+        ) {
+          // auth issue affects all endpoints — rethrow to be handled by outer catch
+          throw uErr;
+        } else {
+          console.warn("Failed to load users, continuing:", uErr);
+          setUsers([]);
+        }
+      }
     } catch (err) {
       console.error("Failed to load data:", err);
       const errorMessage = err.message || "Unknown error occurred";
-      alert("Failed to load data: " + errorMessage);
+      setError(errorMessage);
+      // if backend indicates authentication issue, force logout so user can re-login
+      const lower = (errorMessage || "").toLowerCase();
+      if (
+        lower.includes("unauthorized") ||
+        lower.includes("not authenticated") ||
+        lower.includes("invalid or expired token")
+      ) {
+        try {
+          localStorage.removeItem("token");
+          localStorage.removeItem("role");
+          localStorage.removeItem("roles");
+          localStorage.removeItem("emp_id");
+        } catch (e) {}
+        setIsAuthenticated(false);
+      }
+      // also alert for visibility
+      try {
+        alert("Failed to load data: " + errorMessage);
+      } catch (e) {}
     } finally {
       setLoading(false);
     }
@@ -136,7 +188,12 @@ function App() {
     }
   };
 
-  const handleUpdateStatus = async (taskId, status, review) => {
+  const handleUpdateStatus = async (
+    taskId,
+    status,
+    review,
+    attachmentFile = null
+  ) => {
     try {
       console.log("App.handleUpdateStatus:", {
         taskId,
@@ -148,23 +205,30 @@ function App() {
 
       // Find the task to check if current user is the reviewer
       const task = tasks.find((t) => t.task_id === taskId);
-      const isReviewer = task && currentEmpId != null && Number(currentEmpId) === Number(task.reviewer);
-      
+      const isReviewer =
+        task &&
+        currentEmpId != null &&
+        Number(currentEmpId) === Number(task.reviewer);
+
       const username = localStorage.getItem("username") || null;
       const nowTs = new Date().toISOString();
       const roleUpper = (role || "").toUpperCase();
-      const isManagerRole = roleUpper.includes("MANAGER") || roleUpper.includes("ADMIN");
+      const isManagerRole =
+        roleUpper.includes("MANAGER") || roleUpper.includes("ADMIN");
+
+      // Determine if this will be reviewer or developer remark (used for attachments too)
+      const isReviewerRemark =
+        roleUpper.includes("MANAGER") ||
+        roleUpper.includes("ADMIN") ||
+        (task &&
+          currentEmpId != null &&
+          Number(currentEmpId) === Number(task.reviewer));
 
       // Prepare extra fields for role-specific remarks
       const extra = {};
       const clientRemarksToInject = [];
 
       if (review && review.trim()) {
-        // Determine if this is a reviewer remark or developer remark
-        // Manager/Admin OR designated reviewer = reviewer remarks
-        // Otherwise = developer remarks
-        const isReviewerRemark = isManagerRole || isReviewer;
-
         if (isReviewerRemark) {
           // Store as reviewer remarks
           extra.reviewer_review = review.trim();
@@ -176,6 +240,7 @@ function App() {
             from: "reviewer",
             text: review.trim(),
             by: username,
+            byEmpId: currentEmpId,
             ts: nowTs,
           });
 
@@ -191,10 +256,45 @@ function App() {
             from: "developer",
             text: review.trim(),
             by: username,
+            byEmpId: currentEmpId,
             ts: nowTs,
           });
 
           console.log("Storing as DEVELOPER remarks:", extra);
+        }
+      }
+
+      // If an attachment file was provided, upload it first and include returned metadata
+      let uploadedAttachment = null;
+      if (attachmentFile) {
+        try {
+          const res = await api.uploadTaskFile(taskId, attachmentFile);
+          uploadedAttachment = res;
+          if (isReviewerRemark) {
+            extra.reviewer_attachment = res;
+            clientRemarksToInject.push({
+              from: "reviewer",
+              text: review && review.trim() ? review.trim() : "",
+              by: username,
+              byEmpId: currentEmpId,
+              ts: nowTs,
+              attachment: res,
+            });
+          } else {
+            extra.developer_attachment = res;
+            clientRemarksToInject.push({
+              from: "developer",
+              text: review && review.trim() ? review.trim() : "",
+              by: username,
+              byEmpId: currentEmpId,
+              ts: nowTs,
+              attachment: res,
+            });
+          }
+        } catch (e) {
+          console.error("Failed to upload attachment:", e);
+          alert("Failed to upload attachment: " + (e.message || e));
+          return;
         }
       }
 
@@ -217,10 +317,32 @@ function App() {
 
       // Call API with the review field (for backend to store in reviews collection)
       // AND the extra fields (for role-specific storage)
+      // include current active role so backend can store it with the review
+      if (role) extra.role = role;
+      // Avoid sending the top-level `review` when we already set role-specific fields
+      // so the backend does not mistake a developer remark for a reviewer remark.
+      const topLevelReview =
+        Object.keys(extra).length &&
+        (extra.reviewer_review || extra.developer_review)
+          ? null
+          : review && review.trim()
+          ? review.trim()
+          : null;
+
+      // Debug: log payload about to be sent to PATCH /tasks/{id}/status
+      try {
+        console.debug("PATCH payload:", {
+          taskId,
+          status,
+          review: topLevelReview,
+          extra: Object.keys(extra).length ? extra : undefined,
+        });
+      } catch (e) {}
+
       await api.updateTaskStatus(
         taskId,
         status,
-        review && review.trim() ? review.trim() : null,
+        topLevelReview,
         Object.keys(extra).length ? extra : undefined
       );
 
@@ -228,7 +350,6 @@ function App() {
 
       // Reload data from server
       await loadData();
-
     } catch (err) {
       console.error("Failed to update status:", err);
       const errorMessage = err.message || "Unknown error occurred";
@@ -265,19 +386,43 @@ function App() {
     );
   }
 
-  const canManageEmployees = role.includes("ADMIN");
+  // If there was an error loading data, show a banner but still render the app so user can login/inspect
+  const errorBanner =
+    error && error.length ? (
+      <div className="bg-red-50 border-l-4 border-red-400 p-4 m-4 rounded">
+        <div className="text-red-800 font-semibold">Data load error</div>
+        <div className="text-sm text-red-700">{error}</div>
+      </div>
+    ) : null;
+
+  const canManageEmployees = role.includes("ADMIN") || role.includes("MANAGER");
+  const canManageUsers = role.includes("ADMIN");
   const canCreateTasks = role.includes("ADMIN") || role.includes("MANAGER");
+  const openTaskDetail = (taskId) => {
+    setActiveTab("tasks");
+    // ensure tasks view is visible, then instruct TaskBoard to open the detail
+    setOpenTaskId(taskId);
+    // clear after a short delay so subsequent opens work
+    setTimeout(() => setOpenTaskId(null), 5000);
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
       <Header
         role={role}
+        tasks={tasks}
+        currentEmpId={currentEmpId}
+        onOpenTask={openTaskDetail}
         activeTab={activeTab}
         onTabChange={setActiveTab}
         onLogout={handleLogout}
         canManageEmployees={canManageEmployees}
+        canManageUsers={canManageUsers}
         onRoleChange={handleRoleChange}
+        onRefresh={loadData}
       />
+
+      {errorBanner}
 
       <main className="container mx-auto bg-gray-200">
         {activeTab === "tasks" ? (
@@ -290,14 +435,18 @@ function App() {
             currentEmpId={currentEmpId}
             onUpdateStatus={handleUpdateStatus}
             onSaveTask={handleSaveTask}
+            openTaskId={openTaskId}
           />
-        ) : (
+        ) : activeTab === "employees" ? (
           <EmployeeManagement
             employees={employees}
             onRefresh={loadData}
             role={role}
+            currentEmpId={currentEmpId}
           />
-        )}
+        ) : activeTab === "users" ? (
+          <UsersManagement users={users} onRefresh={loadData} role={role} />
+        ) : null}
       </main>
     </div>
   );

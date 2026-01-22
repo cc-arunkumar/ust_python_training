@@ -1,9 +1,11 @@
 import React, { useState, useMemo, useEffect } from "react";
-import { Plus, Search, RefreshCw, Filter } from "lucide-react";
+import { Plus, Search, Filter } from "lucide-react";
 import TaskCard from "./TaskCard";
 import TaskFormModal from "./TaskFormModel";
 import TaskDetailModal from "./TaskDetailModal";
 import { STATUS_CONFIG, STATUSES, PRIORITIES } from "../utils/constants";
+import { subscribe } from "../utils/events";
+import { publish } from "../utils/events";
 
 function TaskBoard({
   tasks = [],
@@ -14,6 +16,7 @@ function TaskBoard({
   onSaveTask,
   userRole = "",
   currentEmpId = null,
+  openTaskId = null,
 }) {
   const ALLOWED_TRANSITIONS = {
     TO_DO: ["IN_PROGRESS"],
@@ -26,8 +29,14 @@ function TaskBoard({
   const [searchQuery, setSearchQuery] = useState("");
   const [priorityFilter, setPriorityFilter] = useState("ALL");
   const [detailTask, setDetailTask] = useState(null);
+  const [promptOpen, setPromptOpen] = useState(false);
+  const [promptTask, setPromptTask] = useState(null);
+  const [promptStatus, setPromptStatus] = useState(null);
+  const [promptText, setPromptText] = useState("");
+  const [promptFile, setPromptFile] = useState(null);
   const [dragOverStatus, setDragOverStatus] = useState(null);
-  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
+  // removed manual refresh button; auto-refresh handled via in-app events
 
   const canMarkDone =
     (userRole || "").toUpperCase().includes("ADMIN") ||
@@ -92,11 +101,7 @@ function TaskBoard({
     handleCloseForm();
   };
 
-  const handleRefresh = async () => {
-    setIsRefreshing(true);
-    await onRefresh();
-    setTimeout(() => setIsRefreshing(false), 500);
-  };
+  // manual refresh removed
 
   const handleDragOver = (e, status) => {
     e.preventDefault();
@@ -146,7 +151,8 @@ function TaskBoard({
 
     // Determine if current user is a manager/reviewer role
     const roleUpper = (userRole || "").toUpperCase();
-    const isManagerRole = roleUpper.includes("MANAGER") || roleUpper.includes("ADMIN");
+    const isManagerRole =
+      roleUpper.includes("MANAGER") || roleUpper.includes("ADMIN");
 
     if (newStatus === "REVIEW") {
       console.debug("TaskBoard.handleDrop -> REVIEW requested", {
@@ -160,25 +166,30 @@ function TaskBoard({
       });
 
       // Prompt for remarks - determine if it's reviewer or developer remarks
-      const promptText = isReviewer || isManagerRole
-        ? `Add reviewer remarks for changing status to ${STATUS_CONFIG[newStatus].label}:`
-        : `Add developer remarks for submitting to ${STATUS_CONFIG[newStatus].label}:`;
-      
-      const remarks = prompt(promptText);
-      console.debug("TaskBoard.handleDrop -> prompt result", { remarks });
-      
-      await onUpdateStatus(taskId, newStatus, remarks || null);
+      const promptText =
+        isReviewer || isManagerRole
+          ? `Add reviewer remarks for changing status to ${STATUS_CONFIG[newStatus].label}:`
+          : `Add developer remarks for submitting to ${STATUS_CONFIG[newStatus].label}:`;
+
+      // open inline prompt instead of browser prompt
+      setPromptTask(task);
+      setPromptStatus(newStatus);
+      setPromptText("");
+      setPromptOpen(true);
+      return;
     } else if (newStatus === "DONE") {
-      // For DONE status, always treat as reviewer remarks if user has permission
-      const remarks = prompt(
-        `Add reviewer remarks for marking task as ${STATUS_CONFIG[newStatus].label}:`
-      );
-      await onUpdateStatus(taskId, newStatus, remarks || null);
+      // open inline prompt for DONE as reviewer remarks
+      setPromptTask(task);
+      setPromptStatus(newStatus);
+      setPromptText("");
+      setPromptOpen(true);
+      return;
     } else if (newStatus === "IN_PROGRESS") {
-      const remarks = prompt(
-        `Add remarks for changing status to ${STATUS_CONFIG[newStatus].label} (optional):`
-      );
-      await onUpdateStatus(taskId, newStatus, remarks || null);
+      setPromptTask(task);
+      setPromptStatus(newStatus);
+      setPromptText("");
+      setPromptOpen(true);
+      return;
     } else {
       await onUpdateStatus(taskId, newStatus, null);
     }
@@ -196,6 +207,119 @@ function TaskBoard({
       // ignore
     }
   }, [tasks]);
+
+  // Open a detail view when parent requests a specific task id
+  useEffect(() => {
+    if (!openTaskId || !tasks || !tasks.length) return;
+    try {
+      const found = tasks.find(
+        (t) =>
+          String(t.task_id) === String(openTaskId) ||
+          String(t.id) === String(openTaskId)
+      );
+      if (found) setDetailTask(found);
+    } catch (e) {
+      // ignore
+    }
+  }, [openTaskId, tasks]);
+
+  // Auto-refresh when in-app events (remarks/app updates) or storage changes occur
+  useEffect(() => {
+    let mounted = true;
+    const handler = async (payload) => {
+      if (!mounted) return;
+      try {
+        if (onRefresh) {
+          setIsRefreshing(true);
+          await onRefresh();
+          setTimeout(() => setIsRefreshing(false), 400);
+        }
+      } catch (e) {
+        try {
+          setIsRefreshing(false);
+        } catch (e) {}
+      }
+    };
+
+    const unsubRemarks = (() => {
+      try {
+        return subscribe("remarks:updated", handler);
+      } catch (e) {
+        return null;
+      }
+    })();
+
+    const unsubApp = (() => {
+      try {
+        return subscribe("app:updated", handler);
+      } catch (e) {
+        return null;
+      }
+    })();
+
+    const storageHandler = (ev) => {
+      try {
+        if (!ev || !ev.key) return;
+        if (/^task_\d+_read_remarks$/.test(ev.key)) {
+          handler({ source: "storage" });
+          return;
+        }
+        if (/^tasks?_/.test(ev.key) || /^employees?_/.test(ev.key)) {
+          handler({ source: "storage" });
+        }
+      } catch (e) {}
+    };
+
+    try {
+      window.addEventListener("storage", storageHandler);
+    } catch (e) {}
+
+    return () => {
+      mounted = false;
+      try {
+        unsubRemarks && unsubRemarks();
+      } catch (e) {}
+      try {
+        unsubApp && unsubApp();
+      } catch (e) {}
+      try {
+        window.removeEventListener("storage", storageHandler);
+      } catch (e) {}
+    };
+  }, [onRefresh]);
+
+  // notifications: map taskId -> { unreadCount, note }
+  const [notifications, setNotifications] = useState({});
+  const totalNotifications = Object.values(notifications).reduce(
+    (s, v) => s + (v.unreadCount || 0),
+    0
+  );
+
+  useEffect(() => {
+    const unsub = subscribe("task:unread", (payload) => {
+      try {
+        if (!payload || !payload.taskId) return;
+        setNotifications((prev) => {
+          const copy = { ...(prev || {}) };
+          if (payload.unreadCount && payload.unreadCount > 0) {
+            copy[payload.taskId] = {
+              unreadCount: payload.unreadCount,
+              note: payload.note || "",
+            };
+          } else {
+            // remove if zero
+            delete copy[payload.taskId];
+          }
+          return copy;
+        });
+      } catch (e) {}
+    });
+    return () => {
+      try {
+        unsub && unsub();
+      } catch (e) {}
+    };
+  }, []);
 
   return (
     <div className="container mx-auto px-4 py-4">
@@ -236,7 +360,79 @@ function TaskBoard({
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 z--1">
+          <div className="relative">
+            <button
+              onClick={() => setShowNotifications((s) => !s)}
+              className="p-2 rounded-lg hover:bg-gray-100 transition-all relative"
+              title="Notifications"
+            >
+              <span className="text-gray-600">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+                  />
+                </svg>
+              </span>
+              {totalNotifications > 0 && (
+                <span className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-5 h-5 text-[11px] font-bold flex items-center justify-center">
+                  {totalNotifications > 99 ? "99+" : totalNotifications}
+                </span>
+              )}
+            </button>
+
+            {/* Notifications dropdown */}
+            {showNotifications && (
+              <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-2xl border border-gray-100 z-50 p-2">
+                <div className="font-semibold px-2 py-1">Notifications</div>
+                <div className="max-h-64 overflow-auto">
+                  {Object.keys(notifications).length === 0 ? (
+                    <div className="text-sm text-gray-500 p-3">
+                      No notifications
+                    </div>
+                  ) : (
+                    Object.entries(notifications).map(([taskId, info]) => (
+                      <button
+                        key={taskId}
+                        onClick={() => {
+                          const t = tasks.find(
+                            (x) => String(x.task_id) === String(taskId)
+                          );
+                          if (t) setDetailTask(t);
+                          setShowNotifications(false);
+                        }}
+                        className="w-full text-left px-2 py-2 hover:bg-gray-50 flex items-start gap-2"
+                      >
+                        <div className="flex-1">
+                          <div className="text-sm font-medium text-gray-800">
+                            {info.note
+                              ? info.note.split("—")[0].trim()
+                              : `Task ${taskId}`}
+                          </div>
+                          <div className="text-xs text-gray-500 mt-1 line-clamp-2">
+                            {info.note || ""}
+                          </div>
+                        </div>
+                        <div className="text-xs text-red-600 font-bold flex-shrink-0">
+                          {info.unreadCount}
+                        </div>
+                      </button>
+                    ))
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+
           <button
             onClick={() => {
               setEditingTask(null);
@@ -251,15 +447,7 @@ function TaskBoard({
             New Task
           </button>
 
-          <button
-            onClick={handleRefresh}
-            className={`px-2.5 py-2 rounded-lg border border-gray-200 hover:bg-gray-50 transition-all ${
-              isRefreshing ? "animate-spin" : ""
-            }`}
-            title="Refresh"
-          >
-            <RefreshCw size={16} className="text-gray-600" />
-          </button>
+          {/* Manual refresh removed — board auto-updates on events */}
         </div>
       </div>
 
@@ -292,7 +480,7 @@ function TaskBoard({
               >
                 {/* Column Header */}
                 <div
-                  className="sticky top-2 bg-white rounded-lg px-3 py-2.5 shadow-sm mb-3 border-l-4 transition-all hover:shadow-md"
+                  className=" top-2 bg-white rounded-lg px-3 py-2.5 shadow-md mb-3 transition-all hover:shadow-md"
                   style={{ borderColor: config.color.replace("bg-", "#") }}
                 >
                   <div className="flex items-center justify-between">
@@ -365,6 +553,8 @@ function TaskBoard({
           employees={employees}
           onClose={handleCloseForm}
           onSave={handleSaveTask}
+          userRole={userRole}
+          currentEmpId={currentEmpId}
         />
       )}
 
@@ -379,7 +569,79 @@ function TaskBoard({
             setDetailTask(null);
           }}
           currentEmpId={currentEmpId}
+          userRole={userRole}
+          onMarkAllRead={onRefresh}
         />
+      )}
+
+      {/* Inline prompt shown when user drops a card to a status that requires remarks */}
+      {promptOpen && promptTask && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+          <div className="w-full max-w-md bg-white rounded-lg p-4 shadow-lg">
+            <div className="mb-2 text-sm text-gray-700">
+              {`Change status to ${STATUS_CONFIG[promptStatus].label} for task: `}
+              <strong className="text-gray-900">{promptTask.title}</strong>
+            </div>
+            <textarea
+              className="w-full border rounded p-2 mb-3"
+              rows={3}
+              value={promptText}
+              onChange={(e) => setPromptText(e.target.value)}
+              placeholder="Add remarks (optional)"
+            />
+            <div className="mb-3">
+              <input
+                type="file"
+                onChange={(e) => {
+                  const f = e.target.files && e.target.files[0];
+                  if (f) setPromptFile(f);
+                }}
+              />
+              {promptFile && (
+                <div className="text-xs text-gray-600 mt-2 flex items-center gap-2">
+                  <span>{promptFile.name}</span>
+                  <button
+                    className="text-red-500 text-[11px]"
+                    onClick={() => setPromptFile(null)}
+                  >
+                    Remove
+                  </button>
+                </div>
+              )}
+            </div>
+            <div className="flex gap-2">
+              <button
+                className="flex-1 bg-indigo-600 text-white py-2 rounded"
+                onClick={async () => {
+                  setPromptOpen(false);
+                  const tid = promptTask.task_id;
+                  const status = promptStatus;
+                  const text =
+                    promptText && promptText.trim() ? promptText.trim() : null;
+                  const file = promptFile || null;
+                  setPromptTask(null);
+                  setPromptStatus(null);
+                  setPromptText("");
+                  setPromptFile(null);
+                  await onUpdateStatus(tid, status, text, file);
+                }}
+              >
+                Submit
+              </button>
+              <button
+                className="flex-1 bg-gray-200 text-gray-700 py-2 rounded"
+                onClick={() => {
+                  setPromptOpen(false);
+                  setPromptTask(null);
+                  setPromptStatus(null);
+                  setPromptText("");
+                }}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

@@ -1,4 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, UploadFile
+from fastapi.responses import StreamingResponse
+from bson import ObjectId
+import io
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError, IntegrityError
 from datetime import datetime
@@ -242,6 +245,14 @@ def patch_status(task_id: int,
                  db: Session = Depends(get_db),
                  user=Depends(get_current_user)):
     try:
+        # Debug: log incoming payload to help diagnose missing attachment metadata
+        try:
+            print(f"patch_status received payload for task {task_id}: {payload.dict()}")
+        except Exception:
+            try:
+                print(f"patch_status received payload (non-serializable) for task {task_id}")
+            except Exception:
+                pass
         task = db.query(Task).filter(Task.task_id == task_id).first()
         if not task:
             raise HTTPException(404, "Task not found")
@@ -271,32 +282,53 @@ def patch_status(task_id: int,
 
         # Handle review and audit logs with error handling
         try:
-            if payload.review:
-                # Allow the designated reviewer to submit reviewer remarks.
-                # Additionally, allow users with MANAGER or ADMIN roles to add reviewer remarks
-                # so managers' comments can appear in the reviewer remarks timeline.
+            # Reviewer remarks (explicit reviewer_review or top-level review)
+            # Also allow attachment-only reviewer remarks (no text) via reviewer_attachment
+            if (
+                getattr(payload, "reviewer_review", None) or
+                getattr(payload, "review", None) or
+                getattr(payload, "reviewer_attachment", None)
+            ):
+                rv_text = getattr(payload, "reviewer_review", None) or getattr(payload, "review", None)
                 reviewer_emp_id = task.reviewer
                 user_emp_id = getattr(user, "emp_id", None)
                 if reviewer_emp_id is None:
                     raise HTTPException(400, "Task has no reviewer assigned")
+                if user_emp_id != reviewer_emp_id:
+                    raise HTTPException(403, "Only the designated reviewer can add reviewer remarks")
 
-                # allow if user is the designated reviewer OR the user has MANAGER/ADMIN role
-                allowed_roles = ["MANAGER","DEVELOPER"]
-                has_manager_role = any(r in user.role for r in allowed_roles)
-                if user_emp_id != reviewer_emp_id and not has_manager_role:
-                    raise HTTPException(403, "Only the designated reviewer or Managers/Developer can add review remarks")
-
-                # store reviewer metadata so we can return readable reviews later
                 reviews_collection.insert_one({
                     "task_id": task_id,
-                    "review": payload.review,
+                    # store review text even if None; UI will render attachment-only remarks
+                    "review": rv_text,
                     "reviewed_by_user_id": user.user_id,
                     "reviewed_by_emp_id": user_emp_id,
-                    "role": user.role,
+                    # record the active role if frontend provided it, else default to reviewer
+                    "role": getattr(payload, "role", None) or "reviewer",
+                    "attachment": getattr(payload, "reviewer_attachment", None),
                     "created_at": datetime.utcnow()
                 })
 
-            
+            # Developer remarks
+            # Allow developer remarks when developer_review text is provided OR when an attachment is sent
+            if getattr(payload, "developer_review", None) or getattr(payload, "developer_attachment", None):
+                assignee_emp_id = task.assigned_to
+                user_emp_id = getattr(user, "emp_id", None)
+                if assignee_emp_id is None:
+                    raise HTTPException(400, "Task has no assignee")
+                if user_emp_id != assignee_emp_id:
+                    raise HTTPException(403, "Only the assigned developer can add developer remarks")
+
+                reviews_collection.insert_one({
+                    "task_id": task_id,
+                    "review": getattr(payload, "developer_review", None),
+                    "reviewed_by_user_id": user.user_id,
+                    "reviewed_by_emp_id": user_emp_id,
+                    # record the active role if frontend provided it, else default to developer
+                    "role": getattr(payload, "role", None) or "developer",
+                    "attachment": getattr(payload, "developer_attachment", None),
+                    "created_at": datetime.utcnow(),
+                })
 
             audit_logs_collection.insert_one({
                 "action": "STATUS_UPDATED",
@@ -352,21 +384,42 @@ async def upload_file(task_id: int,
         if not file.filename:
             raise HTTPException(400, "No filename provided")
         
-        # Upload to GridFS
+        # Upload to GridFS and return file metadata
         try:
-            await fs.upload_from_stream(
+            # attempt to get file size if possible
+            size = None
+            try:
+                cur = file.file.tell()
+                file.file.seek(0, 2)
+                size = file.file.tell()
+                file.file.seek(cur)
+            except Exception:
+                try:
+                    file.file.seek(0, 2)
+                    size = file.file.tell()
+                    file.file.seek(0)
+                except Exception:
+                    size = None
+
+            file_id = await fs.upload_from_stream(
                 file.filename,
                 file.file,
                 metadata={
-                    "task_id": task_id, 
+                    "task_id": task_id,
                     "uploaded_at": datetime.utcnow(),
-                    "uploaded_by": user.emp_id
+                    "uploaded_by": user.emp_id,
+                    "content_type": getattr(file, "content_type", None)
                 }
             )
         except PyMongoError as e:
             raise HTTPException(500, f"Failed to upload file to GridFS: {str(e)}")
         
-        return {"message": "File uploaded", "filename": file.filename}
+        return {
+            "file_id": str(file_id),
+            "filename": file.filename,
+            "content_type": getattr(file, "content_type", None),
+            "size": size,
+        }
     
     except HTTPException:
         raise
@@ -375,7 +428,7 @@ async def upload_file(task_id: int,
 
 
 @task_router.get("/{task_id}/reviews")
-def get_task_reviews(task_id: int,
+async def get_task_reviews(task_id: int,
                      db: Session = Depends(get_db),
                      user=Depends(get_current_user)):
     try:
@@ -402,17 +455,24 @@ def get_task_reviews(task_id: int,
         else:
             raise HTTPException(403, "Insufficient permissions")
 
-        # Fetch reviews from MongoDB
+        # Fetch reviews from MongoDB (motor async cursor)
         cursor = reviews_collection.find({"task_id": task_id}).sort("created_at", -1)
+        try:
+            docs = await cursor.to_list(length=1000)
+        except Exception as e:
+            # convert motor errors into HTTPException
+            raise HTTPException(500, f"Failed to fetch reviews from MongoDB: {str(e)}")
+
         reviews = []
-        for doc in cursor:
-            # doc may be a Motor object; convert fields
+        for doc in docs:
+            # doc is a dict-like Mongo document; convert fields
             r = {
                 "review": doc.get("review"),
                 "reviewed_by_user_id": doc.get("reviewed_by_user_id"),
                 "reviewed_by_emp_id": doc.get("reviewed_by_emp_id"),
                 "role": doc.get("role"),
-                "created_at": doc.get("created_at")
+                "created_at": doc.get("created_at"),
+                "attachment": doc.get("attachment")
             }
             # enrich with employee name if available
             if r["reviewed_by_emp_id"]:
@@ -433,9 +493,140 @@ def get_task_reviews(task_id: int,
 
             reviews.append(r)
 
+        # return the normalized reviews list
         return reviews
 
     except HTTPException:
         raise
+    except SQLAlchemyError as e:
+        raise HTTPException(500, f"Database error: {str(e)}")
     except Exception as e:
         raise HTTPException(500, f"Internal server error: {str(e)}")
+
+# Replace your existing download_attachment function with this:
+
+@task_router.get("/{task_id}/attachments/{file_id}")
+async def download_attachment(task_id: int, file_id: str,
+                              db: Session = Depends(get_db),
+                              user=Depends(get_current_user)):
+    try:
+        # Basic authorization
+        task = db.query(Task).filter(Task.task_id == task_id).first()
+        if not task:
+            raise HTTPException(404, "Task not found")
+
+        if "ADMIN" in user.role:
+            pass
+        elif "MANAGER" in user.role:
+            subordinate_ids = EmployeeService.get_subordinate_ids(db, user.emp_id)
+            if not (
+                (task.assigned_to in subordinate_ids) or
+                (task.assigned_to == user.emp_id) or
+                (task.created_by == user.emp_id) or
+                (task.reviewer == user.emp_id)
+            ):
+                raise HTTPException(403, "You can only download attachments for tasks related to you or your team")
+        elif "DEVELOPER" in user.role:
+            if not (task.assigned_to == user.emp_id or task.reviewer == user.emp_id):
+                raise HTTPException(403, "You can only download attachments for tasks assigned to you")
+        else:
+            raise HTTPException(403, "Insufficient permissions")
+
+        # Convert file_id to ObjectId
+        try:
+            oid = ObjectId(file_id)
+            print(f"Attempting to download file with ObjectId: {oid}")
+        except Exception as e:
+            print(f"Invalid ObjectId format: {file_id}, error: {e}")
+            raise HTTPException(400, f"Invalid file id format: {str(e)}")
+
+        # Fetch file from GridFS
+        try:
+            # Open the download stream
+            grid_out = await fs.open_download_stream(oid)
+            
+            # Read the file data
+            data = await grid_out.read()
+            
+            if not data:
+                raise HTTPException(404, "File is empty")
+            
+            # Get metadata
+            content_type = "application/octet-stream"
+            filename = f"attachment_{file_id}"
+            
+            # Try to get content_type from metadata
+            try:
+                if hasattr(grid_out, 'metadata') and grid_out.metadata:
+                    content_type = grid_out.metadata.get("content_type", content_type)
+            except Exception as e:
+                print(f"Could not get content_type from metadata: {e}")
+            
+            # Try to get filename
+            try:
+                if hasattr(grid_out, 'filename') and grid_out.filename:
+                    filename = grid_out.filename
+            except Exception as e:
+                print(f"Could not get filename: {e}")
+            
+            print(f"Successfully serving file: {filename}, size: {len(data)} bytes, type: {content_type}")
+            
+            # Return file as streaming response with proper headers
+            headers = {
+                "Content-Disposition": f'attachment; filename="{filename}"',
+            }
+            
+            return StreamingResponse(
+                io.BytesIO(data),
+                media_type=content_type,
+                headers=headers
+            )
+            
+        except Exception as e:
+            error_msg = str(e)
+            print(f"GridFS error for file_id {file_id}: {error_msg}")
+            
+            # Check if it's a "file not found" error
+            if "FileNotFound" in error_msg or "not found" in error_msg.lower() or "NoFile" in error_msg:
+                raise HTTPException(404, f"Attachment not found in storage. File ID: {file_id}")
+            else:
+                import traceback
+                traceback.print_exc()
+                raise HTTPException(500, f"Failed to retrieve attachment: {error_msg}")
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"Unexpected error in download_attachment: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(500, f"Internal server error: {str(e)}")
+
+
+# OPTIONAL: Add this debug endpoint temporarily (add it right after the download_attachment function)
+@task_router.get("/{task_id}/attachments/{file_id}/debug")
+async def debug_attachment(task_id: int, file_id: str,
+                           db: Session = Depends(get_db),
+                           user=Depends(get_current_user)):
+    """Debug endpoint to check attachment metadata"""
+    try:
+        oid = ObjectId(file_id)
+        
+        # Check if file exists in GridFS
+        try:
+            grid_out = await fs.open_download_stream(oid)
+            data = await grid_out.read()
+            metadata = {
+                "exists": True,
+                "file_id": file_id,
+                "filename": getattr(grid_out, "filename", None),
+                "length": len(data),
+                "upload_date": str(getattr(grid_out, "upload_date", None)),
+                "content_type": grid_out.metadata.get("content_type") if hasattr(grid_out, "metadata") and grid_out.metadata else None,
+                "full_metadata": grid_out.metadata if hasattr(grid_out, "metadata") else None,
+            }
+            return metadata
+        except Exception as e:
+            return {"exists": False, "error": str(e), "file_id": file_id}
+    except Exception as e:
+        return {"error": f"Invalid ObjectId: {str(e)}", "file_id": file_id}
