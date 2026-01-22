@@ -1,0 +1,38 @@
+Backend
+
+	main.py - contains all the connection between models schemas services etc
+	schemas
+		-pydantic models of employees,users,tasks
+		employee.py - contains employees details
+				-emp name
+				-emp id
+				-manager id (also an employee who already present)
+				-department name
+				-status (for soft delete)
+		users.py - contains users details
+				-emp id / user id
+				-password
+				
+				login parts as well like tokens etc
+		tasks.py - contains tasks details
+				-task id
+				-title
+				-description
+				-assigned by / reviewer
+				-assigned to
+				-priority
+				-due date
+				-created date
+				-submitted date
+				-status
+				-review
+	routers
+		
+		employees 
+		
+		users
+
+		tasks
+
+		
+		
