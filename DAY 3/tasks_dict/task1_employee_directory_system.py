@@ -1,0 +1,57 @@
+# Task 1: Employee Directory System
+
+
+"""
+Scenario:
+UST’s HR team keeps employee details in a Python dictionary.
+Each employee has a unique ID and name.
+
+"""
+
+# Initial employee dictionary with IDs and names
+employees={
+    "E101": "Arjun",
+    "E102": "Neha",
+    "E103": "Ravi"
+}
+
+# Add new employees
+employees["E104"]="Priya"
+employees["E105"]="Vikram"
+
+# Print updated dictionary after adding
+print(employees)
+
+# Update existing employee's name
+employees["E103"]="Ravi Kumar"
+print(employees)
+
+# Delete an employee by ID
+del employees["E102"]
+print(employees)
+
+# Print total number of employees
+print(len(employees))
+
+# Print final list of employees with IDs and names
+for key,value in employees.items():
+    print(f"Employee ID: {key} → Name: {value}")
+
+# Retrieve employee name for a given ID (returns "Not found" if ID does not exist)
+print(employees.get("E104", "Not found"))    
+
+
+# sample output
+
+"""
+{'E101': 'Arjun', 'E102': 'Neha', 'E103': 'Ravi', 'E104': 'Priya', 'E105': 'Vikram'}
+{'E101': 'Arjun', 'E102': 'Neha', 'E103': 'Ravi Kumar', 'E104': 'Priya', 'E105': 'Vikram'}
+{'E101': 'Arjun', 'E103': 'Ravi Kumar', 'E104': 'Priya', 'E105': 'Vikram'}
+4
+Employee ID: E101 → Name: Arjun
+Employee ID: E103 → Name: Ravi Kumar
+Employee ID: E104 → Name: Priya
+Employee ID: E105 → Name: Vikram
+Priya
+
+"""
