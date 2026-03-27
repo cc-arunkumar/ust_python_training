@@ -1,0 +1,572 @@
+============================================================
+  WELCOME TO THE LIBRARY MANAGEMENT SYSTEM (LMS)  🎓        
+============================================================
+
+
+============================================================
+ MAIN MENU
+============================================================
+1.  MANAGE BOOKS
+2.  MANAGE USERS
+3.  BORROW/RETURN BOOKS
+4.  VIEW LOANS & REPORTS
+5.  HELP & INFORMATION
+6.  EXIT
+============================================================
+Enter your choice (1-6): 1
+
+============================================================
+ BOOK MANAGEMENT
+============================================================
+1.  Add a New Book
+2.  Update Book Details
+3.  Remove a Book
+4.  Search for a Book
+5.  View Book Details
+6.  List All Books
+7.  Back to Main Menu
+============================================================
+Enter your choice (1-7): 1
+
+ ADD NEW BOOK
+----------------------------------------
+Enter Book ID: B1037
+Enter Book Title: the wind
+Enter Author(s) (separated by | ): Meena
+Enter ISBN: 9781593279003
+Enter Tags (separated by | ): english
+Enter Total Copies: 5
+Enter Available Copies: 2
+
+ Book added successfully.
+
+============================================================
+ BOOK MANAGEMENT
+============================================================
+1.  Add a New Book
+2.  Update Book Details
+3.  Remove a Book
+4.  Search for a Book
+5.  View Book Details
+6.  List All Books
+7.  Back to Main Menu
+============================================================
+Enter your choice (1-7): 2
+
+ UPDATE BOOK DETAILS
+----------------------------------------
+Enter Book ID to update: B1036
+(Leave blank to keep current value)
+Enter Book Title: Pychant
+Enter Author(s): Bhar
+Enter ISBN: 9781593279005
+Enter Tags: java
+Enter Total Copies: 5
+Enter Available Copies: 3
+
+ Book updated successfully.
+
+============================================================
+ BOOK MANAGEMENT
+============================================================
+1.  Add a New Book
+2.  Update Book Details
+3.  Remove a Book
+4.  Search for a Book
+5.  View Book Details
+6.  List All Books
+7.  Back to Main Menu
+============================================================
+Enter your choice (1-7): 4
+
+ SEARCH FOR BOOKS
+----------------------------------------
+Enter search keyword (title, author, or tags): Pychant,Bhar
+
+ No books found matching your search.
+
+============================================================
+ BOOK MANAGEMENT
+============================================================
+1.  Add a New Book
+2.  Update Book Details
+3.  Remove a Book
+4.  Search for a Book
+5.  View Book Details
+6.  List All Books
+7.  Back to Main Menu
+============================================================
+Enter your choice (1-7): 5             
+
+ VIEW BOOK DETAILS
+----------------------------------------
+Enter Book ID: B1036
+ BOOK INFORMATION:
+BOOK_ID: B1036
+TITLE: Pychant
+AUTHORS: Bhar
+ISBN: 9781593279005
+TAGS: java
+TOTAL_COPIES: 5
+AVAILABLE_COPIES: 3
+
+============================================================
+ BOOK MANAGEMENT
+============================================================
+1.  Add a New Book
+2.  Update Book Details
+3.  Remove a Book
+4.  Search for a Book
+5.  View Book Details
+6.  List All Books
+7.  Back to Main Menu
+============================================================
+Enter your choice (1-7): 6
+
+============================================================
+  WELCOME TO THE LIBRARY MANAGEMENT SYSTEM (LMS)  🎓        
+============================================================
+
+
+
+============================================================
+ USER MANAGEMENT
+============================================================
+1.  Add a New User
+2.  Update User Details
+3.   View User Details
+4.  List All Users
+5.  Activate User
+6.  Deactivate User
+7.  Ban User
+8.  Back to Main Menu
+============================
+
+
+============================================================
+  WELCOME TO THE LIBRARY MANAGEMENT SYSTEM (LMS)  🎓        
+============================================================
+
+
+============================================================
+ MAIN MENU
+============================================================
+1.  MANAGE BOOKS
+2.  MANAGE USERS
+3.  BORROW/RETURN BOOKS
+4.  VIEW LOANS & REPORTS
+5.  HELP & INFORMATION
+6.  EXIT
+============================================================
+
+
+============================================================
+ MAIN MENU
+============================================================
+1.  MANAGE BOOKS
+2.  MANAGE USERS
+3.  BORROW/RETURN BOOKS
+4.  VIEW LOANS & REPORTS
+5.  HELP & INFORMATION
+6.  EXIT
+============================================================
+Enter your choice (1-6): 2
+
+============================================================
+ USER MANAGEMENT
+============================================================
+1.  Add a New User
+2.  Update User Details
+3.   View User Details
+4.  List All Users
+5.  Activate User
+6.  Deactivate User
+7.  Ban User
+8.  Back to Main Menu
+============================================================
+Enter your choice (1-8): 1
+
+ADD NEW USER
+----------------------------------------
+Enter User ID: U2027
+Enter User Name: Shero
+Enter Email: shero@ust.com
+Enter Status (active/inactive/banned): inactive
+Enter Max Loans (default 5): 5
+
+User added successfully.
+
+============================================================
+ USER MANAGEMENT
+============================================================
+1.  Add a New User
+2.  Update User Details
+3.   View User Details
+4.  List All Users
+5.  Activate User
+6.  Deactivate User
+7.  Ban User
+8.  Back to Main Menu
+============================================================
+Enter your choice (1-8): 2
+
+UPDATE USER DETAILS
+----------------------------------------
+Enter User ID to update: U2027
+(Leave blank to keep current value)
+Enter User Name: Shero the king
+Enter Email: shero@ust.com
+Enter Status (active/inactive/banned): inactive
+Enter Max Loans: 5
+
+User updated successfully.
+
+============================================================
+ USER MANAGEMENT
+============================================================
+1.  Add a New User
+2.  Update User Details
+3.   View User Details
+4.  List All Users
+5.  Activate User
+6.  Deactivate User
+7.  Ban User
+8.  Back to Main Menu
+============================================================
+Enter your choice (1-8): 3
+
+VIEW USER DETAILS
+----------------------------------------
+Enter User ID: U2027
+
+USER INFORMATION:
+----------------------------------------
+USER_ID: U2027
+NAME: Shero the king
+EMAIL: shero@ust.com
+STATUS: inactive
+MAX_LOANS: 5
+ACTIVE_LOANS: 0
+
+============================================================
+ USER MANAGEMENT
+============================================================
+1.  Add a New User
+2.  Update User Details
+3.   View User Details
+4.  List All Users
+5.  Activate User
+6.  Deactivate User
+7.  Ban User
+8.  Back to Main Menu
+============================================================
+Enter your choice (1-8): 4
+
+ALL USERS:
+------------------------------------------------------------
+ID         Name                      Email                     Status
+------------------------------------------------------------
+U2001      Arun Kumar                arun.kumar@ust.com        active
+U2002      Riya Sharma               riya.sharma@ust.com       active
+U2003      John Mathew               john.mathew@ust.com       inactive
+U2004      Nisha Thomas              nisha.thomas@ust.com      active
+U2005      Anil Kumar                anil.kumar@ust.com        active    
+U2006      Meera Dsouza              meera.dsouza@ust.com      banned
+U2007      Kiran Mohan               kiran.mohan@ust.com       active
+U2008      Sona Prakash              sona.prakash@ust.com      active
+U2009      Ravi Shankar              ravi.shankar@ust.com      active
+U2010      Mona Raj                  mona.raj@ust.com          active
+U2011      Arvind Iyer               arvind.iyer@ust.com       active
+U2012      Divya Menon               divya.menon@ust.com       inactive
+U2013      Hari Nath                 hari.nath@ust.com         active
+U2014      Joel Thomas               joel.thomas@ust.com       active
+U2015      Philip Mathew             philip.mathew@ust.com     active
+U2016      Balu Nair                 balu.nair@ust.com         active
+U2017      Aswin Kumar               aswin.kumar@ust.com       active
+U2018      Leena George              leena.george@ust.com      active
+U2019      Sandra Joy                sandra.joy@ust.com        active
+U2020      Vishnu S                  vishnu.s@ust.com          active
+U2021      Ajay Dev                  ajay.dev@ust.com          banned
+U2022      Kavya Sunny               kavya.sunny@ust.com       active
+U2023      Neeraj Pillai             neeraj.pillai@ust.com     active
+U2024      Sachin Patel              sachin.patel@ust.com      active
+U2025      Veena Shetty              veena.shetty@ust.com      active
+U2026      Bhargavi                  Bhar@ust.com              active
+U2027      Shero the king            shero@ust.com             inactive
+
+============================================================
+ USER MANAGEMENT
+============================================================
+1.  Add a New User
+2.  Update User Details
+3.   View User Details
+4.  List All Users
+5.  Activate User
+6.  Deactivate User
+7.  Ban User
+8.  Back to Main Menu
+============================================================
+Enter your choice (1-8): 5
+
+ACTIVATE USER
+----------------------------------------
+Enter User ID to activate: U2027 
+
+User activated successfully.
+
+============================================================
+ USER MANAGEMENT
+============================================================
+1.  Add a New User
+2.  Update User Details
+3.   View User Details
+4.  List All Users
+5.  Activate User
+6.  Deactivate User
+7.  Ban User
+8.  Back to Main Menu
+============================================================
+Enter your choice (1-8): 7
+
+BAN USER
+----------------------------------------
+Enter User ID to ban: U2027
+
+User banned successfully.
+
+============================================================
+ USER MANAGEMENT
+============================================================
+1.  Add a New User
+2.  Update User Details
+3.   View User Details
+4.  List All Users
+5.  Activate User
+6.  Deactivate User
+7.  Ban User
+8.  Back to Main Menu
+============================================================
+Enter your choice (1-8): 8
+
+============================================================
+ MAIN MENU
+============================================================
+1.  MANAGE BOOKS
+2.  MANAGE USERS
+3.  BORROW/RETURN BOOKS
+4.  VIEW LOANS & REPORTS
+5.  HELP & INFORMATION
+6.  EXIT
+============================================================
+Enter your choice (1-6): 3
+
+============================================================
+ BORROW / RETURN BOOKS
+============================================================
+1.  Borrow a Book
+2.  Return a Book
+3.  Back to Main Menu
+============================================================
+Enter your choice (1-3): 1
+
+ BORROW A BOOK
+----------------------------------------
+Enter User ID: U2027
+Enter Book ID to borrow: B1037
+
+ ERROR: User account is banned and cannot borrow books.
+
+============================================================
+ BORROW / RETURN BOOKS
+============================================================
+1.  Borrow a Book
+2.  Return a Book
+3.  Back to Main Menu
+============================================================
+Enter your choice (1-3): 2
+
+ RETURN A BOOK
+----------------------------------------
+Enter Book ID to return: B1037
+Enter User ID: U2027 
+
+ User has no active loans to return.
+
+============================================================
+ BORROW / RETURN BOOKS
+============================================================
+1.  Borrow a Book
+2.  Return a Book
+3.  Back to Main Menu
+============================================================
+Enter your choice (1-3): 3
+
+============================================================
+ MAIN MENU
+============================================================
+1.  MANAGE BOOKS
+2.  MANAGE USERS
+3.  BORROW/RETURN BOOKS
+4.  VIEW LOANS & REPORTS
+5.  HELP & INFORMATION
+6.  EXIT
+============================================================
+Enter your choice (1-6): 4
+
+============================================================
+ LOANS & REPORTS
+============================================================
+1.  View Active Loans
+2.  View Overdue Loans
+3.  View Loan History
+4.  Generate Summary Report
+5.  Generate User Report
+6.  Back to Main Menu
+============================================================
+Enter your choice (1-6): 1
+
+ ACTIVE LOANS
+----------------------------------------
+Enter User ID (or press Enter for all): U2027
+
+0
+
+============================================================
+ LOANS & REPORTS
+============================================================
+1.  View Active Loans
+2.  View Overdue Loans
+3.  View Loan History
+4.  Generate Summary Report
+5.  Generate User Report
+6.  Back to Main Menu
+============================================================
+Enter your choice (1-6): 2
+
+ OVERDUE LOANS
+----------------------------------------
+Enter User ID (or press Enter for all): U2027
+
+ No overdue loans for this user.
+
+============================================================
+ LOANS & REPORTS
+============================================================
+1.  View Active Loans
+2.  View Overdue Loans
+3.  View Loan History
+4.  Generate Summary Report
+5.  Generate User Report
+6.  Back to Main Menu
+============================================================
+Enter your choice (1-6): 3
+
+ LOAN HISTORY
+----------------------------------------
+Enter User ID: U2027
+
+ No loan history found for user U2027.
+
+============================================================
+ LOANS & REPORTS
+============================================================
+1.  View Active Loans
+2.  View Overdue Loans
+3.  View Loan History
+4.  Generate Summary Report
+5.  Generate User Report
+6.  Back to Main Menu
+============================================================
+Enter your choice (1-6): 5
+
+👤 GENERATE USER REPORT
+----------------------------------------
+Enter User ID: U2027
+
+👤 USER REPORT FOR U2027:
+----------------------------------------
+USER_ID: U2027
+NAME: Shero the king
+EMAIL: shero@ust.com
+STATUS: banned
+MAX_LOANS: 5
+ACTIVE_LOANS: 0
+
+============================================================
+ LOANS & REPORTS
+============================================================
+1.  View Active Loans
+2.  View Overdue Loans
+3.  View Loan History
+4.  Generate Summary Report
+5.  Generate User Report
+6.  Back to Main Menu
+============================================================
+Enter your choice (1-6): 6
+
+============================================================
+ MAIN MENU
+============================================================
+1.  MANAGE BOOKS
+2.  MANAGE USERS
+3.  BORROW/RETURN BOOKS
+4.  VIEW LOANS & REPORTS
+5.  HELP & INFORMATION
+6.  EXIT
+============================================================
+Enter your choice (1-6): 5
+
+============================================================
+ HELP & INFORMATION
+============================================================
+
+╔════════════════════════════════════════════════════════════════════════════╗
+║                     LIBRARY MANAGEMENT SYSTEM                        ║
+║                           COMMAND REFERENCE                                ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+BOOK MANAGEMENT COMMANDS:
+   • book add       - Add a new book to the library
+   • book update    - Update details of an existing book
+   • book remove    - Remove a book from the library
+   • book get       - Get details of a specific book
+   • book list      - List all books in the library
+   • book search    - Search for books by title, author, or tags
+
+USER MANAGEMENT COMMANDS:
+   • user add       - Add a new user to the library
+   • user update    - Update details of an existing user
+   • user get       - Get details of a specific user
+   • user list      - List all users in the library
+   • user deactivate - Deactivate a user account
+   • user activate  - Activate a user account
+   • user ban       - Ban a user account
+
+TRANSACTION COMMANDS:
+   • borrow         - Borrow a book from the library
+   • return         - Return a borrowed book to the library
+
+LOANS & REPORTS COMMANDS:
+   • loans active   - List all active loans
+   • loans overdue  - List all overdue loans
+   • loans history  - View loan history for a user
+   • report summary - Generate a summary report
+   • report user    - Generate a report for a specific user
+
+UTILITY COMMANDS:
+   • help           - Display this help information
+   • exit           - Exit the CLI
+
+═════════════════════════════════════════════════════════════════════════════
+
+TIPS FOR NEW USERS:
+   1. All fields with dashes can be left blank by pressing Enter
+   2. Use (|) to separate multiple values in Author/Tags fields
+   3. Book IDs and User IDs are case-sensitive
+   4. Always save your changes before exiting
+   5. Ask a librarian if you need help!
+
+═════════════════════════════════════════════════════════════════════════════
+
+
+Press Enter to continue...
